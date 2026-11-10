@@ -1,0 +1,404 @@
+"""Per-cc-pair fetch + index for the targeted-reindex flow.
+
+The targeted-reindex celery task delegates the actual connector
+invocation + pipeline plumbing to this module so the task body stays
+focused on lifecycle and resolution-tracking. One call to
+`process_targets_for_cc_pair` covers a single cc_pair: it instantiates
+the connector, converts the per-doc target rows into
+`ConnectorFailure` inputs that the `Resolver.reindex` interface
+expects, and streams yielded `Document` objects through the standard
+indexing pipeline once per active search_settings (so PRESENT and
+FUTURE indexes both receive the reindex during a model swap).
+
+Connectors that don't subclass `Resolver` short-circuit: their targets
+are reported as still-failing so the admin sees clearly that targeted
+reindex isn't supported yet for that source.
+"""
+
+import datetime
+from collections import defaultdict
+from collections.abc import Iterable, Sequence
+
+from more_itertools import chunked
+from sqlalchemy.orm import Session
+
+from onyx.configs.app_configs import INDEX_BATCH_SIZE, SKIP_SPREADSHEET_CONTENT
+from onyx.connectors.factory import instantiate_connector
+from onyx.connectors.interfaces import Resolver
+from onyx.connectors.models import (
+    ConnectorFailure,
+    Document,
+    DocumentFailure,
+    HierarchyNode,
+    IndexAttemptMetadata,
+)
+from onyx.db.connector_credential_pair import get_connector_credential_pair_from_id
+from onyx.db.enums import AccessType
+from onyx.db.hierarchy import persist_hierarchy_nodes_for_cc_pair
+from onyx.db.models import (
+    ConnectorCredentialPair,
+    IndexAttempt,
+    TargetedReindexJobTarget,
+)
+from onyx.db.targeted_reindex import targets_to_connector_failures
+from onyx.document_index.factory import get_default_document_index
+from onyx.file_store.staging import (
+    build_tracking_raw_file_callback,
+    delete_files_best_effort,
+)
+from onyx.indexing.adapters.document_indexing_adapter import (
+    DocumentIndexingBatchAdapter,
+)
+from onyx.indexing.embedder import DefaultIndexingEmbedder
+from onyx.indexing.indexing_pipeline import run_indexing_pipeline
+from onyx.redis.redis_hierarchy import (
+    HierarchyNodeCacheEntry,
+    cache_hierarchy_nodes_batch,
+)
+from onyx.redis.redis_pool import get_redis_client
+from onyx.utils.logger import setup_logger
+from onyx.utils.middleware import make_randomized_onyx_request_id
+from onyx.utils.postgres_sanitization import sanitize_hierarchy_nodes_for_postgres
+
+logger = setup_logger()
+
+
+class CCPairReindexResult:
+    """Per-cc-pair outcome.
+
+    `landed_doc_ids` are the doc_ids that successfully made it through
+    the pipeline. The task's resolution-tracking step only marks an
+    `IndexAttemptError` resolved if the corresponding target's doc is
+    in this set.
+
+    `failed_doc_ids` covers connector-side failures (connector yielded
+    `ConnectorFailure`) plus pipeline-side failures (handler caught an
+    exception during chunk/embed/write). They drive the per-job
+    `still_failing_count`.
+
+    `unsupported` is True iff the connector class does not implement
+    `Resolver`. All targets for that cc_pair are bucketed into
+    `failed_doc_ids` in that case so the admin sees a clear signal.
+
+    `failures` holds, by doc_id, the failure this run produced for a failed
+    doc. A pair that ends before fetching has none, and `reason` says why.
+    """
+
+    def __init__(
+        self,
+        landed_doc_ids: set[str],
+        failed_doc_ids: set[str],
+        unsupported: bool,
+        failures: dict[str, ConnectorFailure] | None = None,
+        reason: str | None = None,
+    ) -> None:
+        self.landed_doc_ids = landed_doc_ids
+        self.failed_doc_ids = failed_doc_ids
+        self.unsupported = unsupported
+        self.failures: dict[str, ConnectorFailure] = (
+            failures if failures is not None else {}
+        )
+        self.reason = reason
+
+
+def _flush_batch(
+    *,
+    documents: list[Document],
+    attempt: IndexAttempt,
+    tenant_id: str,
+    db_session: Session,
+    batch_num: int,
+) -> tuple[set[str], dict[str, ConnectorFailure]]:
+    """Run a single `Document` batch through the indexing pipeline for
+    one synthetic IndexAttempt's search_settings.
+
+    `batch_num` is the 0-indexed position of this batch within the
+    attempt's overall reindex run; it propagates into tracing /
+    `IndexAttemptMetadata.structured_id` so each batch is
+    distinguishable in logs and sentry breadcrumbs.
+
+    Returns `(landed_doc_ids, failures by doc_id)`. The pipeline's adapter
+    already wraps writes in `prepare_to_modify_documents`, so concurrent
+    full-crawl writes on the same docs are safely serialized.
+    """
+    if not documents:
+        return set(), {}
+
+    search_settings = attempt.search_settings
+    if search_settings is None:
+        # Synthetic attempt should always have search_settings linked; if
+        # the row is missing, treat all docs as failed for this attempt
+        # rather than crash the whole job.
+        logger.warning(
+            "synthetic IndexAttempt id=%s missing search_settings; "
+            "skipping pipeline run",
+            attempt.id,
+        )
+        return set(), {
+            d.id: ConnectorFailure(
+                failed_document=DocumentFailure(document_id=d.id),
+                failure_message="The retry attempt has no search settings.",
+            )
+            for d in documents
+        }
+
+    embedder = DefaultIndexingEmbedder.from_db_search_settings(
+        search_settings=search_settings,
+        callback=None,
+    )
+    document_index = get_default_document_index(search_settings, None)
+    metadata = IndexAttemptMetadata(
+        attempt_id=attempt.id,
+        connector_id=attempt.connector_credential_pair.connector.id,
+        credential_id=attempt.connector_credential_pair.credential.id,
+        request_id=make_randomized_onyx_request_id("TRX"),
+        structured_id="%s:%s:%s:targeted:%s"
+        % (tenant_id, attempt.connector_credential_pair_id, attempt.id, batch_num),
+        batch_num=batch_num,
+    )
+    adapter = DocumentIndexingBatchAdapter(
+        connector_id=attempt.connector_credential_pair.connector.id,
+        credential_id=attempt.connector_credential_pair.credential.id,
+        tenant_id=tenant_id,
+        index_attempt_metadata=metadata,
+    )
+
+    result = run_indexing_pipeline(
+        embedder=embedder,
+        document_index=document_index,
+        ignore_time_skip=True,
+        # FUTURE/secondary build: skip the PRESENT-only content_hash dedup.
+        index_to_secondary=search_settings.status.is_future(),
+        db_session=db_session,
+        tenant_id=tenant_id,
+        document_batch=documents,
+        request_id=metadata.request_id,
+        adapter=adapter,
+        skip_spreadsheet_content=SKIP_SPREADSHEET_CONTENT,
+        written_search_settings_id=search_settings.id,
+        # A targeted run never stamps the hash. If a reindex builds, or starts
+        # during this batch, a stamped hash would make the poll after the swap
+        # skip a document the FUTURE twin failed on. The next poll re-indexes the
+        # document once more instead.
+        stamp_content_hash=False,
+    )
+
+    failures: dict[str, ConnectorFailure] = {
+        f.failed_document.document_id: f
+        for f in result.failures or []
+        if f.failed_document is not None
+    }
+    landed_ids = {d.id for d in documents} - failures.keys()
+
+    attempt.total_docs_indexed = (attempt.total_docs_indexed or 0) + result.total_docs
+    attempt.new_docs_indexed = (attempt.new_docs_indexed or 0) + result.new_docs
+    attempt.total_chunks = (attempt.total_chunks or 0) + result.total_chunks
+    attempt.completed_batches = (attempt.completed_batches or 0) + 1
+    attempt.last_progress_time = datetime.datetime.now(datetime.timezone.utc)
+    db_session.commit()
+
+    return landed_ids, failures
+
+
+def _persist_hierarchy_nodes(
+    *,
+    nodes: list[HierarchyNode],
+    cc_pair: ConnectorCredentialPair,
+    tenant_id: str,
+    db_session: Session,
+) -> None:
+    """Mirror the docfetching hierarchy upsert path for the targeted
+    reindex flow. Without this, ancestor folders/spaces yielded by a
+    Resolver during reindex would never land in Postgres or the redis
+    cache, so KG ancestor lookups for newly-reindexed docs would fall
+    back to "source-type root" until the next full crawl.
+    """
+    sanitized = sanitize_hierarchy_nodes_for_postgres(nodes)
+    upserted = persist_hierarchy_nodes_for_cc_pair(
+        db_session=db_session,
+        nodes=sanitized,
+        source=cc_pair.connector.source,
+        connector_id=cc_pair.connector.id,
+        credential_id=cc_pair.credential.id,
+        is_connector_public=cc_pair.access_type == AccessType.PUBLIC,
+    )
+    cache_hierarchy_nodes_batch(
+        redis_client=get_redis_client(tenant_id=tenant_id),
+        source=cc_pair.connector.source,
+        entries=[HierarchyNodeCacheEntry.from_db_model(n) for n in upserted],
+    )
+
+
+def process_targets_for_cc_pair(
+    *,
+    cc_pair_id: int,
+    targets: Sequence[TargetedReindexJobTarget],
+    attempts: Iterable[IndexAttempt],
+    tenant_id: str,
+    db_session: Session,
+) -> CCPairReindexResult:
+    """Fetch + index every target for one cc_pair.
+
+    `attempts` is the set of synthetic IndexAttempts the create step
+    spawned for this cc_pair (one per active search_settings). The
+    connector is instantiated once and its `reindex` output is fed
+    into the pipeline once per attempt so all active indexes receive
+    the same Documents.
+    """
+    target_doc_ids = {t.document_id for t in targets}
+    cc_pair_attempts = [
+        a for a in attempts if a.connector_credential_pair_id == cc_pair_id
+    ]
+    if not cc_pair_attempts:
+        # Shouldn't happen — create_targeted_reindex_job spawns one
+        # synthetic attempt per active search_settings — but be
+        # defensive so we don't crash the whole job.
+        logger.warning(
+            "no synthetic IndexAttempt for cc_pair_id=%s; skipping", cc_pair_id
+        )
+        return CCPairReindexResult(
+            set(),
+            target_doc_ids,
+            unsupported=False,
+            reason="No retry attempt exists for this connector.",
+        )
+
+    cc_pair = get_connector_credential_pair_from_id(
+        db_session=db_session, cc_pair_id=cc_pair_id
+    )
+    if cc_pair is None:
+        logger.warning(
+            "cc_pair_id=%s no longer exists; marking targets still_failing",
+            cc_pair_id,
+        )
+        return CCPairReindexResult(
+            set(),
+            target_doc_ids,
+            unsupported=False,
+            reason="The connector no longer exists.",
+        )
+
+    connector = instantiate_connector(
+        db_session=db_session,
+        source=cc_pair.connector.source,
+        input_type=cc_pair.connector.input_type,
+        connector_specific_config=cc_pair.connector.connector_specific_config,
+        credential=cc_pair.credential,
+    )
+    if not isinstance(connector, Resolver):
+        logger.info(
+            "connector source=%s does not implement Resolver; targets "
+            "marked still_failing",
+            cc_pair.connector.source,
+        )
+        return CCPairReindexResult(
+            set(),
+            target_doc_ids,
+            unsupported=True,
+            reason="This connector does not support retrying documents.",
+        )
+
+    include_permissions = cc_pair.access_type.is_perm_synced()
+    failures = targets_to_connector_failures(targets, db_session)
+
+    # Tabular sections stage their CSV via this callback; this path has no
+    # attempt-end reaper, so track the staged ids and reap them in the finally.
+    staging_callback, staged_csv_ids = build_tracking_raw_file_callback(
+        metadata={"cc_pair_id": str(cc_pair_id), "tenant_id": tenant_id}
+    )
+    connector.set_raw_file_callback(staging_callback)
+
+    docs: list[Document] = []
+    connector_failures: dict[str, ConnectorFailure] = {}
+    landed_overall: set[str] = set()
+    pipeline_failures: dict[str, ConnectorFailure] = {}
+    try:
+        # Materialize the connector output once. MAX_TARGETS_PER_REQUEST caps
+        # the universe at 100 docs total per job, so this is bounded.
+        hierarchy_nodes: list[HierarchyNode] = []
+        for item in connector.reindex(
+            errors=failures, include_permissions=include_permissions
+        ):
+            if isinstance(item, ConnectorFailure):
+                if item.failed_document is not None:
+                    connector_failures[item.failed_document.document_id] = item
+                continue
+            if isinstance(item, Document):
+                docs.append(item)
+                continue
+            if isinstance(item, HierarchyNode):
+                hierarchy_nodes.append(item)
+                continue
+
+        if hierarchy_nodes:
+            _persist_hierarchy_nodes(
+                nodes=hierarchy_nodes,
+                cc_pair=cc_pair,
+                tenant_id=tenant_id,
+                db_session=db_session,
+            )
+            logger.debug(
+                "Persisted and cached %s hierarchy nodes for cc_pair_id=%s",
+                len(hierarchy_nodes),
+                cc_pair_id,
+            )
+
+        # Per-attempt pipeline run. Each attempt commits to its own
+        # search_settings.s document index.
+        for attempt in cc_pair_attempts:
+            for batch_num, batch in enumerate(chunked(docs, INDEX_BATCH_SIZE)):
+                landed, batch_failures = _flush_batch(
+                    documents=list(batch),
+                    attempt=attempt,
+                    tenant_id=tenant_id,
+                    db_session=db_session,
+                    batch_num=batch_num,
+                )
+                landed_overall |= landed
+                pipeline_failures.update(batch_failures)
+    finally:
+        delete_files_best_effort(
+            staged_csv_ids,
+            context=f"targeted-reindex staging cleanup cc_pair={cc_pair_id}",
+        )
+
+    # Conservative landing: a doc is only "landed" if some attempt
+    # accepted it AND no attempt or upstream phase failed it. The set
+    # math is landed_overall minus every failed doc, which means if PRESENT
+    # accepts doc X but FUTURE fails it during a model swap, doc X is
+    # NOT counted as landed and its source error stays open. This is
+    # the right call for resolution tracking — partial dual-index
+    # landing should not auto-resolve the failure. If the strictness
+    # ever causes too many false-still-failing on transient infra
+    # blips, switch to per-attempt landing tracking and require all
+    # attempts to land independently.
+    # A target the connector never returned keeps its link but has no new
+    # failure of its own.
+    yielded = {d.id for d in docs} | connector_failures.keys()
+    doc_failures: dict[str, ConnectorFailure] = {
+        failure.failed_document.document_id: failure.model_copy(
+            update={"failure_message": "The connector did not return this document."}
+        )
+        for failure in failures
+        if failure.failed_document is not None
+        and failure.failed_document.document_id not in yielded
+    }
+    doc_failures.update(connector_failures)
+    doc_failures.update(pipeline_failures)
+    landed_doc_ids = landed_overall - doc_failures.keys()
+
+    return CCPairReindexResult(
+        landed_doc_ids=landed_doc_ids,
+        failed_doc_ids=set(doc_failures),
+        unsupported=False,
+        failures=doc_failures,
+    )
+
+
+def group_targets_by_cc_pair(
+    targets: Sequence[TargetedReindexJobTarget],
+) -> dict[int, list[TargetedReindexJobTarget]]:
+    by_cc_pair: dict[int, list[TargetedReindexJobTarget]] = defaultdict(list)
+    for t in targets:
+        by_cc_pair[t.cc_pair_id].append(t)
+    return by_cc_pair

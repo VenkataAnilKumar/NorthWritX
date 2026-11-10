@@ -1,0 +1,11 @@
+services:
+  nginx:
+    ports: !override
+      - "127.0.0.1:3000:80"
+  api_server:
+    environment:
+      DISABLE_TELEMETRY: "true"
+      WEB_DOMAIN: http://localhost:3000
+  background:
+    environment:
+      DISABLE_TELEMETRY: "true"

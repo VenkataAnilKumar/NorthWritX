@@ -1,0 +1,12 @@
+/* =============================================================================
+   Divider Keyboard Navigation Overrides
+   Disable the pointer hover on command menu filter headers while keyboard
+   navigation is active; the keyboard highlight sets data-interaction="hover".
+   ============================================================================= */
+[data-keyboard-nav="true"]
+  [data-command-item]
+  .interactive:hover:not([data-interaction="hover"]) {
+  background-color: transparent !important;
+  --interactive-foreground: var(--text-03) !important;
+  --interactive-foreground-icon: var(--text-03) !important;
+}

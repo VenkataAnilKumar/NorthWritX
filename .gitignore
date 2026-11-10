@@ -1,0 +1,8 @@
+/.rebrand-backups/
+**/__pycache__/
+*.py[cod]
+**/.venv/
+**/node_modules/
+**/.next/
+**/.env
+**/.env.local

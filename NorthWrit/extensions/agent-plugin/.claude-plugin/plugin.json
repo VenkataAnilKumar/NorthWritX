@@ -1,0 +1,40 @@
+{
+  "name": "onyx",
+  "displayName": "NorthWrit",
+  "description": "Puts NorthWrit first for context retrieval in every Claude Code session",
+  "author": {
+    "name": "NorthWrit",
+    "url": "https://onyx.app"
+  },
+  "homepage": "https://docs.onyx.app",
+  "repository": "https://github.com/onyx-dot-app/onyx",
+  "license": "MIT",
+  "keywords": ["onyx", "search", "knowledge", "rag", "mcp"],
+  "userConfig": {
+    "onyx_url": {
+      "type": "string",
+      "title": "NorthWrit URL",
+      "description": "Your NorthWrit web address without a trailing slash, for example https://cloud.onyx.app",
+      "required": true
+    },
+    "onyx_api_token": {
+      "type": "string",
+      "title": "NorthWrit API token",
+      "description": "A personal access token with the read:search scope",
+      "sensitive": true,
+      "required": true
+    },
+    "onyx_strict_retrieval": {
+      "type": "boolean",
+      "title": "Strict retrieval",
+      "description": "Block other search tools until NorthWrit has been consulted for the current prompt",
+      "default": false
+    },
+    "onyx_prefetch": {
+      "type": "boolean",
+      "title": "Prefetch results",
+      "description": "Run a raw NorthWrit search before each prompt and inject the top sections. Adds up to 3 seconds per prompt.",
+      "default": false
+    }
+  }
+}

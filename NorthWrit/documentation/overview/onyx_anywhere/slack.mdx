@@ -1,0 +1,55 @@
+---
+title: "Slack Bot"
+description: "Accessing NorthWrit within Slack"
+icon: "slack"
+---
+
+## Overview
+
+<img className="rounded-image" src="/assets/overview/onyx_anywhere/slack.webp" alt="Slack"/>
+
+Bring NorthWrit into your conversations with the NorthWrit Slack app, **NorthWritBot**.
+
+## Supported Features
+
+- Connect as many Slack apps as you need. Associate each Slack app with NorthWrit Agents for specific use cases.
+- Channel-level configurations. Each channel can have a different default behavior based on its purpose.
+- Answers from internal or web knowledge include citations that link back to the original sources.
+- Works in threads, channels, and DMs.
+- Select **Continue in Web UI** to carry a Slack thread into the NorthWrit web app.
+
+<Tip>
+  Try asking NorthWrit to summarize a thread by tagging NorthWritBot in the thread!
+</Tip>
+
+## How it works
+
+Your admin connects a Slack app in **Admin Panel > Integrations > Slack Integration**.
+NorthWrit connects to Slack over Socket Mode, so no public webhook URL is required.
+
+For each channel, your admin can set:
+
+- Whether NorthWritBot answers every message or only messages that tag **@NorthWritBot**
+- Whether NorthWritBot answers only questions, only certain users or groups, or messages from other bots
+- Which knowledge NorthWritBot uses: all organization-wide knowledge, specific document sets, or a specific Agent
+- Whether the answer is standard or detailed
+- Whether the reply is private (ephemeral) to the person who asked
+- Who to tag for follow-up when NorthWritBot cannot answer
+
+NorthWritBot answers as a shared NorthWrit service identity. The documents it can cite depend on the channel configuration,
+not on the Slack user who asked.
+
+<Note>
+  The Slack bot is available on all editions. Standard answers, which return a pre-written reply for matching questions,
+  are an Enterprise Edition feature. NorthWrit Cloud includes all Enterprise Edition features.
+</Note>
+
+See the [Slack bot setup guide](/admins/getting_started/slack_bot_setup) for setup steps.
+
+## Try it out
+
+To test it out,
+join the [community Slack](https://join.slack.com/t/onyx-dot-app/shared_invite/zt-34lu4m7xg-TsKGO6h8PDvR5W27zTdyhA)
+and see the #ask-onyx channel or tag **@NorthWritBot** from anywhere.
+
+<img className="rounded-image" src="/assets/overview/onyx_anywhere/onyxbot.webp" alt="NorthWritBot"/>
