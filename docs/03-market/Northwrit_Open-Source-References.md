@@ -1,32 +1,24 @@
 # Northwrit open-source references
 
-Updated November 9, 2026. This register records the upstream references reviewed during platform selection.
+Updated November 10, 2026. This register records the platform decision and component references.
 
 ## Selected foundation
 
-**Onyx Standard Community Edition** is the selected starting point for evaluating a NorthWritX fork. The selection assumes retaining the option to commercialize proprietary NorthWritX additions.
+**MikeOSS is the sole application foundation for NorthWritX.** Its legal workspace, document review, drafting, and Word workflows align with the Harvey-style product direction.
 
-- Clone source: https://github.com/onyx-dot-app/onyx-foss
-- License: https://github.com/onyx-dot-app/onyx-foss/blob/main/LICENSE
-- Main development reference: https://github.com/onyx-dot-app/onyx
-- Repository choice: Onyx describes onyx-foss as its MIT-only repository, automatically synchronized from the main repository. Use this as NorthWritX's fork source to avoid including separately licensed enterprise code. The main repository remains useful for release and development context.
-- Documentation: https://docs.onyx.app/
-- Reuse targets: agent workspace, chat, document ingestion, indexed retrieval, connectors, custom agents, deep research, model integrations, and artifacts.
-- License boundary: onyx-foss has an MIT license. The main onyx repository mixes MIT community code with separately licensed `ee` directories. Third-party components retain their own licenses. Preserve required notices and check the exact files included in a commercial build. Enterprise features described in the shared README must be verified against the FOSS implementation before treating them as included.
-- Deployment choice: Standard includes indexing and connector workers. Lite omits document indexing.
-- NorthWritX work: matter authorization, Canadian research sources, Bearings, four-state CiteCheck, version-bound Folio approvals, Shield egress enforcement, Review Grid, playbooks, and Office integration.
+- [Application source](https://github.com/Open-Legal-Products/mike) · [Legal workflows](https://github.com/Open-Legal-Products/mike-workflows) · [AGPL-3.0 license](https://github.com/Open-Legal-Products/mike/blob/main/LICENSE)
+- **Starting surfaces** include Projects, Assistant, Library, Tabular Reviews, Workflows, Connectors, and the Word add-in.
+- **NorthWrit work** includes matter permissions and roles, Canadian research sources, Bearings, four-state CiteCheck, Shield, and version-bound Folio review. Mike's CourtListener integration covers U.S. case law.
+- **First cloud check** uses a pinned Mike revision and its documented local stack. Verify portal startup, sign-in, synthetic uploads, tabular extraction, source navigation, and drafting before adapting Projects into Matters. [Mike local development](https://github.com/Open-Legal-Products/mike/blob/main/docs/local-development.md)
 
-Selection is based on documentation and repository inspection. A fork, pinned revision, running deployment, security assessment, and implementation audit remain outstanding.
+The earlier Onyx prototype is available in commit `df85641`. Its deployment and smoke-test scripts apply to that revision. The MikeOSS checkout and cloud smoke test remain pending.
 
 ## Other evaluated platforms
 
 | Project | Upstream | Role for NorthWritX | Licensing and scope notes |
 |---|---|---|---|
-| MikeOSS | https://github.com/Open-Legal-Products/mike | Closest legal-product reference for matter/document chat, drafting, tabular review, reusable workflows, and Word add-in | AGPL-3.0. Modified network-served deployments carry source-offer obligations. Review compatibility before incorporating code into a proprietary product. |
 | OpenContracts | https://github.com/Open-Source-Legal/OpenContracts | Evidence viewer, precise annotations, citation relationships, extraction tables, document agents, and MCP reference | Review the license and dependencies at the chosen revision before extraction. Functional similarity does not establish NorthWritX approval or isolation guarantees. |
 | Kortix / CompanyOS | https://github.com/kortix-ai/CompanyOS | Shared agents, skills, memory, triggers, model gateway, and approval patterns | The former Suna URL redirects here. Review current repository and commercial/white-label terms separately. Self-hosting alone does not establish disconnected operation. |
-
-Mike license: https://github.com/Open-Legal-Products/mike/blob/main/LICENSE
 
 Kortix self-hosting: https://kortix.com/self-hosted
 

@@ -1,6 +1,6 @@
 # Northwrit Product Documentation
 
-Open-source platform selection and repository links are saved in the [Open-Source References](03-market/Northwrit_Open-Source-References.md) register, including the Onyx Standard Community Edition foundation decision and licensing boundaries.
+The [Open-Source References](03-market/Northwrit_Open-Source-References.md) register records MikeOSS as the application foundation and links to its source, workflows, and local setup.
 
 **Northwrit** is a privacy-first legal AI workspace engineered specifically for Canadian law firms (10–300 lawyers, Ontario launch focus) and corporate in-house legal departments. It combines Perplexity-style live, cited Canadian legal research with Harvey-class legal workflows (matters, document review, drafting, playbooks, and agents), while ensuring confidential client data remains governed by strict, enforceable data privacy policies via **Northwrit Shield**.
 
