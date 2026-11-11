@@ -45,4 +45,4 @@ The browser talks to the Next.js API gateway for application traffic and uses a 
 - Before deployment, verify capacity, workflow catalogue availability and model access. Browser routing must cover application, confirmation links and signed uploads.
 - Verify streaming, denied access, source positioning, approval replay, Word exports and offboarding with real test cases. Existing upstream tests serve as pointers, not NorthWrit test results.
 
-[Archived cloud startup notes](Northwrit_MikeOSS-Cloud-Runbook.md) · [Feature disposition](Northwrit_MikeOSS-Feature-Disposition.md) · [Implementation plan](Northwrit_MikeOSS-Implementation-Plan.md)
+[Archived cloud startup notes](NorthWrit-Cloud-Runbook.md) · [Feature disposition](NorthWrit-Feature-Disposition.md) · [Implementation plan](NorthWrit-Implementation-Plan.md)

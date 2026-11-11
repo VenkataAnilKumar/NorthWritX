@@ -2,7 +2,7 @@
 
 This is the initial backlog for the pinned Mike OSS audit. Priority comes from the [feature specification](../04-specs/Northwrit_Feature-Spec.md). The phase indicates where to validate or deliver the work. P1/P2 items need explicit pilot scope before they become release criteria. Deferred work stays in the product backlog.
 
-**Reuse** means the upstream path is suitable to test as-is. **Adapt** means there is a candidate upstream building block. **Build** means NorthWrit needs a new capability or enforceable policy. **Defer** means after the pilot. See the [source audit](Northwrit_MikeOSS-Source-Audit.md) for implementation evidence and unresolved checks.
+**Reuse** means the upstream path is suitable to test as-is. **Adapt** means there is a candidate upstream building block. **Build** means NorthWrit needs a new capability or enforceable policy. **Defer** means after the pilot. See the [source audit](NorthWrit-Source-Audit.md) for implementation evidence and unresolved checks.
 
 | ID | Requirement | Priority | Disposition | Phase | Work |
 |---|---|---|---|---|---|
