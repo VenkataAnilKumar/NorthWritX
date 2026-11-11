@@ -1,6 +1,6 @@
 # Expanded repository migration verification
 
-Date: November 11, 2026. Status: implementation and local validation complete, with inherited limitations below; GitHub CI/review remain pending. Phase 4 has not started. Changes are local and have not been pushed or merged.
+Date: November 11, 2026. Status: implementation and local validation complete, with inherited limitations below; [PR #2](https://github.com/VenkataAnilKumar/NorthWritX/pull/2) records the submitted change and current GitHub CI/review outcome. Phase 4 has not started.
 
 ## Scope and preservation
 
@@ -49,4 +49,4 @@ Live checks used the dedicated `northwrit-migration-check` Compose project, loop
 
 ## Remaining gates
 
-The inherited extraction timeout failure remains visible for a separate focused fix. The branding checker also reports seven raster-icon regeneration differences with Pillow 13.0.0; every flagged asset is byte-identical to the baseline, and no branding assets were regenerated. Investigate a reproducible asset-generation toolchain separately. GitHub CI has not run for these uncommitted changes; require its checks before merging. macOS signing/packaging and the native desktop database upgrade remain unverified on this Linux host and are release gates when that distribution is in scope. Office-host sideloading, all browser acceptance journeys, external model execution and the archived standalone cloud baseline are not claimed by these checks. No Phase 4 feature, deployment, image push or environment publication occurred.
+The inherited extraction timeout failure remains visible for a separate focused fix. The branding checker also reports seven raster-icon regeneration differences with Pillow 13.0.0; every flagged asset is byte-identical to the baseline, and no branding assets were regenerated. Investigate a reproducible asset-generation toolchain separately. GitHub CI and merge status are recorded on PR #2; its checks are required before merging. macOS signing/packaging and the native desktop database upgrade remain unverified on this Linux host and are release gates when that distribution is in scope. Office-host sideloading, all browser acceptance journeys, external model execution and the archived standalone cloud baseline are not claimed by these checks. No Phase 4 feature, deployment, image push or environment publication occurred.

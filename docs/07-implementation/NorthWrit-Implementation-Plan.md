@@ -2,7 +2,7 @@
 
 Updated: November 11, 2026
 
-Status: Phase 1 source audit, Phase 3 integration and rebrand, and the initial repository organization are complete. Organization PR #1 merged as `624268de88697d31dee4603548bad25042fdad15`; all four GitHub CI jobs passed. The expanded repository migration is implemented and locally validated, with inherited limitations recorded; GitHub CI/review remain prerequisites for closing the migration gate before Phase 4. Phase 4 has not started; see the migration verification record for current results and limitations.
+Status: Phase 1 source audit, Phase 3 integration and rebrand, and the initial repository organization are complete. Organization PR #1 merged as `624268de88697d31dee4603548bad25042fdad15`; all four GitHub CI jobs passed. The expanded repository migration is implemented and locally validated, with inherited limitations recorded; [PR #2](https://github.com/VenkataAnilKumar/NorthWritX/pull/2) records GitHub CI/review and merge status for closing the migration gate before Phase 4. Phase 4 has not started; see the migration verification record for current results and limitations.
 
 ## Objective and scope
 
@@ -19,7 +19,7 @@ The active application spans root `apps/` and `packages/`, with [recorded proven
 | 1. Audit Mike OSS | Source-backed capability map and implementation backlog | Pinned source | Complete |
 | 3. Integrate and rebrand | Maintainable NorthWrit application baseline | Phase 1 | Complete |
 | Repository organization | Clear entry points, ownership, documentation and verification commands | Phase 3 | Complete; local verification recorded |
-| Repository structure migration | Separate application surfaces, worker entry point, shared packages and infrastructure | Initial repository organization | Locally validated; CI/review pending |
+| Repository structure migration | Separate application surfaces, worker entry point, shared packages and infrastructure | Initial repository organization | Locally validated; see PR #2 for CI/merge outcome |
 | 4. Build the legal workspace | Complete matter-based user journeys | Repository structure migration | Planned |
 | 5. Add NorthWrit capabilities | Canadian legal workflows and enforceable governance | Phase 4 | Planned |
 | 6. Extend integrations | Governed agents, connectors, plugins, and MCP | Phase 5 | Planned |
@@ -263,4 +263,4 @@ Deliverables: Release candidate; acceptance report; deployment and rollback runb
 - [UI specification](../05-design/Northwrit_UI-Spec.md)
 - [NorthWrit and Harvey feature comparison](../03-market/Northwrit_vs_Harvey_Feature-Comparison.md)
 
-**Immediate next action:** Review the [migration verification](NorthWrit-Migration-Verification.md), address the recorded baseline limits as appropriate, then commit and run GitHub CI before closing the repository migration gate and beginning Phase 4. PR #1 and its CI verification are complete. This migration introduces no Phase 4 features and does not deploy or publish anything.
+**Immediate next action:** Review the [migration verification](NorthWrit-Migration-Verification.md), address the recorded baseline limits as appropriate, then require successful GitHub CI and merge of PR #2 before closing the repository migration gate and beginning Phase 4. PR #1 and its CI verification are complete. This migration introduces no Phase 4 features and does not deploy or publish anything.
