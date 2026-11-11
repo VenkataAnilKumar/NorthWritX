@@ -14,7 +14,7 @@ import type {
   AskInputResponseItem,
   ConnectorApprovalItem,
   McpToolEvent,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 import type { Db } from "../../../../lib/supabase";
 import type { ConnectorOwner } from "../../../../lib/connectorOwner";
 import type { ConnectorCallPlan } from "../../../../lib/mcp/types";

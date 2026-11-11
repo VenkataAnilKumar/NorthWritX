@@ -3,9 +3,9 @@
 import { useLatestRef } from "@/app/hooks/useLatestRef";
 import { useMarkdownCheckpoint } from "./message/markdownCheckpoint";
 import { createCitationPreprocessor } from "./message/citationPreprocessor";
-import { TextCardUI } from "@mike/ui";
+import { TextCardUI } from "@northwrit/ui";
 import { memo, useMemo, useRef, useState, type ReactNode } from "react";
-import type { WebSource } from "@mike/contracts";
+import type { WebSource } from "@northwrit/contracts";
 import { Check, Copy } from "lucide-react";
 import type {
     AssistantEvent,

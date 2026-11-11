@@ -92,8 +92,8 @@ import {
 import { verifyCitations } from "./verifyCitations";
 import { buildMemoryTurn } from "../../../lib/memory/prompt";
 
-export type { AssistantEvent } from "@mike/contracts";
-import type { AssistantEvent, AssistantErrorCode } from "@mike/contracts";
+export type { AssistantEvent } from "@northwrit/contracts";
+import type { AssistantEvent, AssistantErrorCode } from "@northwrit/contracts";
 
 /**
  * Tools the model can call that execute outside this process — in the Word

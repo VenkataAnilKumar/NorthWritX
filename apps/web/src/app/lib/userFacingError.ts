@@ -4,7 +4,7 @@ import {
     reportedUpstreamMessage,
     type UploadOutcome,
 } from "./mikeApi";
-import type { Operation } from "@mike/client";
+import type { Operation } from "@northwrit/client";
 
 export type { Operation };
 
@@ -73,7 +73,7 @@ import {
     type UserFacingError,
     createErrorNotifier,
     type NotifyErrorOptions as SharedNotifyErrorOptions,
-} from "@mike/client";
+} from "@northwrit/client";
 import { isReported, reportError } from "@/app/lib/errorReporting";
 
 export {
@@ -83,9 +83,9 @@ export {
     isNetworkError,
     type UserErrorKind,
     type UserFacingError,
-} from "@mike/client";
+} from "@northwrit/client";
 
-export { notifyInfo, notifySuccess } from "@mike/client";
+export { notifyInfo, notifySuccess } from "@northwrit/client";
 
 /** The shared toast options plus the web app's Sentry identity. */
 export interface NotifyErrorOptions
@@ -269,7 +269,7 @@ export function describeError(
  * also render it inline, or `null` when the failure is a cancellation the
  * user caused and does not need to hear about.
  *
- * The shared notifier (`createErrorNotifier` in `@mike/client`) owns the toast, the
+ * The shared notifier (`createErrorNotifier` in `@northwrit/client`) owns the toast, the
  * Retry and the cancellation rule; the web app adds its upstream copy, its
  * Sentry reporting, "Sign in", and a `mailto:` support link.
  */

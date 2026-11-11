@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { reportError } from "@/app/lib/errorReporting";
-import { diagnosticRoute } from "@mike/client";
+import { diagnosticRoute } from "@northwrit/client";
 import type { NextRequest } from "next/server";
 import {
     UPSTREAM_UNAVAILABLE_FINGERPRINT,

@@ -2,7 +2,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { notifyError } from "./lib/notify";
-import { ToastViewportUI } from "@mike/ui";
+import { ToastViewportUI } from "@northwrit/ui";
 import "./styles.css";
 import {
   ErrorBoundary,

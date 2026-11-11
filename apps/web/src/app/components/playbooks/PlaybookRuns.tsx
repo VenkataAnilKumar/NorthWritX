@@ -32,8 +32,8 @@ import {
   setViewedPlaybookRun,
 } from "@/app/lib/playbookRunActivity";
 import { diffWords } from "@/app/lib/wordDiff";
-import { modelDisplayName } from "@mike/client";
-import { PillButtonUI, TextButtonUI, TextSlabUI } from "@mike/ui";
+import { modelDisplayName } from "@northwrit/client";
+import { PillButtonUI, TextButtonUI, TextSlabUI } from "@northwrit/ui";
 import { ModalSegmentedToggle } from "@/app/components/modals/ModalSegmentedToggle";
 import { PlaybookPanels } from "./PlaybookPanels";
 import {

@@ -3,6 +3,8 @@
 This package owns the standalone process boundary. `apps/api` owns domain
 services, queue handlers, authorization, dependencies, configuration, and the
 compiled `dist/worker.js` entry point. No API source is copied into this package.
+The root `setup:worker` alias installs the API workspace because it owns the
+worker's runtime and development dependencies.
 
 From the repository root:
 
@@ -19,7 +21,7 @@ relative resources resolve consistently. Runtime environment bindings override
 local values. Set `WORKERS_MODE=none` on the API when this standalone process owns
 background processing. SIGINT/SIGTERM use the existing worker shutdown logic.
 
-`npm --prefix apps/worker test` checks source and compiled startup, lifecycle
+`npm --workspace apps/worker test` checks source and compiled startup, lifecycle
 probing, polling and graceful termination using an isolated loopback stub. It
 requires installed API dependencies and a completed API build; it is not a real
 database acceptance test. API queue, job and access suites cover job semantics.

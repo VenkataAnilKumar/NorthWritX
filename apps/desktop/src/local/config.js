@@ -33,7 +33,7 @@ function stackPaths(app) {
     gotrueMigrations: path.join(base, "bin", "gotrue-migrations"),
     postgrest: path.join(base, "bin", "postgrest"),
     backendDir: app.isPackaged
-      ? path.join(base, "app", "backend")
+      ? path.join(base, "app", "backend", "apps", "api")
       : path.join(repoRoot, "apps/api"),
     // Next traces the standalone server from the repository root (the
     // Turbopack root in frontend/next.config.ts), so the server sits under a

@@ -22,7 +22,7 @@ import {
     updateGoogleWorkspaceSettings,
     updateMcpConnector,
 } from "@/app/lib/mikeApi";
-import type { GoogleWorkspaceStatus } from "@mike/contracts";
+import type { GoogleWorkspaceStatus } from "@northwrit/contracts";
 import { needsMfaVerification } from "@/app/components/popups/MfaVerificationPopup";
 
 // Replace only the network functions the OAuth popup flow drives; keep the real

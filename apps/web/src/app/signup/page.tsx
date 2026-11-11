@@ -11,7 +11,7 @@ import {
     authGlassCardUIClassName,
     authInputUIClassName,
     AuthDividerUI,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import Link from "next/link";
 import { SiteLogo } from "@/app/components/site-logo";
 import { useAuth } from "@/app/contexts/AuthContext";

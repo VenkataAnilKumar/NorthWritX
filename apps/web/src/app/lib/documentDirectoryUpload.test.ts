@@ -13,7 +13,7 @@ import {
     resolvedDocumentUploadProgressEntries,
     resolveDocumentUploadRootFolder,
 } from "./documentDirectoryUpload";
-import { settleWithConcurrency } from "@mike/client";
+import { settleWithConcurrency } from "@northwrit/client";
 
 function folderFile(name: string, relativePath: string) {
     const file = new File([name], name);

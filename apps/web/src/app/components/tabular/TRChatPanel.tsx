@@ -61,7 +61,7 @@ import { ChatPanelHeader } from "../shared/ChatPanelHeader";
 import { HeaderActionsMenu } from "../shared/HeaderActionsMenu";
 import { cn } from "@/app/lib/utils";
 import { buildTabularChatHistory } from "@/app/lib/tabularChatHistory";
-import { CitationPillUI } from "@mike/ui";
+import { CitationPillUI } from "@northwrit/ui";
 import { subscribeToTabularChatSettingsUpdates } from "@/app/lib/tabularChatSettingsEvents";
 import { sortChatsByActivity, touchChatActivity } from "@/app/lib/chatActivity";
 import { WarningPopup } from "../popups/WarningPopup";
@@ -598,10 +598,11 @@ export function TRChatPanel({
             getTabularChats(reviewId)
                 .then((loadedChats) => {
                     setChats(sortChatsByActivity(loadedChats));
-                    if (!initialChatId) return;
+                    if (!initialChatId || currentChatIdRef.current !== initialChatId) return;
                     const initialChat = loadedChats.find(
                         (chat) => chat.id === initialChatId,
                     );
+                    setCurrentChatTitle(initialChat?.title ?? null);
                     setCurrentChatModel(initialChat?.model ?? null);
                     setCurrentChatReasoningLevel(
                         initialChat?.reasoning_level ?? null,

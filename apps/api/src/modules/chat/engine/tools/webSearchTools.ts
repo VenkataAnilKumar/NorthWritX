@@ -1,4 +1,4 @@
-import type { WebToolErrorCode, WebToolEvent } from "@mike/contracts";
+import type { WebToolErrorCode, WebToolEvent } from "@northwrit/contracts";
 import type { NormalizedToolCall } from "../../../../lib/llm";
 import { AppError } from "../../../../lib/appError";
 import { reportError } from "../../../../lib/observability/sentry";

@@ -3,9 +3,9 @@ name: NorthWrit CI
 on:
   push:
     branches: [main]
-    paths: ['apps/**', 'packages/**', 'infra/**', 'tests/**', 'VERSION', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
+    paths: ['apps/**', 'packages/**', 'infra/**', 'tests/**', 'VERSION', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.npmrc', '.github/workflows/**']
   pull_request:
-    paths: ['apps/**', 'packages/**', 'infra/**', 'tests/**', 'VERSION', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
+    paths: ['apps/**', 'packages/**', 'infra/**', 'tests/**', 'VERSION', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.npmrc', '.github/workflows/**']
   workflow_dispatch:
 
 permissions:
@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: 22
       - run: npm run check:repo
+      - name: Verify workspace audit boundaries
+        run: node --test scripts/application/audit-workspace-lock.test.mjs
       - name: Check changed-commit whitespace
         env:
           WHITESPACE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -58,7 +60,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: apps/${{ matrix.package }}/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm run setup:${{ matrix.target }}
       - run: npm run test:${{ matrix.target }}
       - if: matrix.target == 'web'

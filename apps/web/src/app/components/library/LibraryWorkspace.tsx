@@ -28,7 +28,7 @@ import { PageHeader } from "@/app/components/shared/PageHeader";
 import { SelectionActionsMenu } from "@/app/components/shared/SelectionActionsMenu";
 import { TableToolbar } from "@/app/components/shared/TableToolbar";
 import { DocumentUploadMenu } from "@/app/components/shared/DocumentUploadMenu";
-import { TabPillButtonUI } from "@mike/ui";
+import { TabPillButtonUI } from "@northwrit/ui";
 import {
   bulkDeleteLibraryDocuments,
     createLibraryFolder,

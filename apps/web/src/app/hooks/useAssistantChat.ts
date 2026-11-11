@@ -17,7 +17,7 @@ import {
   createTurnEventSink,
   readAssistantTurn,
 } from "@/app/lib/assistantTurnStream";
-import { isAbortError } from "@mike/client";
+import { isAbortError } from "@northwrit/client";
 import {
   beginAssistantTurn,
   cancelAssistantTurn,

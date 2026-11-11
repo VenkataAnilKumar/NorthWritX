@@ -38,7 +38,7 @@ import {
     getServerSnapshot,
     type ToastAction,
     type ToastRecord,
-} from "@mike/client";
+} from "@northwrit/client";
 export {
     showToast,
     dismissToast,
@@ -49,7 +49,7 @@ export {
     type ToastInput,
     type ToastRecord,
     type ToastTone,
-} from "@mike/client";
+} from "@northwrit/client";
 
 const toastNodes = new Map<string, HTMLElement>();
 

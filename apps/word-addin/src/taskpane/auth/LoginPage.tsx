@@ -7,7 +7,7 @@ import {
   AuthDividerUI as AuthDivider,
   authGlassCardUIClassName,
   authInputUIClassName,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import { Label } from "../../shared/ui/label";
 import { WordAddinLogo } from "../components/shell/WordAddinLogo";
 import { WEB_APP_URL, openExternalUrl } from "../lib/openExternalUrl";

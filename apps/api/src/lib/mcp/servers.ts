@@ -1,6 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import type { ConnectorApprovalItem } from "@mike/contracts";
+import type { ConnectorApprovalItem } from "@northwrit/contracts";
 import type { OpenAIToolSchema } from "../llm";
 import { type ConnectorOwner, workspaceFilter } from "../connectorOwner";
 import { AppError } from "../appError";

@@ -17,7 +17,7 @@ import {
   unenrollMfa,
   verifyMfa,
 } from "@/app/lib/authApi";
-import { PillButtonUI, ToggleSwitchUI, GlassCardUI } from "@mike/ui";
+import { PillButtonUI, ToggleSwitchUI, GlassCardUI } from "@northwrit/ui";
 import { PasswordSettingsSection } from "@/app/components/settings/PasswordSettingsSection";
 import { SettingsHeading } from "@/app/components/settings/SettingsHeading";
 import { SettingsRow } from "@/app/components/settings/SettingsRow";

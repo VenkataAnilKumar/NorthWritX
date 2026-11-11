@@ -18,9 +18,10 @@
 // Usage: node ../scripts/audit-gate.mjs   (cwd = the workspace to audit)
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, realpathSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, join, relative, posix } from "node:path";
 import { fileURLToPath } from "node:url";
+import { selectWorkspaceLock } from "./audit-workspace-lock.mjs";
 
 const allowlistPath = join(dirname(fileURLToPath(import.meta.url)), "audit-allowlist.json");
 const allowlist = JSON.parse(readFileSync(allowlistPath, "utf8"));
@@ -43,7 +44,15 @@ for (const entry of allowlist) {
 }
 const allowed = new Map(allowlist.map((e) => [e.ghsa, e]));
 
-const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
+const repoRoot = realpathSync(join(dirname(allowlistPath), "../.."));
+const rootManifestPath = join(repoRoot, "package.json");
+const rootManifest = existsSync(rootManifestPath) ? JSON.parse(readFileSync(rootManifestPath, "utf8")) : {};
+const workspaceGraph = Array.isArray(rootManifest.workspaces) && rootManifest.workspaces.includes(workspace);
+const lock = workspaceGraph
+  ? selectWorkspaceLock(JSON.parse(readFileSync(join(repoRoot, "package-lock.json"), "utf8")), workspace, rootManifest.workspaces)
+  : JSON.parse(readFileSync("package-lock.json", "utf8"));
+const scopePath = (path) => !workspaceGraph ? path
+  : path.startsWith(`${workspace}/`) ? path.slice(workspace.length + 1) : `root:${path}`;
 const packages = {};
 const installations = [];
 for (const [packagePath, entry] of Object.entries(lock.packages ?? {})) {
@@ -87,7 +96,7 @@ for (const [parent, entry] of Object.entries(lock.packages ?? {})) {
     ...entry.dependencies,
     ...entry.optionalDependencies,
     ...entry.peerDependencies,
-    ...(parent === "" ? entry.devDependencies : {}),
+    ...((parent === "" || rootManifest.workspaces?.includes(parent)) ? entry.devDependencies : {}),
   }));
   for (const name of names) {
     const target = resolveDependency(parent, name);
@@ -102,8 +111,8 @@ function isAllowed(exception, matches) {
     return copies.length > 0 && copies.every((copy) => exception.scopes.some((scope) => {
       const parents = [...(dependents.get(copy.path) ?? [])];
       return scope.workspace === workspace && scope.package === copy.name &&
-        scope.version === copy.version && scope.path === copy.path && copy.dev &&
-        parents.length > 0 && parents.every((parent) => scope.dependents.includes(parent));
+        scope.version === copy.version && scope.path === scopePath(copy.path) && copy.dev &&
+        parents.length > 0 && parents.every((parent) => scope.dependents.includes(scopePath(parent)));
     }));
   }));
 }

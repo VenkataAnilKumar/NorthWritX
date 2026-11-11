@@ -21,7 +21,7 @@ import {
   reportedUpstreamMessage,
   resolveDsn,
   sentryEnvironment,
-} from "@mike/client";
+} from "@northwrit/client";
 
 export type ReportLevel = "fatal" | "error" | "warning";
 

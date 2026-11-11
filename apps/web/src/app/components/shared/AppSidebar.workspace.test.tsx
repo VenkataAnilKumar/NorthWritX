@@ -21,8 +21,8 @@ const state = vi.hoisted(() => ({
   chats: [] as Chat[],
 }));
 
-vi.mock("@mike/client", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@mike/client")>()),
+vi.mock("@northwrit/client", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@northwrit/client")>()),
   showToast: state.showToast,
 }));
 
@@ -80,8 +80,8 @@ vi.mock("@/app/contexts/WorkspaceContext", async (importOriginal) => ({
   }),
 }));
 
-vi.mock("@mike/ui", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@mike/ui")>()),
+vi.mock("@northwrit/ui", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@northwrit/ui")>()),
   MikeIcon: () => <span aria-hidden="true" />,
 }));
 

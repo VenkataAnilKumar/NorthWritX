@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { MIKE_SENTRY_DSN } from "@mike/client";
+import { MIKE_SENTRY_DSN } from "@northwrit/client";
 import { rewriteEnvelope, tunnelDecision } from "./sentryTunnel";
 
 const encoder = new TextEncoder();

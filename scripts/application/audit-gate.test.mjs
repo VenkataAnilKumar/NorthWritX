@@ -67,7 +67,7 @@ function runGate(lockfile, { workspace = "fixture", allowlist } = {}) {
     const dir = join(repo, workspace);
     mkdirSync(scripts, { recursive: true });
     mkdirSync(dir, { recursive: true });
-    for (const name of ["audit-gate.mjs", "audit-allowlist.json"]) {
+    for (const name of ["audit-gate.mjs", "audit-workspace-lock.mjs", "audit-allowlist.json"]) {
         copyFileSync(join(dirname(gatePath), name), join(scripts, name));
     }
     if (allowlist) writeFileSync(join(scripts, "audit-allowlist.json"), JSON.stringify(allowlist));

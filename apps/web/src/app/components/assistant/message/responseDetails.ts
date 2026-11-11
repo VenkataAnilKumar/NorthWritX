@@ -1,5 +1,5 @@
-import { modelDisplayName } from "@mike/client";
-import { REASONING_LEVEL_LABELS, REASONING_LEVELS } from "@mike/ui";
+import { modelDisplayName } from "@northwrit/client";
+import { REASONING_LEVEL_LABELS, REASONING_LEVELS } from "@northwrit/ui";
 import type { AssistantEvent } from "../../shared/types";
 
 /**

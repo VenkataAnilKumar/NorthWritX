@@ -48,7 +48,7 @@ import {
     type RowAddStatus,
 } from "@/app/components/shared/RowActions";
 import { SubfolderSvgIcon } from "@/app/components/shared/FolderSvgIcon";
-import { DropdownAtPoint, PillButtonUI } from "@mike/ui";
+import { DropdownAtPoint, PillButtonUI } from "@northwrit/ui";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { useOptionalUserProfile } from "@/app/contexts/UserProfileContext";
 import {
@@ -97,7 +97,7 @@ import {
     type DocumentUploadFolderPathResolution,
     type DocumentUploadProgressEntry,
 } from "@/app/lib/documentDirectoryUpload";
-import { settleWithConcurrency } from "@mike/client";
+import { settleWithConcurrency } from "@northwrit/client";
 import { appendMissingById, indexById } from "@/app/lib/idCollections";
 import { createFrameBatcher } from "@/app/lib/frameBatcher";
 import {

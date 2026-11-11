@@ -24,7 +24,7 @@ import { LIQUID_GLASS_FLOAT_CLASS } from "./LiquidGlassUI";
 import { pillButtonUIClassName } from "./PillButtonUI.styles";
 import { textButtonUIClassName } from "./TextButtonUI.styles";
 import { CloseButton } from "./CloseButton";
-import type { ToastTone } from "@mike/client";
+import type { ToastTone } from "@northwrit/client";
 
 /** Same three tones as the toast store, so a toast's tone is a card's tone. */
 export type NoticeTone = ToastTone;

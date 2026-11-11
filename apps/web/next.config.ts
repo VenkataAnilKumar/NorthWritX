@@ -1,12 +1,12 @@
 import path from "node:path";
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs/config";
-import { releaseName } from "@mike/client";
+import { releaseName } from "@northwrit/client";
 
 // The repository root: two levels above this directory, here and in the Docker
 // image (frontend/Dockerfile mirrors the layout at /repo/apps/web and
-// /repo/packages). The shared packages the app imports, @mike/ui and
-// @mike/client (packages/ui, packages/client), live there.
+// /repo/packages). The shared packages the app imports, @northwrit/ui and
+// @northwrit/client (packages/ui, packages/client), live there.
 const REPO_ROOT = path.resolve(__dirname, "../..");
 
 const nextConfig: NextConfig = {

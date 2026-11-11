@@ -1,12 +1,12 @@
 /**
  * The Word add-in has no test runner of its own; its pure error-reporting
- * functions are exercised here through the same `@mike/*` aliases webpack
+ * functions are exercised here through the same `@northwrit/*` aliases webpack
  * resolves, so a change to either side of the contract fails one suite.
  */
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ToastViewportUI, clearToasts } from "@mike/ui";
-import { MIKE_SENTRY_DSN, describeError } from "@mike/client";
+import { ToastViewportUI, clearToasts } from "@northwrit/ui";
+import { MIKE_SENTRY_DSN, describeError } from "@northwrit/client";
 import {
     MikeApiError,
     parseApiErrorBody,

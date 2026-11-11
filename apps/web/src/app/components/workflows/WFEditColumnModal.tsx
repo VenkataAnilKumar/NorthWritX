@@ -11,7 +11,7 @@ import { Modal } from "../modals/Modal";
 import { ModalSelect } from "../modals/ModalSelect";
 import { ModalTextarea } from "../modals/ModalTextarea";
 import { FieldLabel, FormTextInput } from "../ui/form-field";
-import { LIQUID_GLASS_FLOAT_CLASS } from "@mike/ui";
+import { LIQUID_GLASS_FLOAT_CLASS } from "@northwrit/ui";
 
 interface ColumnDraft {
     name: string;

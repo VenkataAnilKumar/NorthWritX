@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ConnectorApprovalItem } from "@mike/contracts";
+import type { ConnectorApprovalItem } from "@northwrit/contracts";
 import { encryptString } from "../../mcp/client";
 import { driveDb } from "./googleDriveDb";
 import {

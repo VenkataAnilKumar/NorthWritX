@@ -1,4 +1,4 @@
-import { diagnosticErrorTags } from "@mike/client";
+import { diagnosticErrorTags } from "@northwrit/client";
 
 /**
  * Connection-level failures: the Next server could not reach the backend at

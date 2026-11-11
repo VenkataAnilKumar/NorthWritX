@@ -40,8 +40,8 @@ import {
     HeaderButtonUI,
     HeaderButtonsUI,
     headerButtonClassName,
-} from "@mike/ui";
-import type { MessageExcerpt } from "@mike/client";
+} from "@northwrit/ui";
+import type { MessageExcerpt } from "@northwrit/client";
 import { assistantSidePanelTabId } from "./AssistantSidePanel";
 import { AssistantDocumentPanelHost } from "./AssistantDocumentPanelHost";
 import {

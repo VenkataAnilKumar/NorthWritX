@@ -1,7 +1,7 @@
 /**
  * Error reporting for the web app: a thin, testable layer over the Sentry
  * SDK. Application code calls these helpers instead of `@sentry/nextjs`
- * directly so the PII policy (see `@mike/client`'s sentryEvent) and the
+ * directly so the PII policy (see `@northwrit/client`'s sentryEvent) and the
  * explicit opt-out rule live in one place.
  */
 
@@ -18,7 +18,7 @@ import {
     releaseName,
     reportedUpstreamMessage,
     resolveDsn,
-} from "@mike/client";
+} from "@northwrit/client";
 
 export type ReportLevel = "fatal" | "error" | "warning";
 

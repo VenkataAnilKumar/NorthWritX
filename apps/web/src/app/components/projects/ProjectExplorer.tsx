@@ -33,7 +33,7 @@ import {
 import {
     DropdownAtPoint,
     DropdownItem,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import {
     notifyMoveFailure,
     type ProjectTreeItemKind,

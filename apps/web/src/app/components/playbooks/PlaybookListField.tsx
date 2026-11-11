@@ -9,7 +9,7 @@ import {
   DropdownContent,
   DropdownTrigger,
   TextButtonUI,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import type { PlaybookListOption } from "./playbookJurisdictions";
 
 function parseList(text: string) {

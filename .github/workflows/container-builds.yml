@@ -1,10 +1,10 @@
 name: Container build boundaries
 on:
   pull_request:
-    paths: ['apps/**', 'packages/**', 'infra/**', '.dockerignore', '.github/workflows/container-builds.yml']
+    paths: ['apps/**', 'packages/**', 'infra/**', 'package.json', 'package-lock.json', '.npmrc', '.dockerignore', '.github/workflows/container-builds.yml']
   push:
     branches: [main]
-    paths: ['apps/**', 'packages/**', 'infra/**', '.dockerignore', '.github/workflows/container-builds.yml']
+    paths: ['apps/**', 'packages/**', 'infra/**', 'package.json', 'package-lock.json', '.npmrc', '.dockerignore', '.github/workflows/container-builds.yml']
   workflow_dispatch:
 permissions:
   contents: read

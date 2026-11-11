@@ -1,5 +1,5 @@
-import type { Operation } from "@mike/client";
-import { settleWithConcurrency } from "@mike/client";
+import type { Operation } from "@northwrit/client";
+import { settleWithConcurrency } from "@northwrit/client";
 import type {
     TabularReviewHistoryStatus,
     AuditActor,
@@ -7,7 +7,7 @@ import type {
     OrgMemberHandover,
     OrgDepartureList,
     OrgDepartureResolution,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 export type {
     AuditActor,
     AuditActorPage,
@@ -16,7 +16,7 @@ export type {
     OrgDepartureItem,
     OrgDepartureList,
     OrgDepartureResolution,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 
 /**
  * Mike API client — all browser requests use the same-origin `/api` gateway.
@@ -26,8 +26,8 @@ export type {
 import { isPanelDocument } from "@/app/components/shared/types";
 import { authenticatedFetch } from "@/app/lib/authEvents";
 import { notifyTabularReviewsChanged } from "@/app/lib/tabularReviewChanges";
-import type { RouterProfileLists } from "@mike/client";
-import { reportedUpstreamMessage } from "@mike/client";
+import type { RouterProfileLists } from "@northwrit/client";
+import { reportedUpstreamMessage } from "@northwrit/client";
 import {
     reportApiFailure,
     reportError,
@@ -46,7 +46,7 @@ import {
     type UploadProgressStatus,
     type UploadSessionInput,
     type UploadSessionPurpose,
-} from "@mike/client";
+} from "@northwrit/client";
 // The role vocabulary is defined once, next to the capability matrix that
 // gives it meaning, and re-exported here so API consumers do not need two
 // imports to describe one row.
@@ -189,7 +189,7 @@ export {
     UPSTREAM_UNAVAILABLE_CODE,
     UPSTREAM_UNAVAILABLE_MESSAGE,
     reportedUpstreamMessage,
-} from "@mike/client";
+} from "@northwrit/client";
 
 export function isMfaRequiredError(error: unknown) {
     return (
@@ -1448,7 +1448,7 @@ export async function setMcpToolEnabled(
 // Native Google Drive integration (first-party — not an MCP connector)
 // ---------------------------------------------------------------------------
 
-export type GoogleDriveStatus = import("@mike/contracts").GoogleDriveStatus;
+export type GoogleDriveStatus = import("@northwrit/contracts").GoogleDriveStatus;
 
 /**
  * Error code the backend attaches when a connector cannot start because the
@@ -1541,7 +1541,7 @@ export async function setGoogleDriveToolEnabled(
 }
 
 export type GoogleDrivePickerSession =
-    import("@mike/contracts").GoogleDrivePickerSession;
+    import("@northwrit/contracts").GoogleDrivePickerSession;
 
 /**
  * A short-lived Drive token plus the keys the Google Picker needs, for the
@@ -1565,7 +1565,7 @@ export async function createGoogleDrivePickerSession(
 // ---------------------------------------------------------------------------
 
 export type CourtListenerConnectorStatus =
-    import("@mike/contracts").CourtListenerConnectorStatus;
+    import("@northwrit/contracts").CourtListenerConnectorStatus;
 
 export async function getCourtListenerConnector(
     workspace?: string,
@@ -1842,9 +1842,9 @@ export async function listOrgs(): Promise<Org[]> {
     return apiRequest<Org[]>("organizations.manage", "/orgs");
 }
 
-export type { DeletedOrganization } from "@mike/contracts";
+export type { DeletedOrganization } from "@northwrit/contracts";
 
-export async function listDeletedOrganizations(): Promise<import("@mike/contracts").DeletedOrganization[]> {
+export async function listDeletedOrganizations(): Promise<import("@northwrit/contracts").DeletedOrganization[]> {
     return apiRequest("organizations.manage", "/orgs/deleted");
 }
 
@@ -2024,11 +2024,11 @@ export async function listOrgMembers(orgId: string): Promise<OrgMember[]> {
     return apiRequest<OrgMember[]>("organizations.manage", `/orgs/${orgId}/members`);
 }
 
-export type { OrgPrivateContentItem, OrgPrivateContentKind, OrgPrivateContentPage } from "@mike/contracts";
+export type { OrgPrivateContentItem, OrgPrivateContentKind, OrgPrivateContentPage } from "@northwrit/contracts";
 
 export async function listOrgPrivateContent(orgId: string, offset = 0, search = "") {
     const query = new URLSearchParams({ limit: "50", offset: String(offset), search });
-    return apiRequest<import("@mike/contracts").OrgPrivateContentPage>("organizations.manage", `/orgs/${orgId}/private-content?${query}`);
+    return apiRequest<import("@northwrit/contracts").OrgPrivateContentPage>("organizations.manage", `/orgs/${orgId}/private-content?${query}`);
 }
 
 export async function setOrgPrivateContentPermission(orgId: string, userId: string, enabled: boolean): Promise<void> {
@@ -2037,11 +2037,11 @@ export async function setOrgPrivateContentPermission(orgId: string, userId: stri
     });
 }
 
-export async function openOrgPrivateContent(orgId: string, kind: import("@mike/contracts").OrgPrivateContentKind, itemId: string): Promise<void> {
+export async function openOrgPrivateContent(orgId: string, kind: import("@northwrit/contracts").OrgPrivateContentKind, itemId: string): Promise<void> {
     await apiRequest("organizations.manage", `/orgs/${orgId}/private-content/${kind}/${itemId}/open`, { method: "POST" });
 }
 
-export async function closeOrgPrivateContent(orgId: string, kind: import("@mike/contracts").OrgPrivateContentKind, itemId: string): Promise<void> {
+export async function closeOrgPrivateContent(orgId: string, kind: import("@northwrit/contracts").OrgPrivateContentKind, itemId: string): Promise<void> {
     await apiRequest("organizations.manage", `/orgs/${orgId}/private-content/${kind}/${itemId}`, { method: "DELETE" });
 }
 
@@ -4088,15 +4088,15 @@ export async function deleteWorkflowAsset(
 }
 
 export async function getGoogleWorkspaceStatus(
-    provider: import("@mike/contracts").GoogleWorkspaceProvider,
+    provider: import("@northwrit/contracts").GoogleWorkspaceProvider,
     workspace?: string,
 ) {
-    return apiRequest<import("@mike/contracts").GoogleWorkspaceStatus>(
+    return apiRequest<import("@northwrit/contracts").GoogleWorkspaceStatus>(
         "google.workspace", connectorPath(`/user/integrations/${provider}`, workspace),
     );
 }
 export async function startGoogleWorkspaceOAuth(
-    provider: import("@mike/contracts").GoogleWorkspaceProvider,
+    provider: import("@northwrit/contracts").GoogleWorkspaceProvider,
     workspace?: string,
 ) {
     return apiRequest<{ authorizationUrl: string }>(
@@ -4105,7 +4105,7 @@ export async function startGoogleWorkspaceOAuth(
     );
 }
 export async function cancelGoogleWorkspaceOAuth(
-    provider: import("@mike/contracts").GoogleWorkspaceProvider,
+    provider: import("@northwrit/contracts").GoogleWorkspaceProvider,
     state: string,
     workspace?: string,
 ) {
@@ -4119,7 +4119,7 @@ export async function cancelGoogleWorkspaceOAuth(
     );
 }
 export async function disconnectGoogleWorkspace(
-    provider: import("@mike/contracts").GoogleWorkspaceProvider,
+    provider: import("@northwrit/contracts").GoogleWorkspaceProvider,
     workspace?: string,
 ) {
     return apiRequest<void>(
@@ -4128,11 +4128,11 @@ export async function disconnectGoogleWorkspace(
     );
 }
 export async function updateGoogleWorkspaceSettings(
-    provider: import("@mike/contracts").GoogleWorkspaceProvider,
+    provider: import("@northwrit/contracts").GoogleWorkspaceProvider,
     settings: { enabled?: boolean; requireWriteApproval?: boolean; readOnly?: boolean },
     workspace?: string,
 ) {
-    return apiRequest<import("@mike/contracts").GoogleWorkspaceStatus>(
+    return apiRequest<import("@northwrit/contracts").GoogleWorkspaceStatus>(
         "google.workspace", connectorPath(`/user/integrations/${provider}`, workspace),
         {
             method: "PATCH",
@@ -4142,12 +4142,12 @@ export async function updateGoogleWorkspaceSettings(
     );
 }
 export async function setGoogleWorkspaceToolEnabled(
-    provider: import("@mike/contracts").GoogleWorkspaceProvider,
+    provider: import("@northwrit/contracts").GoogleWorkspaceProvider,
     toolName: string,
     enabled: boolean,
     workspace?: string,
 ) {
-    return apiRequest<import("@mike/contracts").GoogleWorkspaceStatus>(
+    return apiRequest<import("@northwrit/contracts").GoogleWorkspaceStatus>(
         "google.workspace", connectorPath(
             `/user/integrations/${provider}/tools/${encodeURIComponent(toolName)}`,
             workspace,

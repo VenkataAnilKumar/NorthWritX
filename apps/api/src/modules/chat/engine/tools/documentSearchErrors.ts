@@ -1,4 +1,4 @@
-import type { DocumentSearchErrorCode } from "@mike/contracts";
+import type { DocumentSearchErrorCode } from "@northwrit/contracts";
 import { schemaOutOfDateCode } from "../../../../lib/schemaOutOfDate";
 import { diagnosticErrorTags } from "../../../../lib/observability/sentryPrivacy";
 import type { ServiceFailure } from "../../../../lib/serviceResult";

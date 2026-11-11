@@ -13,7 +13,7 @@ import { ChatInput } from "./ChatInput";
 import type { ChatInputHandle } from "./ChatInput";
 import { InitialView } from "./InitialView";
 import { UserMessage } from "./UserMessage";
-import { ResponseSelectionMenuUI } from "@mike/ui";
+import { ResponseSelectionMenuUI } from "@northwrit/ui";
 import type {
     EditDecision,
     ReasoningLevel,

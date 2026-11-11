@@ -13,7 +13,7 @@ Everything below lives in `frontend/src/app/globals.css` unless stated otherwise
 | Location | What belongs there |
 | --- | --- |
 | `frontend/src/app/components/ui/` | Shared web primitives. Small, unopinionated, no data fetching, no feature knowledge. |
-| `packages/ui/` (`@mike/ui`) | Primitives shared by the web app **and** the Word add-in. Framework-light: React, `lucide-react`, `clsx`, `tailwind-merge`, the Radix dropdown, and `@mike/client` only. |
+| `packages/ui/` (`@northwrit/ui`) | Primitives shared by the web app **and** the Word add-in. Framework-light: React, `lucide-react`, `clsx`, `tailwind-merge`, the Radix dropdown, and `@northwrit/client` only. |
 | `frontend/src/app/components/shared/` | App-level building blocks that assume the app shell — the table layer (`TablePrimitive.tsx`, `TableToolbar.tsx`), page headers, sidebars. |
 | `frontend/src/app/components/<feature>/` | Feature components. Compose the above; do not restate their markup. |
 
@@ -28,12 +28,12 @@ a new file needs no per-file registration. What it does need is an export from
 re-exported there is internal.
 
 Cross-target primitives use the `XxxUI.tsx` convention and are imported from
-`@mike/ui` by both targets, for example `import { PillButtonUI } from
-"@mike/ui"`. Do not add a web-only re-export whose only job is to rename
+`@northwrit/ui` by both targets, for example `import { PillButtonUI } from
+"@northwrit/ui"`. Do not add a web-only re-export whose only job is to rename
 `XxxUI`: it adds another file, test, and catalog entry without adding behavior.
 `GlassCardUI`, `PillButtonUI`, `GlassIconButtonUI`, `TabPillButtonUI`, and
 `ToggleSwitchUI` are the canonical implementations used by both targets. To
-style a link as a pill, apply `pillButtonUIClassName` (also from `@mike/ui`)
+style a link as a pill, apply `pillButtonUIClassName` (also from `@northwrit/ui`)
 directly to the link; this keeps the correct link semantics and is safe in
 server components.
 
@@ -320,7 +320,7 @@ chrome fully obscure content beneath them; subtle and overlay tiers retain
 their translucency where depth or underlying content matters.
 Elevation is centralized in
 `packages/ui/styles/LiquidGlassUI.css`, with class-name constants exported
-from `@mike/ui` (`packages/ui/src/LiquidGlassUI.ts`). Do not write a new
+from `@northwrit/ui` (`packages/ui/src/LiquidGlassUI.ts`). Do not write a new
 `shadow-[...]` recipe for a general glass
 surface.
 
@@ -368,7 +368,7 @@ Compose the material classes through the established primitives and constants:
 ### Dropdowns
 
 Every menu a button or a right-click opens is built from
-`packages/ui/src/dropdown.tsx`, exported from `@mike/ui` for both the web app
+`packages/ui/src/dropdown.tsx`, exported from `@northwrit/ui` for both the web app
 and the Word add-in. There is no separate web wrapper. Do not hand-build a menu
 from a positioned
 `div` and buttons: that loses keyboard navigation, menu roles, focus return,

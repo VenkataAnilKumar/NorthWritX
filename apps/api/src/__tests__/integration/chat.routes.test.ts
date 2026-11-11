@@ -8,7 +8,7 @@ import {
     textStep,
     tick,
 } from "../../lib/llm/__tests__/mockLanguageModel";
-import type { AssistantEvent, ConnectorApprovalItem } from "@mike/contracts";
+import type { AssistantEvent, ConnectorApprovalItem } from "@northwrit/contracts";
 
 // #383's model-selection describes grew this file past the chat limiter's
 // 30-requests-per-window budget, so the last describe began answering 429

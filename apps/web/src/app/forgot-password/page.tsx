@@ -8,7 +8,7 @@ import {
     pillButtonUIClassName,
     authGlassCardUIClassName,
     authInputUIClassName,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import { SiteLogo } from "@/app/components/site-logo";
 import { requestPasswordReset } from "@/app/lib/authApi";
 import { FieldLabel } from "@/app/components/ui/form-field";

@@ -47,7 +47,7 @@ import {
     routerProfileLists,
     type RouterProfileLists,
     type RouterSlug,
-} from "@mike/client";
+} from "@northwrit/client";
 import { publishTabularChatSettingsUpdate } from "@/app/lib/tabularChatSettingsEvents";
 import {
     clearConfiguredModels,

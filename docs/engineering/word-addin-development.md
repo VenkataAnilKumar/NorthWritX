@@ -196,10 +196,10 @@ therefore initially share the source document's chat history.
 ## Errors and support
 
 The task pane never renders a raw `error.message`. `describeError` (shared
-with the web app through `@mike/client`, `packages/client/src/userError.ts`)
+with the web app through `@northwrit/client`, `packages/client/src/userError.ts`)
 classifies a thrown value once, and `word-addin/src/taskpane/lib/notify.ts`
 shows the result as a toast with an honest "Retry", built on the toast core it
-shares with the web app (`createErrorNotifier` in `@mike/client`). Transport
+shares with the web app (`createErrorNotifier` in `@northwrit/client`). Transport
 failures go through
 `word-addin/src/taskpane/lib/networkError.ts`, which calls the shared
 `networkMessage(origin)` so both clients say the same sentence; the add-in
@@ -208,7 +208,7 @@ not helped by "check your connection". Failures a user cannot fix offer a
 support hand-off carrying the request id, code, status, page and time —
 enough for support to find the request in the logs without the user quoting
 anything from a document. `frontend/src/wordAddin/errorReporting.test.tsx`
-exercises these add-in modules through the same `@mike/*` aliases webpack
+exercises these add-in modules through the same `@northwrit/*` aliases webpack
 resolves, so a change on either side of the contract fails that suite.
 
 ## Automated tests
@@ -254,12 +254,12 @@ Design tokens are not compared by hand: both targets import
 holds only the add-in's base layer.
 
 Code with no add-in-specific behavior is not vendored at all: it lives in the
-two packages the add-in shares with the web app, `@mike/ui` (`packages/ui`,
-React primitives) and `@mike/client` (`packages/client`, framework-free client
+two packages the add-in shares with the web app, `@northwrit/ui` (`packages/ui`,
+React primitives) and `@northwrit/client` (`packages/client`, framework-free client
 behavior), each consumed by name through `webpack.config.js` and
 `tsconfig.json` and exposing one public `src/index.ts`. There is nothing to
 keep in sync. The model catalog is one example: it is exported by
-`@mike/client` (`packages/client/src/modelCatalog.ts`), and
+`@northwrit/client` (`packages/client/src/modelCatalog.ts`), and
 `src/taskpane/lib/modelCatalog.ts` only adapts the add-in's key-status shape
 to it. The packages have no `node_modules` of their own; their dependencies
 resolve to the add-in's through the `paths` entries in `tsconfig.json` and the

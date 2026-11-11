@@ -15,7 +15,7 @@ import {
 } from "@/app/contexts/WorkspaceContext";
 import { apiKeyStateFromStatus } from "@/app/lib/apiKeyState";
 import { getOrgApiKeys, listOrgs, type ApiKeyState } from "@/app/lib/mikeApi";
-import { PillButtonUI } from "@mike/ui";
+import { PillButtonUI } from "@northwrit/ui";
 
 export default function OnboardingModelsPage() {
     const router = useRouter();

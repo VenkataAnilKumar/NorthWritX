@@ -74,3 +74,5 @@ The [older v3 repository blueprint](06-technical/Northwrit_Repo-Structure.md) re
 - [Migration verification](07-implementation/NorthWrit-Migration-Verification.md): local check results, inherited failures and release limits.
 - [Path and provenance map](07-implementation/NorthWrit-Migration-Paths.json): old-to-new locations for imported source and supporting files.
 - [ADR 0002](decisions/0002-expanded-repository-structure.md): accepted expanded layout before Phase 4.
+- [ADR 0003](decisions/0003-npm-root-workspace.md): root npm workspace and NorthWrit package identities.
+- [Workspace verification](07-implementation/NorthWrit-Workspace-Verification.md): consolidated installs, checks and known limits.

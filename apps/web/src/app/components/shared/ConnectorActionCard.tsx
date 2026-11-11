@@ -1,6 +1,6 @@
 "use client";
 
-import type { ConnectorApprovalItem } from "@mike/contracts";
+import type { ConnectorApprovalItem } from "@northwrit/contracts";
 import { ChevronRight } from "lucide-react";
 
 // Readable labels for the argument names Mike's built-in connectors use.

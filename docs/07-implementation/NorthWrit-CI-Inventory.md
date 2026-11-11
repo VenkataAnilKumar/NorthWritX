@@ -1,15 +1,15 @@
 # NorthWrit CI inventory
 
-Only workflows in the root `.github/workflows/` directory execute in this repository. At this organization stage there is one active workflow, [NorthWrit CI](../../.github/workflows/northwrit-ci.yml). An inventory entry is not a claim that a GitHub run passed.
+Only workflows in the root `.github/workflows/` directory execute in this repository. The active workflows are [NorthWrit CI](../../.github/workflows/northwrit-ci.yml) and [container builds](../../.github/workflows/container-builds.yml). An inventory entry is not a claim that a GitHub run passed.
 
 ## Active checks
 
 | Job | Checks | Dependencies |
 |---|---|---|
-| Repository | `check:repo`, `check:whitespace` | Node.js and Git; no application install or services |
-| API | Frozen install, backend tests, production/test/contract type checks, build | Backend lockfile |
-| Web | Frozen install, tests, lint, type check, production build | Frontend lockfile |
-| Word | Frozen install, HTTP host tests, type checks and production build | Word lockfile; reserved build-only web/add-in URLs |
+| Repository | `check:repo`, `check:whitespace`, workspace audit boundary tests | Node.js and Git; no application install or services |
+| API | Frozen install, backend tests, production/test/contract type checks, build | Root lockfile; selected API workspace |
+| Web | Frozen install, tests, lint, type check, production build | Root lockfile; selected web workspace |
+| Word | Frozen install, HTTP host tests, type checks and production build | Root lockfile; selected Word workspace; reserved build-only web/add-in URLs |
 
 The application jobs run root npm aliases, preserving their exit status. Telemetry is disabled for verification. Change filters include root command/configuration files, repository tooling, documentation and application paths so a renamed entry point cannot silently bypass validation. None of these jobs deploys, publishes images or starts the standalone cloud baseline.
 
@@ -43,3 +43,7 @@ All files below remain under `docs/upstream/mike/.github/workflows/` for upstrea
 Run the smallest checks that can catch the change, as required by [application instructions](../../apps/AGENTS.md). A Dockerfile, build-context, tsconfig or cross-application import change additionally requires an affected image build. A host build does not prove that a Docker context contains all inputs.
 
 Browser/database acceptance tests must state their environment, synthetic fixtures and authorization outcomes. Root CI does not replace the Phase 4 two-user/two-matter checks. Record known inherited failures separately from failures introduced by a change.
+
+## Root workspace installation
+
+Application jobs cache `package-lock.json` and run targeted frozen installs from the root. Container contexts include root manifests, `.npmrc` and every workspace manifest before selecting an application with `npm ci --workspace <path> --include-workspace-root=false`. Root override policy applies consistently. Check names remain unchanged. Audit tooling selects the requested workspace dependency closure from the root lock; root dependency paths cannot inherit a child-path exception.

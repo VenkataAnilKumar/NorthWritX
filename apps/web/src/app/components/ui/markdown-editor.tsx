@@ -23,7 +23,7 @@ import {
   DropdownContent,
   DropdownItem,
   DropdownTrigger,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import { cn } from "@/app/lib/utils";
 
 export interface MarkdownEditorProps {

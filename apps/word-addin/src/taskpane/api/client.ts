@@ -12,7 +12,7 @@ import type {
 // parity tests) never pull this module, and its runtime imports, into
 // the web app's type-check graph.
 export type { ApiKeyStatus } from "../types";
-import type { RouterProfileLists } from "@mike/client";
+import type { RouterProfileLists } from "@northwrit/client";
 import { networkFailure } from "../lib/networkError";
 import { sessionHandledError } from "../lib/sessionRefresh";
 import {
@@ -30,16 +30,16 @@ import {
   uploadFilesWithSessionCore,
   type UploadOutcome,
   type UploadProgress,
-} from "@mike/client";
+} from "@northwrit/client";
 
 export {
   UploadBatchError,
   failedUploadMessage,
-} from "@mike/client";
+} from "@northwrit/client";
 export type {
   UploadOutcome,
   UploadProgress,
-} from "@mike/client";
+} from "@northwrit/client";
 
 type AuthHeaderProvider = () => Promise<Record<string, string>>;
 

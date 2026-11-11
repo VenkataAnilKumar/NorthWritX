@@ -106,8 +106,8 @@ vi.mock("@/app/components/shared/views/SpreadsheetView", () => ({
 vi.mock("@/app/components/shared/views/DocxView", () => ({
     DocxView: () => null,
 }));
-vi.mock("@mike/ui", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@mike/ui")>()),
+vi.mock("@northwrit/ui", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@northwrit/ui")>()),
     MikeIcon: () => null,
 }));
 
