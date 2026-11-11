@@ -4,7 +4,7 @@
 
 **Status:** Proposed | **Version:** 2.0 | **Date:** November 3, 2026
 
-*Coverage: Every one of the **105 features** (38 P0, 39 P1, 28 P2) in [Northwrit_Feature-Spec.md](./Northwrit_Feature-Spec.md) is covered below with Given/When/Then acceptance criteria.*
+*Coverage: Every one of the **105 features** (38 P0, 39 P1, 28 P2) in [Northwrit_Feature-Spec.md](Northwrit_Feature-Spec.md) is covered below with Given/When/Then acceptance criteria.*
 
 ---
 

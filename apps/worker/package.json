@@ -1,0 +1,16 @@
+{
+  "name": "northwrit-worker",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Standalone process entry point for the NorthWrit API worker runtime",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm --prefix ../api run build",
+    "start": "node --enable-source-maps run.mjs",
+    "dev": "node --enable-source-maps run.mjs --dev",
+    "test": "node --test run.test.mjs"
+  },
+  "license": "AGPL-3.0-only"
+}

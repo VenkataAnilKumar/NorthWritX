@@ -6,7 +6,7 @@
 **Document Code:** `NW-ARCH-REPO-STRUCTURE-03`  
 **Cross-References:** [Platform Layers & Surfaces](Northwrit_Platform-Layers-and-Surfaces.md) | [Architecture Stack](Northwrit_Architecture-Stack.md) | [System Architecture](Northwrit_System-Architecture.md) | [Marketing & GTM](../03-market/Northwrit_Marketing-and-GTM-Strategy.md)
 
-The [NorthWrit implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md#repository-organization-before-phase-4) governs current repository work. It keeps `apps/northwrit/` through Phase 4 and makes later application, package and worker extraction conditional on operating evidence. The platforms, services and guarantees described below are historical proposals, not verified NorthWrit capabilities or mandatory implementation steps.
+The [NorthWrit implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md#repository-organization-before-phase-4) governs current repository work. It now requires the expanded apps/packages/infra migration before Phase 4, as recorded in ADR 0002; the expanded layout is implemented locally with validation recorded in the migration report. Further service extraction and independent scaling remain conditional on operating evidence. The platforms, services and guarantees described below are historical proposals, not verified NorthWrit capabilities or mandatory implementation steps.
 
 ---
 

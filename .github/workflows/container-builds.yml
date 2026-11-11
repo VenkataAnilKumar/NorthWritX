@@ -1,0 +1,33 @@
+name: Container build boundaries
+on:
+  pull_request:
+    paths: ['apps/**', 'packages/**', 'infra/**', '.dockerignore', '.github/workflows/container-builds.yml']
+  push:
+    branches: [main]
+    paths: ['apps/**', 'packages/**', 'infra/**', '.dockerignore', '.github/workflows/container-builds.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [api, web, word-addin]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build application image
+        run: >-
+          docker build -f apps/${{ matrix.app }}/Dockerfile
+          -t northwrit-check-${{ matrix.app }}
+          --build-arg NEXT_PUBLIC_SENTRY_DISABLED=true
+          --build-arg REACT_APP_SENTRY_DISABLED=true
+          --build-arg REACT_APP_WEB_APP_URL=https://app.northwrit.invalid
+          --build-arg WORD_ADDIN_PUBLIC_URL=https://northwrit.invalid .
+      - if: matrix.app == 'api'
+        name: Build worker from the same API artifact
+        run: >-
+          docker build -f apps/worker/Dockerfile
+          --build-context api-image=docker-image://northwrit-check-api
+          -t northwrit-check-worker .

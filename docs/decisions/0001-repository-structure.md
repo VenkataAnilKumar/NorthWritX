@@ -1,6 +1,6 @@
 # ADR 0001: One repository with an application import boundary
 
-Status: Accepted for repository organization; future extractions remain conditional.
+Status: Initial repository organization completed. The through-Phase-4 layout and deferred directory extraction decisions are superseded by [ADR 0002](0002-expanded-repository-structure.md). The decision below records the original rationale; attribution, domain boundaries and verification requirements remain applicable.
 
 ## Context
 

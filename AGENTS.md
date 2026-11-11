@@ -1,11 +1,11 @@
 # NorthWritX repository instructions
 
-The active application is `apps/northwrit/`. Read its `AGENTS.md` and any applicable child instructions before changing application code. Those instructions cover backend modules, frontend primitives, migrations, tests and upstream compatibility. Root instructions apply to repository entry points, documentation and CI as well.
+Application surfaces live under `apps/`, shared code under `packages/`, and infrastructure under `infra/`. Read `apps/AGENTS.md` and any applicable child instructions before changing application code. Those instructions cover backend modules, frontend primitives, migrations, tests and upstream compatibility. Root instructions apply to repository entry points, documentation and CI as well.
 
 ## Scope and ownership
 
 - Read `README.md`, `docs/06-technical/NorthWrit-Repository-Ownership.md` and the current implementation plan before changing layout or build commands.
-- Keep the `apps/northwrit/` import boundary and existing package lockfiles through Phase 4. There is no root workspace. Root npm scripts delegate to existing packages.
+- Follow ADR 0002 for the expanded layout. Preserve package boundaries and independent lockfiles; there is no root workspace. `apps/worker` invokes the API-owned worker entry point; do not copy domain services into it.
 - Keep application logic in existing domain modules and shared packages. Use service facades and shared access helpers; authorization must hold in APIs, jobs, downloads and exports.
 - Preserve source notices, migration history, package names and compatibility-sensitive URLs/identifiers unless a documented, verified change requires otherwise.
 - Each cloud task is already isolated. Use the existing checkout; create a Git worktree only when explicitly requested.
@@ -13,7 +13,7 @@ The active application is `apps/northwrit/`. Read its `AGENTS.md` and any applic
 
 ## Documentation
 
-Root `docs/` owns NorthWrit requirements, architecture decisions, the roadmap and verification records. `apps/northwrit/docs/` owns application engineering and operating procedures. Describe proposals and unverified capabilities explicitly. Historical blueprints do not override the current plan or working source.
+Root `docs/` owns NorthWrit requirements, architecture decisions, the roadmap and verification records. `docs/engineering/` owns application engineering and operating procedures. Describe proposals and unverified capabilities explicitly. Historical blueprints do not override the current plan or working source.
 
 Record structural decisions under `docs/decisions/`. Update command instructions, active CI paths and provenance mappings together when layout changes are approved. The root `.github/workflows/` directory is the active workflow location; imported nested workflows are references until explicitly adapted.
 

@@ -16,15 +16,20 @@ const check = (name, run) => {
 };
 
 const targets = {
-  api: "apps/northwrit/backend",
-  web: "apps/northwrit/frontend",
-  word: "apps/northwrit/word-addin",
-  e2e: "apps/northwrit",
+  api: "apps/api",
+  web: "apps/web",
+  word: "apps/word-addin",
+  e2e: "tests/browser",
+  worker: "apps/worker",
+  desktop: "apps/desktop",
 };
 const documents = [
+  "apps/worker/README.md",
+  "docs/decisions/0002-expanded-repository-structure.md",
+  "docs/07-implementation/NorthWrit-Migration-Verification.md",
   "README.md",
   "AGENTS.md",
-  "apps/northwrit/NORTHWRIT.md",
+  "docs/upstream/mike/NORTHWRIT.md",
   "docs/README.md",
   "docs/guides/developer.md",
   "docs/decisions/0001-repository-structure.md",
@@ -112,15 +117,27 @@ check("CI inventory and command paths", () => {
       assert(workflow.includes(`npm run ${verb}:`), `CI does not invoke ${verb} aliases`);
     }
   }
-  assert(workflow.includes("apps/northwrit/${{ matrix.package }}/package-lock.json"), "CI cache path must follow the package matrix");
+  assert(workflow.includes("apps/${{ matrix.package }}/package-lock.json"), "CI cache path must follow the package matrix");
   assert(workflow.includes("npm run check:repo"), "CI must run repository validation");
   const inventory = read("docs/07-implementation/NorthWrit-CI-Inventory.md");
-  for (const name of readdirSync(path.join(root, "apps/northwrit/.github/workflows"))) {
+  for (const name of readdirSync(path.join(root, "docs/upstream/mike/.github/workflows"))) {
     if (/\.ya?ml$/.test(name)) assert(inventory.includes(`\`${name}\``), `imported workflow ${name} has no disposition`);
   }
   for (const name of readdirSync(path.join(root, ".github/workflows"))) {
     if (/\.ya?ml$/.test(name)) assert(inventory.includes(name), `active workflow ${name} is not documented`);
   }
+});
+
+check("expanded migration paths", () => {
+  const mapping = json("docs/07-implementation/NorthWrit-Migration-Paths.json");
+  for (const [oldPath, destination] of Object.entries(mapping.paths)) {
+    assert(existsSync(path.join(root, destination)), `missing destination ${destination}`);
+    assert(!existsSync(path.join(root, oldPath)), `old path remains ${oldPath}`);
+  }
+  for (const app of ["api", "web", "worker", "word-addin", "desktop"]) {
+    assert(existsSync(path.join(root, "apps", app, "package.json")), `missing app ${app}`);
+  }
+  assert(existsSync(path.join(root, "infra/docker-compose.yml")));
 });
 
 if (failures.length) {
