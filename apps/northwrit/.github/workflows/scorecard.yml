@@ -1,0 +1,43 @@
+# OpenSSF Scorecard: automated checks of this repo's own security posture
+# (branch protection, token permissions, pinned dependencies, ...).
+#
+# Runs on pushes to main plus a weekly cron — Scorecard rates the repo, not
+# a PR's diff, so there is no pull_request trigger. publish_results: true
+# sends the score to the OpenSSF public API (which enables the README badge
+# and is what other tools query); that upload is signed via OIDC, hence
+# id-token: write. Results also land in the Security tab as SARIF.
+name: Scorecard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Mondays 05:30 UTC.
+    - cron: "30 5 * * 1"
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to sign the published results (OIDC).
+      id-token: write
+      # Needed to upload SARIF to code scanning.
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e # v2.5.0
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+
+      - uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          sarif_file: results.sarif

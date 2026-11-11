@@ -1,0 +1,536 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
+import { useLatestRef } from "@/app/hooks/useLatestRef";
+import { restoreOptimisticallyDeletedRows } from "@/app/lib/optimisticRows";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+    deleteTabularReview,
+    createTabularReview,
+    getTabularReviewPeople,
+    grantTabularReviewAccess,
+    listProjects,
+    updateTabularReview,
+} from "@/app/lib/mikeApi";
+import type { TabularReview, Project } from "@/app/components/shared/types";
+import { TableToolbar } from "@/app/components/shared/TableToolbar";
+import { NewTRModal } from "@/app/components/tabular/NewTRModal";
+import { ReviewsListTable } from "@/app/components/tabular/ReviewsListTable";
+import { TabularReviewDetailsModal } from "@/app/components/tabular/TabularReviewDetailsModal";
+import {
+    PermissionDeniedPopup,
+    type AccessContact,
+} from "@/app/components/popups/PermissionDeniedPopup";
+import { can, roleFrom } from "@/app/lib/permissions";
+import { userFacingApiError } from "@/app/lib/userFacingError";
+import { ConfirmPopup } from "@/app/components/popups/ConfirmPopup";
+import { useAuth } from "@/app/contexts/AuthContext";
+import { useWorkspaceOrgId, useWorkspaceParam } from "@/app/contexts/WorkspaceContext";
+import { PageHeader } from "@/app/components/shared/PageHeader";
+import { PAGE_HEADER_TITLE_CLASS } from "@/app/components/shared/pageHeaderStyles";
+import type { TableSortDirection } from "@/app/components/shared/TablePrimitive";
+import {
+    type TabularReviewScope,
+    type TabularReviewSortKey,
+    usePaginatedTabularReviews,
+} from "@/app/hooks/usePaginatedTabularReviews";
+import {
+    deleteTabularReviewsWithConcurrency,
+    notifyBulkReviewDeleteOutcome,
+} from "@/app/lib/deleteTabularReviewsWithConcurrency";
+import { useQueryParamTab } from "@/app/hooks/useQueryParamTab";
+import { useIdSet } from "@/app/hooks/useIdSet";
+
+type ReviewScope = TabularReviewScope;
+
+const REVIEW_SCOPES: { id: ReviewScope; label: string }[] = [
+    { id: "all", label: "All" },
+    { id: "in-project", label: "In Project" },
+    { id: "standalone", label: "Standalone" },
+];
+const REVIEW_SCOPE_IDS = REVIEW_SCOPES.map((scope) => scope.id);
+
+export default function TabularReviewsPage() {
+    const workspace = useWorkspaceParam();
+    // Filters, selections and open dialogs belong to the workspace that
+    // supplied their projects and reviews.
+    return <TabularReviewsWorkspacePage key={workspace} workspace={workspace} />;
+}
+
+function TabularReviewsWorkspacePage({ workspace }: { workspace?: string }) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [creating, setCreating] = useState(false);
+    const [newTROpen, setNewTROpen] = useState(false);
+    // Holds the review created by the open New review dialog so a retry after
+    // a failed access grant does not create a second one. Cleared when the
+    // dialog closes, whether it finished or was cancelled.
+    const createdReviewRef = useRef<TabularReview | null>(null);
+    const [detailsReview, setDetailsReview] = useState<TabularReview | null>(
+        null,
+    );
+    const [activeScope, setActiveScope] = useQueryParamTab(
+        REVIEW_SCOPE_IDS,
+        "all",
+    );
+    const [projectFilter, setProjectFilter] = useState<string | null>(null);
+    const [sort, setSort] = useState<{
+        key: TabularReviewSortKey;
+        direction: TableSortDirection;
+    } | null>(null);
+    const [search, setSearch] = useState("");
+    const debouncedSearch = useDebouncedValue(search, 250);
+    const {
+        reviews,
+        setReviews,
+        loading,
+        loadingMore,
+        hasMore,
+        error: loadError,
+        loadMoreError,
+        loadMore,
+        retry,
+        selectedReviewIds: selectedIds,
+        setSelectedReviewIds: setSelectedIds,
+        selectAllMatching,
+        selectingAll,
+        getReviewOwnerId,
+    } = usePaginatedTabularReviews({
+        projectId: projectFilter ?? undefined,
+        scopeToWorkspace: true,
+        search: debouncedSearch,
+        selectionKey: search,
+        scope: activeScope,
+        sort,
+    });
+    const selectedIdSet = useIdSet(selectedIds);
+    /**
+     * A refusal plus the person who can lift it. Unlike the projects overview,
+     * the reviews overview RPC returns no contact columns at all — only
+     * `access_role` — so the address is fetched from
+     * `/tabular-review/:id/people` the first time a refusal actually fires,
+     * exactly as TabularReviewView does for a standalone review. The popup
+     * opens immediately and the "ask …" line fills in when the roster
+     * answers; a refusal that names nobody is a dead end.
+     */
+    const [ownerOnlyAction, setOwnerOnlyAction] = useState<{
+        reviewId: string;
+        action: string;
+        requiredRole: "owner" | "editor";
+    } | null>(null);
+    const [contactsByReviewId, setContactsByReviewId] = useState<
+        Record<string, AccessContact[]>
+    >({});
+    const [selectionCameFromSelectAll, setSelectionCameFromSelectAll] =
+        useState(false);
+    const [confirmDeleteAllOpen, setConfirmDeleteAllOpen] = useState(false);
+    const [deletingReviewIds, setDeletingReviewIds] = useState<Set<string>>(
+        () => new Set(),
+    );
+    const { user } = useAuth();
+    const workspaceOrgId = useWorkspaceOrgId();
+    const previewEmptyStates = searchParams.get("emptyStates") === "1";
+    const effectiveLoading = loading && !previewEmptyStates;
+    const visibleReviews = useMemo(
+        () => (previewEmptyStates ? [] : reviews),
+        [previewEmptyStates, reviews],
+    );
+
+    useEffect(() => {
+        let cancelled = false;
+        void listProjects({ workspace })
+            .then((loadedProjects) => {
+                if (!cancelled) setProjects(loadedProjects);
+            })
+            .catch(() => {
+                if (!cancelled) setProjects([]);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [workspace]);
+
+
+    const allSelected =
+        visibleReviews.length > 0 &&
+        visibleReviews.every((r) => selectedIdSet.has(r.id));
+
+    function toggleAll() {
+        if (allSelected) {
+            setSelectedIds([]);
+            setSelectionCameFromSelectAll(false);
+        } else {
+            setSelectionCameFromSelectAll(true);
+            void selectAllMatching();
+        }
+    }
+
+    function clearSelection() {
+        setSelectedIds([]);
+        setSelectionCameFromSelectAll(false);
+        setConfirmDeleteAllOpen(false);
+    }
+
+    function handleProjectFilterChange(value: string | null) {
+        setProjectFilter(value);
+        clearSelection();
+    }
+
+    function handleSortChange(
+        key: TabularReviewSortKey,
+        direction: TableSortDirection | null,
+    ) {
+        setSort(direction ? { key, direction } : null);
+        clearSelection();
+    }
+
+    const handleNewReview = async (
+        title: string,
+        projectId: string | undefined,
+        documentIds: string[] | undefined,
+        columnsConfig:
+            | import("@/app/components/shared/types").ColumnConfig[]
+            | null
+            | undefined,
+        documentGrouping: "document" | "folder" | undefined,
+        model: string,
+        accessAssignments: {
+            email: string;
+            role: import("@/app/lib/mikeApi").AccessAssignmentRole;
+        }[],
+    ): Promise<string | void> => {
+        setCreating(true);
+        try {
+            // A grant that fails after the review exists used to throw out of
+            // here, so the modal said "Could not create the review." and a
+            // second Create made a SECOND review. The created row is held
+            // until the modal closes, so a retry re-runs only the grants.
+            const review =
+                createdReviewRef.current ??
+                (await createTabularReview({
+                    title,
+                    document_ids: documentIds ?? [],
+                    columns_config: columnsConfig ?? [],
+                    document_grouping: documentGrouping,
+                    model,
+                    // In a project the project decides where the review
+                    // belongs; on its own, the workspace it is started in.
+                    ...(projectId
+                        ? { project_id: projectId }
+                        : workspaceOrgId && { org_id: workspaceOrgId }),
+                }));
+            createdReviewRef.current = review;
+
+            // Sequential, one try per recipient: these are a handful of
+            // addresses, and one refusal should be reported with its own
+            // message rather than losing the others. The endpoint upserts,
+            // so retrying after a partial failure is safe.
+            const grantFailures: { email: string; detail: string }[] = [];
+            for (const assignment of accessAssignments) {
+                try {
+                    await grantTabularReviewAccess(
+                        review.id,
+                        assignment.email,
+                        assignment.role,
+                    );
+                } catch (error: unknown) {
+                    grantFailures.push({
+                        email: assignment.email,
+                        detail: userFacingApiError(error, "the request failed"),
+                    });
+                }
+            }
+            if (grantFailures.length > 0) {
+                // The review exists, so say so — and stay on the dialog rather
+                // than navigating away from the only place that knows the
+                // sharing did not happen. Same wording as NewProjectModal.
+                return `Review created, but access was not granted to ${grantFailures
+                    .map((failure) => failure.email)
+                    .join(", ")}: ${grantFailures[0].detail}`;
+            }
+
+            // Handed over: the navigation below shows the review, so the
+            // dialog's close must not ask the list to refetch for it.
+            createdReviewRef.current = null;
+            router.push(
+                projectId
+                    ? `/projects/${projectId}/tabular-reviews/${review.id}`
+                    : `/tabular-reviews/${review.id}`,
+            );
+        } finally {
+            setCreating(false);
+        }
+    };
+
+    /**
+     * Refuse an action on one review, and make sure the popup can say who to
+     * ask. The roster is fetched once per review and cached, so repeated
+     * refusals on the same row cost nothing.
+     */
+    function refuse(
+        reviewId: string,
+        action: string,
+        requiredRole: "owner" | "editor" = "owner",
+    ) {
+        setOwnerOnlyAction({ reviewId, action, requiredRole });
+        if (contactsByReviewId[reviewId]) return;
+        void getTabularReviewPeople(reviewId)
+            .then((people) => {
+                setContactsByReviewId((prev) => ({
+                    ...prev,
+                    [reviewId]: people.owner ? [people.owner] : [],
+                }));
+            })
+            .catch(() => {
+                // A roster we cannot read just means no name to offer; the
+                // refusal itself still stands.
+                setContactsByReviewId((prev) => ({ ...prev, [reviewId]: [] }));
+            });
+    }
+
+    async function handleDetailsSave(values: {
+        title: string;
+        projectId?: string | null;
+    }) {
+        if (!detailsReview) return;
+        if (!can(roleFrom(detailsReview), "content.edit")) {
+            refuse(detailsReview.id, "edit tabular review details", "editor");
+            return;
+        }
+        const updated = await updateTabularReview(detailsReview.id, {
+            title: values.title,
+            project_id: values.projectId ?? null,
+        });
+        setReviews((prev) =>
+            prev.map((review) =>
+                review.id === updated.id ? { ...review, ...updated } : review,
+            ),
+        );
+        setDetailsReview((current) =>
+            current?.id === updated.id ? { ...current, ...updated } : current,
+        );
+    }
+
+    function requestDeleteSelected() {
+        if (selectionCameFromSelectAll) {
+            setConfirmDeleteAllOpen(true);
+            return;
+        }
+        void handleDeleteSelected();
+    }
+
+    const retryDeleteSelectedRef = useLatestRef(
+        (ids: string[]) => void handleDeleteSelected(ids),
+    );
+
+    // `ids` is passed only by Retry, so it re-sends exactly the batch that
+    // failed, whatever is selected by then, without re-asking to confirm.
+    async function handleDeleteSelected(ids: string[] = [...selectedIds]) {
+        setConfirmDeleteAllOpen(false);
+        setSelectionCameFromSelectAll(false);
+        // Prefer the loaded row's role; select-all-matching can hand back
+        // ids that were never paged in, and for those the creator id is the
+        // only signal available.
+        const roleById = new Map(
+            reviews.map((review) => [review.id, roleFrom(review)] as const),
+        );
+        const owned = ids.filter((id) => {
+            const role = roleById.get(id);
+            if (role) return can(role, "container.delete");
+            // Fail closed on rows we could not load. `!user?.id ||` made an
+            // unknown viewer identity pass every creator check, so a signed-in
+            // state that had not settled yet turned select-all-matching into
+            // "delete everything selected". Both halves must be known and
+            // must match; anything else is counted as blocked and reported.
+            const ownerId = getReviewOwnerId(id);
+            return !!ownerId && !!user?.id && ownerId === user.id;
+        });
+        const blocked = ids.length - owned.length;
+        setSelectedIds([]);
+        const snapshot = reviews;
+        const ownedIds = new Set(owned);
+        setReviews((current) =>
+            current.filter((review) => !ownedIds.has(review.id)),
+        );
+        const { failedIds } =
+            await deleteTabularReviewsWithConcurrency(
+                owned,
+                deleteTabularReview,
+            );
+        setSelectedIds(failedIds);
+        if (failedIds.length > 0) {
+            setReviews((current) =>
+                restoreOptimisticallyDeletedRows(current, snapshot, failedIds),
+            );
+        }
+        notifyBulkReviewDeleteOutcome({
+            blocked,
+            failedCount: failedIds.length,
+            // Through the ref for the newest handler, with only the ids
+            // that failed.
+            retry: () => retryDeleteSelectedRef.current(failedIds),
+        });
+    }
+
+    async function handleDeleteReviewRow(review: TabularReview) {
+        if (!can(roleFrom(review), "container.delete")) {
+            refuse(review.id, "delete this tabular review");
+            return;
+        }
+        const snapshot = reviews;
+        setDeletingReviewIds((current) => new Set(current).add(review.id));
+        setReviews((current) =>
+            current.filter((candidate) => candidate.id !== review.id),
+        );
+        try {
+            await deleteTabularReview(review.id);
+        } catch (error) {
+            setReviews((current) =>
+                restoreOptimisticallyDeletedRows(current, snapshot, [review.id]),
+            );
+            throw error;
+        } finally {
+            setDeletingReviewIds((current) => {
+                const next = new Set(current);
+                next.delete(review.id);
+                return next;
+            });
+        }
+    }
+
+    return (
+        <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+            {/* Page header */}
+            <PageHeader
+                loading={loading}
+                actions={[
+                    {
+                        type: "search",
+                        value: search,
+                        onChange: setSearch,
+                        placeholder: "Search reviews…",
+                    },
+                    {
+                        type: "new",
+                        onClick: () => setNewTROpen(true),
+                        loading: creating,
+                        title: "New tabular review",
+                    },
+                ]}
+            >
+                <h1 className={`${PAGE_HEADER_TITLE_CLASS} text-gray-900`}>
+                    Tabular Reviews
+                </h1>
+            </PageHeader>
+
+            <ReviewsListTable
+                renderToolbar={(actions) => (
+                    <TableToolbar
+                        items={REVIEW_SCOPES}
+                        active={activeScope}
+                        onChange={(scope) => {
+                            setActiveScope(scope);
+                            clearSelection();
+                        }}
+                        actions={actions}
+                    />
+                )}
+                projectColumn={{
+                    projects,
+                    filter: projectFilter,
+                    onFilterChange: handleProjectFilterChange,
+                }}
+                showCreator
+                reviews={visibleReviews}
+                selectedReviewIds={selectedIds}
+                setSelectedReviewIds={setSelectedIds}
+                createDisabled={creating}
+                emptyDescription="Extract data from documents into tables using AI."
+                onCreateReview={() => setNewTROpen(true)}
+                onOpenReview={(review) =>
+                    router.push(
+                        review.project_id
+                            ? `/projects/${review.project_id}/tabular-reviews/${review.id}`
+                            : `/tabular-reviews/${review.id}`,
+                    )
+                }
+                onOpenDetails={setDetailsReview}
+                onDeleteReview={handleDeleteReviewRow}
+                onDeleteSelectedReviews={requestDeleteSelected}
+                onOwnerOnlyAction={(gate, review) =>
+                    refuse(review.id, gate.action, gate.requiredRole)
+                }
+                onToggleAll={toggleAll}
+                selectingAll={selectingAll}
+                deletingReviewIds={deletingReviewIds}
+                hasActiveFilters={
+                    activeScope !== "all" || !!projectFilter || !!debouncedSearch
+                }
+                sort={sort}
+                onSortChange={handleSortChange}
+                hasMore={hasMore}
+                loadingMore={loadingMore}
+                error={loadError}
+                loadMoreError={loadMoreError}
+                onLoadMore={() => void loadMore()}
+                onRetry={retry}
+                loading={effectiveLoading}
+            />
+
+            <NewTRModal
+                open={newTROpen}
+                onClose={() => {
+                    // The dialog's own reset runs through here, so this is the
+                    // one place that has to forget the held review.
+                    //
+                    // A review created behind a refused grant never reached
+                    // the list — the page only adds it on the navigation that
+                    // a successful create performs — so refetch on the way out
+                    // instead of leaving it invisible until a reload.
+                    const createdWithoutHandover =
+                        createdReviewRef.current !== null;
+                    createdReviewRef.current = null;
+                    setNewTROpen(false);
+                    if (createdWithoutHandover) retry();
+                }}
+                onAdd={handleNewReview}
+                projects={projects}
+            />
+
+            <TabularReviewDetailsModal
+                open={!!detailsReview}
+                review={detailsReview}
+                projects={projects}
+                canEdit={
+                    !!detailsReview &&
+                    can(roleFrom(detailsReview), "content.edit")
+                }
+                onClose={() => setDetailsReview(null)}
+                onSave={handleDetailsSave}
+            />
+
+            <PermissionDeniedPopup
+                open={!!ownerOnlyAction}
+                action={ownerOnlyAction?.action}
+                requiredRole={ownerOnlyAction?.requiredRole}
+                contacts={
+                    ownerOnlyAction
+                        ? contactsByReviewId[ownerOnlyAction.reviewId]
+                        : null
+                }
+                onClose={() => setOwnerOnlyAction(null)}
+            />
+            <ConfirmPopup
+                open={confirmDeleteAllOpen && selectedIds.length > 0}
+                title="Delete all selected reviews?"
+                message={`This will permanently delete every selected review you administer, including selected reviews not currently shown. Their review results and associated data will also be deleted. Reviews you cannot delete will be skipped. ${selectedIds.length} reviews are selected.`}
+                confirmLabel="Delete"
+                confirmVariant="danger"
+                onCancel={() => setConfirmDeleteAllOpen(false)}
+                onConfirm={() => void handleDeleteSelected()}
+            />
+        </div>
+    );
+}

@@ -1,0 +1,293 @@
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { Readable } from "node:stream";
+import { diagnosticErrorTags } from "../observability/sentryPrivacy";
+
+const mocks = vi.hoisted(() => ({
+  send: vi.fn(),
+  getSignedUrl: vi.fn(),
+  clientConfigs: [] as Array<Record<string, unknown>>,
+  reportError: vi.fn(),
+}));
+
+// Pass through: the real reportError marks the object as reported, which is
+// what lets the console bridge skip the log line that follows it.
+vi.mock("../observability/sentry", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../observability/sentry")>();
+  mocks.reportError.mockImplementation(actual.reportError);
+  return {
+    ...actual,
+    reportError: mocks.reportError,
+    // The real bestEffort reports through the module's own reportError, which
+    // the mock above cannot see; mirror its shape through the mock instead.
+    bestEffort: (work: Promise<unknown>, context: { what: string }) =>
+      work.catch((error: unknown) => {
+        mocks.reportError(error, {
+          level: "warning",
+          tags: { component: "best-effort", what: context.what },
+        });
+        return undefined;
+      }),
+  };
+});
+
+vi.mock("@aws-sdk/client-s3", () => {
+  class S3Client {
+    constructor(config: Record<string, unknown>) {
+      mocks.clientConfigs.push(config);
+    }
+    send = mocks.send;
+  }
+  class Command {
+    constructor(readonly input: unknown) {}
+  }
+  return {
+    S3Client,
+    PutObjectCommand: Command,
+    DeleteObjectCommand: Command,
+    ListObjectsV2Command: Command,
+    GetObjectCommand: Command,
+    HeadObjectCommand: Command,
+  };
+});
+
+vi.mock("@aws-sdk/s3-request-presigner", () => ({
+  getSignedUrl: mocks.getSignedUrl,
+}));
+
+let downloadFile: typeof import("../storage").downloadFile;
+let downloadFileIfAvailable: typeof import("../storage").downloadFileIfAvailable;
+let createFileReadStream: typeof import("../storage").createFileReadStream;
+let getSignedUrl: typeof import("../storage").getSignedUrl;
+let getSignedUploadUrl: typeof import("../storage").getSignedUploadUrl;
+let headFile: typeof import("../storage").headFile;
+let uploadFileFromPath: typeof import("../storage").uploadFileFromPath;
+
+beforeAll(async () => {
+  process.env.R2_ENDPOINT_URL = "https://r2.example.test";
+  process.env.R2_PUBLIC_ENDPOINT_URL = "";
+  process.env.R2_ACCESS_KEY_ID = "test-access-key";
+  process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
+  vi.resetModules();
+  ({
+    createFileReadStream,
+    downloadFile,
+    downloadFileIfAvailable,
+    getSignedUploadUrl,
+    getSignedUrl,
+    headFile,
+    uploadFileFromPath,
+  } = await import("../storage.js"));
+});
+
+beforeEach(() => {
+  mocks.send.mockReset();
+  mocks.getSignedUrl.mockReset();
+  mocks.reportError.mockClear();
+  mocks.clientConfigs.length = 0;
+});
+
+describe("storage error logging", () => {
+  it("uses the internal endpoint when the public upload endpoint is blank", async () => {
+    mocks.getSignedUrl.mockResolvedValue("https://signed.example.test");
+
+    await expect(
+      getSignedUploadUrl("documents/u1/d1/source.pdf", "application/pdf", 1_234),
+    ).resolves.toBe("https://signed.example.test");
+
+    expect(mocks.clientConfigs.at(-1)).toMatchObject({
+      endpoint: "https://r2.example.test",
+    });
+  });
+
+  it("does not open an R2 GET until the returned stream is consumed", async () => {
+    mocks.send.mockResolvedValue({
+      Body: Readable.from([Buffer.from("first "), Buffer.from("second")]),
+    });
+
+    const stream = createFileReadStream("documents/u1/d1/source.pdf");
+    expect(mocks.send).not.toHaveBeenCalled();
+
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+
+    expect(Buffer.concat(chunks).toString()).toBe("first second");
+    expect(mocks.send).toHaveBeenCalledTimes(1);
+  });
+
+  it("uploads a local file as a stream with an explicit content length", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "mike-storage-test-"));
+    const filePath = join(directory, "converted.pdf");
+    await writeFile(filePath, Buffer.from("streamed pdf"));
+    let uploaded = Buffer.alloc(0);
+    mocks.send.mockImplementation(async (command: unknown) => {
+      const input = (
+        command as {
+          input: {
+            Body: Readable;
+            ContentLength: number;
+            ContentType: string;
+          };
+        }
+      ).input;
+      const chunks: Buffer[] = [];
+      for await (const chunk of input.Body) chunks.push(Buffer.from(chunk));
+      uploaded = Buffer.concat(chunks);
+      expect(input.ContentLength).toBe(12);
+      expect(input.ContentType).toBe("application/pdf");
+      return {};
+    });
+
+    try {
+      await uploadFileFromPath(
+        "converted-pdfs/user/document.pdf",
+        filePath,
+        "application/pdf",
+      );
+      expect(uploaded.toString()).toBe("streamed pdf");
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  // A missing object is an answer, not a failure: null, nothing reported.
+  it("answers null for an object the store does not have", async () => {
+    mocks.send.mockRejectedValue(
+      Object.assign(new Error("gone"), { name: "NoSuchKey" }),
+    );
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    await expect(
+      downloadFile("documents/u1/d1/source.pdf"),
+    ).resolves.toBeNull();
+
+    expect(mocks.reportError).not.toHaveBeenCalled();
+    expect(log).not.toHaveBeenCalled();
+    log.mockRestore();
+  });
+
+  // A real failure is thrown once with the SDK's code on the cause; the
+  // caller's handler reports it. Logging and returning null here filed the
+  // failure twice (once from storage, once from the caller's bare throw).
+  it("throws download failures with the kind and the store's code, unlogged", async () => {
+    const failure = Object.assign(new Error("download failed"), {
+      name: "AccessDenied",
+    });
+    mocks.send.mockRejectedValue(failure);
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    const thrown = await downloadFile("documents/u1/d1/source.pdf").catch(
+      (error: unknown) => error,
+    );
+
+    expect(diagnosticErrorTags(thrown)).toEqual({
+      error_kind: "storage.download_failed",
+      storage_operation: "download",
+      failure_code: "AccessDenied",
+    });
+    expect((thrown as Error).cause).toBe(failure);
+    expect(mocks.reportError).not.toHaveBeenCalled();
+    expect(log).not.toHaveBeenCalled();
+    log.mockRestore();
+  });
+
+  it("aborts a stalled download so it releases whoever awaits it", async () => {
+    process.env.STORAGE_DOWNLOAD_TIMEOUT_MS = "20";
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    let fail: (error: unknown) => void = () => undefined;
+    const destroy = vi.fn((error: unknown) => fail(error));
+    mocks.send.mockResolvedValue({
+      Body: {
+        destroy,
+        transformToByteArray: () => new Promise((_, reject) => { fail = reject; }),
+      },
+    });
+    try {
+      await expect(downloadFile("documents/u1/d1/source.pdf")).rejects.toMatchObject({
+        kind: "storage.download_failed",
+        cause: { name: "TimeoutError" },
+      });
+      expect(mocks.send.mock.calls[0][1].abortSignal.aborted).toBe(true);
+      expect(destroy).toHaveBeenCalledOnce();
+    } finally {
+      delete process.env.STORAGE_DOWNLOAD_TIMEOUT_MS;
+      log.mockRestore();
+    }
+  });
+
+  it.each([
+    ["getSignedUrl", () => getSignedUrl("documents/u1/d1/source.pdf")],
+    [
+      "getSignedUploadUrl",
+      () =>
+        getSignedUploadUrl(
+          "documents/u1/d1/source.pdf",
+          "application/pdf",
+          1_234,
+        ),
+    ],
+  ])("throws %s failures with the kind and the cause, unlogged", async (_label, sign) => {
+    const failure = new Error("signing failed");
+    mocks.getSignedUrl.mockRejectedValue(failure);
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    const thrown = await sign().catch((error: unknown) => error);
+
+    expect(diagnosticErrorTags(thrown)).toEqual({
+      error_kind: "storage.signed_url_failed",
+    });
+    expect((thrown as Error).cause).toBe(failure);
+    expect(mocks.reportError).not.toHaveBeenCalled();
+    expect(log).not.toHaveBeenCalled();
+    log.mockRestore();
+  });
+
+  // Thrown failures are reported by whoever catches them; a console line
+  // here filed the same failure a second, context-free time.
+  it("throws HEAD failures without logging them first", async () => {
+    mocks.send.mockRejectedValue(new Error("head failed"));
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    const thrown = await headFile("documents/u1/d1/source.pdf").catch(
+      (error: unknown) => error,
+    );
+
+    expect(diagnosticErrorTags(thrown)).toEqual({
+      error_kind: "storage.head_failed",
+      storage_operation: "HEAD",
+    });
+    expect(log).not.toHaveBeenCalled();
+    expect(mocks.reportError).not.toHaveBeenCalled();
+    log.mockRestore();
+  });
+});
+
+describe("optional reads", () => {
+  it("answers null for a missing object without reporting", async () => {
+    mocks.send.mockRejectedValue(Object.assign(new Error("gone"), { name: "NoSuchKey" }));
+    await expect(downloadFileIfAvailable("documents/u1/d1/source.pdf")).resolves.toBeNull();
+    expect(mocks.reportError).not.toHaveBeenCalled();
+  });
+
+  it("answers null for a failure too, reported once as a warning with the store's code", async () => {
+    const failure = Object.assign(new Error("denied"), { name: "AccessDenied" });
+    mocks.send.mockRejectedValue(failure);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    await expect(downloadFileIfAvailable("documents/u1/d1/source.pdf")).resolves.toBeNull();
+
+    expect(mocks.reportError).toHaveBeenCalledOnce();
+    const [reported, context] = mocks.reportError.mock.calls[0]!;
+    expect(diagnosticErrorTags(reported)).toEqual({
+      error_kind: "storage.download_failed",
+      storage_operation: "download",
+      failure_code: "AccessDenied",
+    });
+    expect(context).toMatchObject({ level: "warning", tags: { component: "best-effort", what: "optional-read" } });
+    expect(JSON.stringify(context)).not.toContain("documents/u1/d1");
+    warn.mockRestore();
+  });
+});

@@ -1,0 +1,19 @@
+{
+  "appId": "com.northwrit.desktop",
+  "productName": "NorthWrit",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "src/**/*",
+    "package.json"
+  ],
+  "mac": {
+    "category": "public.app-category.productivity",
+    "target": [
+      "dir"
+    ],
+    "identity": null,
+    "icon": "assets/icon.icns"
+  }
+}

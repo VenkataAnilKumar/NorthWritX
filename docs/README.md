@@ -8,7 +8,7 @@ The [Open-Source References](03-market/Northwrit_Open-Source-References.md) regi
 
 ## Complete Documentation Index
 
-The Northwrit documentation suite is organized into seven numbered modules (22 documents) and three operational guides, modelled on the ALIV documentation standard:
+The index groups product specifications, technical designs, the current Mike OSS implementation plan, and operational guides.
 
 | # | Document | What It Answers | Status |
 |---|---|---|---|
@@ -40,12 +40,7 @@ The Northwrit documentation suite is organized into seven numbered modules (22 d
 | 20 | [Open-Source Components](06-technical/Northwrit_Open-Source-Components.md) | v2.0 Reuse map covering local inventory (`sim`, `onyx`, `kortix`, `agno`) + `Jan.ai`, `LobeHub`, `MikeOSS`, `Docling` | ✅ |
 | 21 | [Platform Layers & Surfaces](06-technical/Northwrit_Platform-Layers-and-Surfaces.md) | Architectural synthesis: Cohere North private agentics × Harvey AI legal intelligence (6 layers, 5 surfaces) | ✅ |
 | **07 Implementation** | | | |
-| 22 | [Implementation Phases](07-implementation/Northwrit_Implementation-Phases.md) | Discovery, Phase 1 Pilot (P0), Phase 2 Expansion (P1), Phase 3 Platform (P2), and Gates G1–G12 | ✅ |
-| 23 | [Sprint Plan](07-implementation/Northwrit_Sprint-Plan.md) | Phases broken into dependency-ordered work packages (WPs) across development waves | ✅ |
-| 24 | [Implementation Checklist](07-implementation/Northwrit_Implementation-Checklist.md) | Per-phase checklist covering all 105 feature IDs and release gates | ✅ |
-| 25 | [Open-Source Reuse Execution Plan](07-implementation/Northwrit_Open-Source-Reuse-Execution-Plan.md) | Subsystem extraction plan, Canadian legal customizations, and phased sprint roadmap | ✅ |
-| 26 | [Agent Implementation Prompts](07-implementation/Northwrit_Agent-Implementation-Prompts.md) | Copy-paste execution prompts and verification criteria for Gemini 3.8 Flash across Phases 1–3 | ✅ |
-| 27 | [v3.0 Multi-Phase Implementation Plan](07-implementation/Northwrit_V3-Implementation-Plan.md) | Master v3.0 execution plan across Phases 4–7: Deep Intelligence, Surface Ubiquity, VPC Appliance, GTM | ✅ |
+| 22 | [Mike OSS Implementation Plan](07-implementation/Northwrit_MikeOSS-Implementation-Plan.md) | Current roadmap: audit, rebrand, legal workspace, NorthWrit capabilities, integrations, and release | Planned |
 
 ---
 

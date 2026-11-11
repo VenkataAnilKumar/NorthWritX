@@ -9,9 +9,8 @@ Updated November 10, 2026. This register records the platform decision and compo
 - [Application source](https://github.com/Open-Legal-Products/mike) · [Legal workflows](https://github.com/Open-Legal-Products/mike-workflows) · [AGPL-3.0 license](https://github.com/Open-Legal-Products/mike/blob/main/LICENSE)
 - **Starting surfaces** include Projects, Assistant, Library, Tabular Reviews, Workflows, Connectors, and the Word add-in.
 - **NorthWrit work** includes matter permissions and roles, Canadian research sources, Bearings, four-state CiteCheck, Shield, and version-bound Folio review. Mike's CourtListener integration covers U.S. case law.
-- **First cloud check** uses a pinned Mike revision and its documented local stack. Verify portal startup, sign-in, synthetic uploads, tabular extraction, source navigation, and drafting before adapting Projects into Matters. [Mike local development](https://github.com/Open-Legal-Products/mike/blob/main/docs/local-development.md)
 
-The earlier Onyx prototype is available in commit `df85641`. Its deployment and smoke-test scripts apply to that revision. The MikeOSS checkout and cloud smoke test remain pending.
+The earlier Onyx prototype is available in Git history at commit `df85641`. The pinned Mike OSS revision `a5c147d6587ca465f301e8479f6c50fbc5731c45` is imported into the [NorthWrit application](../../apps/northwrit/NORTHWRIT.md). Follow the [implementation plan](../07-implementation/Northwrit_MikeOSS-Implementation-Plan.md).
 
 ## Other evaluated platforms
 

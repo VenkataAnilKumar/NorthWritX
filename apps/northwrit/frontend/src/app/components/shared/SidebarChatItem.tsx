@@ -1,0 +1,293 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+    MessageSquare,
+    MoreHorizontal,
+    Pencil,
+    Trash2,
+    Users,
+    Loader2,
+    LogOut,
+} from "lucide-react";
+import {
+    Dropdown,
+    DropdownContent,
+    DropdownItem,
+    DropdownTrigger,
+} from "@mike/ui";
+import { useChatHistoryContext } from "@/app/contexts/ChatHistoryContext";
+import { RenameModal } from "@/app/components/modals/RenameModal";
+import { LeaveChatPopup } from "@/app/components/assistant/LeaveChatPopup";
+import { WarningPopup } from "@/app/components/popups/WarningPopup";
+import { can, roleFrom } from "@/app/lib/permissions";
+import { userFacingApiError } from "@/app/lib/userFacingError";
+import type { Chat } from "@/app/components/shared/types";
+import { ChatSkeuoIcon } from "@/app/components/shared/AppSidebarSkeuoIcons";
+import { ChatAccessModal } from "@/app/components/assistant/ChatAccessModal";
+import { cn } from "@/app/lib/utils";
+import {
+    LIQUID_GLASS_SELECTED_CLASS,
+    LIQUID_GLASS_HOVER_CLASS,
+} from "@/app/components/ui/liquid-surface";
+import {
+    SIDEBAR_TITLE_SLIDE_CLASS,
+    useSidebarTitleSlide,
+} from "./useSidebarTitleSlide";
+
+interface Props {
+    chat: Chat;
+    isActive: boolean;
+    onSelect: () => void;
+    projectName?: string;
+    responseStatus?: "loading" | "complete";
+    /** Offers showing this chat beside the one on screen. */
+    onOpenInSideChat?: () => void;
+}
+
+export function SidebarChatItem({
+    chat,
+    isActive,
+    onSelect,
+    projectName,
+    responseStatus,
+    onOpenInSideChat,
+}: Props) {
+    const { renameChat, deleteChat } = useChatHistoryContext();
+    const router = useRouter();
+    const [leaveOpen, setLeaveOpen] = useState(false);
+    const [renameOpen, setRenameOpen] = useState(false);
+    const [renaming, setRenaming] = useState(false);
+    const [shareOpen, setShareOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [renameError, setRenameError] = useState<string | null>(null);
+    const { titleRef, titleStyle, slideHandlers } = useSidebarTitleSlide();
+    // Chat management belongs to owners; editors can still send messages.
+    const role = roleFrom(chat);
+    const canRename = can(role, "access.manage");
+    const canShare = can(role, "access.manage");
+    const canDelete = can(role, "container.delete");
+    const canLeave = chat.can_leave === true && chat.project_id === null && role !== "owner";
+    // One label for the row's tooltip and its accessible name, so the
+    // "Shared" marker rendered beside the title is part of both.
+    const chatTitle = chat.title ?? "Untitled chat";
+    const rowLabel = [
+        projectName ? `${projectName}: ${chatTitle}` : chatTitle,
+        chat.is_owner === false ? "(Shared)" : null,
+        responseStatus === "loading"
+            ? "(Response loading)"
+            : responseStatus === "complete"
+              ? "(Response complete)"
+              : null,
+    ]
+        .filter(Boolean)
+        .join(" ");
+
+    // The actions trigger is zero-width until the row is hovered. While its
+    // menu is open the row must stay in its revealed layout, or the trigger
+    // collapses when the pointer leaves and the menu anchored to it jumps.
+    const actionsRevealed = isActive || menuOpen;
+
+    const handleRenameSave = async (title: string) => {
+        setRenaming(true);
+        try {
+            await renameChat(chat.id, title);
+            setRenameOpen(false);
+        } catch (error) {
+            // The context put the old title back; without this the user
+            // watches their edit silently revert — the rename twin of the
+            // surfaced delete failure below. The modal stays open so the
+            // typed title is still there to retry.
+            setRenameError(
+                userFacingApiError(
+                    error,
+                    "The chat could not be renamed. Please try again.",
+                ),
+            );
+        } finally {
+            setRenaming(false);
+        }
+    };
+
+    return (
+        <div
+            className={cn(
+                "group relative flex h-8 w-full items-center rounded-md transition-colors",
+                isActive
+                    ? `${LIQUID_GLASS_SELECTED_CLASS} pr-1`
+                    : menuOpen
+                      ? `pr-1 ${LIQUID_GLASS_HOVER_CLASS}`
+                      : `pr-3 ${LIQUID_GLASS_HOVER_CLASS} hover:pr-1`,
+            )}
+        >
+                {/* 16px icon slot + ml-2/pl-2 match the top nav rows'
+                    px-2 / w-4 icon / gap-2, so icons and titles line up. */}
+                <span className="ml-2 flex h-4 w-4 shrink-0 items-center justify-center">
+                    {responseStatus === "loading" ? (
+                        <Loader2
+                            role="status"
+                            aria-label={`${chatTitle} response loading`}
+                            className="h-3.5 w-3.5 animate-spin text-blue-600 motion-reduce:animate-none"
+                        />
+                    ) : (
+                        <ChatSkeuoIcon
+                            tone={
+                                responseStatus === "complete"
+                                    ? "green"
+                                    : "blue"
+                            }
+                            className="h-3.5 w-3.5"
+                        />
+                    )}
+                </span>
+                <button
+                    type="button"
+                    onClick={onSelect}
+                    {...slideHandlers}
+                    // The row owns the hover fill, so it draws the ring.
+                    data-focus-fill
+                    className={cn(
+                        "min-w-0 flex-1 overflow-hidden whitespace-nowrap py-1 pl-2 text-left text-xs outline-none",
+                        isActive
+                            ? "pr-3 text-gray-900"
+                            : menuOpen
+                              ? "pr-3 text-gray-700"
+                              : "pr-0 text-gray-700 group-hover:pr-3",
+                    )}
+                    // The "Shared" marker sits in a SIBLING element, so
+                    // neither the tooltip nor the accessible name of this
+                    // row carried it: a screen-reader user heard exactly
+                    // what the owner of the thread hears. It belongs in
+                    // both.
+                    title={rowLabel}
+                    aria-label={rowLabel}
+                >
+                    <span
+                        ref={titleRef}
+                        className={SIDEBAR_TITLE_SLIDE_CLASS}
+                        style={titleStyle}
+                    >
+                        {projectName && (
+                            <span className="text-gray-400 font-normal">{projectName}: </span>
+                        )}
+                        {chat.title ?? "Untitled chat"}
+                    </span>
+                </button>
+
+                {/* Somebody else's thread. get_chats_overview now lists
+                    colleagues' organization-project chats alongside the
+                    caller's own, and nothing in the row said which was
+                    which — the same list, the same weight, so a rename
+                    or a delete could land on a colleague's work by
+                    mistake. Plain text, not a pill: this is an
+                    informational label (AGENTS.md).
+
+                    Strictly `=== false`: a row that carries no is_owner
+                    at all has told us nothing, and marking it "Shared"
+                    would be a claim we cannot make. */}
+                {chat.is_owner === false && (
+                    <span className="mx-1 shrink-0 text-xs text-gray-400 font-normal">
+                        Shared
+                    </span>
+                )}
+
+                {(canShare || canRename || canDelete || canLeave || onOpenInSideChat) && <Dropdown open={menuOpen} onOpenChange={setMenuOpen}>
+                    <DropdownTrigger asChild>
+                        <button
+                            type="button"
+                            aria-label={`Actions for ${chat.title ?? "Untitled chat"}`}
+                            className={`flex h-6 w-0 shrink-0 items-center justify-center overflow-hidden rounded-md bg-transparent text-gray-500 opacity-0 transition-opacity hover:text-gray-900 ${
+                                actionsRevealed
+                                    ? "w-6 opacity-100"
+                                    : "pointer-events-none group-hover:w-6 group-hover:pointer-events-auto group-hover:opacity-100"
+                            }`}
+                        >
+                            <MoreHorizontal className="h-4 w-4" />
+                        </button>
+                    </DropdownTrigger>
+                    <DropdownContent align="end">
+                        {onOpenInSideChat && (
+                            // Two chats need a wide page.
+                            <DropdownItem
+                                onSelect={onOpenInSideChat}
+                                className="max-md:hidden"
+                            >
+                                <MessageSquare aria-hidden="true" className="mr-2 h-4 w-4" />
+                                Open in side chat
+                            </DropdownItem>
+                        )}
+                        {canShare && <DropdownItem onSelect={() => setShareOpen(true)}>
+                            <Users className="mr-2 h-4 w-4" />
+                            Share
+                        </DropdownItem>}
+                        {canRename && <DropdownItem onSelect={() => setRenameOpen(true)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Rename
+                        </DropdownItem>}
+                        {canDelete && <DropdownItem
+                            onSelect={() => {
+                                deleteChat(chat.id).catch((error) => {
+                                    setDeleteError(userFacingApiError(error,
+                                        "The chat could not be deleted. Please try again."));
+                                });
+                            }}
+                            className="text-red-600 focus:text-red-600"
+                        >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                        </DropdownItem>}
+                        {canLeave && <DropdownItem onSelect={() => setLeaveOpen(true)}>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Leave
+                        </DropdownItem>}
+                    </DropdownContent>
+                </Dropdown>}
+            {leaveOpen && <LeaveChatPopup
+                chatId={chat.id}
+                onClose={() => setLeaveOpen(false)}
+                onLeft={() => {
+                    // Use the current route: the user may have navigated while
+                    // the request was in flight, or left the secondary chat.
+                    const url = new URL(window.location.href);
+                    if (url.pathname === `/assistant/chat/${chat.id}`) router.push("/assistant");
+                    else if (url.searchParams.get("side") === chat.id) {
+                        url.searchParams.delete("side");
+                        router.replace(url.pathname + url.search);
+                    }
+                }}
+            />}
+            <RenameModal
+                open={renameOpen}
+                breadcrumbs={["Assistant", "Rename Chat"]}
+                label="Chat title"
+                initialValue={chat.title?.trim() || "Untitled chat"}
+                saving={renaming}
+                onClose={() => {
+                    if (!renaming) setRenameOpen(false);
+                }}
+                onSave={(title) => void handleRenameSave(title)}
+            />
+            <WarningPopup
+                open={!!deleteError}
+                title="Chat not deleted"
+                message={deleteError}
+                onClose={() => setDeleteError(null)}
+            />
+            <WarningPopup
+                open={!!renameError}
+                title="Chat not renamed"
+                message={renameError}
+                onClose={() => setRenameError(null)}
+            />
+            {shareOpen ? (
+                <ChatAccessModal
+                    open={shareOpen}
+                    chat={chat}
+                    onClose={() => setShareOpen(false)}
+                />
+            ) : null}
+        </div>
+    );
+}

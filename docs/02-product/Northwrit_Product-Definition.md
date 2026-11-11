@@ -89,7 +89,7 @@ Northwrit solves this by pairing cited legal retrieval with **Northwrit Shield**
 
 ## 6. Features by Release
 
-Feature IDs correspond directly to [Northwrit_Feature-Spec.md](../04-specs/Northwrit_Feature-Spec.md) and [Northwrit_Implementation-Phases.md](../07-implementation/Northwrit_Implementation-Phases.md):
+Feature IDs are defined in [Northwrit_Feature-Spec.md](../04-specs/Northwrit_Feature-Spec.md). The release groupings below are requirements inputs; Phase 1 of the [Mike OSS Implementation Plan](../07-implementation/Northwrit_MikeOSS-Implementation-Plan.md) will map them to the current delivery sequence:
 
 ```
    Phase 1: Pilot (P0)          Phase 2: Expansion (P1)        Phase 3: Platform (P2)

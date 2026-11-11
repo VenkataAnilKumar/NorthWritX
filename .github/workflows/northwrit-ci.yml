@@ -1,0 +1,54 @@
+name: NorthWrit CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['apps/northwrit/**', 'scripts/rebrand_northwrit.py', '.github/workflows/northwrit-ci.yml']
+  pull_request:
+    paths: ['apps/northwrit/**', 'scripts/rebrand_northwrit.py', '.github/workflows/northwrit-ci.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: northwrit-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [backend, frontend, word-addin]
+    defaults:
+      run:
+        working-directory: apps/northwrit/${{ matrix.package }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/northwrit/${{ matrix.package }}/package-lock.json
+      - run: npm ci
+      - if: matrix.package != 'word-addin'
+        run: npm test
+      - if: matrix.package == 'word-addin'
+        run: npm run test:server
+      - if: matrix.package == 'frontend'
+        run: npm run lint
+      - if: matrix.package == 'frontend'
+        run: npm run typecheck
+      - if: matrix.package == 'backend'
+        run: npm run typecheck:test
+      - run: npm run build
+        env:
+          SENTRY_DISABLED: 'true'
+          NEXT_PUBLIC_SENTRY_DISABLED: 'true'
+          FRONTEND_URL: https://app.northwrit.invalid
+          REACT_APP_SENTRY_DISABLED: 'true'
+          REACT_APP_WEB_APP_URL: https://app.northwrit.invalid
+          WORD_ADDIN_PUBLIC_URL: https://northwrit.invalid

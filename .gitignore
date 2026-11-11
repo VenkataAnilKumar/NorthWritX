@@ -1,4 +1,5 @@
 /.rebrand-backups/
+/mike-upstream/
 **/__pycache__/
 *.py[cod]
 **/.venv/

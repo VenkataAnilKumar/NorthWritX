@@ -1,0 +1,1873 @@
+"use client";
+
+import { useDocumentViewers } from "@/app/hooks/useDocumentViewers";
+import { useDocumentPermissions } from "@/app/hooks/useDocumentPermissions";
+
+import {
+    use,
+    useCallback,
+    useEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState,
+} from "react";
+import { useRouter } from "next/navigation";
+import {
+    ArrowUpRight,
+    ChevronLeft,
+    ChevronRight,
+    FolderOpen,
+    FolderPlus,
+} from "lucide-react";
+import {
+    UploadBatchError,
+    deleteDocument,
+    failedUploadMessage,
+    getDocument,
+    getProject,
+    listProjectChats,
+    uploadProjectDocuments,
+    createProjectFolder,
+    renameProjectFolder,
+    renameProjectDocument,
+    deleteProjectFolder,
+    moveDocumentToFolder,
+    moveSubfolderToFolder,
+    resolveProjectFolderPath,
+    type UploadProgress,
+} from "@/app/lib/mikeApi";
+import {
+    chatActivityAt,
+    sortChatsByActivity,
+    touchChatActivity,
+} from "@/app/lib/chatActivity";
+import { useAssistantHistoryStatuses } from "@/app/hooks/useAssistantHistoryStatuses";
+import { useChatRoute } from "@/app/hooks/useChatRoute";
+import {
+    CHAT_DEFAULT,
+    DOCUMENT_MIN,
+    EXPLORER_DEFAULT,
+    fitPanelWidths,
+    fitsWithExplorer,
+    resizeChatSplit,
+    resizePanel,
+    type WorkspacePanelWidths,
+} from "@/app/lib/workspacePanelWidths";
+import {
+    ProjectChatPanel,
+    type ProjectChatPanelHandle,
+} from "@/app/components/projects/ProjectChatPanel";
+import { useProjectPicker } from "@/app/hooks/useProjectPicker";
+import {
+    isExternalFileDrag,
+    isDocumentViewerDrag,
+    isProjectItemDrag,
+} from "@/app/lib/projectDragTypes";
+import { useExplorerDownload } from "@/app/hooks/useExplorerDownload";
+import { useChatHistoryContext } from "@/app/contexts/ChatHistoryContext";
+import {
+    ProjectExplorer,
+    type ProjectExplorerHandle,
+} from "@/app/components/projects/ProjectExplorer";
+import { ProjectMemoryModal } from "@/app/components/projects/ProjectMemoryModal";
+import { ProjectDocumentTabs } from "@/app/components/projects/ProjectDocumentTabs";
+import {
+    ProjectDocumentPanels,
+    type ProjectDocumentTab,
+    type ProjectDocumentAnnotation,
+} from "@/app/components/projects/ProjectDocumentPanels";
+import { useProjectDocumentRefresh } from "@/app/hooks/useProjectDocumentRefresh";
+import { invalidateDocxBytes } from "@/app/hooks/useFetchDocxBytes";
+import { reorderTabs } from "@/app/lib/reorderTabs";
+import { AddDocumentsModal } from "@/app/components/modals/AddDocumentsModal";
+import { ProjectPickerModal } from "@/app/components/modals/ProjectPickerModal";
+import { DocumentUploadMenu } from "@/app/components/shared/DocumentUploadMenu";
+import { ConfirmPopup } from "@/app/components/popups/ConfirmPopup";
+import { WarningPopup } from "@/app/components/popups/WarningPopup";
+import { PermissionDeniedPopup } from "@/app/components/popups/PermissionDeniedPopup";
+import { useSidebar } from "@/app/contexts/SidebarContext";
+import { HeaderActionsMenu } from "@/app/components/shared/HeaderActionsMenu";
+import type {
+    Chat,
+    AssistantEvent,
+    PanelDocument,
+    Citation,
+    Document,
+    EditAnnotation,
+    Project,
+} from "@/app/components/shared/types";
+import { panelDocumentFromCitation, panelDocumentFromCaseEvent, panelDocumentType } from "@/app/components/shared/types";
+import { panelDocumentAtVersion } from "@/app/lib/panelDocumentAtVersion";
+import { resolvePanelDocumentVersionResult } from "@/app/components/assistant/panelDocumentVersion";
+import type { DocumentContentMode } from "@/app/components/shared/DocumentContent";
+import {
+    INITIAL_FOLDER_DELETE_DIALOG_STATE,
+    clearDeletedDocumentId,
+    folderDeleteDialogReducer,
+    removeDeletedDocumentTabs,
+} from "@/app/lib/folderDeleteState";
+import { can, roleFromLoaded } from "@/app/lib/permissions";
+import { LIQUID_GLASS_FLAT_CLASS } from "@/app/components/ui/liquid-surface";
+import { cn } from "@/app/lib/utils";
+import type { MessageExcerpt } from "@mike/client";
+import { readDocumentDragPayload } from "@/app/lib/docTableSelection";
+import { userFacingApiError } from "@/app/lib/userFacingError";
+import {
+    moveProjectItemOptimistically,
+    notifyMoveFailure,
+    type ProjectTreeItemKind,
+} from "@/app/lib/projectTreeMoves";
+import {
+    collectDroppedDocumentUploadEntries,
+    documentUploadEntriesFromFiles,
+    documentUploadFolderSegments,
+    type DocumentUploadEntry,
+} from "@/app/lib/documentDirectoryUpload";
+import {
+    SUPPORTED_DOCUMENT_ACCEPT,
+    combineUploadWarnings,
+    formatUnsupportedDocumentWarning,
+    partitionSupportedDocumentFiles,
+} from "@/app/lib/documentUploadValidation";
+import { appendMissingById } from "@/app/lib/idCollections";
+import { createFrameBatcher } from "@/app/lib/frameBatcher";
+
+interface Props {
+    params: Promise<{ id: string; chatId?: string }>;
+}
+
+/** Drag-handle divider for resizing panels */
+function Divider({ onDrag }: { onDrag: (dx: number) => void }) {
+    const dragging = useRef(false);
+    const lastX = useRef(0);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const onMouseDown = (e: React.MouseEvent) => {
+        dragging.current = true;
+        setIsDragging(true);
+        lastX.current = e.clientX;
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+    };
+
+    useEffect(() => {
+        function onMouseMove(e: MouseEvent) {
+            if (!dragging.current) return;
+            onDrag(e.clientX - lastX.current);
+            lastX.current = e.clientX;
+        }
+        function onMouseUp() {
+            if (!dragging.current) return;
+            dragging.current = false;
+            setIsDragging(false);
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
+        }
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+        return () => {
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+        };
+    }, [onDrag]);
+
+    return (
+        <div className="relative z-10 w-1.5 shrink-0">
+            <div
+                onMouseDown={onMouseDown}
+                className="absolute inset-y-0 -left-1 -right-1 flex cursor-col-resize items-stretch justify-center"
+            >
+                {isDragging && (
+                    <div className="w-1 bg-blue-600 transition-colors" />
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default function ProjectAssistantChatPage({ params }: Props) {
+    const { id: projectId } = use(params);
+    const router = useRouter();
+
+    const { setSidebarOpen } = useSidebar();
+    const explorerDownload = useExplorerDownload();
+
+    const [project, setProject] = useState<Project | null>(null);
+    const [projectLoaded, setProjectLoaded] = useState(false);
+    const {
+        chatId: activeChatId,
+        openChat,
+        adoptChat,
+        claimCreated,
+        sideChatId,
+        openSideChat,
+        adoptSideChat,
+        closeSideChat,
+    } = useChatRoute(`/projects/${projectId}/assistant/chat`);
+    const [projectChats, setProjectChats] = useState<Chat[] | null>(null);
+    const [ownerOnlyAction, setOwnerOnlyAction] = useState<string | null>(null);
+    const [editorGateAction, setEditorGateAction] = useState<string | null>(
+        null,
+    );
+    const [chatActionError, setChatActionError] = useState<{
+        title: string;
+        message: string;
+    } | null>(null);
+    const [projectMemoryOpen, setProjectMemoryOpen] = useState(false);
+    const [folderDeleteDialog, dispatchFolderDeleteDialog] = useReducer(
+        folderDeleteDialogReducer,
+        INITIAL_FOLDER_DELETE_DIALOG_STATE,
+    );
+    const pendingDeleteFolder = folderDeleteDialog.pending;
+    const pendingDeleteFolderStatus = folderDeleteDialog.status;
+    const folderDeleteDismissTimerRef = useRef<number | null>(null);
+
+    // Panel widths
+    const [panelWidths, setPanelWidths] = useState<WorkspacePanelWidths>({
+        explorer: EXPLORER_DEFAULT,
+        chat: CHAT_DEFAULT,
+        sideChat: CHAT_DEFAULT,
+    });
+    const explorerWidth = panelWidths.explorer;
+    const sideChatOpen = sideChatId !== null;
+    // "Add to chat" from the explorer or a document tab goes to the chat the
+    // reader last used.
+    const primaryChatPanelRef = useRef<ProjectChatPanelHandle>(null);
+    const sideChatPanelRef = useRef<ProjectChatPanelHandle>(null);
+    // A ref, not state: it is set as a press begins, and a render between the
+    // press and its click would replace the control being clicked (a citation
+    // pill) and lose the click.
+    const activeChatPaneRef = useRef<"primary" | "side">("primary");
+    const addDocToChat = (document: Document) =>
+        (
+            (activeChatPaneRef.current === "side"
+                ? sideChatPanelRef.current
+                : null) ?? primaryChatPanelRef.current
+        )?.addDoc(document);
+    const activatePrimaryChat = useCallback(() => {
+        activeChatPaneRef.current = "primary";
+    }, []);
+    const activateSideChat = useCallback(() => {
+        activeChatPaneRef.current = "side";
+    }, []);
+    const [explorerCollapsed, setExplorerCollapsed] = useState(false);
+    const workspaceRef = useRef<HTMLDivElement>(null);
+
+    // Upload state
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const folderInputRef = useRef<HTMLInputElement>(null);
+    const documentViewers = useDocumentViewers();
+    const [deleteTarget, setDeleteTarget] = useState<{ id: string; filename: string } | null>(null);
+    const [deletingDocument, setDeletingDocument] = useState(false);
+    const projectExplorerRef = useRef<ProjectExplorerHandle>(null);
+    const [addDocumentsOpen, setAddDocumentsOpen] = useState(false);
+    const projectPicker = useProjectPicker();
+    const [uploadingDocuments, setUploadingDocuments] = useState<
+        Array<{ clientId: string; filename: string }>
+    >([]);
+    const [explorerDragOver, setExplorerDragOver] = useState(false);
+    const [documentDragOver, setDocumentDragOver] = useState(false);
+    const [documentDropError, setDocumentDropError] = useState<string | null>(
+        null,
+    );
+    const [uploadWarning, setUploadWarning] = useState<string | null>(null);
+
+    // Tabs
+    const [tabs, setTabs] = useState<ProjectDocumentTab[]>([]);
+    const [activeTabId, setActiveTabId] = useState<string | null>(null);
+    const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
+    const [resolvingEdits, setResolvingEdits] = useState<
+        Record<string, string>
+    >({});
+    const [resolvedEditStatuses, setResolvedEditStatuses] = useState<
+        Record<string, "accepted" | "rejected">
+    >({});
+    const openRequest = useRef(0);
+    const activeTab = tabs.find((t) => t.documentId === activeTabId) ?? null;
+    const activeCitation =
+        activeTab?.annotation?.kind === "citation"
+            ? activeTab.annotation.citation
+            : null;
+    const { chats, setSideChatId } = useChatHistoryContext();
+    // The sidebar treats a chat on screen as read, in either panel.
+    useEffect(() => {
+        setSideChatId(sideChatId || null);
+        return () => setSideChatId(null);
+    }, [sideChatId, setSideChatId]);
+    const availableProjectChats = useMemo(() => {
+        const byId = new Map<string, Chat>();
+        for (const chat of projectChats ?? []) byId.set(chat.id, chat);
+        for (const chat of chats ?? []) {
+            if (chat.project_id !== projectId) continue;
+            const existing = byId.get(chat.id);
+            if (
+                !existing ||
+                Date.parse(chatActivityAt(chat) ?? "") >=
+                    Date.parse(chatActivityAt(existing) ?? "")
+            ) {
+                byId.set(chat.id, chat);
+            }
+        }
+        return sortChatsByActivity(Array.from(byId.values()));
+    }, [chats, projectChats, projectId]);
+    const projectChatIds = useMemo(
+        () => availableProjectChats.map((chat) => chat.id),
+        [availableProjectChats],
+    );
+    const touchProjectChat = useCallback((chatId: string) => {
+        setProjectChats((current) =>
+            current ? touchChatActivity(current, chatId) : current,
+        );
+    }, []);
+    const {
+        statuses: projectHistoryStatuses,
+        clearStatus: clearProjectHistoryStatus,
+    } = useAssistantHistoryStatuses({
+        activeChatId: activeChatId || null,
+        sideChatId: sideChatId || null,
+        chatIds: projectChatIds,
+        onActivity: touchProjectChat,
+    });
+
+    const projectRole = roleFromLoaded(project);
+    const canEditContent = can(projectRole, "content.edit");
+    const documentPermissions = useDocumentPermissions(
+        tabs.filter((tab) => !["case", "legislation"].includes(tab.sourceDocument?.type ?? ""))
+            .map((tab) => tab.documentId),
+        canEditContent,
+    );
+    const canManageProject = can(projectRole, "access.manage");
+    // "Add to chat" follows the composer: closed until the role is known.
+    const canSendChat = projectRole === null ? null : canEditContent;
+
+    const clearFolderDeleteDismissTimer = useCallback(() => {
+        if (folderDeleteDismissTimerRef.current === null) return;
+        clearTimeout(folderDeleteDismissTimerRef.current);
+        folderDeleteDismissTimerRef.current = null;
+    }, []);
+
+    useEffect(() => {
+        return () => clearFolderDeleteDismissTimer();
+    }, [clearFolderDeleteDismissTimer]);
+
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const projectRequestGeneration = useRef(0);
+    const refreshProject = useCallback(
+        async (documentIdToRefresh?: string) => {
+            const generation = ++projectRequestGeneration.current;
+            try {
+                const loaded = await getProject(projectId);
+                if (generation === projectRequestGeneration.current) {
+                    setProject(loaded);
+                }
+            } catch {
+                // Keep the current workspace usable when a background check fails.
+            } finally {
+                // Settled either way: a failed fetch leaves the role unknown, and
+                // the composer should come back read-only rather than stay hidden.
+                if (generation === projectRequestGeneration.current) {
+                    setProjectLoaded(true);
+                }
+                if (documentIdToRefresh) {
+                    setTabs((current) =>
+                        current.map((tab) =>
+                            tab.documentId === documentIdToRefresh
+                                ? {
+                                      ...tab,
+                                      refetchKey: (tab.refetchKey ?? 0) + 1,
+                                  }
+                                : tab,
+                        ),
+                    );
+                }
+            }
+        },
+        [projectId],
+    );
+    useEffect(() => {
+        return () => {
+            projectRequestGeneration.current += 1;
+        };
+    }, [projectId]);
+    useProjectDocumentRefresh(refreshProject, activeTabId);
+
+    useEffect(() => {
+        let cancelled = false;
+        listProjectChats(projectId)
+            .then((loaded) => {
+                if (!cancelled) setProjectChats(loaded);
+            })
+            .catch(() => {
+                if (!cancelled) setProjectChats([]);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [projectId]);
+
+    useEffect(() => {
+        void refreshProject();
+    }, [refreshProject]);
+
+    // ── Tabs ──────────────────────────────────────────────────────────────────
+    function openTab(
+        docId: string,
+        filename: string,
+        annotation?: ProjectDocumentAnnotation,
+        versionId?: string | null,
+        fileType?: string | null,
+        sourceDocument?: PanelDocument,
+    ) {
+        openRequest.current += 1;
+        setTabs((prev) => {
+            const existing = prev.find((t) => t.documentId === docId);
+            if (existing) {
+                const versionChanged =
+                    versionId !== undefined && existing.versionId !== versionId;
+                return prev.map((tab) =>
+                    tab.documentId === docId
+                        ? {
+                              ...tab,
+                              filename,
+                              versionId:
+                                  versionId === undefined
+                                      ? tab.versionId
+                                      : versionId,
+                              fileType: fileType ?? tab.fileType,
+                              sourceDocument:
+                                  sourceDocument ??
+                                  (versionChanged
+                                      ? undefined
+                                      : tab.sourceDocument),
+                              annotation,
+                              warning: versionChanged ? null : tab.warning,
+                          }
+                        : tab,
+                );
+            }
+            return [
+                ...prev,
+                {
+                    documentId: docId,
+                    filename,
+                    versionId,
+                    fileType,
+                    sourceDocument,
+                    annotation,
+                },
+            ];
+        });
+        setActiveTabId(docId);
+        setSelectedDocId(docId);
+    }
+
+    function closeTab(docId: string) {
+        openRequest.current += 1;
+        if (activeTabId === docId) {
+            const idx = tabs.findIndex((tab) => tab.documentId === docId);
+            const fallback =
+                idx < 0 ? null : (tabs[idx + 1] ?? tabs[idx - 1] ?? null);
+            setActiveTabId(fallback?.documentId ?? null);
+            setSelectedDocId(fallback?.documentId ?? null);
+        }
+        setTabs((prev) => prev.filter((tab) => tab.documentId !== docId));
+    }
+
+    function switchTab(docId: string) {
+        openRequest.current += 1;
+        setActiveTabId(docId);
+        setSelectedDocId(docId);
+    }
+
+    // ── Handlers ──────────────────────────────────────────────────────────────
+    const handleDocClick = (doc: Document) => {
+        openTab(doc.id, doc.filename, undefined, null, doc.file_type);
+    };
+
+    const handleCloseAnnotation = (documentId: string) => {
+        openRequest.current += 1;
+        setTabs((current) =>
+            current.map((tab) =>
+                tab.documentId === documentId
+                    ? { ...tab, annotation: undefined }
+                    : tab,
+            ),
+        );
+    };
+
+    const handleCitationClick = async (
+        citation: Citation,
+        showQuotes = true,
+    ) => {
+        if (showQuotes && activeCitation === citation && activeTab) {
+            handleCloseAnnotation(activeTab.documentId);
+            return;
+        }
+        const request = ++openRequest.current;
+        const result = await resolvePanelDocumentVersionResult(
+            panelDocumentFromCitation(citation, showQuotes),
+        );
+        if (request !== openRequest.current) return;
+        if (result.status !== "resolved") {
+            setDocumentDropError(
+                result.status === "denied"
+                    ? "This document is no longer available."
+                    : "This document could not be opened. Please try again.",
+            );
+            return;
+        }
+        const document = result.document;
+        openTab(
+            document.document_id,
+            document.title,
+            showQuotes ? { kind: "citation", citation } : undefined,
+            document.version_id,
+            document.type,
+            document,
+        );
+    };
+
+    const handleCaseClick = (
+        event: Extract<AssistantEvent, { type: "case_citation" }>,
+    ) => {
+        const document = panelDocumentFromCaseEvent(event);
+        if (document)
+            openTab(
+                document.document_id,
+                document.title,
+                undefined,
+                null,
+                document.type,
+                document,
+            );
+    };
+
+    const handleOpenDocument = (args: {
+        documentId: string;
+        filename: string;
+        versionId: string | null;
+        versionNumber: number | null;
+    }) => {
+        openTab(
+            args.documentId,
+            args.filename,
+            undefined,
+            args.versionId,
+            undefined,
+            {
+                document_id: args.documentId,
+                title: args.filename,
+                type: panelDocumentType(args.filename),
+                version_id: args.versionId,
+                version_number: args.versionNumber,
+                quotes: [],
+                metadata: [],
+            },
+        );
+    };
+
+    const handleEditViewClick = (
+        ann: EditAnnotation,
+        filename: string,
+        changeNumber?: number,
+    ) => {
+        const edit = {
+            ...ann,
+            status: resolvedEditStatuses[ann.edit_id] ?? ann.status,
+        };
+        openTab(
+            ann.document_id,
+            filename,
+            { kind: "edit", edit, changeNumber },
+            ann.version_id ?? null,
+            undefined,
+            {
+                document_id: ann.document_id,
+                title: filename,
+                type: panelDocumentType(filename),
+                version_id: ann.version_id,
+                version_number: ann.version_number,
+                metadata: [],
+                quotes: [],
+            },
+        );
+    };
+
+    const patchTab = useCallback(
+        (documentId: string, patch: Partial<ProjectDocumentTab>) => {
+            setTabs((prev) =>
+                prev.map((t) =>
+                    t.documentId === documentId ? { ...t, ...patch } : t,
+                ),
+            );
+        },
+        [],
+    );
+
+    const finishResolvingEdit = (editId: string) =>
+        setResolvingEdits((current) => {
+            const next = { ...current };
+            delete next[editId];
+            return next;
+        });
+    const handleEditResolveStart = (args: {
+        editId: string;
+        documentId: string;
+    }) => {
+        setResolvingEdits((current) => ({
+            ...current,
+            [args.editId]: args.documentId,
+        }));
+    };
+    const handleEditError = (args: {
+        editId: string;
+        documentId: string;
+        message: string;
+    }) => {
+        finishResolvingEdit(args.editId);
+        patchTab(args.documentId, { warning: args.message });
+    };
+
+    const dismissTabWarning = useCallback(
+        (documentId: string) => {
+            patchTab(documentId, { warning: null });
+        },
+        [patchTab],
+    );
+
+    const handleEditResolved: NonNullable<
+        Extract<DocumentContentMode, { kind: "edit" }>["onResolved"]
+    > = (args) => {
+        finishResolvingEdit(args.editId);
+        setResolvedEditStatuses((current) => ({
+            ...current,
+            [args.editId]: args.status,
+        }));
+        setTabs((current) =>
+            current.map((tab) =>
+                tab.annotation?.kind === "edit" &&
+                tab.annotation.edit.edit_id === args.editId
+                    ? {
+                          ...tab,
+                          annotation: {
+                              ...tab.annotation,
+                              edit: {
+                                  ...tab.annotation.edit,
+                                  status: args.status,
+                              },
+                          },
+                      }
+                    : tab,
+            ),
+        );
+        invalidateDocxBytes(args.documentId);
+        // Apply metadata and the forced refresh together to avoid downloading twice.
+        void refreshProject(args.documentId);
+    };
+
+    // ── Upload ────────────────────────────────────────────────────────────────
+    function addUploadedDocuments(documents: Document[]) {
+        if (documents.length === 0) return;
+        setProject((current) => {
+            if (!current) return current;
+            const existing = current.documents ?? [];
+            const nextDocuments = appendMissingById(existing, documents);
+            return nextDocuments === existing
+                ? current
+                : { ...current, documents: nextDocuments };
+        });
+    }
+
+    function addResolvedFolders(folders: NonNullable<Project["folders"]>) {
+        if (folders.length === 0) return;
+        setProject((current) => {
+            if (!current) return current;
+            const nextFolders = [...(current.folders ?? [])];
+            const knownIds = new Set(nextFolders.map((folder) => folder.id));
+            for (const folder of folders) {
+                if (knownIds.has(folder.id)) continue;
+                knownIds.add(folder.id);
+                nextFolders.push(folder);
+            }
+            return { ...current, folders: nextFolders };
+        });
+    }
+
+    async function uploadEntries(
+        selectedEntries: DocumentUploadEntry[],
+        openInViewer = false,
+    ) {
+        if (!selectedEntries.length) return;
+        if (!canEditContent) {
+            // Only accuse somebody of lacking a role once we know they do.
+            if (projectRole) {
+                setEditorGateAction("upload documents to this project");
+            }
+            return;
+        }
+
+        // A drop or a folder selection carries whatever was on disk, and
+        // `accept` cannot constrain either. Filter to the types the converter
+        // can read before spending an upload session (or creating folders) on
+        // files the server is guaranteed to refuse.
+        const { supported, unsupported } = partitionSupportedDocumentFiles(
+            selectedEntries.map((entry) => entry.file),
+        );
+        const supportedFiles = new Set(supported);
+        const entries = selectedEntries.filter((entry) =>
+            supportedFiles.has(entry.file),
+        );
+        const unsupportedWarning = formatUnsupportedDocumentWarning(unsupported);
+        setUploadWarning(unsupportedWarning);
+        if (!entries.length) return;
+
+        const pendingUploads = entries.map((entry) => ({
+            clientId: crypto.randomUUID(),
+            filename: entry.file.name,
+            entry,
+        }));
+        const pendingIds = new Set(
+            pendingUploads.map((upload) => upload.clientId),
+        );
+        setUploadingDocuments((current) => [
+            ...current,
+            ...pendingUploads.map(({ clientId, filename }) => ({
+                clientId,
+                filename,
+            })),
+        ]);
+        // Each file reports from its own transfer, so React would apply
+        // every event as a separate render of the project tree. Buffer them
+        // and apply each frame's events as one removal and one merge.
+        const progressEvents = createFrameBatcher<UploadProgress<Document>>(
+            (batch) => {
+                const finished = new Set(
+                    batch
+                        .filter(
+                            (progress) =>
+                                progress.status === "completed" ||
+                                progress.status === "error",
+                        )
+                        .map((progress) => progress.clientId),
+                );
+                if (finished.size > 0) {
+                    setUploadingDocuments((current) =>
+                        current.filter(
+                            (upload) => !finished.has(upload.clientId),
+                        ),
+                    );
+                }
+                addUploadedDocuments(
+                    batch.flatMap((progress) =>
+                        progress.status === "completed" && progress.result
+                            ? [progress.result]
+                            : [],
+                    ),
+                );
+            },
+        );
+
+        try {
+            const folderIdByPath = new Map<string, string>();
+            const folderPaths = Array.from(
+                new Map(
+                    entries.flatMap((entry) => {
+                        const segments = documentUploadFolderSegments(entry);
+                        return segments.map((_, index) => {
+                            const path = segments.slice(0, index + 1);
+                            return [path.join("/"), path] as const;
+                        });
+                    }),
+                ).values(),
+            ).sort((left, right) => left.length - right.length);
+
+            for (const path of folderPaths) {
+                const pathKey = path.join("/");
+                const parentPath = path.slice(0, -1);
+                const parentFolderId =
+                    parentPath.length === 0
+                        ? null
+                        : (folderIdByPath.get(parentPath.join("/")) ?? null);
+                if (parentPath.length > 0 && !parentFolderId) {
+                    throw new Error("Upload folder parent was not resolved");
+                }
+
+                let resolution = await resolveProjectFolderPath(
+                    projectId,
+                    [path.at(-1)!],
+                    parentFolderId,
+                    parentPath.length > 0 ? "reuse" : undefined,
+                );
+                if (resolution.conflict) {
+                    resolution = await resolveProjectFolderPath(
+                        projectId,
+                        [path.at(-1)!],
+                        parentFolderId,
+                        "rename",
+                    );
+                }
+                if (resolution.conflict) {
+                    throw new Error("Upload folder path conflicted");
+                }
+                folderIdByPath.set(pathKey, resolution.folder_id);
+                addResolvedFolders(resolution.folders);
+            }
+
+            const outcomes = await uploadProjectDocuments(
+                projectId,
+                pendingUploads.map(({ clientId, entry }) => {
+                    const folderSegments = documentUploadFolderSegments(entry);
+                    return {
+                        file: entry.file,
+                        clientId,
+                        folderId:
+                            folderSegments.length === 0
+                                ? null
+                                : (folderIdByPath.get(
+                                      folderSegments.join("/"),
+                                  ) ?? null),
+                    };
+                }),
+                { onProgress: progressEvents.push },
+            );
+            progressEvents.flush();
+            const uploaded = outcomes.flatMap((outcome) =>
+                outcome.status === "completed" && outcome.result
+                    ? [outcome.result]
+                    : [],
+            );
+            addUploadedDocuments(uploaded);
+            if (openInViewer) uploaded.forEach(handleDocClick);
+            // Per-file outcomes, not an all-or-nothing batch: the files that
+            // landed stay in the tree and the ones that did not are named.
+            // Dropping the failures silently is what made a partly-failed bulk
+            // upload look like it simply did nothing (#8).
+            if (uploaded.length < outcomes.length) {
+                setUploadWarning(
+                    combineUploadWarnings(
+                        unsupportedWarning,
+                        failedUploadMessage(outcomes),
+                    ),
+                );
+            }
+        } catch (err) {
+            console.error("Upload failed:", err);
+            setUploadWarning(
+                combineUploadWarnings(
+                    unsupportedWarning,
+                    err instanceof UploadBatchError
+                        ? failedUploadMessage(err.outcomes)
+                        : userFacingApiError(
+                              err,
+                              "Files could not be uploaded. Please try again.",
+                          ),
+                ),
+            );
+        } finally {
+            // A batch that failed part-way still lands what it completed.
+            progressEvents.flush();
+            setUploadingDocuments((current) =>
+                current.filter((upload) => !pendingIds.has(upload.clientId)),
+            );
+        }
+    }
+
+    function uploadFiles(files: File[]) {
+        return uploadEntries(documentUploadEntriesFromFiles(files));
+    }
+
+    function selectProject() {
+        if (!projectPicker.selectedId) return;
+        router.push(`/projects/${projectPicker.selectedId}/assistant/chat`);
+    }
+
+    const handleExplorerFileDrop = async (e: React.DragEvent) => {
+        e.preventDefault();
+        setExplorerDragOver(false);
+        const entries = await collectDroppedDocumentUploadEntries(
+            e.dataTransfer,
+        );
+        await uploadEntries(entries);
+        // Internal doc/folder moves are handled inside ProjectExplorer (stopPropagation)
+    };
+
+    const handleDocumentDrop = async (event: React.DragEvent) => {
+        if (!isDocumentViewerDrag(event.dataTransfer)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        setDocumentDragOver(false);
+        setDocumentDropError(null);
+        try {
+            const ids = readDocumentDragPayload(event.dataTransfer);
+            if (ids.length > 0) {
+                const documents = await Promise.all(
+                    ids.map(
+                        (id) =>
+                            project?.documents?.find(
+                                (document) => document.id === id,
+                            ) ?? getDocument(id),
+                    ),
+                );
+                documents.forEach(handleDocClick);
+            } else if (isExternalFileDrag(event.dataTransfer)) {
+                const entries = await collectDroppedDocumentUploadEntries(
+                    event.dataTransfer,
+                );
+                await uploadEntries(entries, true);
+            }
+        } catch (error) {
+            setDocumentDropError(
+                userFacingApiError(
+                    error,
+                    "These files could not be opened. Please try again.",
+                ),
+            );
+        }
+    };
+
+    // ── Folder handlers ───────────────────────────────────────────────────────
+    const handleCreateFolder = async (
+        parentId: string | null,
+        name: string,
+    ) => {
+        const folder = await createProjectFolder(
+            projectId,
+            name,
+            parentId ?? undefined,
+        );
+        setProject((prev) =>
+            prev
+                ? { ...prev, folders: [...(prev.folders ?? []), folder] }
+                : prev,
+        );
+    };
+
+    const handleRenameFolder = async (folderId: string, name: string) => {
+        await renameProjectFolder(projectId, folderId, name);
+        setProject((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      folders: (prev.folders ?? []).map((f) =>
+                          f.id === folderId ? { ...f, name } : f,
+                      ),
+                  }
+                : prev,
+        );
+    };
+
+    const handleRenameDoc = async (docId: string, filename: string) => {
+        const updated = await renameProjectDocument(projectId, docId, filename);
+        setProject((current) =>
+            current
+                ? {
+                      ...current,
+                      documents: (current.documents ?? []).map((document) =>
+                          document.id === docId
+                              ? { ...document, ...updated }
+                              : document,
+                      ),
+                  }
+                : current,
+        );
+        setTabs((current) =>
+            current.map((tab) =>
+                tab.documentId === docId
+                    ? { ...tab, filename: updated.filename }
+                    : tab,
+            ),
+        );
+    };
+
+    const folderDeleteImpact = useCallback(
+        (folderId: string) => {
+            const childrenByParent = new Map<string, string[]>();
+            for (const folder of project?.folders ?? []) {
+                if (!folder.parent_folder_id) continue;
+                const children =
+                    childrenByParent.get(folder.parent_folder_id) ?? [];
+                children.push(folder.id);
+                childrenByParent.set(folder.parent_folder_id, children);
+            }
+
+            const toDelete = new Set<string>();
+            const stack = [folderId];
+            while (stack.length > 0) {
+                const id = stack.pop();
+                if (!id || toDelete.has(id)) continue;
+                toDelete.add(id);
+                stack.push(...(childrenByParent.get(id) ?? []));
+            }
+
+            const folderIds = [...toDelete];
+            const documentIds = (project?.documents ?? [])
+                .filter((document) =>
+                    document.folder_id
+                        ? toDelete.has(document.folder_id)
+                        : false,
+                )
+                .map((document) => document.id);
+            return {
+                folderIds,
+                documentIds,
+                documentCount: documentIds.length,
+            };
+        },
+        [project?.documents, project?.folders],
+    );
+
+    const requestDeleteFolder = useCallback(
+        async (folderId: string) => {
+            const folder = (project?.folders ?? []).find(
+                (candidate) => candidate.id === folderId,
+            );
+            if (!folder) return;
+
+            const impact = folderDeleteImpact(folderId);
+            clearFolderDeleteDismissTimer();
+            dispatchFolderDeleteDialog({
+                type: "request",
+                pending: {
+                    folder,
+                    folderIds: impact.folderIds,
+                    documentIds: impact.documentIds,
+                    documentCount: impact.documentCount,
+                },
+            });
+        },
+        [clearFolderDeleteDismissTimer, folderDeleteImpact, project?.folders],
+    );
+
+    const confirmDeletePendingFolder = async () => {
+        const pending = pendingDeleteFolder;
+        if (!pending || pendingDeleteFolderStatus === "deleting") return;
+
+        dispatchFolderDeleteDialog({
+            type: "start",
+            folderId: pending.folder.id,
+        });
+
+        const folderIds = new Set(pending.folderIds);
+        const deletedDocumentIds = new Set(pending.documentIds);
+
+        try {
+            await deleteProjectFolder(projectId, pending.folder.id);
+            setProject((currentProject) =>
+                currentProject
+                    ? {
+                          ...currentProject,
+                          folders: (currentProject.folders ?? []).filter(
+                              (folder) => !folderIds.has(folder.id),
+                          ),
+                          documents: (currentProject.documents ?? []).filter(
+                              (document) =>
+                                  !deletedDocumentIds.has(document.id),
+                          ),
+                      }
+                    : currentProject,
+            );
+            setTabs((currentTabs) =>
+                removeDeletedDocumentTabs(currentTabs, deletedDocumentIds),
+            );
+            setActiveTabId((currentId) =>
+                clearDeletedDocumentId(currentId, deletedDocumentIds),
+            );
+            setSelectedDocId((currentId) =>
+                clearDeletedDocumentId(currentId, deletedDocumentIds),
+            );
+            dispatchFolderDeleteDialog({
+                type: "complete",
+                folderId: pending.folder.id,
+            });
+
+            clearFolderDeleteDismissTimer();
+            folderDeleteDismissTimerRef.current = window.setTimeout(() => {
+                dispatchFolderDeleteDialog({
+                    type: "dismiss-completed",
+                    folderId: pending.folder.id,
+                });
+                folderDeleteDismissTimerRef.current = null;
+            }, 650);
+        } catch (error) {
+            console.error("delete folder failed", error);
+            dispatchFolderDeleteDialog({
+                type: "failed",
+                folderId: pending.folder.id,
+            });
+        }
+    };
+
+    // Optimistic: the tree moves at once, and a failed request puts only
+    // that item back and rethrows so the drop target can report it.
+    const handleMoveDoc = (docId: string, targetFolderId: string | null) =>
+        moveProjectItemOptimistically({
+            project,
+            setProject,
+            kind: "doc",
+            id: docId,
+            targetFolderId,
+            request: () =>
+                moveDocumentToFolder(projectId, docId, targetFolderId),
+        });
+
+    const handleMoveFolder = (
+        folderId: string,
+        targetFolderId: string | null,
+    ) =>
+        moveProjectItemOptimistically({
+            project,
+            setProject,
+            kind: "folder",
+            id: folderId,
+            targetFolderId,
+            request: () =>
+                moveSubfolderToFolder(projectId, folderId, targetFolderId),
+        });
+
+    // The explorer reports failures on its own drop targets; this is the
+    // panel's root drop target, outside it.
+    const moveToRoot = async (kind: ProjectTreeItemKind, id: string) => {
+        const move = kind === "doc" ? handleMoveDoc : handleMoveFolder;
+        try {
+            await move(id, null);
+        } catch (error) {
+            notifyMoveFailure(kind, id, error, () => moveToRoot(kind, id));
+        }
+    };
+
+    const requestDeleteDoc = async (docId: string) => {
+        if (!canEditContent) return;
+        setDeleteTarget({
+            id: docId,
+            filename: tabs.find((tab) => tab.documentId === docId)?.filename
+                ?? project?.documents?.find((document) => document.id === docId)?.filename
+                ?? "this file",
+        });
+    };
+
+    const handleDeleteDoc = async (docId: string) => {
+        if (!canEditContent || deletingDocument) return;
+        setDeletingDocument(true);
+        try {
+            const document = await getDocument(docId);
+            if (document.can_delete !== true) {
+                setDocumentDropError("You do not have permission to delete this file.");
+                return;
+            }
+            await deleteDocument(docId);
+        } catch (err) {
+            // Keep the file and its live draft intact if deletion fails.
+            console.error("Delete failed:", err);
+            setDocumentDropError(
+                userFacingApiError(
+                    err,
+                    "This file could not be deleted. Please try again.",
+                ),
+            );
+            return;
+        } finally {
+            setDeletingDocument(false);
+        }
+        documentViewers.discardDeleted([docId]);
+        setDeleteTarget(null);
+        setProject((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      documents: (prev.documents ?? []).filter(
+                          (d) => d.id !== docId,
+                      ),
+                  }
+                : prev,
+        );
+        setTabs((prev) => prev.filter((t) => t.documentId !== docId));
+        if (activeTabId === docId) {
+            setActiveTabId(null);
+            setSelectedDocId(null);
+        }
+    };
+
+    // ── Resize handlers ───────────────────────────────────────────────────────
+    const panelLayout = useMemo(
+        () => ({ explorerCollapsed, sideChatOpen }),
+        [explorerCollapsed, sideChatOpen],
+    );
+
+    const onExplorerDividerDrag = useCallback(
+        (dx: number) => {
+            setPanelWidths((current) =>
+                resizePanel(
+                    current,
+                    "explorer",
+                    current.explorer + dx,
+                    workspaceRef.current?.clientWidth,
+                    panelLayout,
+                ),
+            );
+        },
+        [panelLayout],
+    );
+
+    const onChatDividerDrag = useCallback(
+        (dx: number) => {
+            setPanelWidths((current) =>
+                resizePanel(
+                    current,
+                    "chat",
+                    current.chat - dx,
+                    workspaceRef.current?.clientWidth,
+                    panelLayout,
+                ),
+            );
+        },
+        [panelLayout],
+    );
+
+    const onChatSplitDividerDrag = useCallback((dx: number) => {
+        setPanelWidths((current) => resizeChatSplit(current, dx));
+    }, []);
+
+    // The document view gives up width as panels open or the window narrows,
+    // but never its minimum: the explorer and chats shrink to make room.
+    useEffect(() => {
+        const workspace = workspaceRef.current;
+        if (!workspace) return;
+
+        const fitPanels = () => {
+            if (workspace.clientWidth <= 0) return;
+            setPanelWidths((current) =>
+                fitPanelWidths(current, workspace.clientWidth, panelLayout),
+            );
+        };
+
+        fitPanels();
+        if (typeof ResizeObserver === "undefined") {
+            window.addEventListener("resize", fitPanels);
+            return () => window.removeEventListener("resize", fitPanels);
+        }
+
+        const observer = new ResizeObserver(fitPanels);
+        observer.observe(workspace);
+        return () => observer.disconnect();
+    }, [panelLayout]);
+
+    // A passage the reader asked about in the side chat, held until that
+    // chat's composer is on the page (opening the side chat if need be).
+    const [sideChatExcerpt, setSideChatExcerpt] = useState<{
+        id: number;
+        excerpt: MessageExcerpt;
+    } | null>(null);
+    const clearSideChatExcerpt = useCallback(
+        () => setSideChatExcerpt(null),
+        [],
+    );
+    // Counted apart from the held passage: that is cleared once the side
+    // chat takes it, and an id that started over would look to that chat
+    // like the passage it already has.
+    const sideChatExcerptCount = useRef(0);
+    function askInSideChat(excerpt: MessageExcerpt) {
+        if (sideChatId === null) handleOpenSideChat();
+        sideChatExcerptCount.current += 1;
+        setSideChatExcerpt({ id: sideChatExcerptCount.current, excerpt });
+    }
+
+    function handleOpenSideChat() {
+        // Two chats, the explorer and a readable document do not fit a
+        // narrow workspace; the explorer is the one that folds away.
+        const workspaceWidth = workspaceRef.current?.clientWidth;
+        if (workspaceWidth && !fitsWithExplorer(workspaceWidth, true)) {
+            setExplorerCollapsed(true);
+        }
+        openSideChat("");
+    }
+
+    function handleCloseSideChat() {
+        activatePrimaryChat();
+        closeSideChat();
+    }
+
+    // The document on screen rides along with a message as context.
+    const displayedDoc = useMemo(
+        () =>
+            !activeTab || activeTab.sourceDocument?.type === "case"
+                ? null
+                : {
+                      filename: activeTab.filename,
+                      documentId: activeTab.documentId,
+                  },
+        [activeTab],
+    );
+    const reportChatActionError = useCallback(
+        (error: { title: string; message: string }) =>
+            setChatActionError(error),
+        [],
+    );
+    const chatPanelProps = {
+        projectId,
+        project,
+        projectLoaded,
+        claimCreated,
+        chats: availableProjectChats,
+        chatsLoading: projectChats === null,
+        setProjectChats,
+        responseStatuses: projectHistoryStatuses,
+        onClearResponseStatus: clearProjectHistoryStatus,
+        displayedDoc,
+        activeCitation,
+        resolvingEdits,
+        resolvedEditStatuses,
+        onDocClick: handleDocClick,
+        onCitationClick: handleCitationClick,
+        onCaseClick: handleCaseClick,
+        onOpenDocument: handleOpenDocument,
+        onEditViewClick: handleEditViewClick,
+        onEditResolveStart: handleEditResolveStart,
+        onEditResolved: handleEditResolved,
+        onEditError: handleEditError,
+        onProjectMutated: refreshProject,
+        onOpenMemory: () => setProjectMemoryOpen(true),
+        onEditorGate: setEditorGateAction,
+        onOwnerGate: setOwnerOnlyAction,
+        onActionError: reportChatActionError,
+    };
+
+    return (
+        <div
+            ref={workspaceRef}
+            className="my-2 ml-2 mr-3 flex h-[calc(100dvh-1rem)] min-h-0 md:my-3 md:h-[calc(100dvh-1.5rem)]"
+            onDragOver={(event) => {
+                if (isExternalFileDrag(event.dataTransfer)) {
+                    event.preventDefault();
+                }
+            }}
+            onDrop={(event) => {
+                if (isExternalFileDrag(event.dataTransfer)) {
+                    event.preventDefault();
+                }
+            }}
+        >
+            {/* LEFT: Project Explorer */}
+            {!explorerCollapsed && (
+                <>
+                    <div
+                        style={{ width: explorerWidth }}
+                        className={cn(
+                            "flex shrink-0 flex-col overflow-hidden rounded-l-2xl rounded-r-lg",
+                            LIQUID_GLASS_FLAT_CLASS,
+                        )}
+                        onDragOver={(e) => {
+                            e.preventDefault();
+                            // Only show the upload overlay for external file drags, not internal moves
+                            if (
+                                isExternalFileDrag(e.dataTransfer) &&
+                                !isProjectItemDrag(e.dataTransfer)
+                            )
+                                setExplorerDragOver(true);
+                        }}
+                        onDragLeave={(e) => {
+                            if (
+                                !e.currentTarget.contains(
+                                    e.relatedTarget as Node,
+                                )
+                            )
+                                setExplorerDragOver(false);
+                        }}
+                        onDrop={handleExplorerFileDrop}
+                    >
+                        {/* Explorer header */}
+                        <div className="flex h-12 shrink-0 items-center justify-between px-3">
+                            <span className="text-xs text-gray-700">
+                                Explorer
+                            </span>
+                            <div className="flex items-center gap-1">
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept={SUPPORTED_DOCUMENT_ACCEPT}
+                                    multiple
+                                    className="hidden"
+                                    onChange={(event) => {
+                                        const files = Array.from(
+                                            event.target.files ?? [],
+                                        );
+                                        event.target.value = "";
+                                        void uploadFiles(files);
+                                    }}
+                                />
+                                <input
+                                    ref={folderInputRef}
+                                    type="file"
+                                    accept={SUPPORTED_DOCUMENT_ACCEPT}
+                                    multiple
+                                    className="hidden"
+                                    {...{
+                                        webkitdirectory: "",
+                                        directory: "",
+                                    }}
+                                    onChange={(event) => {
+                                        const entries =
+                                            documentUploadEntriesFromFiles(
+                                                event.target.files ?? [],
+                                            );
+                                        event.target.value = "";
+                                        void uploadEntries(entries);
+                                    }}
+                                />
+                                <DocumentUploadMenu
+                                    onSavedFiles={() =>
+                                        setAddDocumentsOpen(true)
+                                    }
+                                    onUploadFiles={() =>
+                                        fileInputRef.current?.click()
+                                    }
+                                    onUploadFolder={() =>
+                                        folderInputRef.current?.click()
+                                    }
+                                    disabled={!canEditContent}
+                                />
+                                <HeaderActionsMenu
+                                    title="Explorer actions"
+                                    triggerClassName="h-6 w-6 text-gray-500 hover:text-gray-900"
+                                    items={[
+                                        {
+                                            label: "Select project",
+                                            icon: FolderOpen,
+                                            onSelect: () =>
+                                                void projectPicker.openPicker(),
+                                        },
+                                        {
+                                            label: "New subfolder",
+                                            icon: FolderPlus,
+                                            onSelect: () =>
+                                                projectExplorerRef.current?.createRootFolder(),
+                                            disabled: !canEditContent,
+                                        },
+                                        {
+                                            label: "Go to project page",
+                                            icon: ArrowUpRight,
+                                            onSelect: () =>
+                                                router.push(
+                                                    `/projects/${projectId}`,
+                                                ),
+                                        },
+                                    ]}
+                                />
+                                <button
+                                    onClick={() => setExplorerCollapsed(true)}
+                                    title="Collapse explorer"
+                                    className="rounded p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                                >
+                                    <ChevronLeft className="h-3.5 w-3.5" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Drop overlay */}
+                        <div
+                            className={cn(
+                                "relative h-full flex-1 overflow-y-auto rounded-bl-2xl rounded-br-lg",
+                                explorerDragOver &&
+                                    "bg-blue-50 ring-2 ring-inset ring-blue-400",
+                            )}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                            }}
+                            onDrop={async (e) => {
+                                e.preventDefault();
+                                const docId = e.dataTransfer.getData(
+                                    "application/mike-doc",
+                                );
+                                const folderId = e.dataTransfer.getData(
+                                    "application/mike-folder",
+                                );
+                                if (docId) {
+                                    e.stopPropagation();
+                                    await moveToRoot("doc", docId);
+                                } else if (folderId) {
+                                    e.stopPropagation();
+                                    await moveToRoot("folder", folderId);
+                                }
+                                // External file drops are not stopped — they bubble to handleExplorerFileDrop
+                            }}
+                        >
+                            {explorerDragOver && (
+                                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                                    <p className="text-xs text-blue-500 font-medium">
+                                        Drop to upload
+                                    </p>
+                                </div>
+                            )}
+                            <ProjectExplorer
+                                ref={projectExplorerRef}
+                                projectName={project?.name}
+                                documents={project?.documents ?? []}
+                                folders={project?.folders ?? []}
+                                selectedDocId={selectedDocId}
+                                onDocClick={handleDocClick}
+                                onDownloadDoc={
+                                    explorerDownload.downloadDocument
+                                }
+                                onDownloadFolder={
+                                    explorerDownload.downloadFolder
+                                }
+                                downloading={explorerDownload.downloading}
+                                onAddToChat={(document) =>
+                                    addDocToChat(document)
+                                }
+                                addToChatDisabled={!canSendChat}
+                                onCreateFolder={
+                                    canEditContent
+                                        ? handleCreateFolder
+                                        : undefined
+                                }
+                                onRenameFolder={handleRenameFolder}
+                                onRenameDoc={handleRenameDoc}
+                                onDeleteFolder={requestDeleteFolder}
+                                onDeleteDoc={canEditContent ? requestDeleteDoc : undefined}
+                                onMoveDoc={handleMoveDoc}
+                                onMoveFolder={handleMoveFolder}
+                                uploadingDocuments={uploadingDocuments}
+                            />
+                        </div>
+                    </div>
+                    <Divider onDrag={onExplorerDividerDrag} />
+                </>
+            )}
+
+            {/* Collapsed explorer toggle */}
+            {explorerCollapsed && (
+                <div
+                    className={cn(
+                        "flex shrink-0 flex-col overflow-hidden rounded-l-2xl rounded-r-lg",
+                        LIQUID_GLASS_FLAT_CLASS,
+                    )}
+                >
+                    <div className="flex h-12 shrink-0 items-center justify-center px-1">
+                        <button
+                            onClick={() => setExplorerCollapsed(false)}
+                            title="Expand explorer"
+                            className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                        >
+                            <ChevronRight className="h-3.5 w-3.5" />
+                        </button>
+                    </div>
+                </div>
+            )}
+            {explorerCollapsed && (
+                <div className="w-1.5 shrink-0" aria-hidden="true" />
+            )}
+
+            {/* CENTER: Document Panel */}
+            <div
+                role="region"
+                aria-label="Document viewer"
+                style={{ minWidth: DOCUMENT_MIN }}
+                className={cn(
+                    "relative flex flex-1 flex-col overflow-hidden rounded-lg",
+                    LIQUID_GLASS_FLAT_CLASS,
+                )}
+                onDragOverCapture={(event) => {
+                    if (!isDocumentViewerDrag(event.dataTransfer)) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.dataTransfer.dropEffect = "copy";
+                    setDocumentDragOver(true);
+                }}
+                onDragLeave={(event) => {
+                    if (
+                        !event.currentTarget.contains(
+                            event.relatedTarget as Node,
+                        )
+                    ) {
+                        setDocumentDragOver(false);
+                    }
+                }}
+                onDropCapture={handleDocumentDrop}
+            >
+                {documentDragOver && (
+                    <div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center rounded-lg bg-white/50 backdrop-blur-md">
+                        <p className="font-serif text-xl text-gray-900">
+                            Drop files here to open
+                        </p>
+                    </div>
+                )}
+                <ProjectDocumentTabs
+                    onAddToChat={(document) =>
+                        addDocToChat(document)
+                    }
+                    addToChatDisabled={!canSendChat}
+                    onDownloadDoc={(document) => documentViewers.download(document.id, document.id, tabs.find((tab) => tab.documentId === document.id)?.versionId, document.filename)}
+                    downloading={explorerDownload.downloading}
+                    onRenameDoc={handleRenameDoc}
+                    onDeleteDoc={requestDeleteDoc}
+                    documentPermissions={documentPermissions}
+                    tabs={tabs}
+                    documents={project?.documents ?? []}
+                    activeTabId={activeTabId}
+                    onActivate={switchTab}
+                    onClose={(id) => documentViewers.requestClose([id], () => closeTab(id))}
+                    onReorder={(draggedId, targetId, position) =>
+                        setTabs((current) =>
+                            reorderTabs(
+                                current,
+                                draggedId,
+                                targetId,
+                                position,
+                                (tab) => tab.documentId,
+                            ),
+                        )
+                    }
+                />
+                <ProjectDocumentPanels
+                    canEdit={canEditContent}
+                    documentPermissions={documentPermissions}
+                    onDownloadReady={documentViewers.registerDownload}
+                    onCloseGuardReady={documentViewers.registerCloseGuard}
+                    tabs={tabs}
+                    documents={project?.documents ?? []}
+                    activeTabId={activeTabId}
+                    onVersionChange={(documentId, version) => documentViewers.requestClose([documentId], () => {
+                        openRequest.current += 1;
+                        setTabs((current) =>
+                            current.map((tab) => {
+                                if (tab.documentId !== documentId) return tab;
+                                const document = panelDocumentAtVersion(
+                                    tab.sourceDocument ?? {
+                                        document_id: documentId,
+                                        title: tab.filename,
+                                        type: panelDocumentType(tab.filename),
+                                        metadata: [],
+                                        quotes: [],
+                                    },
+                                    version,
+                                );
+                                return {
+                                    ...tab,
+                                    filename: document.title,
+                                    fileType: document.type,
+                                    versionId: version.id,
+                                    sourceDocument: document,
+                                    annotation: undefined,
+                                    warning: null,
+                                };
+                            }),
+                        );
+                    })}
+                    onCloseAnnotation={handleCloseAnnotation}
+                    isDocumentReloading={(documentId) =>
+                        Object.values(resolvingEdits).includes(documentId)
+                    }
+                    isEditReloading={(editId) => !!resolvingEdits[editId]}
+                    onEditResolveStart={handleEditResolveStart}
+                    onEditResolved={handleEditResolved}
+                    onEditError={handleEditError}
+                    onWarningDismiss={dismissTabWarning}
+                />
+            </div>
+
+            {documentViewers.confirmation}
+            <ConfirmPopup
+                open={!!deleteTarget}
+                title="Delete file?"
+                message={`Delete “${deleteTarget?.filename ?? "this file"}” and its versions, including any unsaved edits? This cannot be undone.`}
+                confirmLabel="Delete file"
+                confirmVariant="danger"
+                confirmStatus={deletingDocument ? "loading" : "idle"}
+                confirmDisabled={!canEditContent}
+                onCancel={() => { if (!deletingDocument) setDeleteTarget(null); }}
+                onConfirm={() => { if (deleteTarget) void handleDeleteDoc(deleteTarget.id); }}
+            />
+            <Divider onDrag={onChatDividerDrag} />
+
+            {/* RIGHT: Assistant panel, and a second chat beside it */}
+            <ProjectChatPanel
+                {...chatPanelProps}
+                ref={primaryChatPanelRef}
+                chatId={activeChatId}
+                openChat={openChat}
+                adoptChat={adoptChat}
+                hiddenChatId={sideChatId}
+                width={panelWidths.chat}
+                roundedClassName={
+                    sideChatOpen ? "rounded-lg" : "rounded-l-lg rounded-r-2xl"
+                }
+                onActivate={activatePrimaryChat}
+                onOpenSideChat={sideChatOpen ? undefined : handleOpenSideChat}
+                onCloseSideChat={sideChatOpen ? handleCloseSideChat : undefined}
+                onAskInSideChat={askInSideChat}
+            />
+            {sideChatId !== null && (
+                <>
+                    <Divider onDrag={onChatSplitDividerDrag} />
+                    <ProjectChatPanel
+                        {...chatPanelProps}
+                        ref={sideChatPanelRef}
+                        isSideChat
+                        incomingExcerpt={sideChatExcerpt}
+                        onIncomingExcerptAdded={clearSideChatExcerpt}
+                        chatId={sideChatId}
+                        openChat={openSideChat}
+                        adoptChat={adoptSideChat}
+                        hiddenChatId={activeChatId || null}
+                        width={panelWidths.sideChat}
+                        roundedClassName="rounded-l-lg rounded-r-2xl"
+                        onActivate={activateSideChat}
+                        onClose={handleCloseSideChat}
+                    />
+                </>
+            )}
+            {project && (
+                <AddDocumentsModal
+                    open={addDocumentsOpen}
+                    onClose={() => setAddDocumentsOpen(false)}
+                    onSelect={(documents) => addUploadedDocuments(documents)}
+                    breadcrumb={[
+                        "Projects",
+                        project.name +
+                            (project.cm_number
+                                ? ` (${project.cm_number})`
+                                : ""),
+                        "Add Documents",
+                    ]}
+                    projectId={projectId}
+                    uploadStateId={`project-chat:${projectId}`}
+                />
+            )}
+            <WarningPopup
+                open={!!projectPicker.error}
+                onClose={projectPicker.clearError}
+                title="Projects could not be loaded"
+                message={projectPicker.error ?? ""}
+            />
+            <WarningPopup
+                open={!!uploadWarning}
+                onClose={() => setUploadWarning(null)}
+                title="Some files were not uploaded"
+                message={uploadWarning ?? ""}
+            />
+            <WarningPopup
+                open={!!documentDropError}
+                onClose={() => setDocumentDropError(null)}
+                title="Files could not be opened"
+                message={documentDropError ?? ""}
+            />
+            <ProjectPickerModal
+                open={projectPicker.open}
+                onClose={projectPicker.closePicker}
+                projects={projectPicker.projects ?? []}
+                loading={projectPicker.loading}
+                selectedId={projectPicker.selectedId}
+                onSelect={projectPicker.setSelectedId}
+                breadcrumbs={["IDE", "Select project"]}
+                primaryAction={{
+                    label: "Select project",
+                    type: "button",
+                    onClick: selectProject,
+                    disabled: !projectPicker.selectedId,
+                }}
+            />
+            <ProjectMemoryModal
+                key={projectId}
+                open={projectMemoryOpen}
+                onClose={() => setProjectMemoryOpen(false)}
+                projectId={projectId}
+                projectName={project?.name ?? null}
+                projectLoading={!project}
+                canEdit={canEditContent}
+                canManage={canManageProject}
+                onMemoryEnabledChange={(enabled) =>
+                    setProject((current) =>
+                        current && current.memory_enabled !== enabled
+                            ? { ...current, memory_enabled: enabled }
+                            : current,
+                    )
+                }
+            />
+            <WarningPopup
+                open={!!explorerDownload.error}
+                title="Download failed"
+                message={explorerDownload.error}
+                onClose={explorerDownload.clearError}
+            />
+            <PermissionDeniedPopup
+                open={!!ownerOnlyAction}
+                action={ownerOnlyAction ?? undefined}
+                contacts={project?.admin_contacts}
+                onClose={() => setOwnerOnlyAction(null)}
+            />
+            <PermissionDeniedPopup
+                open={!!editorGateAction}
+                action={editorGateAction ?? undefined}
+                requiredRole="editor"
+                contacts={project?.admin_contacts}
+                onClose={() => setEditorGateAction(null)}
+            />
+            <WarningPopup
+                open={!!chatActionError}
+                title={chatActionError?.title}
+                message={chatActionError?.message}
+                onClose={() => setChatActionError(null)}
+            />
+            <ConfirmPopup
+                open={!!pendingDeleteFolder}
+                title="Delete folder?"
+                message={
+                    pendingDeleteFolder ? (
+                        <div className="space-y-2">
+                            <p>
+                                This will permanently delete{" "}
+                                <span className="font-medium text-gray-950">
+                                    {pendingDeleteFolder.folderIds.length}{" "}
+                                    {pendingDeleteFolder.folderIds.length === 1
+                                        ? "folder"
+                                        : "folders"}
+                                </span>
+                                , including{" "}
+                                <span className="font-medium text-gray-950">
+                                    {pendingDeleteFolder.folder.name}
+                                </span>
+                                {pendingDeleteFolder.folderIds.length > 1
+                                    ? " and its nested subfolders"
+                                    : ""}
+                                .
+                            </p>
+                            {pendingDeleteFolder.documentCount > 0 && (
+                                <p>
+                                    {pendingDeleteFolder.documentCount}{" "}
+                                    {pendingDeleteFolder.documentCount === 1
+                                        ? "document"
+                                        : "documents"}{" "}
+                                    in the deleted{" "}
+                                    {pendingDeleteFolder.folderIds.length === 1
+                                        ? "folder"
+                                        : "folders"}{" "}
+                                    will also be permanently deleted.
+                                </p>
+                            )}
+                        </div>
+                    ) : undefined
+                }
+                confirmLabel="Delete"
+                confirmVariant="danger"
+                confirmStatus={
+                    pendingDeleteFolderStatus === "deleting"
+                        ? "loading"
+                        : pendingDeleteFolderStatus === "deleted"
+                          ? "complete"
+                          : "idle"
+                }
+                cancelLabel="Cancel"
+                onCancel={() => {
+                    if (pendingDeleteFolderStatus === "deleting") return;
+                    clearFolderDeleteDismissTimer();
+                    dispatchFolderDeleteDialog({ type: "cancel" });
+                }}
+                onConfirm={() => void confirmDeletePendingFolder()}
+            />
+        </div>
+    );
+}

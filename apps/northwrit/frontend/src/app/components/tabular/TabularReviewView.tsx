@@ -1,0 +1,2342 @@
+"use client";
+
+import { RowActionMenuItems } from "@/app/components/shared/RowActions";
+import { rowActionSelectionIds } from "@/app/components/shared/TablePrimitive";
+import { SelectionActionsMenu } from "@/app/components/shared/SelectionActionsMenu";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useReviewCells } from "./reviewCellStore";
+import { indexReviewCells } from "./reviewCellIndex";
+import { reviewRowRemoval } from "./reviewRowRemoval";
+import { reviewColumnRemoval } from "./reviewColumnRemoval";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+    Plus,
+    Loader2,
+    Square,
+    Play,
+    MessageSquare,
+    MessageSquareX,
+    Download,
+    Users,
+    X,
+    Pencil,
+    Trash2,
+    WandSparkles,
+} from "lucide-react";
+
+import {
+    clearTabularCells,
+    deleteTabularReview,
+    getTabularReviewAccess,
+    getTabularReview,
+    getTabularReviewHistoryStatuses,
+    getProject,
+    getTabularReviewPeople,
+    listProjects,
+    grantTabularReviewAccess,
+    regenerateTabularCell,
+    stopTabularGeneration,
+    streamTabularGeneration,
+    streamTabularGenerationResume,
+    updateTabularReview,
+    revokeTabularReviewAccess,
+    uploadReviewDocument,
+    MikeApiError,
+    type ContentAccessGrant,
+} from "@/app/lib/mikeApi";
+import type {
+    ColumnConfig,
+    Document,
+    Project,
+    TabularCell,
+    TabularReview,
+    TabularReviewRow,
+    Workflow,
+} from "../shared/types";
+import { AddColumnModal } from "./AddColumnModal";
+import { TRWorkflowModal } from "./TRWorkflowModal";
+import { AddDocumentsModal } from "../modals/AddDocumentsModal";
+import { AccessModal } from "../modals/AccessModal";
+import { PermissionDeniedPopup } from "../popups/PermissionDeniedPopup";
+import { ApiKeyMissingPopup } from "../popups/ApiKeyMissingPopup";
+import { ConfirmPopup } from "../popups/ConfirmPopup";
+import { WarningPopup } from "../popups/WarningPopup";
+import { NoModelsWarningPopup } from "../popups/NoModelsWarningPopup";
+import { HeaderActionsMenu } from "../shared/HeaderActionsMenu";
+import { DocumentUploadMenu } from "../shared/DocumentUploadMenu";
+import { useAuth } from "@/app/contexts/AuthContext";
+import {
+    can,
+    roleFromLoaded,
+    type ProjectRole,
+} from "@/app/lib/permissions";
+import {
+    permissionDeniedProps,
+    type OwnerGate,
+} from "@/app/components/projects/ProjectWorkspace";
+import { useUserProfile } from "@/app/contexts/UserProfileContext";
+import { useModelApiKeys } from "@/app/hooks/useModelApiKeys";
+import { useModelRouterSelections } from "@/app/hooks/useModelRouterSelections";
+import {
+    getModelProvider,
+    isModelAvailable,
+    providerLabel,
+    type ModelProvider,
+} from "@/app/lib/modelAvailability";
+import { restoreOptimisticallyDeletedRows } from "@/app/lib/optimisticRows";
+import { missingById } from "@/app/lib/idCollections";
+import { TRSidePanel } from "./TRSidePanel";
+import { TRTable } from "./TRTable";
+import type { TRTableHandle } from "./TRTable";
+import { TRChatPanel } from "./TRChatPanel";
+import { TabularReviewDetailsModal } from "./TabularReviewDetailsModal";
+import { exportTabularReviewToExcel } from "./exportToExcel";
+import { readSseFrames } from "@/app/lib/sse";
+import {
+    UserVisibleError,
+    notifyError,
+    reportFlowFailure,
+} from "@/app/lib/userFacingError";
+import { useAssignLatest, useLatestRef } from "@/app/hooks/useLatestRef";
+import { useSidebar } from "@/app/contexts/SidebarContext";
+import {
+    DocumentWorkspaceScope,
+    PERSONAL_WORKSPACE,
+} from "@/app/contexts/WorkspaceContext";
+import { PageHeader } from "../shared/PageHeader";
+import { TableToolbar } from "../shared/TableToolbar";
+import { TabPillButtonUI } from "@mike/ui";
+import { LIQUID_GLASS_SUBTLE_CLASS } from "@/app/components/ui/liquid-surface";
+import { ModelToggle } from "../assistant/ModelToggle";
+import {
+    type NoModelsReason,
+} from "@mike/client";
+import { SUPPORTED_DOCUMENT_ACCEPT } from "@/app/lib/documentUploadValidation";
+import { useConfiguredModels } from "@/app/hooks/useConfiguredModels";
+import { useItemWorkspace } from "@/app/hooks/useItemWorkspace";
+import { notifyTabularReviewsChanged } from "@/app/lib/tabularReviewChanges";
+
+interface Props {
+    reviewId: string;
+    projectId?: string;
+}
+
+/** Display a review grid and resume its active generation through the latest stream handler. */
+export function TRView({ reviewId, projectId }: Props) {
+    const configuredModels = useConfiguredModels();
+    const configuredModelIds = useMemo(
+        () => configuredModels.map((model) => model.id),
+        [configuredModels],
+    );
+    const { setSidebarOpen } = useSidebar();
+    const [review, setReview] = useState<TabularReview | null>(null);
+    // Generation and row/column edits can update the review outside PATCH.
+    // Refresh History when the authoritative detail reports new activity.
+    useEffect(() => {
+        if (review?.updated_at) notifyTabularReviewsChanged();
+    }, [review?.id, review?.updated_at]);
+    // Opening a review opens its workspace. One in a project follows its
+    // project, which says so itself.
+    useItemWorkspace(
+        projectId ? null : review?.id,
+        review ? (review.org_id ?? null) : undefined,
+    );
+    const [project, setProject] = useState<Project | null>(null);
+    const [cells, setCells, cellStore] = useReviewCells();
+    const [documents, setDocuments] = useState<Document[]>([]);
+    const [rows, setRows] = useState<TabularReviewRow[]>([]);
+    const [columns, setColumns] = useState<ColumnConfig[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [generating, setGenerating] = useState(false);
+    const [stoppingGeneration, setStoppingGeneration] = useState(false);
+    const [generationGuard, setGenerationGuard] = useState<
+        "running" | "stale" | null
+    >(null);
+    const [reloadingLatestReview, setReloadingLatestReview] = useState(false);
+    const [savingColumn, setSavingColumn] = useState(false);
+    const [savingColumnsConfig, setSavingColumnsConfig] = useState(false);
+    const [addColOpen, setAddColOpen] = useState(false);
+    const [addDocsOpen, setAddDocsOpen] = useState(false);
+    const [detailsOpen, setDetailsOpen] = useState(false);
+    const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
+    const [accessModalOpen, setAccessModalOpen] = useState(false);
+    const [grants, setGrants] = useState<ContentAccessGrant[] | null>(null);
+    // The organization whose members a standalone review can be shared with,
+    // as the server says: null for a personal review, which can go to any
+    // Mike user. Undefined until the access summary has loaded.
+    const [accessOrgId, setAccessOrgId] = useState<string | null | undefined>(
+        undefined,
+    );
+    const [workflowModalOpen, setWorkflowModalOpen] = useState(false);
+    const [applyingWorkflow, setApplyingWorkflow] = useState(false);
+    const [deleteReviewConfirmOpen, setDeleteReviewConfirmOpen] =
+        useState(false);
+    const [deleteReviewStatus, setDeleteReviewStatus] = useState<
+        "idle" | "deleting" | "deleted"
+    >("idle");
+    const [ownerOnlyAction, setOwnerOnlyAction] = useState<OwnerGate | null>(
+        null,
+    );
+    const { user } = useAuth();
+    const [expandedCell, setExpandedCell] = useState<TabularCell | null>(null);
+    const [expandedCellCitation, setExpandedCellCitation] = useState<
+        | {
+              quote: string;
+              page?: number;
+              sheet?: string;
+              cell?: string;
+              documentId?: string;
+              citationRef: number;
+          }
+        | undefined
+    >(undefined);
+    const [expandedDocumentId, setExpandedDocumentId] = useState<
+        string | undefined
+    >(undefined);
+    const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
+    const [actionsOpen, setActionsOpen] = useState(false);
+    const [search, setSearch] = useState("");
+    const [dragOverReviewFiles, setDragOverReviewFiles] = useState(false);
+    const [uploadingDroppedFilenames, setUploadingDroppedFilenames] = useState<
+        string[]
+    >([]);
+    const [generationError, setGenerationError] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const initialChatParamRef = useRef<string | null>(searchParams.get("chat"));
+    const [chatOpen, setChatOpen] = useState(!!initialChatParamRef.current);
+    const [selectedChatId, setSelectedChatId] = useState<string | null>(
+        initialChatParamRef.current && initialChatParamRef.current !== "new"
+            ? initialChatParamRef.current
+            : null,
+    );
+    const [highlightedCell, setHighlightedCell] = useState<{
+        colIdx: number;
+        rowIdx: number;
+    } | null>(null);
+    const [apiKeyWarning, setApiKeyWarning] = useState<{
+        kind: "missing" | "rejected";
+        provider: ModelProvider | null;
+    } | null>(null);
+    const [noModelsWarning, setNoModelsWarning] =
+        useState<NoModelsReason | null>(null);
+    const [modelRequiredWarning, setModelRequiredWarning] = useState(false);
+    const tableRef = useRef<TRTableHandle>(null);
+    const reviewFileUploadInputRef = useRef<HTMLInputElement>(null);
+    const reviewFolderUploadInputRef = useRef<HTMLInputElement>(null);
+    const generationAbortRef = useRef<AbortController | null>(null);
+    const stopRequestedRef = useRef(false);
+    // The sequence number of the last frame this client has applied. The
+    // server numbers every frame of a run (`id:`), so a dropped connection
+    // resumes from here + 1 instead of replaying the whole grid.
+    const lastFrameIdRef = useRef(0);
+    // Only one resume stream may be open at a time — mount, a 202 regenerate
+    // and a dropped generate stream can all ask for one.
+    const resumeStreamOpenRef = useRef(false);
+    // A notice outlives the render that raised it: its "Retry" closure and
+    // everything that closure captured are frozen at the moment of the
+    // failure, while the review moves on — another column is edited, a run
+    // fills cells in. These refs let a revert touch only the item that
+    // failed and let a retry re-enter the CURRENT handler against the
+    // CURRENT config instead of resurrecting a stale snapshot.
+    const columnsRef = useRef(columns);
+    const generatingRef = useRef(false);
+
+    useEffect(() => {
+        columnsRef.current = columns;
+    }, [columns]);
+
+    const retryRef = useRef<{
+        resume: (opts?: { stoppable?: boolean }) => Promise<void>;
+        reloadReview: () => Promise<void>;
+        generate: () => void;
+        updateColumn: (column: ColumnConfig) => void;
+        deleteColumn: (columnIndex: number) => void;
+    } | null>(null);
+    // These handlers are re-created every render, and a retry must always
+    // land on the newest one.
+    useAssignLatest(retryRef, {
+        resume: (opts) => resumeGenerationStream(opts),
+        reloadReview: () => loadLatestReview(),
+        generate: () => void handleGenerate(),
+        updateColumn: (column: ColumnConfig) => void handleUpdateColumn(column),
+        deleteColumn: (columnIndex: number) =>
+            void handleDeleteColumn(columnIndex),
+    });
+
+    /**
+     * Apply a column change to the latest config, not to the array this
+     * render captured, and return the result to save. The ref is written
+     * eagerly because two edits can start in the same tick, before React
+     * has re-rendered with the first one.
+     */
+    function applyColumns(
+        update: (current: ColumnConfig[]) => ColumnConfig[],
+    ): ColumnConfig[] {
+        const next = update(columnsRef.current);
+        columnsRef.current = next;
+        setColumns(next);
+        return next;
+    }
+
+    useEffect(
+        () => () => {
+            generationAbortRef.current?.abort();
+        },
+        [],
+    );
+    const router = useRouter();
+    const { profile, loading: profileLoading } = useUserProfile();
+    // Unknown key state fails open; the submit gates below already skip when
+    // apiKeys is undefined.
+    const apiKeys = useModelApiKeys();
+    const modelRouterSelections = useModelRouterSelections();
+    const tabularModel = review?.model ?? "";
+    const cellMutationsBlocked =
+        generating || stoppingGeneration || review?.is_running === true;
+    const cellMutationsBlockedRef = useLatestRef(cellMutationsBlocked);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (chatOpen) {
+            params.set("chat", selectedChatId ?? "new");
+        } else {
+            params.delete("chat");
+        }
+        const query = params.toString();
+        const newUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
+        window.history.replaceState(null, "", newUrl);
+    }, [chatOpen, selectedChatId]);
+
+
+    useEffect(() => {
+        // Cancellation flag: on a rapid reviewId change the previous fetch
+        // can resolve AFTER the new one and clobber fresh state with stale
+        // data; drop its results instead.
+        let cancelled = false;
+        const fetches: Promise<unknown>[] = [
+            getTabularReview(reviewId).then(
+                ({ review, cells, rows, documents, active_generation }) => {
+                    if (cancelled) return;
+                    setReview(review);
+                    setCells(cells);
+                    setRows(rows);
+                    setDocuments(documents);
+                    setColumns(review.columns_config || []);
+                    // A run may still be executing server-side (e.g. after a
+                    // refresh, or in another tab) — reattach to it through the
+                    // resumable stream instead of showing a spinner nothing
+                    // will ever resolve. `active_generation` is a run this
+                    // server owns in process: it can be stopped, so the
+                    // toolbar offers Stop for as long as we are attached.
+                    // `is_running` is only the review's generation lease (an
+                    // async run, or another replica's); cells left
+                    // "generating" cover a run whose lease has lapsed but
+                    // whose terminal states are still landing. Those two can
+                    // be watched, not stopped.
+                    lastFrameIdRef.current = 0;
+                    if (active_generation) {
+                        retryRef.current?.resume({ stoppable: true }).catch(
+                            (err) =>
+                                console.error("Generation resume failed", err),
+                        );
+                    } else if (
+                        review.is_running ||
+                        cells.some((c) => c.status === "generating")
+                    ) {
+                        retryRef.current?.resume().catch((err) =>
+                            notifyError(err, {
+                                action: "reconnect to the running review",
+                                fallback:
+                                    "NorthWrit lost contact with the run in progress. Results already saved are still here.",
+                                dedupeKey: `tr-resume:${reviewId}`,
+                                // Returned, so a failed retry is reported
+                                // again by notifyError's Retry wrapper.
+                                onRetry: () => retryRef.current?.resume(),
+                            }),
+                        );
+                    }
+                },
+            )
+                // Without this the rejection was unhandled: the spinner
+                // cleared and the review read as empty rather than unloaded.
+                .catch((error) => {
+                    if (cancelled) return;
+                    notifyError(error, {
+                        action: "load this review",
+                        dedupeKey: `tr-review:${reviewId}`,
+                        onRetry: () => retryRef.current?.reloadReview(),
+                    });
+                }),
+        ];
+        if (projectId) {
+            fetches.push(
+                getProject(projectId)
+                    .then((loaded) => {
+                        if (!cancelled) setProject(loaded);
+                    })
+                    .catch((error) => {
+                        if (cancelled) return;
+                        // The project supplies the breadcrumb and the admin
+                        // contacts shown on permission refusals, so silence
+                        // here reads as "this review has no project".
+                        notifyError(error, {
+                            action: "load this review's project",
+                            dedupeKey: `tr-project:${projectId}`,
+                        });
+                    }),
+            );
+        }
+        Promise.all(fetches).finally(() => {
+            if (!cancelled) setLoading(false);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [reviewId, projectId, setCells]);
+
+    // A review opened by link may change the active workspace. Its move
+    // destinations follow the review itself, including while that switch loads.
+    const reviewWorkspace = review?.id === reviewId
+        ? (review.org_id ?? PERSONAL_WORKSPACE)
+        : undefined;
+    useEffect(() => {
+        let cancelled = false;
+        setAvailableProjects([]);
+        if (projectId || reviewWorkspace === undefined) return;
+        void listProjects({ workspace: reviewWorkspace })
+            .then((loaded) => {
+                if (!cancelled) setAvailableProjects(loaded);
+            })
+            .catch((error) => {
+                if (cancelled) return;
+                setAvailableProjects([]);
+                // An empty picker is indistinguishable from "you have no
+                // projects", which is the wrong thing to conclude.
+                notifyError(error, {
+                    action: "load your projects",
+                    dedupeKey: "tr-project-list",
+                });
+            });
+        return () => { cancelled = true; };
+    }, [projectId, reviewWorkspace]);
+
+    function getNextColumnIndex() {
+        return (
+            columnsRef.current.reduce(
+                (max, column) => Math.max(max, column.index),
+                -1,
+            ) + 1
+        );
+    }
+
+    // Role ladder for this review, or null while the review is still loading.
+    // It used to read "admin" until the row arrived, which opened every gate
+    // during the one window where nothing is known — a viewer landing on the
+    // page could open the delete confirmation before the payload came back.
+    // Unknown is now its own state: no capability is granted, and no refusal
+    // is shown either, because the affordances are disabled instead.
+    //
+    // Reshaping the review (columns, document set, clearing cells) and running
+    // it are member-tier server-side — a member is the normal collaborator,
+    // and splitting "edit content" from "edit structure" only ever produced
+    // two refusals for one job. Deleting the review stays admin.
+    const reviewRole: ProjectRole | null = roleFromLoaded(review);
+    const roleKnown = reviewRole !== null;
+    const canEditContent = can(reviewRole, "content.edit");
+
+    const refreshGrants = useCallback(async () => {
+        try {
+            const access = await getTabularReviewAccess(reviewId);
+            setGrants(access.grants);
+            setAccessOrgId(access.org_id ?? null);
+        } catch (error) {
+            setGrants([]);
+            // An empty grant list looks like "shared with nobody", which
+            // would invite re-sharing a review that is already shared.
+            notifyError(error, {
+                action: "load who this review is shared with",
+                dedupeKey: `tr-access:${reviewId}`,
+                onRetry: () => {
+                    void refreshGrants();
+                },
+            });
+        }
+    }, [reviewId]);
+
+    useEffect(() => {
+        setGrants(null);
+        setAccessOrgId(undefined);
+    }, [reviewId]);
+
+    useEffect(() => {
+        if (
+            accessModalOpen &&
+            grants === null &&
+            can(reviewRole, "access.manage")
+        )
+            void refreshGrants();
+    }, [accessModalOpen, grants, reviewRole, refreshGrants]);
+
+    function requireContent(action: string): boolean {
+        if (canEditContent) return true;
+        // Silent while the role is unknown: the control is disabled, so a
+        // stray call is a no-op rather than an accusation.
+        if (roleKnown) setOwnerOnlyAction({ action, requiredRole: "editor" });
+        return false;
+    }
+
+    const requireStructure = requireContent;
+
+    /**
+     * Adding columns is `content.edit` server-side, so the refusal belongs at
+     * the button, not at the submit: a viewer used to open the modal, name a
+     * column, write a prompt and pick a format before "Editors only" arrived.
+     * `handleAddColumn` keeps its own gate as the backstop for any other way
+     * in.
+     */
+    function openAddColumns() {
+        if (!requireStructure("add columns")) return;
+        setAddColOpen(true);
+    }
+
+    // Who to ask when an action is refused. A review inside a project inherits
+    // that project's admin contacts; a standalone review's contact is its
+    // creator, which only the people roster knows — so it is fetched the first
+    // time a refusal actually happens rather than on every page load.
+    const [reviewContacts, setReviewContacts] = useState<
+        { email: string | null; display_name: string | null }[] | null
+    >(null);
+    const deniedContacts = project?.admin_contacts ?? reviewContacts;
+    useEffect(() => {
+        if (!ownerOnlyAction || project || reviewContacts) return;
+        let cancelled = false;
+        getTabularReviewPeople(reviewId)
+            .then((people) => {
+                if (cancelled) return;
+                setReviewContacts(people.owner ? [people.owner] : []);
+            })
+            .catch(() => {
+                // Deliberately silent: this only decorates a refusal popup
+                // that is already on screen with a name to ask. Stacking a
+                // second failure on top of a refusal the user is reading
+                // would bury the refusal itself.
+                if (!cancelled) setReviewContacts([]);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [ownerOnlyAction, project, reviewContacts, reviewId]);
+
+    async function saveColumnsConfig(nextColumns: ColumnConfig[]) {
+        setSavingColumnsConfig(true);
+        try {
+            const updated = await updateTabularReview(reviewId, {
+                columns_config: nextColumns,
+            });
+            // The PATCH response is the bare DB row — no access_role /
+            // is_owner — so replacing the review state with it would send
+            // roleFrom to its fail-closed fallback and shut every client gate
+            // for an admin. Merge so the detail fields survive.
+            setReview((prev) => (prev ? { ...prev, ...updated } : updated));
+            // Take the server's copy only while this save is still the
+            // newest edit. A later edit already sits in the ref (and is on
+            // its way to the server); this older response would wipe it off
+            // screen and out of the config the next edit starts from.
+            applyColumns((current) =>
+                current === nextColumns
+                    ? updated.columns_config || nextColumns
+                    : current,
+            );
+        } finally {
+            setSavingColumnsConfig(false);
+        }
+    }
+
+    async function handleAddDocuments(newDocs: Document[]) {
+        // Changing the review's document set is a structure edit server-side
+        // (PATCH document_ids 403s below member) — same gate as columns.
+        if (!requireStructure("edit the document set")) return;
+        const toAdd = missingById(documents, newDocs);
+        if (!toAdd.length) return;
+        const allIds = [
+            ...documents.map((d) => d.id),
+            ...toAdd.map((d) => d.id),
+        ];
+
+        await updateTabularReview(reviewId, {
+            document_ids: allIds,
+            columns_config: columns,
+        });
+        const detail = await getTabularReview(reviewId);
+        setReview(detail.review);
+        setDocuments(detail.documents);
+        setRows(detail.rows);
+        setCells(detail.cells);
+    }
+
+    function hasFilePayload(dt: DataTransfer): boolean {
+        return Array.from(dt.types).includes("Files");
+    }
+
+    async function handleDropReviewFiles(files: File[]) {
+        if (files.length === 0) return;
+        // The drop path uploads first and attaches after; without this gate
+        // a viewer's upload succeeds and the attach PATCH 403s, leaving an
+        // orphaned document. Mirror the DocTable drop gate, at the tier the
+        // attach actually requires.
+        if (!requireStructure("add documents to this review")) return;
+        setUploadingDroppedFilenames(files.map((file) => file.name));
+        const uploaded: Document[] = [];
+        let failedNames: string[] = [];
+        let dropUploadError: unknown = null;
+        try {
+            const documentIds = documents.map((document) => document.id);
+            for (const file of files) {
+                const document = await uploadReviewDocument(reviewId, file, {
+                    projectId,
+                    workspace: review
+                        ? (review.org_id ?? PERSONAL_WORKSPACE)
+                        : undefined,
+                    documentIds,
+                    columnsConfig: columns,
+                });
+                uploaded.push(document);
+                documentIds.push(document.id);
+            }
+        } catch (err) {
+            failedNames = files.slice(uploaded.length).map((f) => f.name);
+            dropUploadError = err;
+        }
+        try {
+            // Each successful upload already attached itself server-side, so
+            // refresh even after a mid-loop failure — otherwise the attached
+            // files stay invisible until a manual reload.
+            if (uploaded.length > 0) await handleAddDocuments(uploaded);
+        } catch (err) {
+            notifyError(err, {
+                action: "add the uploaded files to this review",
+                fallback:
+                    "The files uploaded, but the review could not be refreshed. Reload to see them.",
+                // Re-read, never re-PATCH: each upload already attached
+                // itself, and handleAddDocuments from this closure would
+                // resend the document set and column config as they were
+                // at drop time, undoing any edit made since.
+                onRetry: () => {
+                    void loadLatestReview();
+                },
+            });
+        } finally {
+            setUploadingDroppedFilenames([]);
+        }
+        if (failedNames.length > 0) {
+            const failedFiles = files.slice(files.length - failedNames.length);
+            notifyError(
+                new UserVisibleError(
+                    failedNames.length === 1
+                        ? `“${failedNames[0]}” could not be uploaded.`
+                        : `${failedNames.length} files could not be uploaded: ${failedNames.join(", ")}.`,
+                    { kind: "unknown", retryable: true, cause: dropUploadError },
+                ),
+                {
+                    action: `upload ${failedNames.length === 1 ? "that file" : "those files"}`,
+                    // Retry only the files that never landed, so the ones
+                    // already attached are not uploaded twice.
+                    onRetry: () => {
+                        void handleDropReviewFiles(failedFiles);
+                    },
+                },
+            );
+        }
+    }
+
+    async function handleRegenerateCell(rowId: string, colIndex: number) {
+        if (!requireContent("regenerate cells")) return;
+        if (cellMutationsBlocked) {
+            setGenerationGuard("running");
+            return;
+        }
+        if (!tabularModel) {
+            setModelRequiredWarning(true);
+            return;
+        }
+        if (
+            apiKeys &&
+            !isModelAvailable(tabularModel, apiKeys, configuredModelIds)
+        ) {
+            setApiKeyWarning({
+                kind: "missing",
+                provider: getModelProvider(tabularModel),
+            });
+            return;
+        }
+
+        // One cell changes, so only that cell's subscribers hear about it:
+        // a structural setCells would rewrite and re-index the whole grid.
+        cellStore.patch(rowId, colIndex, {
+            status: "generating",
+            content: null,
+        });
+        setExpandedCell((prev) =>
+            prev
+                ? { ...prev, status: "generating" as const, content: null }
+                : null,
+        );
+        try {
+            const result = await regenerateTabularCell(
+                reviewId,
+                rowId,
+                colIndex,
+            );
+            if ("status" in result) {
+                // HTTP 202 — the work continues in the background. Leave the
+                // cell "generating" and pick up the terminal state from the
+                // resumable stream.
+                resumeGenerationStream().catch((err) =>
+                    notifyError(err, {
+                        action: "follow this cell's regeneration",
+                        fallback:
+                            "The cell is still being generated, but NorthWrit lost contact with the run. Reload to see the result.",
+                        dedupeKey: `tr-resume:${reviewId}`,
+                    }),
+                );
+                return;
+            }
+            cellStore.patch(rowId, colIndex, {
+                status: "done",
+                content: result,
+            });
+            setExpandedCell((prev) =>
+                prev
+                    ? { ...prev, status: "done" as const, content: result }
+                    : null,
+            );
+            await refreshAfterGeneration().catch((err) =>
+                console.error("Failed to refresh the regenerated review", err),
+            );
+        } catch (err) {
+            if (
+                err instanceof MikeApiError &&
+                (err.code === "review_running" || err.code === "review_stale")
+            ) {
+                await loadLatestReview();
+                return;
+            }
+            notifyError(err, {
+                action: "regenerate this cell",
+                onRetry: () => {
+                    void handleRegenerateCell(rowId, colIndex);
+                },
+            });
+            cellStore.patch(rowId, colIndex, { status: "error" });
+            setExpandedCell((prev) =>
+                prev ? { ...prev, status: "error" as const } : null,
+            );
+        }
+    }
+
+    async function refreshAfterGeneration() {
+        // The full review carries every cell, so it is read once up front
+        // (usually the run has already ended) and once more when it has.
+        // While the run is still going, only its status snapshot is polled.
+        let detail = await getTabularReview(reviewId);
+        for (let attempt = 1; detail.review.is_running; attempt += 1) {
+            if (attempt >= 40) return;
+            await new Promise((resolve) => setTimeout(resolve, 250));
+            const [status] = await getTabularReviewHistoryStatuses([reviewId]);
+            if (status?.is_running) continue;
+            detail = await getTabularReview(reviewId);
+        }
+        setReview(detail.review);
+        setCells(detail.cells);
+        setRows(detail.rows);
+        setDocuments(detail.documents);
+        setColumns(detail.review.columns_config || []);
+    }
+
+    // Reads an SSE response and applies cell_update frames until [DONE].
+    // Shared by the POST /generate stream and the GET resume stream, which
+    // emit the identical frame shape.
+    async function consumeGenerationStream(response: Response) {
+        for await (const frame of readSseFrames(response, {
+            signal: generationAbortRef.current?.signal,
+            onEventId: (id) => {
+                const seq = Number.parseInt(id, 10);
+                if (Number.isFinite(seq)) lastFrameIdRef.current = seq;
+            },
+        })) {
+            try {
+                const data = frame as Record<string, unknown>;
+                if (data.type === "cell_update") {
+                    cellStore.patch(data.row_id as string, data.column_index as number, {
+                        content: data.content as TabularCell["content"],
+                        status: data.status as TabularCell["status"],
+                    });
+                } else if (data.type === "error") {
+                    // The frame is the run's failure as the server saw it;
+                    // its code and request id match it to the backend's own
+                    // event. A rejected key is the user's configuration, not
+                    // a fault, and is shown as the key warning only.
+                    if (data.code !== "invalid_api_key") {
+                        reportFlowFailure({
+                            operation: "tabular.run",
+                            reportingOwner: data.reporting_owner === "backend" ? "backend" : undefined,
+                            code: typeof data.code === "string" ? data.code : null,
+                            requestId:
+                                typeof data.request_id === "string"
+                                    ? data.request_id
+                                    : null,
+                        });
+                    }
+                    if (data.code === "invalid_api_key") {
+                        setApiKeyWarning({
+                            kind: "rejected",
+                            provider: tabularModel
+                                ? getModelProvider(tabularModel)
+                                : null,
+                        });
+                    } else {
+                        setGenerationError(
+                            data.safe_to_display === true &&
+                            typeof data.message === "string" &&
+                            data.message.trim()
+                                ? data.message.trim()
+                                : "The review could not be completed. Please try again.",
+                        );
+                    }
+                }
+            } catch (err) {
+                // One notice per review: a cell update we could not apply
+                // leaves that cell showing stale text while the run goes on.
+                notifyError(err, {
+                    action: "show a generated cell",
+                    fallback:
+                        "A result arrived that NorthWrit couldn't display. Reload to see it.",
+                    dedupeKey: `tr-cell-update:${reviewId}`,
+                });
+            }
+        }
+    }
+
+    // Reattach to a run still executing server-side through the reconnectable
+    // GET view. It takes no generation lease, so it can never 409 a run or
+    // restart one; it only tails what the workers are already doing.
+    //
+    // Abort ownership follows the same `generationAbortRef` pattern as
+    // `handleGenerate`: when a generate run is in flight we borrow ITS
+    // controller, so the stop button and unmount abort the reconnect too.
+    // Otherwise (mount on a running review, or a 202 regenerate) the resume
+    // owns a controller for its own lifetime and clears it on the way out —
+    // it never overwrites a live run's controller, which `handleGenerate`'s
+    // `finally` identity-checks.
+    // `stoppable` marks a run this server still owns in process (the review
+    // detail reported `active_generation`): it can be stopped through the
+    // endpoint, so the toolbar must read Stop — not Run — for as long as we
+    // are attached to it. Only a resume that owns its abort controller owns
+    // that flag; one borrowed by `handleGenerate` leaves the state to it.
+    async function resumeGenerationStream(opts?: { stoppable?: boolean }) {
+        if (resumeStreamOpenRef.current) return;
+        resumeStreamOpenRef.current = true;
+        const ownedAbort = generationAbortRef.current
+            ? null
+            : new AbortController();
+        if (ownedAbort) generationAbortRef.current = ownedAbort;
+        const abort = generationAbortRef.current;
+        const ownsToolbar = Boolean(opts?.stoppable && ownedAbort);
+        if (ownsToolbar) {
+            stopRequestedRef.current = false;
+            setStoppingGeneration(false);
+            setGenerating(true);
+        }
+        try {
+            const response = await streamTabularGenerationResume(
+                reviewId,
+                abort?.signal,
+                lastFrameIdRef.current + 1,
+            );
+            if (!response.ok) {
+                throw new Error(`Resume failed: ${response.status}`);
+            }
+            notifyTabularReviewsChanged();
+            await consumeGenerationStream(response);
+            if (ownedAbort && !ownedAbort.signal.aborted) await refreshAfterGeneration();
+        } catch (err) {
+            if (!ownedAbort?.signal.aborted) throw err;
+        } finally {
+            resumeStreamOpenRef.current = false;
+            notifyTabularReviewsChanged();
+            if (ownedAbort && generationAbortRef.current === ownedAbort)
+                generationAbortRef.current = null;
+            if (ownsToolbar) {
+                if (stopRequestedRef.current) {
+                    try {
+                        await refreshAfterGeneration();
+                    } catch (err) {
+                        console.error(
+                            "Failed to refresh the stopped tabular review",
+                            err,
+                        );
+                    }
+                }
+                stopRequestedRef.current = false;
+                setGenerating(false);
+                setStoppingGeneration(false);
+            }
+        }
+    }
+
+    async function handleGenerate() {
+        // The ref, not the `generating` state: a "Retry" pressed after the
+        // run failed runs a closure created while the run was still in
+        // flight, and the captured `true` made that retry a silent no-op.
+        if (!review || generatingRef.current) return;
+        if (!requireContent("run generation")) return;
+
+        if (review.is_running) {
+            setGenerationGuard("running");
+            return;
+        }
+
+        if (!tabularModel) {
+            setModelRequiredWarning(true);
+            return;
+        }
+
+        // If columns changed since last save, update the review first
+        if (columns.length === 0) return;
+
+        if (
+            apiKeys &&
+            !isModelAvailable(tabularModel, apiKeys, configuredModelIds)
+        ) {
+            setApiKeyWarning({
+                kind: "missing",
+                provider: getModelProvider(tabularModel),
+            });
+            return;
+        }
+
+        setGenerationError(null);
+        const generationAbort = new AbortController();
+        generationAbortRef.current = generationAbort;
+        // A new run numbers its frames from 1, so a reconnect must not ask to
+        // resume from a previous run's sequence number.
+        lastFrameIdRef.current = 0;
+        stopRequestedRef.current = false;
+        setStoppingGeneration(false);
+        generatingRef.current = true;
+        setGenerating(true);
+
+        let generationStarted = false;
+        try {
+            const response = await streamTabularGeneration(
+                reviewId,
+                review.updated_at,
+                generationAbort.signal,
+            );
+            if (!response.ok) {
+                const payload = await response.json().catch(() => null);
+                const code =
+                    typeof payload?.code === "string" ? payload.code : null;
+                const requestId =
+                    typeof payload?.request_id === "string"
+                        ? payload.request_id
+                        : response.headers.get("x-request-id");
+                if (payload?.code === "review_running") {
+                    setReview((current) =>
+                        current ? { ...current, is_running: true } : current,
+                    );
+                    setGenerationGuard("running");
+                    return;
+                }
+                if (payload?.code === "review_stale") {
+                    setGenerationGuard("stale");
+                    return;
+                }
+                const provider =
+                    payload &&
+                    ["claude", "gemini", "openai", "mistral"].includes(payload.provider)
+                        ? (payload.provider as ModelProvider)
+                        : getModelProvider(tabularModel);
+                if (payload?.code === "missing_api_key" && provider) {
+                    setApiKeyWarning({ kind: "missing", provider });
+                } else if (payload?.code === "invalid_api_key") {
+                    setApiKeyWarning({ kind: "rejected", provider });
+                }
+                // Status, code and request id ride on the error so the toast
+                // classifies the refusal and the report matches the server's.
+                const failure = Object.assign(
+                    new Error(
+                        payload?.detail ?? `Generation failed: ${response.status}`,
+                    ),
+                    {
+                        status: response.status,
+                        ...(code ? { code } : {}),
+                        ...(requestId ? { requestId } : {}),
+                    },
+                );
+                reportFlowFailure({
+                    operation: "tabular.run",
+                    method: "POST",
+                    path: `/api/tabular-reviews/${reviewId}/run`,
+                    status: response.status,
+                    code,
+                    requestId,
+                    error: failure,
+                });
+                throw failure;
+            }
+            if (!response.body) throw new Error("No body");
+            generationStarted = true;
+            notifyTabularReviewsChanged();
+
+            // Optimistically set empty/pending/error cells to generating (skip done cells)
+            setCells((prev) => {
+                const indexed = indexReviewCells(prev);
+                return rows.flatMap((row) =>
+                    columns.map((col) => {
+                        const existing = indexed.get(row.id)?.get(col.index);
+                        if (existing?.status === "done" && existing?.content) {
+                            return existing;
+                        }
+                        return existing
+                            ? {
+                                  ...existing,
+                                  status: "generating" as const,
+                                  content: null,
+                              }
+                            : {
+                                  id: `${row.id}-${col.index}`,
+                                  review_id: reviewId,
+                                  row_id: row.id,
+                                  document_id: row.document_id,
+                                  column_index: col.index,
+                                  content: null,
+                                  status: "generating" as const,
+                                  created_at: new Date().toISOString(),
+                              };
+                    }),
+                );
+            });
+
+            try {
+                await consumeGenerationStream(response);
+            } catch (streamErr) {
+                // A stop (or unmount) aborted this on purpose — rethrow so the
+                // outer handler runs main's stop/refresh path untouched.
+                if (generationAbort.signal.aborted) throw streamErr;
+                // Otherwise the stream dropped on its own while the run keeps
+                // executing server-side: reconnect once before giving up. The
+                // resume borrows this run's controller, so a stop still stops.
+                // Not reported: the run is still executing server-side and
+                // the reconnect below picks it up. If the reconnect also
+                // fails it throws on to the outer catch, which does report.
+                console.warn(
+                    "Generation stream interrupted, reconnecting",
+                    streamErr,
+                );
+                await resumeGenerationStream();
+            }
+        } catch (err) {
+            if (!generationAbort.signal.aborted) {
+                // Cells left "generating" used to be the only sign of this,
+                // and they look identical to a run still in progress.
+                notifyError(err, {
+                    action: "run this review",
+                    operation: "tabular.run",
+                    dedupeKey: `tr-generate:${reviewId}`,
+                    onRetry: () => retryRef.current?.generate(),
+                });
+            }
+        } finally {
+            notifyTabularReviewsChanged();
+            if (generationAbortRef.current === generationAbort) {
+                if (stopRequestedRef.current || (generationStarted && !generationAbort.signal.aborted)) {
+                    try {
+                        await refreshAfterGeneration();
+                    } catch (err) {
+                        notifyError(err, {
+                            action: "refresh the review",
+                            fallback:
+                                "The table may be out of date. Reload to see the latest results.",
+                            dedupeKey: `tr-refresh:${reviewId}`,
+                            onRetry: () => {
+                                void loadLatestReview();
+                            },
+                        });
+                    }
+                }
+                generationAbortRef.current = null;
+                stopRequestedRef.current = false;
+                generatingRef.current = false;
+                setGenerating(false);
+                setStoppingGeneration(false);
+            }
+        }
+    }
+
+    async function handleReviewModelChange(model: string) {
+        if (!review) return;
+        // The server gates `model` in the same content.edit arm as the
+        // title and document set, so this gate must too. The old bare
+        // `is_owner === false` check was the file's last leftover of the
+        // ownership model: it refused org admins and members a change the
+        // server accepts, and mislabelled the refusal admin-tier.
+        if (!requireContent("change the tabular review model")) return;
+        const previousModel = review.model;
+        try {
+            const updated = await updateTabularReview(reviewId, { model });
+            setReview((current) =>
+                current ? { ...current, ...updated } : current,
+            );
+        } catch (err) {
+            // Without this the rejection was unhandled and the picker kept
+            // showing a model the review was never switched to.
+            setReview((current) =>
+                current ? { ...current, model: previousModel } : current,
+            );
+            notifyError(err, {
+                action: "change the model",
+                onRetry: () => {
+                    void handleReviewModelChange(model);
+                },
+            });
+        }
+    }
+
+    async function loadLatestReview() {
+        setReloadingLatestReview(true);
+        try {
+            const detail = await getTabularReview(reviewId);
+            setReview(detail.review);
+            setCells(detail.cells);
+            setRows(detail.rows);
+            setDocuments(detail.documents);
+            setColumns(detail.review.columns_config || []);
+            setGenerationGuard(detail.review.is_running ? "running" : null);
+        } catch (err) {
+            // Both callers are "Check again"/"Load latest" buttons in a
+            // blocking popup that otherwise just stops responding.
+            notifyError(err, {
+                action: "load the latest version of this review",
+                dedupeKey: `tr-latest:${reviewId}`,
+                onRetry: () => {
+                    void loadLatestReview();
+                },
+            });
+        } finally {
+            setReloadingLatestReview(false);
+        }
+    }
+
+    // Stop is a request to the server, not a hang-up: the generation is a
+    // server-owned run, so dropping the socket would only detach this tab
+    // while the extraction carried on. The endpoint aborts the run, which
+    // ends the attached stream with `cancelled` + `[DONE]`, and the
+    // `stopRequestedRef` path then refreshes the review.
+    async function handleStopGeneration() {
+        if (!generating || stoppingGeneration) return;
+        setStoppingGeneration(true);
+        setCells((current) =>
+            current.map((cell) =>
+                cell.status === "generating"
+                    ? { ...cell, status: "pending" as const }
+                    : cell,
+            ),
+        );
+        setExpandedCell((current) =>
+            current?.status === "generating"
+                ? { ...current, status: "pending" as const }
+                : current,
+        );
+        stopRequestedRef.current = true;
+        try {
+            await stopTabularGeneration(reviewId);
+        } catch (err) {
+            // No run to stop here: a deployment whose extraction runs on the
+            // queue, or a run owned by another replica. Dropping our own
+            // stream is all this tab can do — the same thing Stop meant
+            // before the run registry. Any other failure leaves the run
+            // going, and leaving the toolbar stuck on "Stopping…" would be
+            // worse than detaching, so it ends the same way.
+            if (
+                !(
+                    err instanceof MikeApiError &&
+                    err.code === "generation_not_found"
+                )
+            )
+                console.error("Failed to stop the tabular generation", err);
+            generationAbortRef.current?.abort();
+        }
+    }
+
+    async function handleAddColumn(newColumns: ColumnConfig[]) {
+        if (!requireStructure("add columns")) return;
+        const startIndex = getNextColumnIndex();
+        const normalizedColumns = newColumns.map((column, index) => ({
+            ...column,
+            index: startIndex + index,
+        }));
+        setSavingColumn(true);
+        const newCols = applyColumns((current) => [
+            ...current,
+            ...normalizedColumns,
+        ]);
+        setCells((prev) => {
+            const indexed = indexReviewCells(prev);
+            return [...prev, ...rows.flatMap(row => normalizedColumns
+                .filter(column => !indexed.get(row.id)?.has(column.index))
+                .map(column => ({
+                    id: `new-${row.id}-${column.index}`,
+                    review_id: reviewId,
+                    row_id: row.id,
+                    document_id: row.document_id,
+                    column_index: column.index,
+                    content: null,
+                    status: "pending" as const,
+                    created_at: new Date().toISOString(),
+                })))];
+        });
+        try {
+            await saveColumnsConfig(newCols);
+        } catch (err) {
+            // Take back only the columns this call added; an edit to a
+            // different column may have landed while the save was in flight.
+            const removal = reviewColumnRemoval(
+                normalizedColumns.map((column) => column.index),
+            );
+            applyColumns((current) => current.filter(removal.keepsColumn));
+            setCells((prev) => prev.filter(removal.keepsCell));
+            notifyError(err, {
+                action: "add the column",
+                fallback: "This column could not be saved. Try again.",
+            });
+        } finally {
+            setSavingColumn(false);
+        }
+    }
+
+    async function handleUpdateColumn(nextColumn: ColumnConfig) {
+        if (!requireStructure("edit columns")) return;
+        // The server takes the whole config, so this edit is merged onto the
+        // config as it is now. Restoring the whole array on failure — or
+        // resending the array a frozen Retry captured — would undo every
+        // other column change made in the meantime, on screen and on the
+        // server.
+        const previousColumn = columnsRef.current.find(
+            (column) => column.index === nextColumn.index,
+        );
+        const nextColumns = applyColumns((current) =>
+            current.map((column) =>
+                column.index === nextColumn.index ? nextColumn : column,
+            ),
+        );
+        try {
+            await saveColumnsConfig(nextColumns);
+        } catch (err) {
+            if (previousColumn) {
+                applyColumns((current) =>
+                    current.map((column) =>
+                        column.index === nextColumn.index
+                            ? previousColumn
+                            : column,
+                    ),
+                );
+            }
+            notifyError(err, {
+                action: "save the column",
+                fallback: "This column could not be saved. Try again.",
+                onRetry: () => retryRef.current?.updateColumn(nextColumn),
+            });
+        }
+    }
+
+    async function handleDeleteColumn(columnIndex: number) {
+        if (!requireStructure("delete columns")) return;
+        const removedAt = columnsRef.current.findIndex(
+            (column) => column.index === columnIndex,
+        );
+        if (removedAt === -1) return;
+        const removed = columnsRef.current[removedAt];
+        const nextColumns = applyColumns((current) =>
+            current.filter((column) => column.index !== columnIndex),
+        );
+        try {
+            await saveColumnsConfig(nextColumns);
+        } catch (err) {
+            // Put back just this column, where it was, on top of whatever
+            // the config looks like now.
+            applyColumns((current) =>
+                current.some((column) => column.index === columnIndex)
+                    ? current
+                    : [
+                          ...current.slice(0, removedAt),
+                          removed,
+                          ...current.slice(removedAt),
+                      ],
+            );
+            notifyError(err, {
+                action: "delete the column",
+                onRetry: () => retryRef.current?.deleteColumn(columnIndex),
+            });
+        }
+    }
+
+    function handleTabularCitationClick(colIdx: number, rowIdx: number) {
+        setSearch("");
+        setHighlightedCell({ colIdx, rowIdx });
+        setTimeout(() => {
+            tableRef.current?.scrollToCell(colIdx, rowIdx);
+        }, 50);
+        setTimeout(() => setHighlightedCell(null), 3000);
+    }
+
+    function handleDocumentOpen(row: TabularReviewRow, document: Document) {
+        const firstColumn = [...columns].sort(
+            (left, right) => left.index - right.index,
+        )[0];
+        if (!firstColumn) return;
+        const firstCell = cellStore.get(row.id, firstColumn.index);
+        if (!firstCell) return;
+
+        setExpandedCell(firstCell);
+        setExpandedCellCitation(undefined);
+        setExpandedDocumentId(document.id);
+    }
+
+    async function handleDeleteDocuments(targetIds: string[] = selectedRowIds) {
+        // Removing documents deletes their cells — member tier, like every
+        // other reshaping of the review.
+        if (!requireStructure("remove documents from this review")) return;
+        const rowIdsToDelete = [...targetIds];
+        if (rowIdsToDelete.length === 0) return;
+        const removal = reviewRowRemoval(rowIdsToDelete);
+        const documentIdsToDelete = removal.documentIds(rows);
+        const previousDocuments = documents;
+        const previousRows = rows;
+        const previousCells = cellStore.values();
+        const remaining = documents.filter(
+            (document) => !documentIdsToDelete.has(document.id),
+        );
+        setDocuments(remaining);
+        setRows((current) => current.filter(removal.keepsRow));
+        setCells((current) => current.filter(removal.keepsCell));
+        setSelectedRowIds([]);
+        setActionsOpen(false);
+        try {
+            await updateTabularReview(reviewId, {
+                document_ids: remaining.map((d) => d.id),
+                columns_config: columns,
+            });
+            const detail = await getTabularReview(reviewId);
+            setReview(detail.review);
+            setDocuments(detail.documents);
+            setRows(detail.rows);
+            setCells(detail.cells);
+        } catch (err) {
+            // Put back only what this removal took out, merged onto what is
+            // on screen now. A run may be filling cells in as this fails
+            // (`cellMutationsBlocked`), and another removal may have
+            // succeeded: restoring the whole snapshot wiped both.
+            const failedCellIds = removal.cellIds(previousCells);
+            setDocuments((current) =>
+                restoreOptimisticallyDeletedRows(current, previousDocuments, [
+                    ...documentIdsToDelete,
+                ]),
+            );
+            setRows((current) =>
+                restoreOptimisticallyDeletedRows(
+                    current,
+                    previousRows,
+                    rowIdsToDelete,
+                ),
+            );
+            setCells((current) =>
+                restoreOptimisticallyDeletedRows(
+                    current,
+                    previousCells,
+                    failedCellIds,
+                ),
+            );
+            setSelectedRowIds((current) => [
+                ...new Set([...current, ...rowIdsToDelete]),
+            ]);
+            notifyError(err, {
+                action:
+                    rowIdsToDelete.length === 1
+                        ? "remove the document"
+                        : "remove those documents",
+                fallback:
+                    "The documents were not removed and are still selected.",
+            });
+        }
+    }
+
+    async function clearResultsForRows(rowIds: string[]) {
+        if (rowIds.length === 0) return;
+        if (cellMutationsBlocked) {
+            setGenerationGuard("running");
+            return;
+        }
+        const previousCells = cellStore.values();
+        const previousById = new Map(previousCells.map(cell => [cell.id, cell]));
+        const targetRows = new Set(rowIds);
+        const previousSelectedRowIds = selectedRowIds;
+        setCells((prev) =>
+            prev.map((c) =>
+                targetRows.has(c.row_id)
+                    ? { ...c, content: null, status: "pending" }
+                    : c,
+            ),
+        );
+        setSelectedRowIds([]);
+        setActionsOpen(false);
+        try {
+            await clearTabularCells(reviewId, rowIds);
+            await refreshAfterGeneration().catch((err) =>
+                console.error("Failed to refresh the cleared review", err),
+            );
+        } catch (err) {
+            if (
+                err instanceof MikeApiError &&
+                (err.code === "review_running" || err.code === "review_stale")
+            ) {
+                await loadLatestReview();
+                return;
+            }
+            // Only the rows this call cleared go back, and only while no run
+            // owns the cells: if one started while the clear was in flight,
+            // its stream is the authority and a restore would overwrite the
+            // results it has already produced.
+            if (!cellMutationsBlockedRef.current) {
+                setCells((current) =>
+                    current.map((cell) =>
+                        targetRows.has(cell.row_id)
+                            ? (previousById.get(cell.id) ?? cell)
+                            : cell,
+                    ),
+                );
+            }
+            setSelectedRowIds((current) => [
+                ...new Set([...current, ...previousSelectedRowIds]),
+            ]);
+            notifyError(err, {
+                action: "clear the results",
+                onRetry: () => {
+                    void clearResultsForRows(rowIds);
+                },
+            });
+        }
+    }
+
+    async function handleClearResults(targetIds: string[] = selectedRowIds) {
+        if (!requireStructure("clear results")) return;
+        await clearResultsForRows([...targetIds]);
+    }
+
+    function renderReviewRowActions(ids: string[], close?: () => void) {
+        return (
+            <RowActionMenuItems
+                onClose={close}
+                onClearResults={() => void handleClearResults(ids)}
+                clearResultsDisabled={cellMutationsBlocked}
+                onDelete={() => void handleDeleteDocuments(ids)}
+            />
+        );
+    }
+
+    async function handleClearAllResults() {
+        if (!requireStructure("clear results")) return;
+        await clearResultsForRows(rows.map((row) => row.id));
+    }
+
+    /**
+     * The details dialog edits a review's title and, when it is not locked to
+     * a project, which project it belongs to. Those are two different server
+     * rules, so they get two gates — but each gate is stated once and used
+     * everywhere it applies, instead of one tier for opening the dialog and a
+     * different one for saving from it.
+     *
+     * Title: `PATCH /tabular-review/:id` requires `content.edit` (member) —
+     * 403 "Only a review editor can change review settings".
+     */
+    const canEditDetails = canEditContent;
+
+    /**
+     * Moving a review between projects is `creatorScopedAllowed` server-side
+     * (backend/src/routes/tabular.ts) — the review's creator, or an admin
+     * only once the creator's account is gone and `user_id` is null. It is
+     * NOT `access.manage`: gating on admin let a project admin who did not
+     * create the review through to a 403 the client had promised would work.
+     */
+    function canMoveReview(): boolean {
+        if (!review) return false;
+        if (review.user_id) return review.user_id === user?.id;
+        return can(reviewRole, "container.delete");
+    }
+
+    function requestReviewDetails() {
+        // Member-tier, matching the PATCH the dialog will issue. This used to
+        // demand access.manage while the save path demanded content.edit, so
+        // a member was told "only an admin can edit tabular review details"
+        // about a save the server would have accepted.
+        if (!canEditDetails) {
+            if (roleKnown) {
+                setOwnerOnlyAction({
+                    action: "edit tabular review details",
+                    requiredRole: "editor",
+                });
+            }
+            return;
+        }
+        setDetailsOpen(true);
+    }
+
+    async function handleDetailsSave(values: {
+        title: string;
+        projectId?: string | null;
+    }) {
+        if (!review || !requireStructure("edit tabular review details"))
+            return;
+        // Only send project_id when it actually changes: moving a review
+        // between projects is creator-only server-side, and sending an
+        // unchanged value would 403 a member editing just the title.
+        const nextProjectId = values.projectId ?? null;
+        const projectChanged = nextProjectId !== (review.project_id ?? null);
+        // Gate the move here so somebody who touched the project selector
+        // gets an explanation instead of an unexplained failed save.
+        if (projectChanged && !canMoveReview()) {
+            setOwnerOnlyAction({
+                title: "Review creator only",
+                message:
+                    "Only the person who created this review can move it to another project.",
+            });
+            return;
+        }
+        const updated = await updateTabularReview(reviewId, {
+            title: values.title,
+            ...(projectChanged ? { project_id: nextProjectId } : {}),
+        });
+        setReview((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      ...updated,
+                  }
+                : updated,
+        );
+        if (!projectId && updated.project_id) {
+            setDetailsOpen(false);
+            router.push(
+                `/projects/${updated.project_id}/tabular-reviews/${reviewId}`,
+            );
+        }
+    }
+
+    function requestReviewDelete() {
+        if (!can(reviewRole, "container.delete")) {
+            if (roleKnown) setOwnerOnlyAction("delete this tabular review");
+            return;
+        }
+        setDeleteReviewStatus("idle");
+        setDeleteReviewConfirmOpen(true);
+    }
+
+    async function confirmReviewDelete() {
+        if (deleteReviewStatus === "deleting") return;
+        setDeleteReviewStatus("deleting");
+        try {
+            await deleteTabularReview(reviewId);
+            setDeleteReviewStatus("deleted");
+            setTimeout(() => {
+                router.push(
+                    projectId
+                        ? `/projects/${projectId}/tabular-reviews`
+                        : "/tabular-reviews",
+                );
+            }, 250);
+        } catch (err) {
+            setDeleteReviewStatus("idle");
+            // The confirm dialog stays open, so its button is the retry.
+            notifyError(err, {
+                action: "delete this review",
+            });
+        }
+    }
+
+    function requestWorkflow() {
+        if (!requireStructure("apply a workflow")) return;
+        setWorkflowModalOpen(true);
+    }
+
+    async function handleApplyWorkflow(workflow: Workflow) {
+        if (!workflow.columns_config?.length) return;
+        const nextColumns = workflow.columns_config.map((column, index) => ({
+            ...column,
+            index,
+        }));
+        const previousColumns = columnsRef.current;
+        const previousCells = cellStore.values();
+        setApplyingWorkflow(true);
+        applyColumns(() => nextColumns);
+        setCells([]);
+        try {
+            await saveColumnsConfig(nextColumns);
+            if (rows.length > 0) {
+                try {
+                    await clearTabularCells(
+                        reviewId,
+                        rows.map((row) => row.id),
+                    );
+                } catch (err) {
+                    // The new columns are saved either way; say so rather
+                    // than leaving stale answers under new questions.
+                    notifyError(err, {
+                        action: "clear the previous results",
+                        fallback:
+                            "The workflow's columns were applied, but the old results could not be cleared. Clear them from the Actions menu.",
+                    });
+                }
+            }
+            // The writes succeeded. A failed read must not roll them back
+            // locally or offer to repeat them (and clear newly generated cells).
+            setWorkflowModalOpen(false);
+            const refreshAppliedWorkflow = async () => {
+                try {
+                    const detail = await getTabularReview(reviewId);
+                    setReview(detail.review);
+                    setRows(detail.rows);
+                    setCells(detail.cells);
+                } catch (err) {
+                    notifyError(err, {
+                        action: "refresh the applied workflow",
+                        fallback: "The workflow was applied, but the latest results could not be loaded.",
+                        onRetry: refreshAppliedWorkflow,
+                    });
+                }
+            };
+            await refreshAppliedWorkflow();
+        } catch (err) {
+            applyColumns(() => previousColumns);
+            setCells(previousCells);
+            notifyError(err, {
+                action: "apply the workflow",
+                supportNote: `Workflow ${workflow.metadata.title}`,
+                onRetry: () => {
+                    void handleApplyWorkflow(workflow);
+                },
+            });
+        } finally {
+            setApplyingWorkflow(false);
+        }
+    }
+
+    const q = search.toLowerCase();
+    const filteredRows = q
+        ? rows.filter((row) => row.label.toLowerCase().includes(q))
+        : rows;
+
+    return (
+        <div className="flex h-full overflow-hidden">
+            <div className="flex flex-1 flex-col overflow-hidden">
+                <input
+                    ref={reviewFileUploadInputRef}
+                    type="file"
+                    accept={SUPPORTED_DOCUMENT_ACCEPT}
+                    multiple
+                    className="hidden"
+                    onChange={(event) => {
+                        const files = Array.from(event.target.files ?? []);
+                        event.target.value = "";
+                        void handleDropReviewFiles(files);
+                    }}
+                />
+                <input
+                    ref={reviewFolderUploadInputRef}
+                    type="file"
+                    accept={SUPPORTED_DOCUMENT_ACCEPT}
+                    multiple
+                    className="hidden"
+                    {...{ webkitdirectory: "", directory: "" }}
+                    onChange={(event) => {
+                        const files = Array.from(event.target.files ?? []);
+                        event.target.value = "";
+                        void handleDropReviewFiles(files);
+                    }}
+                />
+                {/* Header */}
+                <PageHeader
+                    shrink
+                    breadcrumbs={[
+                        ...(projectId
+                            ? [
+                                  {
+                                      label: "Projects",
+                                      onClick: () => router.push("/projects"),
+                                  },
+                                  loading
+                                      ? {
+                                            loading: true,
+                                            skeletonClassName: "w-32",
+                                            onClick: () =>
+                                                router.push(
+                                                    `/projects/${projectId}`,
+                                                ),
+                                            title: "Back to project",
+                                        }
+                                      : {
+                                            label: project?.name ?? "",
+                                            onClick: () =>
+                                                router.push(
+                                                    `/projects/${projectId}`,
+                                                ),
+                                            title: "Back to project",
+                                        },
+                              ]
+                            : [
+                                  {
+                                      label: "Tabular Reviews",
+                                      onClick: () =>
+                                          router.push("/tabular-reviews"),
+                                      title: "Back to Tabular Reviews",
+                                  },
+                              ]),
+                        ...(projectId
+                            ? [
+                                  {
+                                      label: "Tabular Reviews",
+                                      onClick: () =>
+                                          router.push(
+                                              `/projects/${projectId}/tabular-reviews`,
+                                          ),
+                                      title: "Back to Tabular Reviews",
+                                  },
+                              ]
+                            : []),
+                        loading
+                            ? {
+                                  loading: true,
+                                  skeletonClassName: "w-40",
+                              }
+                            : {
+                                  label: review?.title || "Untitled Review",
+                              },
+                    ]}
+                    actionGroups={[
+                        [
+                            {
+                                type: "search",
+                                value: search,
+                                onChange: setSearch,
+                                placeholder: "Search rows…",
+                            },
+                            {
+                                type: "custom",
+                                render: (
+                                    <HeaderActionsMenu
+                                        items={[
+                                            ...(!projectId
+                                                ? [{
+                                                      label: "Access",
+                                                      icon: Users,
+                                                      onSelect: () => setAccessModalOpen(true),
+                                                      disabled: loading,
+                                                  }]
+                                                : []),
+                                            {
+                                                label: "Edit details",
+                                                icon: Pencil,
+                                                onSelect: requestReviewDetails,
+                                                disabled: !roleKnown,
+                                            },
+                                            {
+                                                label: "Apply workflow",
+                                                icon: WandSparkles,
+                                                onSelect: requestWorkflow,
+                                                disabled: !roleKnown,
+                                            },
+                                            {
+                                                label: "Export",
+                                                icon: Download,
+                                                onSelect: () =>
+                                                    exportTabularReviewToExcel({
+                                                        reviewTitle:
+                                                            review?.title ||
+                                                            "Tabular Review",
+                                                        columns,
+                                                        rows,
+                                                        cells: cellStore.values(),
+                                                    }),
+                                                disabled:
+                                                    columns.length === 0 ||
+                                                    rows.length === 0,
+                                            },
+                                            {
+                                                label: "Clear results",
+                                                icon: X,
+                                                onSelect: handleClearAllResults,
+                                                disabled:
+                                                    !roleKnown ||
+                                                    rows.length === 0 ||
+                                                    cellMutationsBlocked,
+                                            },
+                                            {
+                                                label: "Delete",
+                                                icon: Trash2,
+                                                onSelect: requestReviewDelete,
+                                                variant: "danger",
+                                                disabled: !roleKnown,
+                                            },
+                                        ]}
+                                    />
+                                ),
+                            },
+                        ],
+                        {
+                            actions: [
+                                {
+                                    onClick: () => {
+                                        if (!chatOpen) setSidebarOpen(false);
+                                        if (chatOpen) setSelectedChatId(null);
+                                        setChatOpen((v) => !v);
+                                    },
+                                    disabled:
+                                        loading ||
+                                        columns.length === 0 ||
+                                        rows.length === 0,
+                                    title: chatOpen
+                                        ? "Close chat"
+                                        : "Open chat",
+                                    icon: chatOpen ? (
+                                        <MessageSquareX className="h-4 w-4" />
+                                    ) : (
+                                        <MessageSquare className="h-4 w-4" />
+                                    ),
+                                    label: (
+                                        <span className="hidden sm:inline">
+                                            Chat
+                                        </span>
+                                    ),
+                                },
+                            ],
+                        },
+                    ]}
+                />
+
+                {/* Toolbar + table column, chat panel beside it */}
+                <div className="flex flex-1 overflow-hidden">
+                    {/* On mobile the chat panel replaces the table entirely */}
+                    <div
+                        className={`flex flex-1 flex-col overflow-hidden ${
+                            chatOpen ? "max-md:hidden" : ""
+                        }`}
+                    >
+                        <TableToolbar
+                            className="h-auto min-h-10 shrink-0"
+                            leading={
+                                <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                                    <fieldset
+                                        disabled={loading}
+                                        aria-label="Review generation"
+                                        // The group owns the glass surface; its buttons only add hover states.
+                                        className={[
+                                            `flex h-7 min-w-0 max-w-full items-center rounded-full p-0 ${LIQUID_GLASS_SUBTLE_CLASS}`,
+                                            "[&_[data-slot=tab-pill-button]]:[--liquid-glass-shadow-subtle:none]",
+                                            "[&_[data-slot=tab-pill-button]]:[--liquid-glass-background-subtle:transparent]",
+                                            "[&_[data-slot=tab-pill-button]]:[--liquid-glass-border-subtle:transparent]",
+                                        ].join(" ")}
+                                    >
+                                        <ModelToggle
+                                            toolbar
+                                            tone="default"
+                                            triggerClassName="rounded-r-none"
+                                            value={tabularModel}
+                                            onChange={(model) =>
+                                                void handleReviewModelChange(
+                                                    model,
+                                                )
+                                            }
+                                            apiKeys={apiKeys}
+                                            apiKeysLoading={
+                                                profileLoading && !profile
+                                            }
+                                            routerSelections={
+                                                modelRouterSelections
+                                            }
+                                            onNoModelsClick={setNoModelsWarning}
+                                        />
+                                        <TabPillButtonUI
+                                            onClick={generating ? handleStopGeneration : handleGenerate}
+                                            disabled={
+                                                loading ||
+                                                stoppingGeneration ||
+                                                columns.length === 0 ||
+                                                rows.length === 0 ||
+                                                savingColumnsConfig
+                                            }
+                                            title={
+                                                stoppingGeneration
+                                                    ? "Stopping generation"
+                                                    : generating
+                                                      ? "Stop generation"
+                                                      : "Run review"
+                                            }
+                                            className="shrink-0 whitespace-nowrap rounded-l-none"
+                                        >
+                                            {stoppingGeneration ? (
+                                                <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
+                                            ) : generating ? (
+                                                <Square aria-hidden="true" className="h-3.5 w-3.5" />
+                                            ) : (
+                                                <Play aria-hidden="true" className="h-3.5 w-3.5" />
+                                            )}
+                                            {stoppingGeneration ? "Stopping…" : generating ? "Stop" : "Run"}
+                                        </TabPillButtonUI>
+                                    </fieldset>
+                                    <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
+                                        <DocumentUploadMenu
+                                            toolbar
+                                            onSavedFiles={() => {
+                                                // Same pre-modal gate as
+                                                // openNewReview: stop viewers
+                                                // before the modal, not after
+                                                // a doomed submit.
+                                                if (
+                                                    !requireStructure(
+                                                        "edit the document set",
+                                                    )
+                                                )
+                                                    return;
+                                                setAddDocsOpen(true);
+                                            }}
+                                            onUploadFiles={() => {
+                                                if (
+                                                    !requireStructure(
+                                                        "edit the document set",
+                                                    )
+                                                )
+                                                    return;
+                                                reviewFileUploadInputRef.current?.click();
+                                            }}
+                                            onUploadFolder={() => {
+                                                if (
+                                                    !requireStructure(
+                                                        "edit the document set",
+                                                    )
+                                                )
+                                                    return;
+                                                reviewFolderUploadInputRef.current?.click();
+                                            }}
+                                            disabled={
+                                                !roleKnown ||
+                                                loading ||
+                                                savingColumnsConfig ||
+                                                uploadingDroppedFilenames.length >
+                                                    0
+                                            }
+                                        />
+                                        {loading ? (
+                                            <div className="h-7 w-28 animate-pulse rounded-full bg-gray-100" />
+                                        ) : (
+                                            <TabPillButtonUI
+                                                onClick={openAddColumns}
+                                                disabled={savingColumn || savingColumnsConfig}
+                                                className="pl-2"
+                                            >
+                                                <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+                                                Add Columns
+                                            </TabPillButtonUI>
+                                        )}
+                                        {!loading && selectedRowIds.length > 0 && (
+                                            <SelectionActionsMenu
+                                                open={actionsOpen}
+                                                onOpenChange={setActionsOpen}
+                                                renderItems={(close) => renderReviewRowActions(selectedRowIds, close)}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            }
+                        />
+                        <div
+                            className="relative flex flex-1 overflow-hidden"
+                            onDragOver={(e) => {
+                                if (!hasFilePayload(e.dataTransfer)) return;
+                                e.preventDefault();
+                                e.dataTransfer.dropEffect = "copy";
+                                setDragOverReviewFiles(true);
+                            }}
+                            onDragLeave={(e) => {
+                                if (
+                                    !e.currentTarget.contains(
+                                        e.relatedTarget as Node,
+                                    )
+                                ) {
+                                    setDragOverReviewFiles(false);
+                                }
+                            }}
+                            onDrop={(e) => {
+                                if (!hasFilePayload(e.dataTransfer)) return;
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setDragOverReviewFiles(false);
+                                void handleDropReviewFiles(
+                                    Array.from(e.dataTransfer.files),
+                                );
+                            }}
+                        >
+                            <TRTable
+                                ref={tableRef}
+                                loading={loading}
+                                documentGrouping={
+                                    review?.document_grouping ?? "document"
+                                }
+                                columns={columns}
+                                rows={filteredRows}
+                                documents={documents}
+                                cells={cells}
+                                cellStore={cellStore}
+                                highlightedCell={highlightedCell}
+                                savingColumn={savingColumn}
+                                savingColumnsConfig={savingColumnsConfig}
+                                selectedRowIds={selectedRowIds}
+                                uploadingFilenames={uploadingDroppedFilenames}
+                                dragOverFiles={dragOverReviewFiles}
+                                onSelectionChange={setSelectedRowIds}
+                                rightClickDropdown={(row, close) => renderReviewRowActions(rowActionSelectionIds(row.id, selectedRowIds), close)}
+                                onDocumentOpen={handleDocumentOpen}
+                                onExpand={(cell) => {
+                                    setExpandedCell(cell);
+                                    setExpandedCellCitation(undefined);
+                                    setExpandedDocumentId(undefined);
+                                }}
+                                onCitationClick={(
+                                    cell,
+                                    page,
+                                    quote,
+                                    citationRef,
+                                    sheet,
+                                    citationCell,
+                                    documentId,
+                                ) => {
+                                    setExpandedCell(cell);
+                                    setExpandedCellCitation({
+                                        quote,
+                                        page,
+                                        sheet,
+                                        cell: citationCell,
+                                        documentId,
+                                        citationRef,
+                                    });
+                                    setExpandedDocumentId(undefined);
+                                }}
+                                onUpdateColumn={handleUpdateColumn}
+                                onDeleteColumn={handleDeleteColumn}
+                                onAddColumn={openAddColumns}
+                                onAddDocuments={() => {
+                                    if (
+                                        !requireStructure(
+                                            "edit the document set",
+                                        )
+                                    )
+                                        return;
+                                    setAddDocsOpen(true);
+                                }}
+                            />
+                        </div>
+                    </div>
+                    {chatOpen && (
+                        <TRChatPanel
+                            reviewId={reviewId}
+                            reviewTitle={review?.title ?? null}
+                            projectName={project?.name ?? null}
+                            onCitationClick={handleTabularCitationClick}
+                            initialChatId={selectedChatId}
+                            onChatIdChange={setSelectedChatId}
+                            canSend={roleKnown ? canEditContent : null}
+                        />
+                    )}
+                </div>
+            </div>
+
+            {/* Cell detail side panel */}
+            {expandedCell &&
+                (() => {
+                    const expandedRow = rows.find(
+                        (row) => row.id === expandedCell.row_id,
+                    );
+                    // Pass navigation intent as an ID. The panel resolves it
+                    // against current row membership and available documents;
+                    // a background removal must not masquerade as navigation.
+                    const requestedDocumentId =
+                        expandedCellCitation?.documentId ??
+                        expandedDocumentId ??
+                        expandedRow?.document_id ?? undefined;
+                    const expandedCol = columns.find(
+                        (c) => c.index === expandedCell.column_index,
+                    );
+                    if (!expandedRow || !expandedCol) return null;
+                    return (
+                        <TRSidePanel
+                            cell={expandedCell}
+                            row={expandedRow}
+                            rows={filteredRows}
+                            documentId={requestedDocumentId}
+                            documents={documents}
+                            column={expandedCol}
+                            columns={columns}
+                            onClose={() => {
+                                setExpandedCell(null);
+                                setExpandedCellCitation(undefined);
+                                setExpandedDocumentId(undefined);
+                            }}
+                            onNavigate={(rowId, columnIndex) => {
+                                const nextCell = cellStore.get(rowId, columnIndex);
+                                if (nextCell) {
+                                    setExpandedCell(nextCell);
+                                    setExpandedCellCitation(undefined);
+                                    setExpandedDocumentId(undefined);
+                                }
+                            }}
+                            onRegenerate={
+                                cellMutationsBlocked
+                                    ? undefined
+                                    : () =>
+                                          handleRegenerateCell(
+                                              expandedRow.id,
+                                              expandedCell.column_index,
+                                          )
+                            }
+                            displayDocument={
+                                !!requestedDocumentId &&
+                                (expandedCellCitation !== undefined ||
+                                    expandedDocumentId !== undefined)
+                            }
+                            documentOnly={expandedDocumentId !== undefined}
+                            citationQuote={expandedCellCitation?.quote}
+                            citationPage={expandedCellCitation?.page}
+                            citationSheet={expandedCellCitation?.sheet}
+                            citationCell={expandedCellCitation?.cell}
+                            citationDocumentId={
+                                expandedCellCitation?.documentId
+                            }
+                            citationRef={expandedCellCitation?.citationRef}
+                        />
+                    );
+                })()}
+
+            <AddColumnModal
+                open={addColOpen}
+                existingCount={columns.length}
+                onClose={() => setAddColOpen(false)}
+                onAdd={handleAddColumn}
+            />
+
+            {/* The review's own workspace, which the dialogs list and
+                upload into: it takes documents from nowhere else. */}
+            <DocumentWorkspaceScope
+                orgId={review ? (review.org_id ?? null) : undefined}
+            >
+                {project ? (
+                    <AddDocumentsModal
+                        open={addDocsOpen}
+                        onClose={() => setAddDocsOpen(false)}
+                        onSelect={(docs: Document[]) => handleAddDocuments(docs)}
+                        breadcrumb={[
+                            "Projects",
+                            project.name +
+                                (project.cm_number
+                                    ? ` (#${project.cm_number})`
+                                    : ""),
+                            "Tabular Reviews",
+                            ...(review ? [review.title || "Untitled Review"] : []),
+                            "Add Documents",
+                        ]}
+                        uploadStateId={`tabular-review:${review?.id ?? "new"}:project`}
+                        projectId={project.id}
+                        projectDocumentsOnly
+                        disabledDocumentIds={
+                            new Set(documents.map((document) => document.id))
+                        }
+                    />
+                ) : (
+                    <AddDocumentsModal
+                        open={addDocsOpen}
+                        onClose={() => setAddDocsOpen(false)}
+                        onSelect={(docs: Document[]) => handleAddDocuments(docs)}
+                        breadcrumb={[
+                            "Tabular Reviews",
+                            ...(review ? [review.title || "Untitled Review"] : []),
+                            "Add Documents",
+                        ]}
+                        uploadStateId={`tabular-review:${review?.id ?? "new"}:library`}
+                        tabs={["files", "projects"]}
+                    />
+                )}
+            </DocumentWorkspaceScope>
+
+            <TabularReviewDetailsModal
+                open={detailsOpen}
+                review={review}
+                projects={project ? [project] : availableProjects}
+                canEdit={canEditDetails}
+                lockProject={Boolean(projectId)}
+                onClose={() => setDetailsOpen(false)}
+                onSave={handleDetailsSave}
+            />
+
+            <AccessModal
+                open={accessModalOpen}
+                onClose={() => setAccessModalOpen(false)}
+                resource={review}
+                fetchAccess={getTabularReviewPeople}
+                currentUserEmail={user?.email ?? null}
+                // Both identifiers, so a roster row without an email still
+                // cannot offer the caller a Remove that locks them out.
+                currentUserId={user?.id ?? null}
+                breadcrumb={[
+                    "Tabular Reviews",
+                    review?.title || "Untitled Review",
+                    "Access",
+                ]}
+                access={{
+                    grants: grants ?? [],
+                    // A review that belongs to an organization is shared
+                    // with that organization's members only, so the dialog
+                    // offers them to pick from rather than any address.
+                    orgId:
+                        accessOrgId === undefined
+                            ? (review?.org_id ?? null)
+                            : accessOrgId,
+                    ownerLabel: "Review owners",
+                    resourceNoun: "review",
+                    inheritedFromProjectId: review?.project_id ?? null,
+                    canManage: can(reviewRole, "access.manage"),
+                    // The mutation is what AccessModal reports on. Reloading
+                    // the roster afterwards is bookkeeping, so its failure
+                    // must not travel back up as "Could not change that role"
+                    // for a grant the server already accepted.
+                    onGrant: async (email, role) => {
+                        await grantTabularReviewAccess(reviewId, email, role);
+                        await refreshGrants().catch(() => {});
+                    },
+                    onRevoke: async (email) => {
+                        await revokeTabularReviewAccess(reviewId, email);
+                        await refreshGrants().catch(() => {});
+                    },
+                }}
+            />
+
+            <TRWorkflowModal
+                open={workflowModalOpen}
+                onClose={() => {
+                    if (applyingWorkflow) return;
+                    setWorkflowModalOpen(false);
+                }}
+                onApply={handleApplyWorkflow}
+                breadcrumbs={[
+                    ...(project
+                        ? [
+                              "Projects",
+                              project.name +
+                                  (project.cm_number
+                                      ? ` (#${project.cm_number})`
+                                      : ""),
+                          ]
+                        : []),
+                    "Tabular Reviews",
+                    review?.title || "Untitled Review",
+                    "Add workflow",
+                ]}
+                applying={applyingWorkflow}
+            />
+
+            <ConfirmPopup
+                open={deleteReviewConfirmOpen}
+                title="Delete tabular review?"
+                message="This will permanently delete the tabular review and its generated cells."
+                confirmLabel="Delete"
+                confirmVariant="danger"
+                confirmStatus={
+                    deleteReviewStatus === "deleting"
+                        ? "loading"
+                        : deleteReviewStatus === "deleted"
+                          ? "complete"
+                          : "idle"
+                }
+                cancelLabel="Cancel"
+                onCancel={() => {
+                    if (deleteReviewStatus === "deleting") return;
+                    setDeleteReviewConfirmOpen(false);
+                    setDeleteReviewStatus("idle");
+                }}
+                onConfirm={() => void confirmReviewDelete()}
+            />
+
+            <PermissionDeniedPopup
+                {...permissionDeniedProps(ownerOnlyAction, deniedContacts)}
+                onClose={() => setOwnerOnlyAction(null)}
+            />
+
+            <WarningPopup
+                open={generationError !== null}
+                onClose={() => setGenerationError(null)}
+                title="Review stopped"
+                message={generationError}
+            />
+            <ApiKeyMissingPopup
+                open={apiKeyWarning !== null}
+                title={
+                    apiKeyWarning?.kind === "rejected"
+                        ? "API key rejected"
+                        : undefined
+                }
+                message={
+                    apiKeyWarning?.kind === "rejected"
+                        ? `The ${apiKeyWarning.provider ? providerLabel(apiKeyWarning.provider) : "model provider"} API key was rejected. If you added your own key, check it in Settings → Bring Your Own Keys; otherwise contact your administrator.`
+                        : undefined
+                }
+                onClose={() => setApiKeyWarning(null)}
+            />
+
+            <NoModelsWarningPopup
+                reason={noModelsWarning}
+                onClose={() => setNoModelsWarning(null)}
+            />
+
+            <WarningPopup
+                open={modelRequiredWarning}
+                title="Select a model"
+                message="Select a model for this tabular review before running it."
+                onClose={() => setModelRequiredWarning(false)}
+            />
+
+            <WarningPopup
+                open={generationGuard === "running"}
+                title="Tabular review is already running"
+                message="This review is being run in another tab or by another collaborator. Wait for that run to finish or be stopped before trying again."
+                onClose={() => {
+                    if (!reloadingLatestReview) setGenerationGuard(null);
+                }}
+                primaryAction={{
+                    label: reloadingLatestReview ? "Checking…" : "Check again",
+                    disabled: reloadingLatestReview,
+                    onClick: () => void loadLatestReview(),
+                }}
+            />
+
+            <WarningPopup
+                open={generationGuard === "stale"}
+                title="A newer version is available"
+                message="Load the latest version of this tabular review before running it."
+                onClose={() => {
+                    if (!reloadingLatestReview) setGenerationGuard(null);
+                }}
+                primaryAction={{
+                    label: reloadingLatestReview ? "Loading…" : "Load latest",
+                    disabled: reloadingLatestReview,
+                    onClick: () => void loadLatestReview(),
+                }}
+            />
+        </div>
+    );
+}

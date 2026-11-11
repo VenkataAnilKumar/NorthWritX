@@ -1,0 +1,643 @@
+import crypto from "crypto";
+import dns from "dns/promises";
+import net from "net";
+import { promisify } from "node:util";
+import { Agent, fetch as undiciFetch } from "undici";
+import { AppError } from "../appError";
+import {
+    BlockedDestinationError,
+    isBlockedDestinationError,
+} from "../blockedDestination";
+import { reportError } from "../observability/sentry";
+import { isBlockedIp } from "../privateIp";
+import { configuredApiPublicUrl } from "../runtimeConfig";
+import {
+    HEADER_NAME_RE,
+    MAX_CUSTOM_HEADER_VALUE_LENGTH,
+    MAX_CUSTOM_HEADERS,
+    canonicalHostname,
+    isBlockedHostname,
+    type ConnectorRow,
+    type Db,
+    type McpConnectorAuthConfig,
+    type McpConnectorSummary,
+    type McpToolSummary,
+    type OAuthTokenRow,
+    type ToolCacheRow,
+} from "./types";
+
+function encryptionSecret(): string {
+    const secret =
+        process.env.MCP_CONNECTORS_ENCRYPTION_SECRET ||
+        process.env.USER_API_KEYS_ENCRYPTION_SECRET;
+    if (!secret) {
+        throw new Error(
+            "MCP_CONNECTORS_ENCRYPTION_SECRET or USER_API_KEYS_ENCRYPTION_SECRET is not configured",
+        );
+    }
+    return secret;
+}
+
+const KEY_SALT = "mike-user-mcp-v1";
+// scryptSync is deliberately slow (~40ms); connector auth configs are
+// encrypted/decrypted on every tool call, so cache the derived key per
+// (secret, salt) pair instead of re-deriving it each time.
+const derivedKeys = new Map<string, Buffer>();
+
+function encryptionKey(): Buffer {
+    const secret = encryptionSecret();
+    const cacheKey = `${KEY_SALT}:${secret}`;
+    const cached = derivedKeys.get(cacheKey);
+    if (cached) return cached;
+    const derived = crypto.scryptSync(secret, KEY_SALT, 32);
+    derivedKeys.set(cacheKey, derived);
+    return derived;
+}
+
+export function mcpOAuthCallbackUrl() {
+    const configured = configuredApiPublicUrl();
+    if (!configured && process.env.NODE_ENV === "production") {
+        throw new Error("API_PUBLIC_URL is required for connector OAuth");
+    }
+    const base =
+        configured || `http://localhost:${process.env.PORT ?? "3001"}`;
+    return `${base}/user/mcp-connectors/oauth/callback`;
+}
+
+function encryptJson(value: Record<string, unknown>): {
+    encrypted_auth_config: string;
+    auth_config_iv: string;
+    auth_config_tag: string;
+} {
+    const iv = crypto.randomBytes(12);
+    const cipher = crypto.createCipheriv("aes-256-gcm", encryptionKey(), iv);
+    const encrypted = Buffer.concat([
+        cipher.update(JSON.stringify(value), "utf8"),
+        cipher.final(),
+    ]);
+    return {
+        encrypted_auth_config: encrypted.toString("base64"),
+        auth_config_iv: iv.toString("base64"),
+        auth_config_tag: cipher.getAuthTag().toString("base64"),
+    };
+}
+
+export function encryptString(value: string): {
+    encrypted: string;
+    iv: string;
+    tag: string;
+} {
+    const iv = crypto.randomBytes(12);
+    const cipher = crypto.createCipheriv("aes-256-gcm", encryptionKey(), iv);
+    const encrypted = Buffer.concat([
+        cipher.update(value, "utf8"),
+        cipher.final(),
+    ]);
+    return {
+        encrypted: encrypted.toString("base64"),
+        iv: iv.toString("base64"),
+        tag: cipher.getAuthTag().toString("base64"),
+    };
+}
+
+export function decryptString(
+    encrypted: string | null | undefined,
+    iv: string | null | undefined,
+    tag: string | null | undefined,
+): string | null {
+    if (!encrypted || !iv || !tag) return null;
+    try {
+        const decipher = crypto.createDecipheriv(
+            "aes-256-gcm",
+            encryptionKey(),
+            Buffer.from(iv, "base64"),
+        );
+        decipher.setAuthTag(Buffer.from(tag, "base64"));
+        const decrypted = Buffer.concat([
+            decipher.update(Buffer.from(encrypted, "base64")),
+            decipher.final(),
+        ]);
+        return decrypted.toString("utf8");
+    } catch (err) {
+        // A secret that no longer decrypts (rotated key, corrupt row) is a
+        // deployment problem nobody sees from "the connector stopped working".
+        // The Error object goes to Sentry with its kind; the log line
+        // carries the same object so the bridge does not file it twice.
+        const failure = new AppError(
+            "mcp.decrypt_failed",
+            "Failed to decrypt a connector secret",
+            { cause: err },
+        );
+        reportError(failure);
+        console.error("[mcp-connectors] failed to decrypt string secret", {
+            error: failure,
+        });
+        return null;
+    }
+}
+
+export function decryptAuthConfig(row: ConnectorRow): McpConnectorAuthConfig {
+    if (
+        !row.encrypted_auth_config ||
+        !row.auth_config_iv ||
+        !row.auth_config_tag
+    ) {
+        return {};
+    }
+    try {
+        const decipher = crypto.createDecipheriv(
+            "aes-256-gcm",
+            encryptionKey(),
+            Buffer.from(row.auth_config_iv, "base64"),
+        );
+        decipher.setAuthTag(Buffer.from(row.auth_config_tag, "base64"));
+        const decrypted = Buffer.concat([
+            decipher.update(Buffer.from(row.encrypted_auth_config, "base64")),
+            decipher.final(),
+        ]);
+        const parsed = JSON.parse(decrypted.toString("utf8"));
+        return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+            ? (parsed as McpConnectorAuthConfig)
+            : {};
+    } catch (err) {
+        const failure = new AppError(
+            "mcp.decrypt_failed",
+            "Failed to decrypt a connector's auth config",
+            { cause: err },
+        );
+        reportError(failure);
+        console.error("[mcp-connectors] failed to decrypt auth config", {
+            connectorId: row.id,
+            error: failure,
+        });
+        return {};
+    }
+}
+
+function sanitizeToolPart(value: string, fallback: string, maxLength: number) {
+    const sanitized = value
+        .toLowerCase()
+        .replace(/[^a-z0-9_]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .replace(/_+/g, "_");
+    return (sanitized || fallback).slice(0, maxLength);
+}
+
+export function openaiToolName(connector: ConnectorRow, toolName: string) {
+    const connectorSlug = sanitizeToolPart(connector.name, "connector", 18);
+    const toolSlug = sanitizeToolPart(toolName, "tool", 30);
+    const idSlug = connector.id.replace(/-/g, "").slice(0, 8);
+    return `mcp_${connectorSlug}_${toolSlug}_${idSlug}`;
+}
+
+export function normalizeJsonSchema(schema: unknown): Record<string, unknown> {
+    if (!schema || typeof schema !== "object" || Array.isArray(schema)) {
+        return { type: "object", properties: {} };
+    }
+    const out = { ...(schema as Record<string, unknown>) };
+    if (out.type !== "object") out.type = "object";
+    if (!out.properties || typeof out.properties !== "object") {
+        out.properties = {};
+    }
+    return out;
+}
+
+function truthyAnnotation(
+    annotations: Record<string, unknown> | null | undefined,
+    key: string,
+) {
+    return annotations?.[key] === true;
+}
+
+export function isMcpWriteTool(
+    annotations: Record<string, unknown> | null | undefined,
+) {
+    // Missing annotations do not establish read-only behavior. Only explicitly
+    // read-only, non-destructive tools may bypass the write protections.
+    return (
+        truthyAnnotation(annotations, "destructiveHint") ||
+        annotations?.readOnlyHint !== true
+    );
+}
+
+/** Also protect cached tools discovered before conservative classification. */
+export function mcpToolRequiresWriteAccess(
+    tool: Pick<ToolCacheRow, "annotations" | "requires_confirmation">,
+) {
+    return tool.requires_confirmation || isMcpWriteTool(tool.annotations);
+}
+
+const deriveCredentialFingerprint = promisify(crypto.scrypt);
+
+/** An opaque binding to the destination and credentials, stable across token refresh. */
+export async function mcpConnectionFingerprint(
+    connector: ConnectorRow,
+    oauthGrantId: string | null,
+) {
+    const config = decryptAuthConfig(connector);
+    // Use a slow, asynchronous derivation for potentially low-entropy custom
+    // credentials. The application key also prevents offline guessing from
+    // a fingerprint alone without blocking the request event loop.
+    const credentials =
+        connector.encrypted_auth_config || oauthGrantId
+            ? (
+                (await deriveCredentialFingerprint(
+                    JSON.stringify({
+                        oauthGrantId,
+                        bearerToken: config.bearerToken ?? null,
+                        headers: Object.entries(config.headers ?? {}).sort(([a], [b]) =>
+                            a.localeCompare(b),
+                        ),
+                    }),
+                    encryptionKey(),
+                    32,
+                )) as Buffer
+            ).toString("hex")
+            : null;
+    return crypto
+        .createHash("sha256")
+        .update(
+            JSON.stringify([
+                connector.server_url,
+                connector.transport,
+                connector.auth_type,
+                credentials,
+            ]),
+        )
+        .digest("hex");
+}
+
+function toToolSummary(row: ToolCacheRow): McpToolSummary {
+    return {
+        id: row.id,
+        toolName: row.tool_name,
+        openaiToolName: row.openai_tool_name,
+        title: row.title,
+        description: row.description,
+        enabled: row.enabled,
+        readOnly: truthyAnnotation(row.annotations, "readOnlyHint"),
+        destructive: truthyAnnotation(row.annotations, "destructiveHint"),
+        write: mcpToolRequiresWriteAccess(row),
+        lastSeenAt: row.last_seen_at,
+    };
+}
+
+export function toConnectorSummary(
+    connector: ConnectorRow,
+    tools: ToolCacheRow[] = [],
+    oauthToken?: OAuthTokenRow | null,
+    toolCount = tools.length,
+): McpConnectorSummary {
+    const authConfig = decryptAuthConfig(connector);
+    return {
+        id: connector.id,
+        name: connector.name,
+        transport: connector.transport,
+        serverUrl: connector.server_url,
+        authType: connector.auth_type ?? "none",
+        enabled: connector.enabled,
+        requireWriteApproval: connector.require_write_approval === true,
+        readOnly: connector.read_only === true,
+        hasAuthConfig: !!connector.encrypted_auth_config,
+        customHeaderKeys: Object.keys(authConfig.headers ?? {}),
+        oauthConnected: !!oauthToken?.encrypted_access_token,
+        toolPolicy: connector.tool_policy ?? {},
+        tools: tools.map((tool) => ({
+            ...toToolSummary(tool),
+            enabled: tool.enabled && !(connector.read_only && mcpToolRequiresWriteAccess(tool)),
+        })),
+        toolCount,
+        createdAt: connector.created_at,
+        updatedAt: connector.updated_at,
+    };
+}
+
+// Private/reserved IP classification lives in lib/privateIp.ts so every
+// guarded egress check reuses the exact same ranges.
+
+/** How guard errors name the URL when the caller does not say. */
+const DEFAULT_GUARD_LABEL = "MCP server URL";
+
+export async function validateRemoteMcpUrl(
+    rawUrl: string,
+    label: string = DEFAULT_GUARD_LABEL,
+    options: { allowHttp?: boolean } = {},
+): Promise<string> {
+    let url: URL;
+    try {
+        url = new URL(rawUrl);
+    } catch {
+        throw new Error(`${label} must be a valid URL.`);
+    }
+    const allowed =
+        url.protocol === "https:" ||
+        (options.allowHttp === true && url.protocol === "http:");
+    if (!allowed) {
+        throw new Error(
+            `${label} must use ${options.allowHttp ? "HTTP or HTTPS" : "HTTPS"}.`,
+        );
+    }
+    url.username = "";
+    url.password = "";
+    url.hash = "";
+
+    const hostname = canonicalHostname(url);
+    if (isBlockedHostname(hostname)) {
+        throw new BlockedDestinationError(`${label} points to a blocked host.`);
+    }
+
+    // URL.hostname wraps IPv6 literals in brackets ("[::1]"), which net.isIP
+    // does not recognize. Strip them so an IPv6 literal is classified by the
+    // private-IP guard rather than falling through to a DNS lookup that would
+    // treat the bracketed form as an (unresolvable) hostname.
+    const literalHost =
+        hostname.startsWith("[") && hostname.endsWith("]")
+            ? hostname.slice(1, -1)
+            : hostname;
+    const literalFamily = net.isIP(literalHost);
+    const addresses = literalFamily
+        ? [{ address: literalHost }]
+        : await dns.lookup(hostname, { all: true, verbatim: true });
+    if (!addresses.length || addresses.some(({ address }) => isBlockedIp(address))) {
+        throw new BlockedDestinationError(
+            `${label} resolves to a blocked network address.`,
+        );
+    }
+
+    return url.toString();
+}
+
+export function headersForAuth(config: McpConnectorAuthConfig) {
+    const headers: Record<string, string> = {};
+    for (const [key, value] of Object.entries(config.headers ?? {})) {
+        if (typeof value === "string" && key.toLowerCase() !== "host") {
+            headers[key] = value;
+        }
+    }
+    if (config.bearerToken?.trim()) {
+        headers.Authorization = `Bearer ${config.bearerToken.trim()}`;
+    }
+    return headers;
+}
+
+export function validateCustomHeaders(
+    raw: Record<string, unknown> | undefined,
+): Record<string, string> {
+    if (!raw) return {};
+    if (typeof raw !== "object" || Array.isArray(raw)) {
+        throw new Error("Custom headers must be an object.");
+    }
+    const entries = Object.entries(raw);
+    if (entries.length > MAX_CUSTOM_HEADERS) {
+        throw new Error(`Custom headers may not exceed ${MAX_CUSTOM_HEADERS} entries.`);
+    }
+    const headers: Record<string, string> = {};
+    for (const [key, value] of entries) {
+        const trimmedKey = key.trim();
+        if (!HEADER_NAME_RE.test(trimmedKey) || trimmedKey.toLowerCase() === "host") {
+            throw new Error(`Invalid custom header name: ${key}`);
+        }
+        if (
+            typeof value !== "string" ||
+            value.length > MAX_CUSTOM_HEADER_VALUE_LENGTH
+        ) {
+            throw new Error(
+                `Custom header ${key} must be a string of ${MAX_CUSTOM_HEADER_VALUE_LENGTH} characters or fewer.`,
+            );
+        }
+        headers[trimmedKey] = value;
+    }
+    return headers;
+}
+
+export function authConfigPatch(config: McpConnectorAuthConfig): Record<string, unknown> {
+    const hasBearer = !!config.bearerToken?.trim();
+    const hasHeaders = Object.keys(config.headers ?? {}).length > 0;
+    if (!hasBearer && !hasHeaders) {
+        return {
+            encrypted_auth_config: null,
+            auth_config_iv: null,
+            auth_config_tag: null,
+        };
+    }
+    return encryptJson({
+        ...(hasBearer ? { bearerToken: config.bearerToken?.trim() } : {}),
+        ...(hasHeaders ? { headers: config.headers } : {}),
+    });
+}
+
+// A shared undici dispatcher whose DNS lookup runs the private-IP guard at the
+// moment a socket is opened and returns ONLY validated addresses. Because
+// undici connects to exactly what this lookup yields, the address we validate is
+// the address we connect to — there is no second, unguarded resolution for an
+// attacker to race (DNS-rebinding / TOCTOU). Reusing the dispatcher also lets
+// undici pool validated HTTPS connections instead of leaving a new Agent and
+// keep-alive socket behind for every MCP request.
+const guardedAgent = new Agent({
+    connect: {
+        lookup: (hostname, _options, callback) => {
+            dns.lookup(hostname, { all: true, verbatim: true })
+                .then((addresses) => {
+                    if (
+                        !addresses.length ||
+                        addresses.some(({ address }) => isBlockedIp(address))
+                    ) {
+                        // Shared by every caller; guardedFetch re-labels it
+                        // with the caller's own wording.
+                        callback(
+                            new BlockedDestinationError(
+                                "Destination resolves to a blocked network address.",
+                            ),
+                            [],
+                        );
+                        return;
+                    }
+                    callback(null, addresses);
+                })
+                .catch((err: unknown) =>
+                    callback(
+                        err instanceof Error ? err : new Error(String(err)),
+                        [],
+                    ),
+                );
+        },
+    },
+});
+
+// The single guarded egress helper for every outbound MCP request (connector
+// transport, OAuth discovery/registration/refresh). It rejects non-HTTPS,
+// credentialed, metadata-host and private-IP-literal URLs up front, pins the
+// connection to a connect-time-validated address, and refuses to auto-follow
+// redirects (`redirect: "manual"`) so a 3xx to an internal host cannot smuggle
+// egress past the guard.
+// Redirects are followed here rather than by the runtime so that every hop is
+// re-checked by validateRemoteMcpUrl — `redirect: "follow"` would let a public
+// URL bounce us to a private address the guard never saw. Refusing outright is
+// not an option either: RFC 8414 well-known discovery paths are commonly served
+// as redirects, and the MCP SDK treats any non-4xx as fatal, so a single 302
+// aborts discovery even when a later candidate URL would have worked.
+const MAX_MCP_REDIRECTS = 5;
+
+type GuardedFetchOptions = {
+    /**
+     * What the URL is, as guard errors should call it ("Model endpoint
+     * URL"). Defaults to the MCP wording this guard was written for.
+     */
+    label?: string;
+    /** Also allow plain http: URLs (public web pages). */
+    allowHttp?: boolean;
+};
+
+export async function guardedFetch(
+    input: Parameters<typeof fetch>[0],
+    init?: Parameters<typeof fetch>[1],
+    options: GuardedFetchOptions = {},
+): Promise<Response> {
+    const label = options.label ?? DEFAULT_GUARD_LABEL;
+    try {
+        return await guardedFetchUnlabelled(input, init, {
+            ...options,
+            label,
+        });
+    } catch (error) {
+        // A connect-time rejection surfaces from undici as "fetch failed"
+        // with the shared agent's caller-neutral error as its cause.
+        if (
+            isBlockedDestinationError(error) &&
+            !(
+                error instanceof BlockedDestinationError &&
+                error.message.startsWith(label)
+            )
+        ) {
+            throw new BlockedDestinationError(
+                `${label} resolves to a blocked network address.`,
+                { cause: error },
+            );
+        }
+        throw error;
+    }
+}
+
+async function guardedFetchUnlabelled(
+    input: Parameters<typeof fetch>[0],
+    init: Parameters<typeof fetch>[1] | undefined,
+    options: GuardedFetchOptions & { label: string },
+): Promise<Response> {
+    const { label } = options;
+    const urlOptions = { allowHttp: options.allowHttp };
+    const isRequest = typeof input === "object" && input instanceof Request;
+    let url =
+        typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.toString()
+              : input.url;
+    await validateRemoteMcpUrl(url, label, urlOptions);
+    // The request MUST go through the `undici` package's own `fetch`, not the
+    // global one. Node's built-in fetch is a copy of undici frozen at the
+    // version Node was built with (6.x on Node 22), while `guardedAgent` comes
+    // from the `undici` package in package.json (8.x). Dispatchers and the
+    // request handlers fetch hands them share a private protocol that changed
+    // between those majors: an 8.x Agent validates the handler it receives
+    // and rejects the 6.x shape with `UND_ERR_INVALID_ARG: invalid
+    // onRequestStart method undefined`, which surfaces to callers as the
+    // opaque "fetch failed" — on every MCP connector request, always. Taking
+    // both halves from the same module makes the pairing hold no matter how
+    // Node's bundled copy and the package version drift apart.
+    const requestInit: Record<string, unknown> =
+        typeof input === "string" || input instanceof URL
+            ? { ...init }
+            : {
+                  method: input.method,
+                  headers: input.headers,
+                  body: input.body,
+                  ...(input.body ? { duplex: "half" } : {}),
+                  ...init,
+              };
+    let response = (await undiciFetch(url, {
+        ...requestInit,
+        redirect: "manual",
+        dispatcher: guardedAgent,
+    } as Parameters<typeof undiciFetch>[1])) as unknown as Response;
+
+    const method = (
+        (requestInit.method as string | undefined) ??
+        (isRequest ? input.method : null) ??
+        "GET"
+    ).toUpperCase();
+    // Only bodyless methods are followed. Replaying a POST body across a
+    // redirect is not something any MCP flow needs, and skipping it avoids
+    // having to reason about 307/308 body semantics.
+    if (method !== "GET" && method !== "HEAD") return response;
+
+    let headers = new Headers(
+        (requestInit.headers as HeadersInit | undefined) ??
+            (isRequest ? input.headers : undefined),
+    );
+
+    for (let hop = 0; hop < MAX_MCP_REDIRECTS; hop++) {
+        if (response.status < 300 || response.status > 399) return response;
+        const location = response.headers.get("location");
+        if (!location) return response;
+
+        let target: string;
+        try {
+            target = new URL(location, url).toString();
+        } catch {
+            return response;
+        }
+        await response.body?.cancel().catch(() => undefined);
+
+        const validated = await validateRemoteMcpUrl(target, label, urlOptions);
+        // Header names configured for connector authentication are arbitrary,
+        // so there is no complete denylist for secrets. On a cross-origin hop,
+        // retain only content negotiation and the user agent, none of which
+        // carries a secret.
+        // Mutate the active set permanently so a later same-origin hop cannot
+        // restore credentials from the original request.
+        if (new URL(validated).origin !== new URL(url).origin) {
+            const safeHeaders = new Headers();
+            for (const name of ["accept", "accept-language", "user-agent"]) {
+                const value = headers.get(name);
+                if (value !== null) safeHeaders.set(name, value);
+            }
+            headers = safeHeaders;
+        }
+        url = validated;
+        response = (await undiciFetch(validated, {
+            ...requestInit,
+            method,
+            headers: Object.fromEntries(headers.entries()),
+            redirect: "manual",
+            dispatcher: guardedAgent,
+        } as Parameters<typeof undiciFetch>[1])) as unknown as Response;
+    }
+    return response;
+}
+
+export function base64Url(buffer: Buffer) {
+    return buffer
+        .toString("base64")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/g, "");
+}
+
+export function stateHash(state: string) {
+    return crypto.createHash("sha256").update(state).digest("hex");
+}
+
+export async function loadConnector(
+    userId: string,
+    connectorId: string,
+    db: Db,
+): Promise<ConnectorRow> {
+    const { data, error } = await db
+        .from("user_mcp_connectors")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("id", connectorId)
+        .single();
+    if (error) throw error;
+    return data as ConnectorRow;
+}

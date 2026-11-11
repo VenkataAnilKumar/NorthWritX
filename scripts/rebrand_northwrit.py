@@ -1,308 +1,332 @@
-"""Rebrand product text and vector marks, with preview, backup, and guarded restore.
+"""Apply NorthWrit's product branding to the imported Mike source.
 
-Internal namespaces and external service addresses remain compatible with upstream.
-Run with Python 3.11+; no third-party packages are required.
+Requires Pillow. Pass --social-source on the first run to install artwork.
+Use --check to verify an already branded tree without writing files.
 """
 
 import argparse
-import hashlib
-import json
-import os
+import io
 from pathlib import Path
 import re
-import struct
-import zlib
-from datetime import datetime, timezone
 
-ROOT = Path(__file__).resolve().parents[1]
-SKIP_DIRS = {
-    ".git", ".agents", ".claude", ".codex", ".cursor", ".venv", "node_modules",
-    ".next", "dist", "build", "__pycache__", "vendor", "alembic",
-}
-TEXT_SUFFIXES = {
-    ".py", ".ts", ".tsx", ".js", ".jsx", ".json", ".md", ".mdx", ".html",
-    ".css", ".scss", ".rs", ".toml", ".yaml", ".yml", ".sh", ".txt", ".svg",
-}
-PROTECTED = re.compile(
-    r"https?://[^\s<>\"']+|[\w.+-]+@[\w.-]+|"
-    r"\b[\w.-]*onyx\.(?:app|ai|com|dev)[^\s<>\"']*"
+from PIL import Image, ImageDraw, ImageOps
+
+
+ROOT = Path(__file__).resolve().parents[1] / "apps" / "northwrit"
+NAVY = "#1F3A5F"
+PAPER = "#F8F9FA"
+FOLD = "#AEC4D1"
+LEFT = ((32, 9), (13, 52), (32, 42))
+RIGHT = ((32, 9), (32, 42), (51, 52))
+PRODUCT_NAME = re.compile(r"(?<![\w@./-])Mike(?:OSS)?(?![\w/-]|\.\w)")
+COPY_ROOTS = (
+    "frontend/src", "word-addin/src", "word-addin/e2e-live",
+    "desktop/src", "desktop/e2e", "backend/src",
+    "packages/client/src", "packages/ui/src",
 )
-BRAND = re.compile(r"(?<![\w])(?:OnyxBot|Onyx|ONYX)(?![\w])")
-LEGAL = re.compile(
-    r"copyright|SPDX|licensed|license key|received from Onyx|"
-    r"SOC 2|certified|certification|DanswerAI", re.IGNORECASE
+UPSTREAM_DIAGNOSTICS = {"errorReporting.ts", "errorReporting.test.ts", "sentryTunnel.test.ts"}
+
+
+def points(polygon):
+    return " ".join(f"{x},{y}" for x, y in polygon)
+
+
+MARK = (
+    f'<rect width="64" height="64" rx="15" fill="{NAVY}"/>'
+    f'<polygon points="{points(LEFT)}" fill="{PAPER}"/>'
+    f'<polygon points="{points(RIGHT)}" fill="{FOLD}"/>'
 )
-MARK = "M12 52V12H21L43 38V12H52V52H43L21 26V52Z"
-ICON_SVG = (
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
-    '<rect width="64" height="64" rx="12" fill="#14283F"/>'
-    f'<path d="{MARK}" fill="#FFFFFF"/></svg>\n'
-).encode()
-PNG_ICONS = {
-    "mobile/assets/images/icon.png": 1024,
-    "mobile/assets/images/splash-icon.png": 512,
-    "desktop/src-tauri/icons/32x32.png": 32,
-    "desktop/src-tauri/icons/128x128.png": 128,
-    "desktop/src-tauri/icons/128x128@2x.png": 256,
-    "desktop/src-tauri/icons/tray-icon.png": 32,
-}
-ICO = "desktop/src-tauri/icons/icon.ico"
-ICNS = "desktop/src-tauri/icons/icon.icns"
-IDENTITY_EDITS = {
-    "desktop/src-tauri/tauri.conf.json": {
-        "app.onyx.desktop": "app.northwrit.desktop",
-        '    "exceptionDomain": "cloud.onyx.app",\n': "",
-        '"tabbingIdentifier": "onyx"': '"tabbingIdentifier": "northwrit"',
-        "NorthWrit Cloud Desktop App": "NorthWrit Desktop",
-        "A lightweight desktop wrapper for NorthWrit Cloud - your AI-powered knowledge assistant.": "Desktop client for your NorthWrit server.",
-    },
-    "desktop/src-tauri/src/config.rs": {
-        'DEFAULT_SERVER_URL: &str = "https://cloud.onyx.app"': 'DEFAULT_SERVER_URL: &str = ""',
-        'ProjectDirs::from("app", "onyx", "onyx-desktop")': 'ProjectDirs::from("app", "northwrit", "northwrit-desktop")',
-    },
-    "desktop/src/index.html": {
-        'placeholder="https://cloud.onyx.app"': 'placeholder="https://northwrit.example.com"',
-        'const DEFAULT_DOMAIN = "https://cloud.onyx.app";': 'const DEFAULT_DOMAIN = "";',
-        "// On error, default to cloud": "// On error, let the user enter their server URL.",
-        "onyxDomain": "northwritDomain",
-    },
-    "desktop/README.md": {
-        "[NorthWrit Cloud](https://cloud.onyx.app)": "your NorthWrit server",
-        "The app defaults to `https://cloud.onyx.app` but supports any NorthWrit instance.": "Enter your NorthWrit server URL on first launch.",
-        "The app loads content from `cloud.onyx.app`.": "The app loads content from the server you configured.",
-    },
-    "mobile/app.json": {
-        "app.onyx.mobile": "app.northwrit.mobile",
-        '"scheme": "onyx"': '"scheme": "northwrit"',
-    },
-    "mobile/src/api/auth/instanceUrl.ts": {
-        'ONYX_CLOUD_URL = "https://cloud.onyx.app"': 'SERVER_URL_PLACEHOLDER = "https://northwrit.example.com"',
-    },
-    "mobile/src/app/(auth)/connect.tsx": {
-        "useState(serverUrl ?? ONYX_CLOUD_URL)": 'useState(serverUrl ?? "")',
-        "ONYX_CLOUD_URL": "SERVER_URL_PLACEHOLDER",
-    },
-}
-CALLBACK_FILES = {
-    "mobile/src/api/auth/browserSso.ts",
-    "mobile/src/api/auth/__tests__/browserSso.test.ts",
-    "backend/onyx/configs/app_configs.py",
-    "backend/tests/external_dependency_unit/auth/test_mobile_sso_bridge.py",
-}
 
 
-def render_icon(size: int) -> bytes:
-    """Rasterize the NorthWrit monogram for native application bundles."""
-    rows = bytearray()
-    for row in range(size):
-        rows.append(0)  # PNG filter byte.
-        y = (row + 0.5) * 64 / size
-        for column in range(size):
-            x = (column + 0.5) * 64 / size
-            diagonal = 12 + (x - 21) * 26 / 22
-            white = 12 <= y < 52 and (
-                12 <= x < 21 or 43 <= x < 52
-                or 21 <= x < 43 and diagonal <= y < diagonal + 14
-            )
-            rows.extend(b"\xff\xff\xff" if white else b"\x14\x28\x3f")
-
-    def chunk(kind: bytes, contents: bytes) -> bytes:
-        return (
-            struct.pack(">I", len(contents)) + kind + contents
-            + struct.pack(">I", zlib.crc32(kind + contents))
-        )
-
+def svg(content, view_box):
     return (
-        b"\x89PNG\r\n\x1a\n"
-        + chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 2, 0, 0, 0))
-        + chunk(b"IDAT", zlib.compress(rows))
-        + chunk(b"IEND", b"")
-    )
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{view_box}" '
+        f'role="img" aria-label="NorthWrit">{content}</svg>\n'
+    ).encode()
 
 
-def digest(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
+def icon():
+    scale = 16
+    canvas = Image.new("RGBA", (64 * scale, 64 * scale))
+    draw = ImageDraw.Draw(canvas)
+    draw.rounded_rectangle((0, 0, 64 * scale - 1, 64 * scale - 1), 15 * scale, fill=NAVY)
+    for polygon, color in ((LEFT, PAPER), (RIGHT, FOLD)):
+        draw.polygon([(x * scale, y * scale) for x, y in polygon], fill=color)
+    return canvas
 
 
-def replace_brand(text: str) -> str:
-    """Protect service addresses and ownership notices while replacing display text."""
-    result: list[str] = []
-    for line in text.splitlines(keepends=True):
-        if LEGAL.search(line):
-            result.append(line)
-            continue
-        protected: list[str] = []
-
-        def hold(match: re.Match[str]) -> str:
-            protected.append(match.group())
-            return f"\x01{len(protected) - 1}\x02"
-
-        line = PROTECTED.sub(hold, line)
-        line = BRAND.sub(
-            lambda match: "NorthWritBot" if match.group() == "OnyxBot" else "NorthWrit",
-            line,
-        )
-        for index, value in enumerate(protected):
-            line = line.replace(f"\x01{index}\x02", value)
-        result.append(line)
-    return "".join(result)
+def encode(image, format_name, **options):
+    output = io.BytesIO()
+    image.save(output, format=format_name, **options)
+    return output.getvalue()
 
 
-def transform(path: Path, data: bytes) -> bytes:
-    relative = path.as_posix()
-    if relative in PNG_ICONS:
-        return render_icon(PNG_ICONS[relative])
-    if relative == ICO:
-        png = render_icon(256)
-        return struct.pack("<HHHBBBBHHII", 0, 1, 1, 0, 0, 0, 0, 1, 24, len(png), 22) + png
-    if relative == ICNS:
-        png = render_icon(512)
-        return struct.pack(">4sI4sI", b"icns", len(png) + 16, b"ic09", len(png) + 8) + png
-    if relative in {
-        "web/public/logo.svg", "desktop/src-tauri/icons/icon.svg",
-        "desktop/src-tauri/icons/tray-icon.svg",
-    }:
-        return ICON_SVG
-    if b"\x00" in data:
-        return data
-    try:
-        text = data.decode("utf-8")
-    except UnicodeDecodeError:
-        return data
-    changed = replace_brand(text)
-    for previous, replacement in IDENTITY_EDITS.get(relative, {}).items():
-        changed = changed.replace(previous, replacement)
-    if relative in CALLBACK_FILES:
-        changed = changed.replace("onyx://auth/callback", "northwrit://auth/callback")
-    changed = changed.replace("an NorthWrit", "a NorthWrit")
-    if relative.endswith(("logos/onyx-logo.tsx", "icons/onyx-logo.tsx")):
-        changed = re.sub(r'viewBox="[^"]+"', 'viewBox="0 0 64 64"', changed)
-    if relative == "web/src/lib/app/svcSS.ts":
-        changed = changed.replace('"/onyx.ico"', '"/logo.svg"')
-    # Keep exported component names so all existing callers use the new mark.
-    if relative.endswith(("logos/onyx-logo.tsx", "icons/onyx-logo.tsx")) and MARK not in text:
-        changed = re.sub(
-            r"<(?:Path|path)\b[\s\S]*?/>", "", changed
-        )
-        tag = "Path" if 'react-native-svg' in text else "path"
-        close = "</Svg>" if tag == "Path" else "</svg>"
-        changed = changed.replace(
-            close, f'<{tag} d="{MARK}" fill="currentColor" />\n  {close}'
-        )
-    if relative.endswith("logos/onyx-wordmark.tsx") and ">NorthWrit</text>" not in text:
-        changed = re.sub(r"<path\b[\s\S]*?/>", "", changed)
-        changed = changed.replace('viewBox="0 0 152 64"', 'viewBox="0 0 310 64"')
-        changed = changed.replace(
-            "</svg>",
-            '<text x="0" y="47" fontSize="46" fontFamily="sans-serif" '
-            'fontWeight="600" fill="currentColor">NorthWrit</text>\n  </svg>',
-        )
-    return changed.encode("utf-8")
+def replace(path, substitutions):
+    original = (ROOT / path).read_bytes()
+    content = original.decode("utf-8").replace("\r\n", "\n")
+    for before, after in substitutions:
+        if before in content and (before not in after or after not in content):
+            content = content.replace(before, after)
+        elif after not in content:
+            raise ValueError(f"{path}: expected branding anchor missing: {before!r}")
+    if b"\r\n" in original:
+        content = content.replace("\n", "\r\n")
+    return content.encode("utf-8")
 
 
-def files(root: Path):
-    for directory, names, filenames in os.walk(root, followlinks=False):
-        names[:] = sorted(
-            name for name in names
-            if name not in SKIP_DIRS and not (Path(directory) / name).is_symlink()
-        )
-        for name in sorted(filenames):
-            path = Path(directory) / name
-            if path.is_symlink() or path.name in {"AGENTS.md", "CLAUDE.md"}:
+def rebrand_ui_copy(outputs):
+    for directory in COPY_ROOTS:
+        for path in sorted((ROOT / directory).rglob("*")):
+            if path.suffix not in {".ts", ".tsx", ".js", ".mjs", ".html"} or path.name in UPSTREAM_DIAGNOSTICS:
                 continue
-            if re.search(r"license|notice|copyright|lock", name, re.IGNORECASE):
-                continue
-            if path.suffix in TEXT_SUFFIXES or path.relative_to(root).as_posix() in (
-                PNG_ICONS.keys() | {ICO, ICNS}
-            ):
-                yield path
+            relative = path.relative_to(ROOT).as_posix()
+            original = outputs.get(relative)
+            if original is None:
+                original = path.read_bytes()
+            lines = original.decode("utf-8").splitlines(keepends=True)
+            branded = "".join(
+                line if line.lstrip().startswith(("//", "/*", "*", "{/*", "<!--"))
+                else PRODUCT_NAME.sub("NorthWrit", line)
+                for line in lines
+            ).encode("utf-8")
+            if branded != original:
+                outputs[relative] = branded
 
 
-def atomic_write(path: Path, data: bytes) -> None:
-    temporary = path.with_name(path.name + ".northwrit-tmp")
-    with temporary.open("xb") as stream:
-        stream.write(data)
-    os.replace(temporary, path)
-
-
-def restore(root: Path, backup: Path) -> None:
-    manifest = json.loads((backup / "manifest.json").read_text(encoding="utf-8"))
-    if manifest["root"] != str(root):
-        raise ValueError("Backup belongs to another source directory")
-    for entry in manifest["files"]:
-        path = (root / entry["path"]).resolve()
-        original = (backup / "originals" / entry["path"]).resolve()
-        if not path.is_relative_to(root) or not original.is_relative_to(backup):
-            raise ValueError("Unsafe manifest path")
-        if digest(original.read_bytes()) != entry["before"]:
-            raise ValueError(f"Corrupt backup: {entry['path']}")
-        if digest(path.read_bytes()) not in {entry["before"], entry["after"]}:
-            raise ValueError(f"Later edits found: {entry['path']}; restore stopped")
-    for entry in manifest["files"]:
-        atomic_write(root / entry["path"], (backup / "originals" / entry["path"]).read_bytes())
-    print(f"Restored {len(manifest['files'])} files")
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--root", type=Path, default=ROOT / "NorthWrit")
-    actions = parser.add_mutually_exclusive_group()
-    actions.add_argument("--apply", action="store_true")
-    actions.add_argument("--restore", type=Path)
-    args = parser.parse_args()
-    root = args.root.resolve()
-    if not (root / "web").is_dir() or not (root / "backend").is_dir():
-        raise ValueError("Expected an Onyx source root with web and backend directories")
-    if args.restore:
-        restore(root, args.restore.resolve())
-        return
-    changes: list[tuple[Path, bytes, bytes]] = []
-    for path in files(root):
-        before = path.read_bytes()
-        after = transform(path.relative_to(root), before)
-        if before != after:
-            if path.suffix == ".json":
-                try:
-                    json.loads(before)
-                except (json.JSONDecodeError, UnicodeDecodeError):
-                    pass  # Some upstream .json files contain JSONC or test fixtures.
-                else:
-                    json.loads(after)
-            changes.append((path.relative_to(root), before, after))
-    entries = [
-        {"path": path.as_posix(), "before": digest(before), "after": digest(after)}
-        for path, before, after in changes
-    ]
-    report = {
-        "root": str(root), "brand": "NorthWrit", "files": entries,
-        "scope": "Display text, prompts, documentation, and app icons",
-        "retained": [
-            "Internal identifiers, module paths, environment variables, and database names",
-            "External URLs, image registries, package coordinates, and service credentials",
-            "License and attribution notices, migration history, and lockfiles",
-            "Upstream screenshots and other illustrative assets",
+def changes(social_source):
+    support_address = "NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL"
+    edits = {
+        ".gitignore": [("/supabase/", "/supabase/*\n!/supabase/gateway.conf")],
+        "docker-compose.yml": [
+            ("# MikeOSS — full local stack", "# NorthWrit — full local stack"),
+            ("      - API_BASE_URL=${API_BASE_URL:-http://backend:3001}", "      - API_BASE_URL=${API_BASE_URL:-http://backend:3001}\n      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}"),
+            ("      dockerfile: frontend/Dockerfile\n      args:", "      dockerfile: frontend/Dockerfile\n      args:\n        FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}"),
+            ("        FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}", "        FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}\n        NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL: ${NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL:-}"),
+            ("GOTRUE_SMTP_SENDER_NAME: Mike", "GOTRUE_SMTP_SENDER_NAME: NorthWrit"),
+        ],
+        "frontend/Dockerfile": [
+            ("ARG NEXT_PUBLIC_SENTRY_DSN=", "ARG FRONTEND_URL=http://localhost:3000\nARG NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL=\nARG NEXT_PUBLIC_SENTRY_DSN="),
+        ],
+        ".env.example": [("\nSENTRY_DISABLED=\n", "\nSENTRY_DISABLED=true\n"), ("NODE_ENV=development", "NODE_ENV=development\nNEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL=")],
+        "backend/.env.example": [("\nSENTRY_DISABLED=false", "\nSENTRY_DISABLED=true")],
+        "backend/src/lib/observability/sentry.test.ts": [
+            ('["upstream", "", "", true, MIKE_SENTRY_DSN.backend]', '["upstream", "", "", false, ""]'),
+            ('["fork with its own Sentry", "", "https://fork@self.example/9", true, "https://fork@self.example/9"]', '["fork with its own Sentry", "", "https://fork@self.example/9", false, ""]'),
+            ("preserves %s reporting defaults with the stock Compose env_file", "keeps %s telemetry disabled with the NorthWrit Compose example"),
+        ],
+        "backend/supabase/config.toml": [('sender_name = "MikeOSS (No Reply)"', 'sender_name = "NorthWrit (No Reply)"')],
+        "backend/src/modules/chat/engine/prompts.ts": [("You are Mike, an AI legal assistant", "You are NorthWrit, an AI legal assistant")],
+        "backend/src/modules/chat/engine/__tests__/prompts.test.ts": [("You are Mike, an AI legal assistant", "You are NorthWrit, an AI legal assistant")],
+        "backend/src/modules/chat/engine/wordPrompt.ts": [("You are Mike, an AI legal assistant", "You are NorthWrit, an AI legal assistant")],
+        "backend/src/modules/tabular/tabular.chats.ts": [("You are Mike, an AI legal assistant", "You are NorthWrit, an AI legal assistant")],
+        "backend/src/modules/chat/engine/tools/documentOps.ts": [
+            (">Mike</", ">NorthWrit</"),
+            ("Generated by Mike", "Generated by NorthWrit"),
+        ],
+        "frontend/src/app/layout.tsx": [
+            ('    metadataBase: new URL("https://app.mikeoss.com"),', '    metadataBase: process.env.FRONTEND_URL ? new URL(process.env.FRONTEND_URL) : undefined,'),
+            ('        url: "https://app.mikeoss.com",', '        url: "/",'),
+            ("Mike - Legal AI Platform", "NorthWrit | Canadian Legal AI Workspace"),
+            ('siteName: "Mike"', 'siteName: "NorthWrit"'),
+            ('alt: "Mike"', 'alt: "NorthWrit"'),
+            ("/link-image.jpg", "/northwrit-social.jpg"),
+            ("height: 651", "height: 630"),
+        ],
+        "frontend/src/app/components/site-logo.tsx": [
+            ('    const landingHref =\n        process.env.NODE_ENV === "production"\n            ? "https://mikeoss.com"\n            : "http://localhost:3000";', '    const landingHref = "/";'),
+            ("<span>Mike</span>", "<span>NorthWrit</span>"),
+        ],
+        "frontend/src/app/global-error.tsx": [("went wrong – Mike", "went wrong – NorthWrit")],
+        "frontend/src/app/lib/errorReporting.ts": [("→ Mike project Sentry", "→ upstream project Sentry")],
+        "frontend/src/app/components/shared/views/EigenpalDocxRenderer.module.css": [
+            ("Mike owns the filename", "NorthWrit owns the filename"),
+        ],
+        "frontend/src/app/components/workflows/OpenSourceWorkflowModal.tsx": [
+            ("mikeoss.com website.", "upstream project's website."),
+        ],
+        "backend/src/modules/workflows/workflows.types.ts": [
+            ('name: "Mike",', 'name: "Upstream workflow catalogue",'),
+        ],
+        "backend/src/lib/observability/sentry.ts": [
+            ("→ Mike project Sentry", "→ upstream project Sentry"),
+        ],
+        "packages/ui/package.json": [("shared by the Mike web app", "shared by the NorthWrit web app")],
+        "packages/client/package.json": [("shared by the Mike web app", "shared by the NorthWrit web app")],
+        "word-addin/server.mjs": [("Mike Word add-in host", "NorthWrit Word add-in host")],
+        "word-addin/server.test.mjs": [("Mike Word", "NorthWrit Word")],
+        "docs/slack-mcp-app-manifest.example.json": [
+            ("Mike MCP Client", "NorthWrit MCP Client"),
+            ("Mike's Slack MCP connector", "NorthWrit's Slack MCP connector"),
+        ],
+        "frontend/src/app/monitoring/route.test.ts": [
+            ('["upstream", "", "", 200, "default"]', '["upstream", "", "", 204, "disabled"]'),
+            ('["fork with its own Sentry", "", OWN_DSN, 200, "build"]', '["fork with its own Sentry", "", OWN_DSN, 204, "disabled"]'),
+            ("preserves %s defaults with the stock Compose environment", "keeps %s telemetry disabled with the NorthWrit Compose example"),
+        ],
+        "word-addin/manifest.xml": [
+            ("<Id>a1b2c3d4-e5f6-7890-abcd-ef1234567890</Id>", "<Id>285efbda-798e-4d3c-8430-4d96c0ca3a04</Id>"),
+            ("<ProviderName>MikeOSS</ProviderName>", "<ProviderName>NorthWrit</ProviderName>"),
+            ('DefaultValue="Mike"', 'DefaultValue="NorthWrit"'),
+            ("Mike Legal AI", "NorthWrit Legal AI"),
+            ("Open the Mike AI legal assistant pane", "Open the NorthWrit legal assistant pane"),
+            ('id="MikeOSS.Group"', 'id="NorthWrit.Group"'),
+            ('id="MikeOSS.OpenMike"', 'id="NorthWrit.Open"'),
+            ("<TaskpaneId>MikeTaskpane</TaskpaneId>", "<TaskpaneId>NorthWritTaskpane</TaskpaneId>"),
+        ],
+        "word-addin/src/commands/commands.html": [("<title>Mike Commands</title>", "<title>NorthWrit Commands</title>")],
+        "word-addin/src/taskpane/index.html": [("<title>MikeOSS</title>", "<title>NorthWrit for Word</title>")],
+        "word-addin/src/taskpane/lib/openExternalUrl.ts": [
+            ('process.env.REACT_APP_WEB_APP_URL || "https://app.mikeoss.com"', 'process.env.REACT_APP_WEB_APP_URL || "http://localhost:3000"'),
+        ],
+        "word-addin/.env.example": [
+            ("REACT_APP_WEB_APP_URL=https://app.mikeoss.com", "REACT_APP_WEB_APP_URL=http://localhost:3000"),
+            ("\nREACT_APP_SENTRY_DISABLED=false", "\nREACT_APP_SENTRY_DISABLED=true"),
+            ("REACT_APP_WEB_APP_URL=http://localhost:3000", "REACT_APP_WEB_APP_URL=http://localhost:3000\nNEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL="),
+        ],
+        "word-addin/webpack.config.js": [
+            ('process.env.REACT_APP_WEB_APP_URL || "https://app.mikeoss.com"', 'process.env.REACT_APP_WEB_APP_URL || "http://localhost:3000"'),
+            ('        REACT_APP_SENTRY_DISABLED:', f'        {support_address}: process.env.{support_address} || "",\n        REACT_APP_SENTRY_DISABLED:'),
+        ],
+        "word-addin/src/env.d.ts": [
+            ("    readonly REACT_APP_WEB_APP_URL: string | undefined;", f"    readonly REACT_APP_WEB_APP_URL: string | undefined;\n    readonly {support_address}: string | undefined;"),
+        ],
+        "packages/client/src/userError.ts": [
+            ('export const SUPPORT_EMAIL = "will@mikeoss.com";',
+             f'const configuredSupportEmail = process.env.{support_address}?.trim() ?? "";\n'
+             'export const SUPPORT_EMAIL = /^[A-Z0-9._+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$/i.test(configuredSupportEmail)\n'
+             '    ? configuredSupportEmail\n    : "";'),
+            ("Mike couldn't reach the server", "NorthWrit couldn't reach the server"),
+            ("Mike is temporarily unavailable", "NorthWrit is temporarily unavailable"),
+            ("Hi Mike team,", "Hi NorthWrit team,"),
+            ("Mike support:", "NorthWrit support:"),
+        ],
+        "packages/client/src/userError.test.ts": [
+            ("Mike couldn't reach the server", "NorthWrit couldn't reach the server"),
+            ("Mike support", "NorthWrit support"),
+        ],
+        "word-addin/src/taskpane/lib/supportHandoff.ts": [
+            ('`Email ${SUPPORT_EMAIL} — the details are on your clipboard`', '`${SUPPORT_EMAIL ? `Email ${SUPPORT_EMAIL}` : "Contact your workspace administrator"} — the details are on your clipboard`'),
+            ('message: `Email ${SUPPORT_EMAIL}`,', 'message: SUPPORT_EMAIL ? `Email ${SUPPORT_EMAIL}` : "Contact your workspace administrator",'),
+        ],
+        "frontend/src/app/support/page.tsx": [('placeholder="https://mikeoss.com/..."', 'placeholder="https://..."')],
+        "desktop/package.json": [
+            ('"productName": "Mike"', '"productName": "NorthWrit"'),
+            ("Mike for Mac — desktop shell around the Mike web app", "NorthWrit for Mac"),
+        ],
+        "desktop/e2e/helpers.mjs": [('"Mike.app"', '"NorthWrit.app"'), ('    "Mike",\n', '    "NorthWrit",\n')],
+        "desktop/src/main.js": [
+            ('const DEFAULT_SERVER_URL = "https://app.mikeoss.com";', 'const DEFAULT_SERVER_URL = "http://localhost:3000";'),
+            ('label: "Mike on GitHub"', 'label: "Upstream source on GitHub"'),
+            ('dialog.showErrorBox("Mike",', 'dialog.showErrorBox("NorthWrit",'),
+        ],
+        "desktop/src/local/supervisor.js": [('GOTRUE_SMTP_SENDER_NAME: "Mike"', 'GOTRUE_SMTP_SENDER_NAME: "NorthWrit"'), ('Starting Mike services', 'Starting NorthWrit services')],
+        "desktop/src/pages/welcome.html": [
+            ("Use Mike Cloud", "Connect to a NorthWrit server"),
+            ("Sign in at app.mikeoss.com. Your work syncs", "Use the server address provided by your firm. Your work syncs"),
+            ("window.mikeDesktop.chooseCloud();", "window.mikeDesktop.openConnect();"),
         ],
     }
-    reports = ROOT / ".rebrand-backups"
-    reports.mkdir(exist_ok=True)
-    (reports / "preview.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print(f"{len(changes)} files need changes. Preview: {reports / 'preview.json'}")
-    if not args.apply or not changes:
-        return
-    backup = reports / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    backup.mkdir()
-    for relative, before, _ in changes:
-        target = backup / "originals" / relative
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(before)
-    (backup / "manifest.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
-    for relative, before, after in changes:
-        path = root / relative
-        if path.read_bytes() != before:
-            raise RuntimeError(f"Concurrent edit detected: {relative}. Use the backup to recover.")
-        atomic_write(path, after)
-    print(f"Applied rebrand. Backup and manifest: {backup}")
+    for config in ("electron-builder.json", "electron-builder.local.json", "electron-builder.release.json"):
+        edits[f"desktop/{config}"] = [
+            ('"appId": "com.openlegalproducts.mike"', '"appId": "com.northwrit.desktop"'),
+            ('"productName": "Mike"', '"productName": "NorthWrit"'),
+        ]
+    for path in sorted((ROOT / "frontend/src").rglob("*.test.*")):
+        content = path.read_text(encoding="utf-8")
+        if "will@mikeoss.com" not in content or path.name == "supportHandoff.test.ts":
+            continue
+        relative = path.relative_to(ROOT).as_posix()
+        edits[relative] = [
+            ('stringContaining("will@mikeoss.com")', 'stringContaining("mailto:?")'),
+        ] if 'stringContaining("will@mikeoss.com")' in content else [("mailto:will@mikeoss.com", "mailto:")]
+    edits.setdefault("frontend/src/app/lib/userFacingError.test.tsx", []).append(
+        (r"/^mailto:will@mikeoss\.com\?/", r"/^mailto:\?/")
+    )
+    edits["frontend/src/wordAddin/supportHandoff.test.ts"] = [
+        ('expect(result.message).toContain("will@mikeoss.com");', 'expect(result.message).toContain("Contact your workspace administrator");'),
+        ('`Email ${SUPPORT_EMAIL} — the details are on your clipboard`', '"Contact your workspace administrator — the details are on your clipboard"'),
+        ('`Email ${SUPPORT_EMAIL}`', '"Contact your workspace administrator"'),
+        ("    SUPPORT_EMAIL,\n", ""),
+    ]
+    outputs = {path: replace(path, substitutions) for path, substitutions in edits.items()}
+    rebrand_ui_copy(outputs)
+
+    # Use the shared theme-aware component so the web and Word surfaces retain
+    # upstream animation, size and run-status colours.
+    shared_path = "packages/ui/src/MikeIconUI.tsx"
+    shared = (ROOT / shared_path).read_text(encoding="utf-8")
+    start = shared.index("function Blades(")
+    end = shared.index("export function MikeIcon(", start)
+    mark = f'''function Blades({{ ids, inverse }}: {{ ids: Record<string, string>; inverse: boolean }}) {{
+    return (
+        <g transform="translate(100 100) scale(4.6875)">
+            <rect width="64" height="64" rx="15" fill={{`url(#${{ids.glassFill}})`}} />
+            <polygon points="{points(LEFT)}" fill={{inverse ? "{NAVY}" : "{PAPER}"}} />
+            <polygon points="{points(RIGHT)}" fill={{inverse ? "#4A6B82" : "{FOLD}"}} />
+        </g>
+    );
+}}
+
+'''
+    # Use the same navy as the file icons for the default light-theme palette.
+    old = 'fillStops: ["#0a0a0a", "#151515", "#080808", "#111111"]'
+    new = f'fillStops: ["{NAVY}", "{NAVY}", "{NAVY}", "{NAVY}"]'
+    updated = (shared[:start] + mark + shared[end:]).replace(old, new, 1)
+    outputs[shared_path] = updated.replace(
+        "<Blades ids={m} />",
+        "<Blades ids={m} inverse={darkTheme && !done && !error && !tint} />",
+    ).replace(
+        "const DEGREES = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];\n", ""
+    ).encode()
+    test_path = "packages/ui/src/MikeIconUI.test.tsx"
+    outputs[test_path] = replace(test_path, [("rgb(10,10,10)", "rgb(31,58,95)")])
+
+    outputs["frontend/src/app/icon.svg"] = svg(MARK, "0 0 64 64")
+    wordmark = '<text x="80" y="46" font-family="Georgia,serif" font-size="43" fill="#1F3A5F">NorthWrit</text>'
+    outputs["frontend/public/icons/northwrit-logo.svg"] = svg(MARK + wordmark, "0 0 285 64")
+    master = icon()
+    outputs["frontend/src/app/favicon.ico"] = encode(master.resize((64, 64), Image.Resampling.LANCZOS), "ICO", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
+    outputs["frontend/public/apple-touch-icon.png"] = encode(master.resize((180, 180), Image.Resampling.LANCZOS), "PNG")
+    for size in (16, 32, 80):
+        outputs[f"word-addin/assets/icon-{size}.png"] = encode(master.resize((size, size), Image.Resampling.LANCZOS), "PNG")
+    outputs["desktop/assets/icon-1024.png"] = encode(master, "PNG")
+    outputs["desktop/assets/icon.icns"] = encode(master, "ICNS")
+    outputs["desktop/assets/icon.html"] = (
+        '<!doctype html>\n<meta charset="utf-8">\n'
+        '<style>body{margin:0}svg{display:block;width:1024px;height:1024px}</style>\n'
+    ).encode() + svg(MARK, "0 0 64 64")
+    social_path = "frontend/public/northwrit-social.jpg"
+    if social_source:
+        with Image.open(social_source) as source:
+            preview = ImageOps.fit(source.convert("RGB"), (1200, 630), method=Image.Resampling.LANCZOS)
+            outputs[social_path] = encode(preview, "JPEG", quality=92, optimize=True)
+    else:
+        with Image.open(ROOT / social_path) as preview:
+            if preview.size != (1200, 630) or preview.format != "JPEG":
+                raise ValueError("Expected a 1200×630 JPEG. Supply --social-source to regenerate it.")
+            preview.verify()
+    return outputs
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--social-source", type=Path)
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    pending = []
+    for name, expected in changes(args.social_source).items():
+        path = ROOT / name
+        if path.is_file() and path.read_bytes() == expected:
+            continue
+        pending.append(name)
+        if not args.check:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(expected)
+    for name in pending:
+        print(name)
+    print(f"{len(pending)} branding files {'out of date' if args.check else 'updated'}.")
+    return int(args.check and bool(pending))
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
