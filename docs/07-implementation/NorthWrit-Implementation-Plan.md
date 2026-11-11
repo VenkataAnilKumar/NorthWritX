@@ -1,8 +1,8 @@
 # NorthWrit implementation plan
 
-Updated: November 10, 2026
+Updated: November 11, 2026
 
-Status: Phase 1 source audit, Phase 3 integration and rebrand, and repository organization are complete with recorded local checks. Phase 4 is planned and has not started. GitHub CI for the organization change remains pending.
+Status: Phase 1 source audit, Phase 3 integration and rebrand, and the initial repository organization are complete. Organization PR #1 merged as `624268de88697d31dee4603548bad25042fdad15`; all four GitHub CI jobs passed. The expanded repository migration is implemented and locally validated, with inherited limitations recorded; GitHub CI/review remain prerequisites for closing the migration gate before Phase 4. Phase 4 has not started; see the migration verification record for current results and limitations.
 
 ## Objective and scope
 
@@ -10,7 +10,7 @@ Build NorthWrit as a Harvey-style legal AI workspace for Canadian law firms usin
 
 This is the current implementation roadmap. It replaces the older implementation phases, sprint plan, implementation checklist, reuse execution plan, agent prompts, and v3 roadmap. Existing product specifications remain requirements inputs; their release labels and architecture proposals must be reconciled with the Mike audit rather than treated as verified implementation.
 
-The active application is [`apps/northwrit/`](../../apps/northwrit/NORTHWRIT.md), imported from the upstream revision `a5c147d6587ca465f301e8479f6c50fbc5731c45`. [Upstream source](https://github.com/Open-Legal-Products/mike)
+The active application spans root `apps/` and `packages/`, with [recorded provenance](../upstream/mike/NORTHWRIT.md), imported from the upstream revision `a5c147d6587ca465f301e8479f6c50fbc5731c45`. [Upstream source](https://github.com/Open-Legal-Products/mike)
 
 ## Delivery sequence
 
@@ -19,7 +19,8 @@ The active application is [`apps/northwrit/`](../../apps/northwrit/NORTHWRIT.md)
 | 1. Audit Mike OSS | Source-backed capability map and implementation backlog | Pinned source | Complete |
 | 3. Integrate and rebrand | Maintainable NorthWrit application baseline | Phase 1 | Complete |
 | Repository organization | Clear entry points, ownership, documentation and verification commands | Phase 3 | Complete; local verification recorded |
-| 4. Build the legal workspace | Complete matter-based user journeys | Repository organization | Planned |
+| Repository structure migration | Separate application surfaces, worker entry point, shared packages and infrastructure | Initial repository organization | Locally validated; CI/review pending |
+| 4. Build the legal workspace | Complete matter-based user journeys | Repository structure migration | Planned |
 | 5. Add NorthWrit capabilities | Canadian legal workflows and enforceable governance | Phase 4 | Planned |
 | 6. Extend integrations | Governed agents, connectors, plugins, and MCP | Phase 5 | Planned |
 | 7. Validate and release | Evidence-backed pilot release and operating procedures | Phase 6 | Planned |
@@ -28,11 +29,11 @@ Each phase closes with a demonstration, recorded checks, known limitations, and 
 
 ## Repository organization before Phase 4
 
-**Decision:** Keep one repository and the existing `apps/northwrit/` import boundary through Phase 4. Develop a modular application with independently deployable workers as operating needs grow. Repository layout does not determine runtime scale: web, API and worker processes can have separate deployment and resource policies while their source remains together.
+**Decision:** Keep one repository and migrate to the expanded structure below before Phase 4. The user selected this sequencing on November 11, 2026. The current application remains under `apps/northwrit/` until the migration is implemented and verified. Preserve domain and package boundaries while relocating source; independent worker deployment and further service extraction still require operating evidence. See [ADR 0002](../decisions/0002-expanded-repository-structure.md).
 
 This is preparatory work, not a new numbered phase. Phase 2 remains removed from the roadmap. The older [v3 repository blueprint](../06-technical/Northwrit_Repo-Structure.md) is historical context; its proposed services, package managers and platforms are not implementation requirements.
 
-### Initial repository layout
+### Completed initial repository organization
 
 ```text
 NorthWritX/
@@ -65,14 +66,14 @@ NorthWritX/
 └── scripts/                  # Repository-wide maintenance and branding
 ```
 
-This tree describes the intended organization. New entry-point files and decision records are deliverables of the preparatory work, not files claimed to exist already. Preserve the existing numbered documentation sections and their links.
+This tree describes the completed PR #1 layout before the expanded migration. Root entry points and decision records were delivered in PR #1. Preserve the existing numbered documentation sections and their links during the next migration.
 
-Work, in order:
+Completed work:
 
 1. Add the root README, repository instructions and command wrappers. Point setup, development, formatting, type checks, tests and builds to the active application. Keep existing package manifests and lockfiles; wrappers do not introduce a new workspace or package manager.
 2. Document ownership and dependency rules. Backend domains use the existing service facades; authorization stays in shared access helpers. Shared contracts, client behaviour and UI retain their existing package boundaries. Document how API and worker entry points invoke the same domain services.
 3. Clarify documentation authority. Root `docs/` holds NorthWrit requirements, decisions and delivery evidence. Application `docs/` describes implemented engineering and operating behaviour. Identify historical proposals and reconcile conflicting setup guidance without deleting provenance or applicable notices.
-4. Review imported workflows under `apps/northwrit/.github/`. Record which checks NorthWrit runs from root `.github/workflows/`; nested workflow files do not execute automatically. Update active CI paths, build contexts and command documentation together when required.
+4. Review imported workflows under `docs/upstream/mike/.github/`. Record which checks NorthWrit runs from root `.github/workflows/`; nested workflow files do not execute automatically. Update active CI paths, build contexts and command documentation together when required.
 5. Record the Phase 4 extension map: the existing Projects implementation provides the Matter compatibility layer; document access, source versions, review, drafting and export remain in their existing domains where they fit. Identify shared policy seams and test ownership before adding parallel implementations.
 6. Verify root commands from their documented working directory, internal documentation links, CI paths and affected builds/type checks/regressions. Record failures and inherited limitations. Do not restart the archived standalone cloud baseline test; use the checks required for the repository changes.
 
@@ -82,30 +83,46 @@ Implementation: [root entry point](../../README.md), [repository instructions](.
 
 **Acceptance:** A developer can locate the active application, set it up and run its documented checks from the repository root. Relevant checks retain their underlying exit status. Existing package imports, Docker build contexts, migration history and upstream provenance remain valid. Required checks pass or have an explicitly recorded blocker before starting Phase 4.
 
-### Staged growth after the initial layout
+### Planned repository structure migration — before Phase 4
 
-| Stage | Trigger and work | Required evidence |
-|---|---|---|
-| Through Phase 4 | Keep `apps/northwrit/` together. Strengthen domain boundaries, firm/matter authorization, source provenance and API contracts. | Matter workflow and isolation tests; builds and architecture checks. |
-| More clients or contributors | When ownership and release cadence benefit, promote surfaces to `apps/web`, `apps/api`, `apps/word-addin` and `apps/desktop`, and shared code to root `packages/`. | Recorded decision, import/build-context inventory, updated root commands/CI/deployment paths, preserved upstream path mapping, and passing affected image builds and client contracts. |
-| Higher processing volume | When measured queue waits or processing contention affect interactive requests, deploy existing worker entry points separately. Introduce `apps/worker` only if a separate source/build boundary is useful. | Baseline and agreed performance targets; bounded concurrency, retries, cancellation, idempotency, recovery, and authorization rechecks at execution and before publishing results. |
-| Distinct operating requirements | Extract a service when measured load, a security boundary or sustained team ownership justifies it. Add root `infra/` when deployment configuration spans multiple independently managed components. | Architecture decision covering contracts, credentials, data ownership, observability, migration/rollback, failure handling and operating cost. |
-
-The possible later layout is:
+Target structure (implemented locally; verification status is recorded separately):
 
 ```text
 NorthWritX/
-├── apps/{web,api,worker,word-addin,desktop}/
-├── packages/{contracts,client,ui}/
+├── apps/
+│   ├── web/
+│   ├── api/
+│   ├── worker/
+│   ├── word-addin/
+│   └── desktop/
+├── packages/
+│   ├── contracts/
+│   ├── client/
+│   └── ui/
 ├── infra/
 ├── docs/
 ├── scripts/
 └── .github/workflows/
 ```
 
-These paths are conditional targets, not a mandatory restructure before Phase 4. Record each extraction decision before changing paths. Keep one repository while it supports coordinated changes effectively. Consider additional repositories only when independent ownership, release or access requirements justify their coordination cost.
+Root entry points, manifests, license and notices remain. The tree highlights boundaries, not an exhaustive file inventory. Preserve existing fixture directories such as `byok-validation` and `pdf-text-order`; do not drop them because the abbreviated tree omits them.
 
-Scaling readiness includes versioned serialized contracts for web, Word and workers; enforceable firm/matter isolation at every entry point; reliable queued work; and measurements of request latency, queue age, throughput, memory and CPU. A worker reuses the same authorization rules as the API and rechecks revoked membership. Folder moves alone do not establish these guarantees. Introduce workspace tooling or affected-only CI when measured maintenance or CI cost warrants it.
+Work, in order:
+
+1. **Inventory and mapping.** Record all current source, fixture, test, configuration and provenance paths and their destinations. Include ignored local configuration, imported workflows, Docker contexts, deployment scripts and upstream update mappings. Preserve user changes. Establish the rollback commit and the checks required for each affected surface.
+2. **Move application surfaces.** Map `apps/web` to `apps/web`, `backend` to `apps/api`, and Word/desktop surfaces to their corresponding root `apps/` directories. Preserve package names, independent manifests/lockfiles, technical identifiers, database schema and migration history. A workspace or package-manager conversion requires a separate decision.
+3. **Promote shared packages.** Move contracts, client behaviour and UI into root `packages/`; map fixture directories and all consumers explicitly. Update TypeScript aliases, test resolvers and dependency resolution while retaining framework-free client code and the existing dependency direction.
+4. **Define the worker boundary.** Inventory existing worker entry points, then provide `apps/worker` as the process/build composition that invokes existing domain services. Record a supported dependency/build boundary so API and worker logic are not copied or coupled through ad hoc source imports. Domain services, database ownership and shared access rules remain with their existing owners. Recheck authorization at execution and before publishing results. Separate production deployment is outside the directory migration.
+5. **Consolidate infrastructure and tooling.** Map Compose, Docker support, Supabase configuration and deployment configuration into `infra/` where appropriate; package-specific Dockerfiles may stay with their apps. Give E2E/load tests, scripts, engineering docs, credits and `NORTHWRIT.md` explicit destinations. Update root commands, repository validation, active CI paths/cache keys, build contexts, mounts, service commands and operating instructions together. Retain upstream notices and an old-to-new provenance map.
+6. **Verify and record.** Run repository/link and whitespace checks, API/web/Word tests and type checks, lint, production builds, and affected Docker image/Compose configuration checks. Verify worker startup, a representative synthetic job, cancellation/retry/recovery behaviour and denied/revoked access with isolated services. Check desktop configuration/packaging on supported platforms and record unavailable platform checks as blockers where required. Verify fresh installation and documented startup from the new directories. Preserve command exit status and compare failures against the recorded baseline.
+
+Deliverables: Migrated application/shared/infrastructure paths; dependency and provenance maps; working worker entry point; updated root commands, CI, documentation and extension map; verification and rollback records.
+
+**Acceptance gate before Phase 4:** Every retained file has an owner and destination, package boundaries and attribution are preserved, required checks pass, root commands and affected container builds resolve the new paths, and the documented startup and worker checks succeed. Investigate failures and resolve required blockers before declaring the migration complete. Do not claim that directory moves establish runtime scalability. Do not restart the archived standalone cloud baseline test, deploy/publish, or remove unrelated services or volumes during this work.
+
+### Growth after migration
+
+The expanded paths are required before Phase 4. Further service extraction, additional repositories, workspace tooling and affected-only CI remain conditional on measured maintenance cost, operating load or ownership needs. Record each decision before implementation. Independent worker scaling requires measured queue/latency targets, bounded concurrency, retries, cancellation, idempotency, recovery and authorization rechecks. Phase 4 remains responsible for completing and verifying firm/matter isolation and the legal workflow; the directory migration must preserve existing access controls.
 
 ## Phase 1 — Audit Mike OSS
 
@@ -139,13 +156,15 @@ Work:
 
 Deliverables: Tracked NorthWrit application; brand/configuration changes; provenance record; developer setup; baseline CI.
 
-Verification: Local Windows builds passed for the web, backend and Word add-in. Web lint and type checking, Word server tests and 197 focused rebrand tests passed. The full frontend run flagged two test files. The telemetry assertions now reflect NorthWrit's default, and the template checksum test handles Windows paths. Both files passed all 22 tests on rerun. Correcting the imported line endings resolved 49 backend test failures. The remaining 25 Windows failures reproduced with identical test names in the unmodified upstream revision under the same test setup. Linux GitHub CI and macOS packaging have yet to run.
+Verification: Local Windows builds passed for the web, backend and Word add-in. Web lint and type checking, Word server tests and 197 focused rebrand tests passed. The full frontend run flagged two test files. The telemetry assertions now reflect NorthWrit's default, and the template checksum test handles Windows paths. Both files passed all 22 tests on rerun. Correcting the imported line endings resolved 49 backend test failures. The remaining 25 Windows failures reproduced with identical test names in the unmodified upstream revision under the same test setup. Subsequently, Linux GitHub CI passed all four jobs for organization PR #1. macOS packaging remains unverified.
 
 **Acceptance:** The web, backend and Word builds pass, relevant automated checks are recorded, and the repository CI workflow covers the imported application. Browser journeys are part of release validation. Upstream notices remain intact and no credentials enter source control.
 
 ## Phase 4 — Build the legal workspace
 
 **Goal:** Make daily legal work coherent around matters and their evidence.
+
+**Prerequisite:** Complete and verify the repository structure migration above. Remap the existing Phase 4 extension points to their new paths before implementation.
 
 Work:
 
@@ -229,7 +248,8 @@ Deliverables: Release candidate; acceptance report; deployment and rollback runb
 | Import layout and upstream update process | 3 | Tracked source and repeatable update procedure |
 | Repository entry points, ownership and documentation authority | Before 4 | Verified root commands, active CI inventory and recorded decisions |
 | Firm and matter isolation | 4 | Positive and negative access tests |
-| Independent worker scaling and later path extraction | When operating evidence justifies it | Measured baseline and targets, extraction decision, access/recovery tests and affected build checks |
+| Expanded application/package/infrastructure layout and worker entry point | Before 4 | Complete path/provenance mapping, updated commands/CI, affected builds and verified startup/job checks |
+| Independent worker scaling and further service extraction | When operating evidence justifies it | Measured baseline and targets, extraction decision, access/recovery tests and affected build checks |
 | Canadian source access and citation quality | 5 | Permitted retrieval and evaluated research examples |
 | Pilot integrations and external credentials | 6 | Configured adapters and revocation tests |
 | Pilot scale, deployment region, recovery and support | 7 | Measured targets and accepted operating runbooks |
@@ -243,4 +263,4 @@ Deliverables: Release candidate; acceptance report; deployment and rollback runb
 - [UI specification](../05-design/Northwrit_UI-Spec.md)
 - [NorthWrit and Harvey feature comparison](../03-market/Northwrit_vs_Harvey_Feature-Comparison.md)
 
-**Immediate next action:** Review the [repository verification record](NorthWrit-Repository-Verification.md) and run the updated CI on the submitted change. The next implementation work is Phase 4 against the [NorthWrit application](../../apps/northwrit/NORTHWRIT.md); future directory extraction remains conditional on the staged growth criteria.
+**Immediate next action:** Review the [migration verification](NorthWrit-Migration-Verification.md), address the recorded baseline limits as appropriate, then commit and run GitHub CI before closing the repository migration gate and beginning Phase 4. PR #1 and its CI verification are complete. This migration introduces no Phase 4 features and does not deploy or publish anything.

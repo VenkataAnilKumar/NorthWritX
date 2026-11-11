@@ -27,7 +27,7 @@ The index groups product specifications, technical designs, the current Mike OSS
 | 7 | [User Journeys](04-specs/Northwrit_User-Journeys.md) | End-to-end flows for research lawyers, contract counsel, admins, KM, and legal ops | ✅ |
 | 8 | [User Stories](04-specs/Northwrit_User-Stories.md) | Stories with Given/When/Then acceptance criteria covering all 38 P0 features and key P1 flows | ✅ |
 | **05 Design** | | | |
-| 9 | [Application Design System](../apps/northwrit/docs/design-system.md) | Implemented tokens, shared primitives and accessibility conventions | Engineering guide |
+| 9 | [Application Design System](../docs/engineering/design-system.md) | Implemented tokens, shared primitives and accessibility conventions | Engineering guide |
 | 10 | [UI Specification](05-design/Northwrit_UI-Spec.md) | Screen-by-screen behaviour: workspace, Bearings modal, Evidence drawer, Folio editor, Control Centre | ✅ |
 | 11 | [Wireframes](05-design/Northwrit_Wireframes.md) | ASCII wireframes for the matter workspace, Bearings prompt, and Shield privacy drawer | ✅ |
 | **06 Technical** | | | |
@@ -68,3 +68,9 @@ The [older v3 repository blueprint](06-technical/Northwrit_Repo-Structure.md) re
 2. **CiteCheck Discipline:** Resolving a link to CanLII or a statute is not proof of authority validity. Cites are marked *Verified*, *Unverified*, *Contradicted*, or *Unavailable*.
 3. **No Silent Changes:** If a privacy route or legal source is unavailable, the system flags the gap or stops execution. It never silently escalates data to the cloud.
 4. **Canadian-First Jurisprudence:** Grounded in Canadian citation formats (McGill Guide), provincial court hierarchies, and domestic privacy frameworks.
+
+## Expanded repository migration
+
+- [Migration verification](07-implementation/NorthWrit-Migration-Verification.md): local check results, inherited failures and release limits.
+- [Path and provenance map](07-implementation/NorthWrit-Migration-Paths.json): old-to-new locations for imported source and supporting files.
+- [ADR 0002](decisions/0002-expanded-repository-structure.md): accepted expanded layout before Phase 4.

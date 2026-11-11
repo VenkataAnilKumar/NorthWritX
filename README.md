@@ -1,6 +1,6 @@
 # NorthWrit
 
-NorthWrit is a legal workspace being developed for Canadian law firms. The active application is [apps/northwrit](apps/northwrit/NORTHWRIT.md), based on the recorded Mike OSS source snapshot. See the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for delivery status. Matter workflows and the later Canadian research and governance capabilities are planned work, not release guarantees.
+NorthWrit is a legal workspace being developed for Canadian law firms. The active application spans `apps/` and `packages/`; the [provenance record](docs/upstream/mike/NORTHWRIT.md) identifies its Mike OSS source snapshot. See the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for delivery status. Matter workflows and the later Canadian research and governance capabilities are planned work, not release guarantees.
 
 ## Start here
 
@@ -8,26 +8,29 @@ NorthWrit is a legal workspace being developed for Canadian law firms. The activ
 - [Repository ownership](docs/06-technical/NorthWrit-Repository-Ownership.md): where code and documentation belong.
 - [CI inventory](docs/07-implementation/NorthWrit-CI-Inventory.md): active checks and gaps.
 - [Phase 4 extension map](docs/07-implementation/NorthWrit-Phase-4-Extension-Map.md): existing matter workflow building blocks.
-- [Application provenance](apps/northwrit/NORTHWRIT.md): source revision, attribution and upstream updates.
+- [Application provenance](docs/upstream/mike/NORTHWRIT.md): source revision, attribution and upstream updates.
 
 ## Repository layout
 
+The application has moved to the expanded layout. Migration checks and remaining limits are recorded in the [migration verification](docs/07-implementation/NorthWrit-Migration-Verification.md).
+
 ```text
-.github/workflows/        Active NorthWrit workflows
-apps/northwrit/
-  frontend/              Web portal
-  backend/               API, access rules, document processing and jobs
-  word-addin/            Word integration
+apps/
+  web/                   Next.js web portal
+  api/                   API, domain services, database schema and jobs
+  worker/                Standalone launcher using the API worker runtime
+  word-addin/            Microsoft Word integration
   desktop/               Electron shell
-  packages/              Shared contracts, client, UI and fixture data
-  e2e/                   Browser workflow tests
-  loadtest/              Performance tooling
-  docker/                Container support files
-  supabase/              Local auth/database configuration
-  docs/                  Application engineering and operating guides
-  scripts/               Application-specific tooling
-docs/                    NorthWrit product requirements and delivery records
-scripts/                 Repository checks and branding tooling
+packages/                Contracts, client, UI and shared fixtures
+infra/                   Compose, Docker support and Supabase gateway
+  docker-compose.yml
+tests/browser/           Existing Playwright package and tests
+tests/loadtest/          Performance tooling
+docs/engineering/        Application engineering and operating guides
+docs/upstream/mike/      Provenance, attribution and archived workflows
+scripts/application/     Shared application maintenance tools
+docs/                    Product requirements, decisions and delivery evidence
+.github/workflows/       Active application and container-build CI
 ```
 
 ## Install and run
@@ -43,7 +46,9 @@ npm run setup
 
 `setup` runs frozen `npm ci` installs for the API, web and Word packages. For web-only development, use `npm run setup:api` and `npm run setup:web`. Installation does not start infrastructure or services.
 
-Follow [application local development](apps/northwrit/docs/local-development.md) to configure the database, auth, storage, local email and separate signing/encryption secrets. Keep email confirmation enabled. Use synthetic documents and disposable accounts for validation. The [safe testing guide](apps/northwrit/docs/safe-local-testing.md) describes these boundaries.
+Follow [application local development](docs/engineering/local-development.md) to configure the database, auth, storage, local email and separate signing/encryption secrets. Keep email confirmation enabled. Use synthetic documents and disposable accounts for validation. The [safe testing guide](docs/engineering/safe-local-testing.md) describes these boundaries.
+
+For the local stack, copy `infra/.env.example` to `infra/.env` and `apps/api/.env.example` to `apps/api/.env`, then follow the local development guide. Run `npm run infra:prepare` to make the three public bind-mounted configuration files readable, then start Compose from `infra/` with `docker compose up --build`, or use `npm run stack:up` from the root. These commands do not publish images.
 
 With the required infrastructure configured, start each process in its own terminal:
 
@@ -52,7 +57,9 @@ npm run dev:api
 npm run dev:web
 ```
 
-The commands above are separate terminal commands. They do not start the full Compose stack. `npm run dev:word` serves the Word development client; use the [Word guide](apps/northwrit/word-addin/README.md) for HTTPS and sideloading requirements. A cloud process listening on localhost is not automatically reachable from your own computer; interactive testing needs a working cloud Desktop, platform forwarding or a local deployment.
+For a separate worker process, run `npm run build:worker` and `npm run start:worker`, and set `WORKERS_MODE=none` on the API. See [worker instructions](apps/worker/README.md).
+
+The commands above are separate terminal commands. They do not start the full Compose stack. `npm run dev:word` serves the Word development client; use the [Word guide](apps/word-addin/README.md) for HTTPS and sideloading requirements. A cloud process listening on localhost is not automatically reachable from your own computer; interactive testing needs a working cloud Desktop, platform forwarding or a local deployment.
 
 ## Verify changes
 
@@ -83,14 +90,14 @@ $env:REACT_APP_WEB_APP_URL = 'https://app.northwrit.invalid'
 npm run build:word
 ```
 
-Use real deployment URLs when producing a release. Telemetry configuration and build requirements are documented in [NORTHWRIT.md](apps/northwrit/NORTHWRIT.md#build-checks).
+Use real deployment URLs when producing a release. Telemetry configuration and build requirements are documented in [NORTHWRIT.md](docs/upstream/mike/NORTHWRIT.md#build-checks).
 
-Browser and database suites require additional services. Read the [E2E guide](apps/northwrit/docs/e2e-ci.md) before `npm run setup:e2e` and `npm run test:e2e`. They are not part of `npm test`. Do not restart the archived standalone cloud baseline test as part of repository organization.
+Browser and database suites require additional services. Read the [E2E guide](docs/engineering/e2e-ci.md) before `npm run setup:e2e` and `npm run test:e2e`. They are not part of `npm test`. Do not restart the archived standalone cloud baseline test as part of repository organization.
 
 See the [repository verification record](docs/07-implementation/NorthWrit-Repository-Verification.md) for checks performed on this change, inherited warnings and checks not run.
 
 ## Documentation and licensing
 
-The [documentation index](docs/README.md) separates product requirements from implementation evidence. The current implementation plan and accepted [repository decision](docs/decisions/0001-repository-structure.md) govern the layout; older blueprints are historical proposals.
+The [documentation index](docs/README.md) separates product requirements from implementation evidence. The current implementation plan and accepted [repository decision](docs/decisions/0002-expanded-repository-structure.md) govern the layout; older blueprints are historical proposals.
 
-Preserve the [license](LICENSE), [notice](NOTICE.md), application [credits](apps/northwrit/CREDITS.md) and upstream provenance when changing or distributing the application. Do not commit credentials, local environment files, generated outputs or test documents containing real client information.
+Preserve the [license](LICENSE), [notice](NOTICE.md), application [credits](docs/upstream/mike/CREDITS.md) and upstream provenance when changing or distributing the application. Do not commit credentials, local environment files, generated outputs or test documents containing real client information.

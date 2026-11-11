@@ -3,9 +3,9 @@ name: NorthWrit CI
 on:
   push:
     branches: [main]
-    paths: ['apps/northwrit/**', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
+    paths: ['apps/**', 'packages/**', 'infra/**', 'tests/**', 'VERSION', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
   pull_request:
-    paths: ['apps/northwrit/**', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
+    paths: ['apps/**', 'packages/**', 'infra/**', 'tests/**', 'VERSION', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
   workflow_dispatch:
 
 permissions:
@@ -37,17 +37,20 @@ jobs:
           npm run check:whitespace -- "$WHITESPACE_BASE" HEAD
 
   app:
-    name: ${{ matrix.package }}
+    name: ${{ matrix.check }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - package: backend
+          - package: api
+            check: backend
             target: api
-          - package: frontend
+          - package: web
+            check: frontend
             target: web
           - package: word-addin
+            check: word-addin
             target: word
     steps:
       - uses: actions/checkout@v7
@@ -55,7 +58,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: apps/northwrit/${{ matrix.package }}/package-lock.json
+          cache-dependency-path: apps/${{ matrix.package }}/package-lock.json
       - run: npm run setup:${{ matrix.target }}
       - run: npm run test:${{ matrix.target }}
       - if: matrix.target == 'web'
@@ -73,3 +76,5 @@ jobs:
           REACT_APP_SENTRY_DISABLED: 'true'
           REACT_APP_WEB_APP_URL: https://app.northwrit.invalid
           WORD_ADDIN_PUBLIC_URL: https://northwrit.invalid
+      - if: matrix.target == 'api'
+        run: npm run test:worker
