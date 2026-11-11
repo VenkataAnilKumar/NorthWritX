@@ -321,7 +321,7 @@ export function OpenSourceWorkflowModal({
                                             className="cursor-pointer"
                                         >
                                             GitHub repository and on the
-                                            upstream project's website.
+                                            upstream project&apos;s website.
                                         </label>
                                     </p>
                                 </div>

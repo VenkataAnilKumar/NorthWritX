@@ -2,6 +2,8 @@
 
 The [Open-Source References](03-market/Northwrit_Open-Source-References.md) register records MikeOSS as the application foundation and links to its source, workflows, and local setup.
 
+The [implementation plan](07-implementation/NorthWrit-Implementation-Plan.md) governs current delivery. Use the [repository ownership map](06-technical/NorthWrit-Repository-Ownership.md) for documentation authority. Product specifications describe target behaviour; document availability and check marks below do not establish that a feature or security guarantee is implemented or validated.
+
 **Northwrit** is a privacy-first legal AI workspace engineered specifically for Canadian law firms (10–300 lawyers, Ontario launch focus) and corporate in-house legal departments. It combines Perplexity-style live, cited Canadian legal research with Harvey-class legal workflows (matters, document review, drafting, playbooks, and agents), while ensuring confidential client data remains governed by strict, enforceable data privacy policies via **Northwrit Shield**.
 
 ---
@@ -25,7 +27,7 @@ The index groups product specifications, technical designs, the current Mike OSS
 | 7 | [User Journeys](04-specs/Northwrit_User-Journeys.md) | End-to-end flows for research lawyers, contract counsel, admins, KM, and legal ops | ✅ |
 | 8 | [User Stories](04-specs/Northwrit_User-Stories.md) | Stories with Given/When/Then acceptance criteria covering all 38 P0 features and key P1 flows | ✅ |
 | **05 Design** | | | |
-| 9 | [Design System](05-design/Northwrit_Design-System.md) | Colour tokens, typography, 4-state CiteCheck chips, review badges, Shield pills, WCAG 2.1 AA | ✅ |
+| 9 | [Application Design System](../apps/northwrit/docs/design-system.md) | Implemented tokens, shared primitives and accessibility conventions | Engineering guide |
 | 10 | [UI Specification](05-design/Northwrit_UI-Spec.md) | Screen-by-screen behaviour: workspace, Bearings modal, Evidence drawer, Folio editor, Control Centre | ✅ |
 | 11 | [Wireframes](05-design/Northwrit_Wireframes.md) | ASCII wireframes for the matter workspace, Bearings prompt, and Shield privacy drawer | ✅ |
 | **06 Technical** | | | |
@@ -36,11 +38,17 @@ The index groups product specifications, technical designs, the current Mike OSS
 | 16 | [API Design](06-technical/Northwrit_API-Design.md) | REST resources, Model & Tool Gateway contracts, error envelopes (`blocked_by_policy`), MCP | ✅ |
 | 17 | [Security & Compliance](06-technical/Northwrit_Security-Compliance.md) | Threat model (prompt injection, leakage), source rights records, LSO duties, PIPEDA & Law 25 | ✅ |
 | 18 | [Deployment Architecture](06-technical/Northwrit_Deployment-Architecture.md) | Canadian-region cloud tier, Firm Server (Docker Compose), Local Companion, backups & observability | ✅ |
-| 19 | [Repo Structure](06-technical/Northwrit_Repo-Structure.md) | v3.0 Sovereign Enterprise Monorepo blueprint (surfaces, microservices, packages, deploy, packs) | ✅ |
-| 20 | [Open-Source Components](06-technical/Northwrit_Open-Source-Components.md) | v2.0 Reuse map covering local inventory (`sim`, `onyx`, `kortix`, `agno`) + `Jan.ai`, `LobeHub`, `MikeOSS`, `Docling` | ✅ |
+| 19 | [Repository Ownership](06-technical/NorthWrit-Repository-Ownership.md) | Current layout, dependency boundaries and documentation authority | Accepted structure |
+| 20 | [Source Audit](07-implementation/NorthWrit-Source-Audit.md) | Pinned Mike OSS architecture, candidate building blocks and gaps | Static review |
 | 21 | [Platform Layers & Surfaces](06-technical/Northwrit_Platform-Layers-and-Surfaces.md) | Architectural synthesis: Cohere North private agentics × Harvey AI legal intelligence (6 layers, 5 surfaces) | ✅ |
 | **07 Implementation** | | | |
-| 22 | [Mike OSS Implementation Plan](07-implementation/Northwrit_MikeOSS-Implementation-Plan.md) | Current roadmap: audit, rebrand, legal workspace, NorthWrit capabilities, integrations, and release | Planned |
+| 22 | [NorthWrit Implementation Plan](07-implementation/NorthWrit-Implementation-Plan.md) | Current roadmap: audit, rebrand, legal workspace, NorthWrit capabilities, integrations, and release | Planned |
+| 23 | [Feature Disposition](07-implementation/NorthWrit-Feature-Disposition.md) | Reuse, adapt, build and defer decisions for the feature backlog | Planning input |
+| 24 | [CI Inventory](07-implementation/NorthWrit-CI-Inventory.md) | Active repository checks and imported workflow gaps | Engineering inventory |
+| 25 | [Phase 4 Extension Map](07-implementation/NorthWrit-Phase-4-Extension-Map.md) | Existing owners for matters, access, evidence, jobs, reviews and exports | Implementation map |
+| 26 | [Repository Verification](07-implementation/NorthWrit-Repository-Verification.md) | Local root-command, build, type and regression results; warnings and limits | Recorded checks |
+
+The [older v3 repository blueprint](06-technical/Northwrit_Repo-Structure.md) remains historical context. It does not replace the accepted current structure.
 
 ---
 
@@ -50,7 +58,7 @@ The index groups product specifications, technical designs, the current Mike OSS
 |---|---|
 | [User Guide](guides/user-guide.md) | Lawyers and legal staff using Northwrit in the pilot |
 | [Security & Privacy Overview](guides/security.md) | A firm's IT, risk, or compliance team evaluating Northwrit |
-| [Developer Guide](guides/developer.md) | Engineers building and testing Northwrit against Northwrit Bench |
+| [Developer Guide](guides/developer.md) | Engineers setting up and checking the active NorthWrit application |
 
 ---
 

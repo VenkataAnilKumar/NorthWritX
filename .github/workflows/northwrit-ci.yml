@@ -3,9 +3,9 @@ name: NorthWrit CI
 on:
   push:
     branches: [main]
-    paths: ['apps/northwrit/**', 'scripts/rebrand_northwrit.py', '.github/workflows/northwrit-ci.yml']
+    paths: ['apps/northwrit/**', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
   pull_request:
-    paths: ['apps/northwrit/**', 'scripts/rebrand_northwrit.py', '.github/workflows/northwrit-ci.yml']
+    paths: ['apps/northwrit/**', 'scripts/**', 'docs/**', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json', '.github/workflows/**']
   workflow_dispatch:
 
 permissions:
@@ -16,16 +16,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  repository:
+    name: Repository entry points
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 22
+      - run: npm run check:repo
+      - name: Check changed-commit whitespace
+        env:
+          WHITESPACE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [[ -z "$WHITESPACE_BASE" || "$WHITESPACE_BASE" =~ ^0+$ ]]; then
+            WHITESPACE_BASE=$(git hash-object -t tree /dev/null)
+          fi
+          npm run check:whitespace -- "$WHITESPACE_BASE" HEAD
+
   app:
     name: ${{ matrix.package }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        package: [backend, frontend, word-addin]
-    defaults:
-      run:
-        working-directory: apps/northwrit/${{ matrix.package }}
+        include:
+          - package: backend
+            target: api
+          - package: frontend
+            target: web
+          - package: word-addin
+            target: word
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7.1.0
@@ -33,18 +56,16 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: apps/northwrit/${{ matrix.package }}/package-lock.json
-      - run: npm ci
-      - if: matrix.package != 'word-addin'
-        run: npm test
-      - if: matrix.package == 'word-addin'
-        run: npm run test:server
-      - if: matrix.package == 'frontend'
-        run: npm run lint
-      - if: matrix.package == 'frontend'
-        run: npm run typecheck
-      - if: matrix.package == 'backend'
-        run: npm run typecheck:test
-      - run: npm run build
+      - run: npm run setup:${{ matrix.target }}
+      - run: npm run test:${{ matrix.target }}
+      - if: matrix.target == 'web'
+        run: npm run lint:web
+      - run: npm run typecheck:${{ matrix.target }}
+      - if: matrix.target == 'api'
+        run: npm run typecheck:api-tests
+      - if: matrix.target == 'api'
+        run: npm run typecheck:contracts
+      - run: npm run build:${{ matrix.target }}
         env:
           SENTRY_DISABLED: 'true'
           NEXT_PUBLIC_SENTRY_DISABLED: 'true'

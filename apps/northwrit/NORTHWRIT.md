@@ -8,10 +8,12 @@ Branding covers web and Word interface copy, sign-in and MFA, the Assistant iden
 
 ## Build checks
 
+From the NorthWritX repository root, the [root README](../../README.md#verify-changes) provides setup, development and verification aliases. They delegate to the package commands below without changing application package boundaries or lockfiles. See the [ownership map](../../docs/06-technical/NorthWrit-Repository-Ownership.md) and [CI inventory](../../docs/07-implementation/NorthWrit-CI-Inventory.md) for current responsibilities and active checks.
+
 Use Node.js 22 or later and run `npm ci` separately in `backend`, `frontend` and `word-addin`. From each directory, run `npm run build`. Use `npm test` for backend and web, `npm run typecheck` and `npm run lint` for web, and `npm run test:server` for Word. For a Word build check without deploying it, set `WORD_ADDIN_PUBLIC_URL=https://northwrit.invalid` and `REACT_APP_WEB_APP_URL=https://app.northwrit.invalid`. The repository's [CI workflow](../../.github/workflows/northwrit-ci.yml) runs these checks against the imported source.
 
 The provided environment examples disable telemetry. Set NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL at web and Word build time to route support drafts to your firm. With no configured address, the draft has no recipient. The desktop app uses the NorthWrit macOS bundle identity and defaults to the local web port. Set MIKE_SERVER_URL or choose your firm server in the connection screen. Existing Mike installations use a separate app identity.
 
 For future upgrades, compare the pinned revision against the proposed upstream commit and reconcile local changes before importing it. Export the snapshot with `git -c core.autocrlf=false -c core.eol=lf archive` so Windows does not change the source bytes. Re-run the branding script and review each change. When staging on Windows, preserve the original executable modes for upstream scripts by checking the upstream tree for `100755` entries and applying those modes to the matching imported paths in the Git index.
 
-See the [implementation plan](../../docs/07-implementation/Northwrit_MikeOSS-Implementation-Plan.md) for verification status. Release validation covers portal workflows and deployment.
+See the [implementation plan](../../docs/07-implementation/NorthWrit-Implementation-Plan.md) for verification status. Release validation covers portal workflows and deployment.

@@ -1,0 +1,39 @@
+{
+  "name": "northwritx",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Repository commands for the NorthWrit application",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "setup": "npm run setup:api && npm run setup:web && npm run setup:word",
+    "setup:api": "npm --prefix apps/northwrit/backend ci",
+    "setup:web": "npm --prefix apps/northwrit/frontend ci",
+    "setup:word": "npm --prefix apps/northwrit/word-addin ci",
+    "setup:e2e": "npm --prefix apps/northwrit ci",
+    "dev:api": "npm --prefix apps/northwrit/backend run dev --",
+    "dev:web": "npm --prefix apps/northwrit/frontend run dev --",
+    "dev:word": "npm --prefix apps/northwrit/word-addin run dev --",
+    "build": "npm run build:api && npm run build:web && npm run build:word",
+    "build:api": "npm --prefix apps/northwrit/backend run build --",
+    "build:web": "npm --prefix apps/northwrit/frontend run build --",
+    "build:word": "npm --prefix apps/northwrit/word-addin run build --",
+    "test": "npm run test:api && npm run test:web && npm run test:word",
+    "test:api": "npm --prefix apps/northwrit/backend test --",
+    "test:web": "npm --prefix apps/northwrit/frontend test --",
+    "test:word": "npm --prefix apps/northwrit/word-addin run test:server --",
+    "test:e2e": "npm --prefix apps/northwrit run test:e2e --",
+    "typecheck": "npm run typecheck:api && npm run typecheck:api-tests && npm run typecheck:contracts && npm run typecheck:web && npm run typecheck:word",
+    "typecheck:api": "npm --prefix apps/northwrit/backend run build -- --noEmit",
+    "typecheck:api-tests": "npm --prefix apps/northwrit/backend run typecheck:test --",
+    "typecheck:contracts": "npm --prefix apps/northwrit/backend run typecheck:contracts --",
+    "typecheck:web": "npm --prefix apps/northwrit/frontend run typecheck --",
+    "typecheck:word": "npm --prefix apps/northwrit/word-addin run typecheck --",
+    "lint": "npm run lint:web",
+    "lint:web": "npm --prefix apps/northwrit/frontend run lint --",
+    "check:repo": "node scripts/check-repository.mjs",
+    "check:whitespace": "git diff --check"
+  },
+  "license": "AGPL-3.0-only"
+}
