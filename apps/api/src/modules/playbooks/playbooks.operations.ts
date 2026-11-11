@@ -45,7 +45,7 @@ import {
 } from "../../lib/access";
 import { PERSONAL_WORKSPACE, resolveWorkspaceFilter, workspaceMatches, type WorkspaceFilter } from "../../lib/workspace";
 import { selectAllByKey, selectInBatches } from "../../lib/batchedQuery";
-import type { EditAnnotation } from "@mike/contracts";
+import type { EditAnnotation } from "@northwrit/contracts";
 import { extractDocxBodyText, type EditInput } from "../../lib/docxTrackedChanges";
 import { loadActiveVersion } from "../../lib/documentVersions";
 import {

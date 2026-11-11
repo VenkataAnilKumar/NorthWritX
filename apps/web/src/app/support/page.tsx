@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { FieldLabel } from "@/app/components/ui/form-field";
-import { SUPPORT_EMAIL } from "@mike/client";
+import { SUPPORT_EMAIL } from "@northwrit/client";
 
 const fieldClassName = "w-full rounded-lg border border-border bg-background px-3 py-2 focus-visible:outline-2";
 

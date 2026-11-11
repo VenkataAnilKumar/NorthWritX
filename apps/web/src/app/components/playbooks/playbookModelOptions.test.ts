@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ModelOption } from "@mike/client";
+import type { ModelOption } from "@northwrit/client";
 import type {
     ApiKeyState,
     PlaybookConfiguration,

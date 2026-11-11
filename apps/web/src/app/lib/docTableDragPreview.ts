@@ -1,4 +1,4 @@
-import { LIQUID_GLASS_FLOAT_CLASS } from "@mike/ui";
+import { LIQUID_GLASS_FLOAT_CLASS } from "@northwrit/ui";
 
 type DragPreviewOptions = {
     dataTransfer: Pick<DataTransfer, "setDragImage">;

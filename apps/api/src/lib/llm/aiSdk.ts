@@ -13,7 +13,7 @@ import type {
   StreamChatParams,
   StreamChatResult,
 } from "./types";
-import type { WebSource } from "@mike/contracts";
+import type { WebSource } from "@northwrit/contracts";
 import { providerDeadlines } from "./providerDeadlines";
 import { asProviderStallError, streamErrorMessage, toProviderStreamError } from "./providerErrors";
 import { createRawLlmStreamRecorder, logRawLlmStream } from "./rawStreamLog";

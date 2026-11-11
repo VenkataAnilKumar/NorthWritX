@@ -2,7 +2,7 @@
 // Callers always speak OpenAI-style tools + { role, content } messages; each
 // provider translates internally.
 
-import type { WebSource } from "@mike/contracts";
+import type { WebSource } from "@northwrit/contracts";
 
 export type Provider =
     | "claude"

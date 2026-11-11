@@ -2,8 +2,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ResponseStatus, type StatusState } from "./ResponseStatus";
 
-vi.mock("@mike/ui", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@mike/ui")>()),
+vi.mock("@northwrit/ui", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@northwrit/ui")>()),
     MikeIcon: ({
         spin,
         done,

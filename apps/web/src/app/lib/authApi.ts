@@ -7,7 +7,7 @@ import {
     isAbortError,
     reportedUpstreamMessage,
     type Operation,
-} from "@mike/client";
+} from "@northwrit/client";
 
 export interface AuthUser {
     id: string;

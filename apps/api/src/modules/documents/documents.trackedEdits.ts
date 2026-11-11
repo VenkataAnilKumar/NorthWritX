@@ -4,7 +4,7 @@
 // reviews both write through here, so version creation stays in this module.
 
 import crypto from "node:crypto";
-import type { EditAnnotation } from "@mike/contracts";
+import type { EditAnnotation } from "@northwrit/contracts";
 import { can, ensureDocAccess } from "../../lib/access";
 import { applyTrackedEdits, type EditInput } from "../../lib/docxTrackedChanges";
 import { contentSha256, loadActiveVersion } from "../../lib/documentVersions";

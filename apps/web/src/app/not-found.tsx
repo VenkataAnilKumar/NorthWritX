@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { pillButtonUIClassName } from "@mike/ui";
+import { pillButtonUIClassName } from "@northwrit/ui";
 
 export default function NotFound() {
     return (

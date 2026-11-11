@@ -51,8 +51,8 @@ import {
     setReportingUser,
     trackPendingRequest,
 } from "./errorReporting";
-import { MIKE_SENTRY_DSN } from "@mike/client";
-import { diagnosticEvent } from "@mike/client";
+import { MIKE_SENTRY_DSN } from "@northwrit/client";
+import { diagnosticEvent } from "@northwrit/client";
 import { MikeApiError, downloadDocumentsZip, updateWorkflow } from "./mikeApi";
 import { notifyError } from "./userFacingError";
 

@@ -28,9 +28,9 @@
 //      to @types once compiled every JSX call to `(void 0)(...)`, and the
 //      built app rendered only its error page with no build error.
 //   5. The shared packages keep the boundary their READMEs state: a package's
-//      relative imports stay inside it; `@mike/client` is framework-free and
-//      never imports `@mike/ui` or an application; `@mike/ui` imports only
-//      `@mike/client` and its declared peer dependencies; and application
+//      relative imports stay inside it; `@northwrit/client` is framework-free and
+//      never imports `@northwrit/ui` or an application; `@northwrit/ui` imports only
+//      `@northwrit/client` and its declared peer dependencies; and application
 //      code reaches a package only through its bare name, never a file path,
 //      so a file `index.ts` does not re-export stays internal.
 //
@@ -158,7 +158,17 @@ describe("frontend build boundaries", () => {
                         (repoRel === c.src || repoRel.startsWith(`${c.src}/`)) &&
                         posix.join(c.dst, repoRel.slice(c.src.length)) === imagePath,
                 );
-                if (!covered) missing.push(`${alias} -> ${target} (expected ${imagePath} in the image)`);
+                // Root peer packages are produced by the frozen workspace install,
+                // not a source COPY. Require a declared dependency and a locked entry.
+                const library = repoRel.startsWith("node_modules/") ? repoRel.slice("node_modules/".length) : "";
+                const manifest = JSON.parse(readFileSync(join(FRONTEND, "package.json"), "utf8"));
+                const lock = JSON.parse(readFileSync(join(REPO, "package-lock.json"), "utf8"));
+                const dockerfile = readFileSync(join(FRONTEND, "Dockerfile"), "utf8");
+                const installed = library && Boolean(manifest.dependencies?.[library] || manifest.devDependencies?.[library])
+                    && Boolean(lock.packages?.[repoRel])
+                    && dockerfile.includes("COPY package.json package-lock.json .npmrc ./")
+                    && dockerfile.includes("npm ci --workspace apps/web --include-workspace-root=false");
+                if (!covered && !installed) missing.push(`${alias} -> ${target} (expected ${imagePath} in the image)`);
             }
         }
         expect(
@@ -186,9 +196,9 @@ describe("frontend build boundaries", () => {
     });
 
     it("rule 4: no tsconfig alias a runtime import can reach targets a declaration file", () => {
-        // @mike/contracts is declarations only and is imported with `import type`
+        // @northwrit/contracts is declarations only and is imported with `import type`
         // (AGENTS.md), which the bundler erases before resolving anything.
-        const TYPE_ONLY_ALIASES = new Set(["@mike/contracts"]);
+        const TYPE_ONLY_ALIASES = new Set(["@northwrit/contracts"]);
         const paths = build.options.paths ?? {};
         const declarationTargets = Object.entries(paths)
             .filter(([alias]) => !TYPE_ONLY_ALIASES.has(alias))
@@ -209,7 +219,7 @@ describe("frontend build boundaries", () => {
         const WORD_ADDIN = resolve(REPO, "apps/word-addin");
         const readJson = (file: string) => JSON.parse(readFileSync(file, "utf8")) as { peerDependencies?: Record<string, string> };
         // What each package may import by bare name: its declared peers (the
-        // consuming app supplies them) plus Node built-ins; `@mike/client` may
+        // consuming app supplies them) plus Node built-ins; `@northwrit/client` may
         // reach React for types only.
         const allowed: Record<string, Set<string>> = {
             client: new Set(Object.keys(readJson(join(PACKAGES, "client/package.json")).peerDependencies ?? {})),
@@ -232,19 +242,19 @@ describe("frontend build boundaries", () => {
                     }
                     if (spec.startsWith("node:")) continue;
                     const name = bareName(spec);
-                    if (name === "@mike/client" && pkg === "client")
+                    if (name === "@northwrit/client" && pkg === "client")
                         violations.push(`${rel} -> ${spec} (a package does not import its own barrel)`);
-                    else if (name === "@mike/ui")
-                        violations.push(`${rel} -> ${spec} (${pkg === "client" ? "@mike/client never imports @mike/ui" : "a package does not import its own barrel"})`);
+                    else if (name === "@northwrit/ui")
+                        violations.push(`${rel} -> ${spec} (${pkg === "client" ? "@northwrit/client never imports @northwrit/ui" : "a package does not import its own barrel"})`);
                     else if (!allowed[pkg].has(name))
-                        violations.push(`${rel} -> ${spec} (not a declared peer dependency of @mike/${pkg})`);
+                        violations.push(`${rel} -> ${spec} (not a declared peer dependency of @northwrit/${pkg})`);
                     else if (pkg === "client" && name === "react" && !new RegExp(`import\\s+type\\s[^;]*from\\s+["']${spec}["']`).test(source))
-                        violations.push(`${rel} -> ${spec} (@mike/client is framework-free: React for types only)`);
+                        violations.push(`${rel} -> ${spec} (@northwrit/client is framework-free: React for types only)`);
                 } else {
                     // Application code: packages by bare name only.
                     const target = spec.startsWith(".") ? resolve(dirname(file), spec) : null;
-                    if (/^@mike\/(ui|client)\//.test(spec) || (target && isInside(PACKAGES, target) && !isInside(WORD_ADDIN, target)))
-                        violations.push(`${rel} -> ${spec} (import @mike/ui or @mike/client by name, not a file inside it)`);
+                    if (/^@northwrit\/(ui|client)\//.test(spec) || (target && isInside(PACKAGES, target) && !isInside(WORD_ADDIN, target)))
+                        violations.push(`${rel} -> ${spec} (import @northwrit/ui or @northwrit/client by name, not a file inside it)`);
                 }
             }
         }

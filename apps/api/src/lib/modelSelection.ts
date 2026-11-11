@@ -1,4 +1,4 @@
-import type { DelegationModelTier } from "@mike/contracts";
+import type { DelegationModelTier } from "@northwrit/contracts";
 import {
     builtInModelIds,
     CLAUDE_LOW_MODELS,

@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
-import type { ConnectorApprovalItem } from "@mike/contracts";
+import type { ConnectorApprovalItem } from "@northwrit/contracts";
 import { workspaceDb } from "./googleWorkspaceDb";
 import { ConnectorSetupError } from "../../mcp/errors";
 import {

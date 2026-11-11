@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MikeIcon } from "@mike/ui";
+import { MikeIcon } from "@northwrit/ui";
 
 interface SiteLogoProps {
     size?: "sm" | "md" | "lg" | "xl";

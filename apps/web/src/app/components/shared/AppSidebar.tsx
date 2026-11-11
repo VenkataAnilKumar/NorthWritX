@@ -37,7 +37,7 @@ import {
     DropdownRadioItem,
     DropdownSeparator,
     DropdownTrigger,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import { SidebarHeading } from "@/app/components/shared/SidebarHeading";
 import { SidebarLogo } from "@/app/components/shared/SidebarLogo";
 import { SidebarProjectItem } from "@/app/components/shared/SidebarProjectItem";

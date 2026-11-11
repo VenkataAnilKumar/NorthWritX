@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Stage the built product into local-stack/app/ for packaging. After this,
-# `npm run dist:local` produces a Mike.app that carries the whole stack
+# `npm run dist:local` produces a NorthWrit.app that carries the whole stack
 # (config.js resolves these paths under process.resourcesPath when packaged).
 #
 # Prereqs: scripts/fetch-local-stack.sh (binaries) and
@@ -19,10 +19,12 @@ mkdir -p "$APP/backend" "$APP/frontend"
 node apps/desktop/scripts/stage-source-notices.mjs "$APP" apps/desktop/local-stack/bin/notices
 
 echo "==> backend (dist + prod deps + schema/migrations)"
-cp -R apps/api/dist "$APP/backend/dist"
-cp apps/api/package.json apps/api/package-lock.json apps/api/schema.sql "$APP/backend/"
-cp -R apps/api/migrations "$APP/backend/migrations"
-(cd "$APP/backend" && npm ci --omit=dev --no-audit --no-fund >/dev/null)
+node scripts/workspace-manifests.mjs "$APP/backend"
+cp -R apps/api/dist "$APP/backend/apps/api/dist"
+cp apps/api/schema.sql "$APP/backend/apps/api/"
+cp -R packages/contracts "$APP/backend/packages/contracts"
+cp -R apps/api/migrations "$APP/backend/apps/api/migrations"
+(cd "$APP/backend" && npm ci --workspace apps/api --include-workspace-root=false --omit=dev --no-audit --no-fund >/dev/null)
 
 # The standalone output is traced from the repository root, so it holds
 # apps/web/server.js next to the node_modules it needs (see

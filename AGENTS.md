@@ -5,9 +5,9 @@ Application surfaces live under `apps/`, shared code under `packages/`, and infr
 ## Scope and ownership
 
 - Read `README.md`, `docs/06-technical/NorthWrit-Repository-Ownership.md` and the current implementation plan before changing layout or build commands.
-- Follow ADR 0002 for the expanded layout. Preserve package boundaries and independent lockfiles; there is no root workspace. `apps/worker` invokes the API-owned worker entry point; do not copy domain services into it.
+- Follow ADR 0002 for the expanded layout and ADR 0003 for the npm root workspace. Preserve package boundaries; root `package-lock.json` is authoritative. Use root `npm ci` or `npm ci --workspace <path>`; do not create child lockfiles. `apps/worker` invokes the API-owned worker entry point; do not copy domain services into it.
 - Keep application logic in existing domain modules and shared packages. Use service facades and shared access helpers; authorization must hold in APIs, jobs, downloads and exports.
-- Preserve source notices, migration history, package names and compatibility-sensitive URLs/identifiers unless a documented, verified change requires otherwise.
+- Preserve source notices, migration history, `@northwrit/*` package names and compatibility-sensitive URLs/identifiers unless a documented, verified change requires otherwise.
 - Each cloud task is already isolated. Use the existing checkout; create a Git worktree only when explicitly requested.
 - Preserve existing user changes. Do not move files or remove resources belonging to another task.
 

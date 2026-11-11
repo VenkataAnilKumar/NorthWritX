@@ -1,7 +1,7 @@
 import type {
   GoogleWorkspaceProvider,
   GoogleWorkspaceStatus,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 import crypto from "node:crypto";
 import type { Db } from "../supabase";
 import { type ConnectorOwner, workspaceFilter } from "../connectorOwner";

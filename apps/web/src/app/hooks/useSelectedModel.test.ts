@@ -4,7 +4,7 @@ import { useSelectedModel, useSelectedReasoning } from "./useSelectedModel";
 import {
     canonicalModelId,
     routerSelections as selectionsFromProfile,
-} from "@mike/client";
+} from "@northwrit/client";
 import type { ApiKeyState } from "../lib/mikeApi";
 
 const keys: ApiKeyState = {

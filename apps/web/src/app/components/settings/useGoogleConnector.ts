@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   GoogleWorkspaceProvider,
   NativeConnectorTool,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 import {
   cancelGoogleDriveOAuth,
   cancelGoogleWorkspaceOAuth,

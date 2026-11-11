@@ -10,7 +10,7 @@ import {
     DropdownRadioItem,
     DropdownTrigger,
     TextButtonUI,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import { VersionChip } from "./VersionChip";
 
 export function DocumentVersionPicker({

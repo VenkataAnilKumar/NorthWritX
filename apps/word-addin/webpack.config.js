@@ -197,8 +197,8 @@ module.exports = async (_env, options) => {
         // Shared UI primitives and the framework-free client behavior behind
         // them (error presentation, the model catalog, uploads, excerpts,
         // Sentry hygiene): one implementation for the web app and the add-in.
-        "@mike/ui": sharedPackage("ui"),
-        "@mike/client": sharedPackage("client"),
+        "@northwrit/ui": sharedPackage("ui"),
+        "@northwrit/client": sharedPackage("client"),
       },
     },
     module: {

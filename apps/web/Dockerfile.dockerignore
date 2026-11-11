@@ -9,11 +9,17 @@
 **/dist
 **/build
 .git
-apps/api
-apps/word-addin
-apps/desktop
+apps/api/**
+apps/word-addin/**
+apps/desktop/**
 docs
-tests
+tests/**
 **/.env
 **/.env.*
 **/*.log
+
+# Workspace discovery needs all manifests even when their source is excluded.
+!apps/*/package.json
+!packages/*/package.json
+!tests/browser/
+!tests/browser/package.json

@@ -14,7 +14,7 @@ import {
     type WebSearchPlan,
 } from "../../lib/webSearch";
 import { resolveRequestTimeZone } from "../../lib/userTime";
-import type { McpToolEvent } from "@mike/contracts";
+import type { McpToolEvent } from "@northwrit/contracts";
 import {
     buildProjectDocContext,
     buildMessages,

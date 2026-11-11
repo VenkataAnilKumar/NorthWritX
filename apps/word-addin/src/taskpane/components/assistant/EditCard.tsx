@@ -1,5 +1,5 @@
 import React from "react";
-import { EditCardUI } from "@mike/ui";
+import { EditCardUI } from "@northwrit/ui";
 import type { RedlineEdit } from "../../lib/redline";
 import { EDIT_CARD_SURFACE } from "./message/messageStyles";
 import type { EditBusyAction, EditCardStatus } from "../../lib/wordChatTypes";

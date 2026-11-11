@@ -9,7 +9,7 @@
  * container is down. The host's original wording is kept on `cause` for the
  * console, never for the screen.
  */
-import { UserVisibleError, networkMessage } from "@mike/client";
+import { UserVisibleError, networkMessage } from "@northwrit/client";
 
 /** The origin a request was aimed at, for the message and for the console. */
 export function requestOrigin(url: string): string {

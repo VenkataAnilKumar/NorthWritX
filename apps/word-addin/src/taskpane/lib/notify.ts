@@ -9,7 +9,7 @@
  * Word, which is why it is an action and not an anchor.
  *
  * The toast, the Retry and the cancellation rule are the web app's own
- * (`createErrorNotifier` in `@mike/client`), so a failure reads the same in Word as it does in
+ * (`createErrorNotifier` in `@northwrit/client`), so a failure reads the same in Word as it does in
  * the browser; this file adds only what differs in the pane. Screens must
  * never render a raw `error.message` from the API, a stream, or Office.js.
  */
@@ -24,7 +24,7 @@ import {
   notifyInfo,
   notifySuccess,
   type NotifyErrorOptions as SharedNotifyErrorOptions,
-} from "@mike/client";
+} from "@northwrit/client";
 import {
   isSessionHandledError,
   retryWhenSessionRecovers,
@@ -53,8 +53,8 @@ export {
   isNetworkError,
   type UserErrorKind,
   type UserFacingError,
-} from "@mike/client";
-export { notifyInfo, notifySuccess } from "@mike/client";
+} from "@northwrit/client";
+export { notifyInfo, notifySuccess } from "@northwrit/client";
 
 /** Which client the support email came from. */
 export const SUPPORT_PRODUCT = "word-addin";

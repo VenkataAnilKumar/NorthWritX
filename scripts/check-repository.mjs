@@ -46,18 +46,22 @@ let manifest;
 check("root manifest", () => {
   manifest = json("package.json");
   assert.equal(manifest.private, true);
-  assert(!manifest.workspaces, "a workspace migration requires a separate decision");
+  assert.deepEqual([...manifest.workspaces].sort(), [...Object.values(targets), "packages/contracts", "packages/client", "packages/ui"].sort(), "workspace membership must match the declared packages");
   assert(!Object.keys(manifest.dependencies ?? {}).length, "root aliases must not add application dependencies");
   assert.equal(json("package-lock.json").packages[""].name, manifest.name);
 });
 
-for (const [target, directory] of Object.entries(targets)) {
-  check(`${target} package and lockfile`, () => {
+for (const directory of manifest?.workspaces ?? []) {
+  check(`${directory} workspace manifest and root lock`, () => {
     const pkg = json(`${directory}/package.json`);
-    const lock = json(`${directory}/package-lock.json`).packages[""];
+    const lock = json("package-lock.json").packages[directory];
+    assert(lock, `root lock is missing ${directory}`);
+    assert(!existsSync(path.join(root, directory, "package-lock.json")), "workspace lockfiles must not compete with the root lock");
+    assert(pkg.name.startsWith("@northwrit/"), "active packages must use NorthWrit names");
+    assert.equal(json("package-lock.json").packages[`node_modules/${pkg.name}`]?.resolved, directory, "workspace must be linked from the root install");
     assert.equal(lock.name, pkg.name);
     assert.equal(lock.version, pkg.version);
-    for (const field of ["dependencies", "devDependencies"]) {
+    for (const field of ["dependencies", "devDependencies", "peerDependencies", "peerDependenciesMeta"]) {
       assert.deepEqual(lock[field] ?? {}, pkg[field] ?? {}, `${directory}: ${field} differ from lockfile`);
     }
   });
@@ -73,7 +77,12 @@ if (manifest?.scripts) {
           assert(manifest.scripts[nested[1]], `unknown root script ${nested[1]}`);
           continue;
         }
-        const delegated = /^npm --prefix (\S+) (ci|test|run)(?: (\S+))?/.exec(step);
+        const delegated = /^npm --workspace (\S+) (ci|test|run)(?: (\S+))?/.exec(step);
+        const install = /^npm ci(?: --workspace (\S+))?$/.exec(step);
+        if (install) {
+          assert(!install[1] || Object.values(targets).includes(install[1]), "unknown setup target");
+          continue;
+        }
         if (delegated) {
           const [, directory, action, script] = delegated;
           assert(Object.values(targets).includes(directory), `unknown package path ${directory}`);
@@ -117,7 +126,7 @@ check("CI inventory and command paths", () => {
       assert(workflow.includes(`npm run ${verb}:`), `CI does not invoke ${verb} aliases`);
     }
   }
-  assert(workflow.includes("apps/${{ matrix.package }}/package-lock.json"), "CI cache path must follow the package matrix");
+  assert(workflow.includes("package-lock.json"), "CI cache must use the root workspace lock");
   assert(workflow.includes("npm run check:repo"), "CI must run repository validation");
   const inventory = read("docs/07-implementation/NorthWrit-CI-Inventory.md");
   for (const name of readdirSync(path.join(root, "docs/upstream/mike/.github/workflows"))) {
@@ -131,7 +140,9 @@ check("CI inventory and command paths", () => {
 check("expanded migration paths", () => {
   const mapping = json("docs/07-implementation/NorthWrit-Migration-Paths.json");
   for (const [oldPath, destination] of Object.entries(mapping.paths)) {
-    assert(existsSync(path.join(root, destination)), `missing destination ${destination}`);
+    if (destination.endsWith("/package-lock.json")) {
+      assert(json("package-lock.json").packages[path.dirname(destination)], "retired lock must have a root workspace entry");
+    } else assert(existsSync(path.join(root, destination)), `missing destination ${destination}`);
     assert(!existsSync(path.join(root, oldPath)), `old path remains ${oldPath}`);
   }
   for (const app of ["api", "web", "worker", "word-addin", "desktop"]) {
@@ -144,5 +155,5 @@ if (failures.length) {
   console.error(failures.join("\n"));
   process.exitCode = 1;
 } else {
-  console.log(`Repository checks passed: ${Object.keys(targets).length} package locks, root command targets, ${links} local links and CI inventory.`);
+  console.log(`Repository checks passed: ${manifest.workspaces.length} workspace lock entries, root command targets, ${links} local links and CI inventory.`);
 }

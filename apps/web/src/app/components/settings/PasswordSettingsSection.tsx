@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { authInputUIClassName, InputUI, PillButtonUI, GlassCardUI } from "@mike/ui";
+import { authInputUIClassName, InputUI, PillButtonUI, GlassCardUI } from "@northwrit/ui";
 import {
   MIN_PASSWORD_LENGTH,
   isPasswordTooLong,

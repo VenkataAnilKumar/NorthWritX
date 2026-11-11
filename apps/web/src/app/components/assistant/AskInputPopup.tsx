@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
-import { CloseButton, PillButtonUI, TabPillButtonUI } from "@mike/ui";
+import { CloseButton, PillButtonUI, TabPillButtonUI } from "@northwrit/ui";
 import type { AssistantEvent, Document, MessageFile } from "../shared/types";
 import { FileTypeIcon } from "../shared/FileTypeIcon";
 import { ConnectorActionCard } from "../shared/ConnectorActionCard";

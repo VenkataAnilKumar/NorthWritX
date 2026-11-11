@@ -3,7 +3,7 @@
  * `operation` naming the flow, the component, Word's own code or the
  * server's code and request id — and when a failure shown to the user is
  * NOT sent (a 4xx, a cancellation, a fault some other layer already filed).
- * Exercised from the frontend runner through the add-in's `@mike/*` aliases.
+ * Exercised from the frontend runner through the add-in's `@northwrit/*` aliases.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -41,9 +41,9 @@ vi.mock("@sentry/react", () => ({
 }));
 
 import * as Sentry from "@sentry/react";
-import { diagnosticEvent } from "@mike/client";
-import { clearToasts } from "@mike/client";
-import { UserVisibleError } from "@mike/client";
+import { diagnosticEvent } from "@northwrit/client";
+import { clearToasts } from "@northwrit/client";
+import { UserVisibleError } from "@northwrit/client";
 import {
     isReported,
     reportApiFailure,

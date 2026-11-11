@@ -26,7 +26,7 @@ import {
   LIQUID_GLASS_SUBTLE_CLASS,
 } from "./LiquidGlassUI";
 
-import type { ModelToggleGroup, ModelToggleOption } from "@mike/client";
+import type { ModelToggleGroup, ModelToggleOption } from "@northwrit/client";
 
 export type { ModelToggleGroup, ModelToggleOption };
 

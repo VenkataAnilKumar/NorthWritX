@@ -2,7 +2,7 @@ import type {
   ConnectorApprovalItem,
   GoogleWorkspaceStatus,
   NativeConnectorTool,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 import { z } from "zod";
 import type { Db } from "../supabase";
 import type { ConnectorOwner } from "../connectorOwner";

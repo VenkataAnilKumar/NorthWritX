@@ -1,4 +1,4 @@
-# @mike/ui
+# @northwrit/ui
 
 React primitives rendered by both the Mike web app (`frontend/`) and the Word
 add-in (`word-addin/`): liquid-glass surfaces, pills and buttons, the dropdown,
@@ -9,7 +9,7 @@ the model picker, toasts, modals, and the assistant message blocks.
 `src/index.ts` is the package's only entry point. Consumers import by name:
 
 ```ts
-import { PillButtonUI, ToastViewportUI, Dropdown } from "@mike/ui";
+import { PillButtonUI, ToastViewportUI, Dropdown } from "@northwrit/ui";
 ```
 
 A file under `src/` that `index.ts` does not re-export is internal to the
@@ -21,7 +21,7 @@ class scanning with one `@source` entry each.
 ## Rules
 
 - Framework-light: React, `lucide-react`, `clsx`, `tailwind-merge`, the Radix
-  dropdown, and `@mike/client`. Nothing from `frontend/src/app/` or
+  dropdown, and `@northwrit/client`. Nothing from `frontend/src/app/` or
   `word-addin/src/`.
 - Cross-target primitives use the `XxxUI.tsx` convention; `dropdown.tsx` is the
   one exception. See `docs/design-system.md` for tokens, surfaces and the

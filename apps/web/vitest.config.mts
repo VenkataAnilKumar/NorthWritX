@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { availableParallelism, totalmem } from "node:os";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
@@ -19,8 +20,14 @@ const localMaxWorkers = Math.max(
     1,
 );
 
-const resolvePath = (relative: string) =>
-    fileURLToPath(new URL(relative, import.meta.url));
+const resolvePath = (relative: string) => {
+    const local = fileURLToPath(new URL(relative, import.meta.url));
+    // npm workspaces may place common peers at the root even with nested installs.
+    if (relative.startsWith("./node_modules/") && !existsSync(local)) {
+        return fileURLToPath(new URL(relative.replace("./node_modules/", "../../node_modules/"), import.meta.url));
+    }
+    return local;
+};
 
 export default defineConfig({
     plugins: [react()],
@@ -49,11 +56,11 @@ export default defineConfig({
             },
             // The shared packages, by the same names tsconfig.json maps.
             {
-                find: /^@mike\/ui$/,
+                find: /^@northwrit\/ui$/,
                 replacement: resolvePath("../../packages/ui/src/index.ts"),
             },
             {
-                find: /^@mike\/client$/,
+                find: /^@northwrit\/client$/,
                 replacement: resolvePath("../../packages/client/src/index.ts"),
             },
             {

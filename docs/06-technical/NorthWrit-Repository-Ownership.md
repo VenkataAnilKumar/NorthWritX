@@ -43,3 +43,7 @@ Review documentation links and command examples when changing paths. Keep the nu
 ## Layout changes
 
 The expanded layout in ADR 0002 has been implemented locally. `apps/worker/` owns process startup and derives its container from the API artifact; API/domain engineering retains service and queue ownership. The [path map](../07-implementation/NorthWrit-Migration-Paths.json) records supporting-file destinations and upstream mapping. See the [verification record](../07-implementation/NorthWrit-Migration-Verification.md) for passed checks and limits; a source move does not establish runtime scalability or Phase 4 isolation.
+
+## Workspace ownership
+
+[ADR 0003](../decisions/0003-npm-root-workspace.md) consolidates installation metadata at the root. Repository maintenance owns `package.json`, `.npmrc` and the single root lockfile; app owners retain their manifests, scripts and dependency declarations. The API still owns worker domain services. Fixture directories are not npm workspaces. Update shared package consumers, Docker installs, CI caches and scoped audit selection together when changing the dependency graph.

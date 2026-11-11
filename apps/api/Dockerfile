@@ -10,11 +10,14 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends libreoffice util-linux postgresql-client \
   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /repo/apps/api
-COPY apps/api/package*.json ./
+WORKDIR /repo
+COPY package.json package-lock.json .npmrc ./
+COPY --parents apps/api/package.json apps/web/package.json apps/word-addin/package.json apps/desktop/package.json apps/worker/package.json packages/contracts/package.json packages/client/package.json packages/ui/package.json tests/browser/package.json ./
 RUN --mount=type=secret,id=proxy_ca \
     if [ -f /run/secrets/proxy_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca; fi; \
-    npm ci
+    npm ci --workspace apps/api --include-workspace-root=false
+
+WORKDIR /repo/apps/api
 COPY apps/api/ ./
 COPY packages/contracts /repo/packages/contracts
 # The compose db-init step (schema.sql, migrations/, scripts/migrate.sh are

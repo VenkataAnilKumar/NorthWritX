@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { TextButtonUI } from "@mike/ui";
+import { TextButtonUI } from "@northwrit/ui";
 import { DocxEditor } from "@docx-editor.dev/react";
 import type { Editor, ReviewPosition, ReviewRevisionPlacement } from "@docx-editor.dev/core/contracts/editor";
 import { packagedFonts } from "@docx-editor.dev/fonts";

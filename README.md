@@ -15,6 +15,9 @@ NorthWrit is a legal workspace being developed for Canadian law firms. The activ
 The application has moved to the expanded layout. Migration checks and remaining limits are recorded in the [migration verification](docs/07-implementation/NorthWrit-Migration-Verification.md).
 
 ```text
+package.json             Nine private npm workspaces and root commands
+package-lock.json        Shared frozen dependency graph
+.npmrc                   Nested app installs with shared root peers
 apps/
   web/                   Next.js web portal
   api/                   API, domain services, database schema and jobs
@@ -35,7 +38,7 @@ docs/                    Product requirements, decisions and delivery evidence
 
 ## Install and run
 
-Use Node.js 22 or later and npm. Existing package lockfiles remain independent. The root manifest contains command aliases only; there is no new workspace or package manager, and no root dependency installation is required.
+Use Node.js 22 or later and npm (the lockfile was generated with npm 11.9.0). The root manifest defines nine private npm workspaces, with one root `package-lock.json`. See [ADR 0003](docs/decisions/0003-npm-root-workspace.md). Package identities and shared imports use `@northwrit/*`; upstream credits and compatibility-sensitive identifiers retain their provenance.
 
 Run commands from the repository root:
 
@@ -44,7 +47,9 @@ npm run check:repo
 npm run setup
 ```
 
-`setup` runs frozen `npm ci` installs for the API, web and Word packages. For web-only development, use `npm run setup:api` and `npm run setup:web`. Installation does not start infrastructure or services.
+`setup` runs one frozen `npm ci` for all workspaces, including desktop and browser tooling. Targeted installs use `npm run setup:api`, `setup:web`, `setup:word`, `setup:worker`, `setup:desktop` or `setup:e2e`, all from the same root lock. A targeted `npm ci` replaces the installation tree, so install all required workspaces together with `npm ci --workspace apps/api --workspace apps/web`, or use full `setup`. Do not generate child lockfiles. Electron downloads require access to GitHub release assets. Installation does not start infrastructure or services.
+
+When switching an existing checkout from independent installs, delete the generated `apps/web/tsconfig.tsbuildinfo` cache once if TypeScript retains old dependency-resolution errors. Fresh checkouts do not have this cache.
 
 Follow [application local development](docs/engineering/local-development.md) to configure the database, auth, storage, local email and separate signing/encryption secrets. Keep email confirmation enabled. Use synthetic documents and disposable accounts for validation. The [safe testing guide](docs/engineering/safe-local-testing.md) describes these boundaries.
 
@@ -94,7 +99,7 @@ Use real deployment URLs when producing a release. Telemetry configuration and b
 
 Browser and database suites require additional services. Read the [E2E guide](docs/engineering/e2e-ci.md) before `npm run setup:e2e` and `npm run test:e2e`. They are not part of `npm test`. Do not restart the archived standalone cloud baseline test as part of repository organization.
 
-See the [repository verification record](docs/07-implementation/NorthWrit-Repository-Verification.md) for checks performed on this change, inherited warnings and checks not run.
+See the [workspace verification record](docs/07-implementation/NorthWrit-Workspace-Verification.md) for workspace checks and limits; earlier repository and layout records remain historical.
 
 ## Documentation and licensing
 

@@ -14,7 +14,7 @@ import {
   REASONING_LEVEL_LABELS,
   orderedModelGroups,
   GlassCardUI,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import {
   useUserProfile,
   type PreferenceField,
@@ -28,7 +28,7 @@ import {
   canonicalModelId,
   routerSelections,
   type ModelOption,
-} from "@mike/client";
+} from "@northwrit/client";
 import { isModelAvailable } from "@/app/lib/modelAvailability";
 import {
   SettingsDescription,

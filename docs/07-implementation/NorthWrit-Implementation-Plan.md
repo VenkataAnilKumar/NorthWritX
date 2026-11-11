@@ -19,8 +19,9 @@ The active application spans root `apps/` and `packages/`, with [recorded proven
 | 1. Audit Mike OSS | Source-backed capability map and implementation backlog | Pinned source | Complete |
 | 3. Integrate and rebrand | Maintainable NorthWrit application baseline | Phase 1 | Complete |
 | Repository organization | Clear entry points, ownership, documentation and verification commands | Phase 3 | Complete; local verification recorded |
-| Repository structure migration | Separate application surfaces, worker entry point, shared packages and infrastructure | Initial repository organization | Locally validated; see PR #2 for CI/merge outcome |
-| 4. Build the legal workspace | Complete matter-based user journeys | Repository structure migration | Planned |
+| Repository structure migration | Separate application surfaces, worker entry point, shared packages and infrastructure | Initial repository organization | Complete; PR #2 merged with all seven checks passing |
+| Root npm workspace | One frozen install graph and NorthWrit package names | Repository structure migration | Implemented locally; checks and inherited host limits recorded |
+| 4. Build the legal workspace | Complete matter-based user journeys | Root workspace verification | Planned |
 | 5. Add NorthWrit capabilities | Canadian legal workflows and enforceable governance | Phase 4 | Planned |
 | 6. Extend integrations | Governed agents, connectors, plugins, and MCP | Phase 5 | Planned |
 | 7. Validate and release | Evidence-backed pilot release and operating procedures | Phase 6 | Planned |
@@ -29,7 +30,7 @@ Each phase closes with a demonstration, recorded checks, known limitations, and 
 
 ## Repository organization before Phase 4
 
-**Decision:** Keep one repository and migrate to the expanded structure below before Phase 4. The user selected this sequencing on November 11, 2026. The current application remains under `apps/northwrit/` until the migration is implemented and verified. Preserve domain and package boundaries while relocating source; independent worker deployment and further service extraction still require operating evidence. See [ADR 0002](../decisions/0002-expanded-repository-structure.md).
+**Decision:** Keep one repository and migrate to the expanded structure below before Phase 4. The user selected this sequencing on November 11, 2026. The expanded layout is merged in PR #2. Root npm workspace conversion is separately authorized under ADR 0003. Preserve domain and package boundaries while relocating source; independent worker deployment and further service extraction still require operating evidence. See [ADR 0002](../decisions/0002-expanded-repository-structure.md).
 
 This is preparatory work, not a new numbered phase. Phase 2 remains removed from the roadmap. The older [v3 repository blueprint](../06-technical/Northwrit_Repo-Structure.md) is historical context; its proposed services, package managers and platforms are not implementation requirements.
 
@@ -122,7 +123,13 @@ Deliverables: Migrated application/shared/infrastructure paths; dependency and p
 
 ### Growth after migration
 
-The expanded paths are required before Phase 4. Further service extraction, additional repositories, workspace tooling and affected-only CI remain conditional on measured maintenance cost, operating load or ownership needs. Record each decision before implementation. Independent worker scaling requires measured queue/latency targets, bounded concurrency, retries, cancellation, idempotency, recovery and authorization rechecks. Phase 4 remains responsible for completing and verifying firm/matter isolation and the legal workflow; the directory migration must preserve existing access controls.
+The expanded paths are required before Phase 4. Root npm workspace tooling is now approved under ADR 0003. Further service extraction, additional repositories and affected-only CI remain conditional on measured maintenance cost, operating load or ownership needs. Record each decision before implementation. Independent worker scaling requires measured queue/latency targets, bounded concurrency, retries, cancellation, idempotency, recovery and authorization rechecks. Phase 4 remains responsible for completing and verifying firm/matter isolation and the legal workflow; the directory migration must preserve existing access controls.
+
+### Root npm workspace follow-up — before Phase 4
+
+The user requested a root workspace after the directory migration. [ADR 0003](../decisions/0003-npm-root-workspace.md) supersedes the earlier independent-lockfile decision for current installation. Keep nine private workspaces, one root lockfile and the existing package boundaries. Rename active package names and imports to `@northwrit/*`; preserve upstream attribution, database identifiers and compatibility-sensitive settings.
+
+Consolidate overrides and frozen installs; adapt Docker contexts, CI cache keys, shared type/runtime resolution, desktop staging and scoped audit tooling. Verify repository checks, clean installation, affected tests/types/lint, host and container builds. Record results and limitations in the [workspace verification record](NorthWrit-Workspace-Verification.md). This work introduces no Phase 4 features and performs no deployment or publication.
 
 ## Phase 1 — Audit Mike OSS
 

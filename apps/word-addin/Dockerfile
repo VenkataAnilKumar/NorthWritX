@@ -1,19 +1,22 @@
 # syntax=docker/dockerfile:1
-# Build from the repository root: `docker build -f word-addin/Dockerfile .`
+# Build from the repository root: `docker build -f apps/word-addin/Dockerfile .`
 # The add-in bundles the packages it shares with the web app (packages/ui and
 # packages/client, reached through webpack aliases, tsconfig paths, and a
 # Tailwind @source entry), the web app's icons (frontend/public/icons, the
-# @icons alias), and the @mike/contracts declarations. Nothing else outside
+# @icons alias), and the @northwrit/contracts declarations. Nothing else outside
 # word-addin/ is read.
-# .github/workflows/docker-images.yml builds this file in CI so a new outside
+# .github/workflows/container-builds.yml builds this file in CI so a new outside
 # dependency fails the pull request, not the next deploy.
 FROM node:22-slim AS build
 
-WORKDIR /repo/apps/word-addin
-COPY apps/word-addin/package*.json ./
+WORKDIR /repo
+COPY package.json package-lock.json .npmrc ./
+COPY --parents apps/api/package.json apps/web/package.json apps/word-addin/package.json apps/desktop/package.json apps/worker/package.json packages/contracts/package.json packages/client/package.json packages/ui/package.json tests/browser/package.json ./
 RUN --mount=type=secret,id=proxy_ca \
     if [ -f /run/secrets/proxy_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca; fi; \
-    npm ci
+    npm ci --workspace apps/word-addin --include-workspace-root=false
+
+WORKDIR /repo/apps/word-addin
 COPY apps/word-addin/ ./
 COPY apps/web/public/icons /repo/apps/web/public/icons
 COPY packages/contracts /repo/packages/contracts

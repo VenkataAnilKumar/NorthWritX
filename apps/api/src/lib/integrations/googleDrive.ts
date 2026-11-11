@@ -41,7 +41,7 @@ import {
 import type {
     ConnectorApprovalItem,
     NativeConnectorTool,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 import {
     DRIVE_WRITE_TOOLS,
     driveWriteTool,
@@ -481,7 +481,7 @@ async function loadTokenRow(owner: ConnectorOwner, db: Db): Promise<TokenRow | n
     return (data as TokenRow | null) ?? null;
 }
 
-export type GoogleDriveStatus = import("@mike/contracts").GoogleDriveStatus & {
+export type GoogleDriveStatus = import("@northwrit/contracts").GoogleDriveStatus & {
     schemaReady: boolean;
 };
 
@@ -798,7 +798,7 @@ function googleDrivePickerAvailable(row: TokenRow | null): boolean {
 }
 
 export type GoogleDrivePickerSession =
-    import("@mike/contracts").GoogleDrivePickerSession;
+    import("@northwrit/contracts").GoogleDrivePickerSession;
 
 /**
  * Hand the browser what the Google Picker needs. The access token is

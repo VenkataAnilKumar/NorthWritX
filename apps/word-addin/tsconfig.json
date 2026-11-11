@@ -6,33 +6,36 @@
     "moduleResolution": "bundler",
     "types": ["node", "office-js", "office-runtime", "react", "react-dom"],
     "paths": {
-      "@mike/contracts": ["../../packages/contracts/index.d.ts"],
-      // The shared packages have no node_modules of their own; their
-      // dependencies resolve to this application's (see also the webpack
-      // resolve.modules fallback). Keep in step with packages/*/package.json.
+      "@northwrit/contracts": ["../../packages/contracts/index.d.ts"],
+      // Workspace peers resolve at the root; app-specific tools remain nested.
+      // These declaration aliases are for TypeScript only; webpack resolves
+      // runtime exports separately. Keep in step with package peer dependencies.
       "react": [
-        "./node_modules/@types/react/index.d.ts"
+        "./node_modules/@types/react/index.d.ts",
+        "../../node_modules/@types/react/index.d.ts"
       ],
       "react/jsx-runtime": [
-        "./node_modules/@types/react/jsx-runtime.d.ts"
+        "./node_modules/@types/react/jsx-runtime.d.ts",
+        "../../node_modules/@types/react/jsx-runtime.d.ts"
       ],
       "react-dom": [
-        "./node_modules/@types/react-dom/index.d.ts"
+        "./node_modules/@types/react-dom/index.d.ts",
+        "../../node_modules/@types/react-dom/index.d.ts"
       ],
       "lucide-react": [
-        "./node_modules/lucide-react"
+        "../../node_modules/lucide-react"
       ],
       "clsx": [
-        "./node_modules/clsx"
+        "../../node_modules/clsx"
       ],
       "tailwind-merge": [
-        "./node_modules/tailwind-merge"
+        "../../node_modules/tailwind-merge"
       ],
       "@radix-ui/react-dropdown-menu": [
-        "./node_modules/@radix-ui/react-dropdown-menu"
+        "../../node_modules/@radix-ui/react-dropdown-menu"
       ],
-      "@mike/ui": ["../../packages/ui/src/index.ts"],
-      "@mike/client": ["../../packages/client/src/index.ts"]
+      "@northwrit/ui": ["../../packages/ui/src/index.ts"],
+      "@northwrit/client": ["../../packages/client/src/index.ts"]
     },
     "jsx": "react-jsx",
     "strict": true,

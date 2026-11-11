@@ -6,7 +6,7 @@ import {
     lookupUserByEmail,
     type UserLookupResult,
 } from "@/app/lib/mikeApi";
-import { PillButtonUI, LIQUID_GLASS_SUBTLE_CLASS } from "@mike/ui";
+import { PillButtonUI, LIQUID_GLASS_SUBTLE_CLASS } from "@northwrit/ui";
 import { cn } from "@/app/lib/utils";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 

@@ -2,14 +2,14 @@
 
 import { streamChatTurn } from "@/app/lib/mikeApi";
 import { readSseFrames } from "@/app/lib/sse";
-import { isAbortError } from "@mike/client";
+import { isAbortError } from "@northwrit/client";
 import { isPanelDocument } from "@/app/components/shared/types";
 import type { AssistantEvent, Citation } from "@/app/components/shared/types";
 import type { AssistantTurnHandle } from "@/app/lib/assistantTurnTypes";
 import type {
   ConnectorApprovalItem,
   WebSource,
-} from "@mike/contracts";
+} from "@northwrit/contracts";
 
 /**
  * Reading an assistant turn's SSE stream into its turn record.

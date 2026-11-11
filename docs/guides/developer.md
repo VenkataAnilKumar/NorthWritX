@@ -16,7 +16,7 @@ The application spans `apps/` and root `packages/`, with [upstream provenance](.
 
 ## Build and validation
 
-Use Node.js 22 or later. The [root README](../../README.md#install-and-run) documents root npm aliases and package installation. Run `npm run check:repo`, then `npm run setup` from the repository root, or install an individual target with `setup:api`, `setup:web` or `setup:word`. No root dependencies or new workspace are introduced.
+Use Node.js 22 or later. The [root README](../../README.md#install-and-run) documents root npm aliases and package installation. Run `npm run check:repo`, then `npm run setup` from the repository root, or install an individual target with `setup:api`, `setup:web` or `setup:word`. The nine private workspaces share the root lockfile under [ADR 0003](../decisions/0003-npm-root-workspace.md). Use a full `setup` when working across targets; targeted frozen installs replace the current dependency tree. Shared imports use `@northwrit/*`.
 
 Run `npm run dev:api` and `npm run dev:web` in separate terminals after configuring the documented infrastructure. Follow the [application local-development procedure](../../docs/engineering/local-development.md) for auth, storage and local email. Shell commands in the local-development guide start at the repository root unless a step explicitly changes directories.
 
@@ -28,7 +28,7 @@ Run the [Python branding script](../../scripts/rebrand_northwrit.py) with `--che
 
 ## Ownership and Phase 4
 
-Read the [ownership map](../06-technical/NorthWrit-Repository-Ownership.md), [accepted repository decision](../decisions/0001-repository-structure.md) and [Phase 4 extension map](../07-implementation/NorthWrit-Phase-4-Extension-Map.md) before adding new modules. Preserve shared package boundaries and compatibility-sensitive Projects data. The expanded directory migration is now required before Phase 4 under [ADR 0002](../decisions/0002-expanded-repository-structure.md). It remains separate from the completed entry-point work; the new paths and commands are reflected in the root README. See the migration verification record for validation and limits.
+Read the [ownership map](../06-technical/NorthWrit-Repository-Ownership.md), [accepted repository decision](../decisions/0001-repository-structure.md) and [Phase 4 extension map](../07-implementation/NorthWrit-Phase-4-Extension-Map.md) before adding new modules. Preserve shared package boundaries and compatibility-sensitive Projects data. The expanded directory migration is now required before Phase 4 under [ADR 0002](../decisions/0002-expanded-repository-structure.md). It remains separate from the completed entry-point work; the new paths and commands are reflected in the root README. See the migration verification record for layout validation and the [workspace record](../07-implementation/NorthWrit-Workspace-Verification.md) for dependency consolidation.
 
 ## Product requirements
 

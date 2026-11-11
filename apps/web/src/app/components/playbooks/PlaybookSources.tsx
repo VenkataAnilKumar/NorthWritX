@@ -36,7 +36,7 @@ import {
   DropdownTrigger,
   PillButtonUI,
   TextButtonUI,
-} from "@mike/ui";
+} from "@northwrit/ui";
 import { PlaybookPanels } from "./PlaybookPanels";
 import {
   PLAYBOOK_PANE_EMPTY_CLASS,
