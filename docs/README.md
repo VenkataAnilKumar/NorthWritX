@@ -1,78 +1,74 @@
-# Northwrit Product Documentation
+# NorthWrit documentation
 
-The [Open-Source References](03-market/Northwrit_Open-Source-References.md) register records NorthWritOSS as the application foundation and links to its source, workflows, and local setup.
+NorthWrit is a legal AI workspace being developed for Canadian law firms and in-house teams. The application baseline, repository migration and npm workspace are merged. Phase 4 has not started; the planned Canadian research, CiteCheck, Shield and approval workflows remain future delivery work.
 
-The [implementation plan](07-implementation/NorthWrit-Implementation-Plan.md) governs current delivery. Use the [repository ownership map](06-technical/NorthWrit-Repository-Ownership.md) for documentation authority. Product specifications describe target behaviour; document availability and check marks below do not establish that a feature or security guarantee is implemented or validated.
+## Start here
 
-**Northwrit** is a privacy-first legal AI workspace engineered specifically for Canadian law firms (10–300 lawyers, Ontario launch focus) and corporate in-house legal departments. It combines Perplexity-style live, cited Canadian legal research with Harvey-class legal workflows (matters, document review, drafting, playbooks, and agents), while ensuring confidential client data remains governed by strict, enforceable data privacy policies via **Northwrit Shield**.
-
----
-
-## Complete Documentation Index
-
-The index groups product specifications, technical designs, the current original application implementation plan, and operational guides.
-
-| # | Document | What It Answers | Status |
-|---|---|---|---|
-| **01 Brand** | | | |
-| 1 | [Brand Identity](01-brand/Northwrit_Brand-Identity.md) | Origin (*North* + *writ*), taglines, legal voice, Canadian spelling, naming rules, colour tokens | ✅ |
-| **02 Product** | | | |
-| 2 | [Product Overview](02-product/Northwrit_Product-Overview.md) | Executive one-pager, architecture diagram, four core strengths, initial release scope | ✅ |
-| 3 | [Product Definition](02-product/Northwrit_Product-Definition.md) | Vision, problem, personas, principles, capabilities, features by release, KPIs, risks, glossary | ✅ |
-| **03 Market** | | | |
-| 4 | [Competitive Analysis](03-market/Northwrit_Competitive-Analysis.md) | Positioning vs. Harvey AI, Legora, CoCounsel, Clio, Spellbook, Alexi, Perplexity; moats & risks | ✅ |
-| 5 | [Marketing & GTM Strategy](03-market/Northwrit_Marketing-and-GTM-Strategy.md) | Commercialization, pricing tiers, disbursement billing, 4-week pilot, practice-area packs | ✅ |
-| **04 Specifications** | | | |
-| 6 | [Feature Specification](04-specs/Northwrit_Feature-Spec.md) | **105 features** across 12 modules (38 P0, 39 P1, 28 P2), cross-cutting rules, source reconciliation | ✅ |
-| 7 | [User Journeys](04-specs/Northwrit_User-Journeys.md) | End-to-end flows for research lawyers, contract counsel, admins, KM, and legal ops | ✅ |
-| 8 | [User Stories](04-specs/Northwrit_User-Stories.md) | Stories with Given/When/Then acceptance criteria covering all 38 P0 features and key P1 flows | ✅ |
-| **05 Design** | | | |
-| 9 | [Application Design System](../docs/engineering/design-system.md) | Implemented tokens, shared primitives and accessibility conventions | Engineering guide |
-| 10 | [UI Specification](05-design/Northwrit_UI-Spec.md) | Screen-by-screen behaviour: workspace, Bearings modal, Evidence drawer, Folio editor, Control Centre | ✅ |
-| 11 | [Wireframes](05-design/Northwrit_Wireframes.md) | ASCII wireframes for the matter workspace, Bearings prompt, and Shield privacy drawer | ✅ |
-| **06 Technical** | | | |
-| 12 | [System Architecture](06-technical/Northwrit_System-Architecture.md) | Components, Mermaid sequence diagrams (ingestion, CiteCheck, review states, Shield), NFRs | ✅ |
-| 13 | [Hybrid AI Architecture](06-technical/Northwrit_Hybrid-AI-Architecture.md) | Northwrit Shield: policy engine, Model Gateway, router, redaction, outbound boundary, Shield Log | ✅ |
-| 14 | [Architecture Stack](06-technical/Northwrit_Architecture-Stack.md) | v2.0 Polyglot stack (TypeScript + Python `uv` + Rust Tauri), portability criteria, and resolved decisions | ✅ |
-| 15 | [Data Model](06-technical/Northwrit_Data-Model.md) | PostgreSQL & vector schema, Mermaid ER diagram, row-level isolation, and retention rules | ✅ |
-| 16 | [API Design](06-technical/Northwrit_API-Design.md) | REST resources, Model & Tool Gateway contracts, error envelopes (`blocked_by_policy`), MCP | ✅ |
-| 17 | [Security & Compliance](06-technical/Northwrit_Security-Compliance.md) | Threat model (prompt injection, leakage), source rights records, LSO duties, PIPEDA & Law 25 | ✅ |
-| 18 | [Deployment Architecture](06-technical/Northwrit_Deployment-Architecture.md) | Canadian-region cloud tier, Firm Server (Docker Compose), Local Companion, backups & observability | ✅ |
-| 19 | [Repository Ownership](06-technical/NorthWrit-Repository-Ownership.md) | Current layout, dependency boundaries and documentation authority | Accepted structure |
-| 20 | [Source Audit](07-implementation/NorthWrit-Source-Audit.md) | Pinned original application architecture, candidate building blocks and gaps | Static review |
-| 21 | [Platform Layers & Surfaces](06-technical/Northwrit_Platform-Layers-and-Surfaces.md) | Architectural synthesis: Cohere North private agentics × Harvey AI legal intelligence (6 layers, 5 surfaces) | ✅ |
-| **07 Implementation** | | | |
-| 22 | [NorthWrit Implementation Plan](07-implementation/NorthWrit-Implementation-Plan.md) | Current roadmap: audit, rebrand, legal workspace, NorthWrit capabilities, integrations, and release | Planned |
-| 23 | [Feature Disposition](07-implementation/NorthWrit-Feature-Disposition.md) | Reuse, adapt, build and defer decisions for the feature backlog | Planning input |
-| 24 | [CI Inventory](07-implementation/NorthWrit-CI-Inventory.md) | Active repository checks and imported workflow gaps | Engineering inventory |
-| 25 | [Phase 4 Extension Map](07-implementation/NorthWrit-Phase-4-Extension-Map.md) | Existing owners for matters, access, evidence, jobs, reviews and exports | Implementation map |
-| 26 | [Repository Verification](07-implementation/NorthWrit-Repository-Verification.md) | Local root-command, build, type and regression results; warnings and limits | Recorded checks |
-
-The [older v3 repository blueprint](06-technical/Northwrit_Repo-Structure.md) remains historical context. It does not replace the accepted current structure.
-
----
-
-## Operational Guides
-
-| Guide | Audience |
+| Need | Read |
 |---|---|
-| [User Guide](guides/user-guide.md) | Lawyers and legal staff using Northwrit in the pilot |
-| [Security & Privacy Overview](guides/security.md) | A firm's IT, risk, or compliance team evaluating Northwrit |
-| [Developer Guide](guides/developer.md) | Engineers setting up and checking the active NorthWrit application |
+| Install and run | [Root README](../README.md), [developer guide](guides/developer.md), [local development](engineering/local-development.md) |
+| Use current product features | [Product catalogue](02-product/NorthWrit-Product-Catalogue.md), [user guide](guides/user-guide.md), [administrator guide](guides/administrator.md) |
+| Understand what exists today | [Current implementation and stack](06-technical/NorthWrit-Current-Implementation.md), [system flows](06-technical/NorthWrit-System-Flows.md), [engineering index](engineering/README.md) |
+| See phases and next work | [Implementation plan](07-implementation/NorthWrit-Implementation-Plan.md), [Phase 4 extension map](07-implementation/NorthWrit-Phase-4-Extension-Map.md) |
+| Find code/document ownership | [Ownership map](06-technical/NorthWrit-Repository-Ownership.md), [ADRs](#architecture-decisions) |
+| Assess checks and limits | [CI inventory](07-implementation/NorthWrit-CI-Inventory.md), [configuration verification](07-implementation/NorthWrit-Configuration-Verification.md) |
+| Compare existing capabilities with requirements | [105-feature capability matrix](04-specs/NorthWrit-Capability-Matrix.md), [documentation coverage](07-implementation/NorthWrit-Documentation-Coverage.md) |
+| Review intended legal workflows | [Product overview](02-product/Northwrit_Product-Overview.md), [workflow contracts](04-specs/Northwrit_Workflow-Contracts.md) |
 
----
+## How to read these documents
 
-## Key Operating Rules
+The implementation plan governs delivery order. Current source, tests and engineering guides describe the implemented baseline. Product specifications describe requirements; design approval and a document's presence do not establish implementation or legal/security guarantees. P0/P1/P2 are product priorities, separate from implementation phases 1, 3, 4, 5, 6 and 7; Phase 2 was removed.
 
-1. **The Matter is the Boundary:** All documents, citations, chat contexts, and agent runs are strictly scoped to a matter.
-2. **CiteCheck Discipline:** Resolving a link to CanLII or a statute is not proof of authority validity. Cites are marked *Verified*, *Unverified*, *Contradicted*, or *Unavailable*.
-3. **No Silent Changes:** If a privacy route or legal source is unavailable, the system flags the gap or stops execution. It never silently escalates data to the cloud.
-4. **Canadian-First Jurisprudence:** Grounded in Canadian citation formats (McGill Guide), provincial court hierarchies, and domestic privacy frameworks.
+Historical audits, migration evidence and upstream files retain their original observations and attribution. The earlier polyglot stack and v3 layout proposals do not override the accepted npm workspace or working stack. The [ownership map](06-technical/NorthWrit-Repository-Ownership.md#which-documentation-governs-a-change) defines documentation authority.
 
-## Expanded repository migration
+## Product, requirements and design
 
-- [Migration verification](07-implementation/NorthWrit-Migration-Verification.md): local check results, inherited failures and release limits.
-- [Path and provenance map](07-implementation/NorthWrit-Migration-Paths.json): old-to-new locations for imported source and supporting files.
-- [ADR 0002](decisions/0002-expanded-repository-structure.md): accepted expanded layout before Phase 4.
-- [ADR 0003](decisions/0003-npm-root-workspace.md): root npm workspace and NorthWrit package identities.
-- [Workspace verification](07-implementation/NorthWrit-Workspace-Verification.md): consolidated installs, checks and known limits.
+The product catalogue describes existing capabilities. The specifications, designs and market documents describe target scope or research inputs, not shipped feature checklists.
+
+| Area | Documents |
+|---|---|
+| Brand | [Identity and naming](01-brand/Northwrit_Brand-Identity.md) |
+| Current product | [Capability catalogue](02-product/NorthWrit-Product-Catalogue.md), [105-feature coverage matrix](04-specs/NorthWrit-Capability-Matrix.md) |
+| Product targets | [Overview](02-product/Northwrit_Product-Overview.md), [definition](02-product/Northwrit_Product-Definition.md) |
+| Market research | [Competitive analysis](03-market/Northwrit_Competitive-Analysis.md), [Harvey inventory](03-market/Harvey_Product-Feature-Inventory.md), [feature comparison](03-market/Northwrit_vs_Harvey_Feature-Comparison.md), [source references](03-market/Northwrit_Open-Source-References.md) |
+| Requirements | [105-feature specification](04-specs/Northwrit_Feature-Spec.md), [user journeys](04-specs/Northwrit_User-Journeys.md), [user stories](04-specs/Northwrit_User-Stories.md), [workflow contracts](04-specs/Northwrit_Workflow-Contracts.md) |
+| Product design | [UI specification](05-design/Northwrit_UI-Spec.md), [wireframes](05-design/Northwrit_Wireframes.md); use the [engineering design system](engineering/design-system.md) for existing UI primitives |
+| Pilot and commercial proposals | [GTM strategy](03-market/Northwrit_Marketing-and-GTM-Strategy.md), [pilot charter](08-gtm/Northwrit_Pilot-Charter.md), [CPD/MSP proposal](08-gtm/Northwrit_LSO-CPD-Accreditation.md) |
+
+## Technical references
+
+| Authority | Documents |
+|---|---|
+| Current implementation | [Working stack and surfaces](06-technical/NorthWrit-Current-Implementation.md), [repository ownership](06-technical/NorthWrit-Repository-Ownership.md), [backend architecture](engineering/backend-architecture.md) |
+| Target product architecture | [System architecture](06-technical/Northwrit_System-Architecture.md), [hybrid AI and Shield](06-technical/Northwrit_Hybrid-AI-Architecture.md), [data model](06-technical/Northwrit_Data-Model.md), [API design](06-technical/Northwrit_API-Design.md) |
+| Target security and deployment | [Security requirements](06-technical/Northwrit_Security-Compliance.md), [deployment architecture](06-technical/Northwrit_Deployment-Architecture.md) |
+| Target platform designs | [Layers and surfaces](06-technical/Northwrit_Platform-Layers-and-Surfaces.md), [agent platform](06-technical/Northwrit_Agent-Builder-Platform-Architecture.md), [multi-surface design](06-technical/Northwrit_Glassy-Multi-Surface-Platform-Architecture.md) |
+| Earlier proposals | [Polyglot stack proposal](06-technical/Northwrit_Architecture-Stack.md), [superseded v3 repository blueprint](06-technical/Northwrit_Repo-Structure.md) |
+
+## Delivery and verification
+
+- [Implementation plan](07-implementation/NorthWrit-Implementation-Plan.md): current phase status and acceptance gates.
+- [Source audit](07-implementation/NorthWrit-Source-Audit.md) and [feature disposition](07-implementation/NorthWrit-Feature-Disposition.md): pinned-source findings and reuse/adapt/build/defer decisions.
+- [Phase 4 extension map](07-implementation/NorthWrit-Phase-4-Extension-Map.md): existing owners and verification needed for the next phase.
+- [CI inventory](07-implementation/NorthWrit-CI-Inventory.md): seven active checks and integration/release gaps.
+- [Documentation coverage](07-implementation/NorthWrit-Documentation-Coverage.md): application/test references and all 41 engineering documents.
+- [Repository](07-implementation/NorthWrit-Repository-Verification.md), [migration](07-implementation/NorthWrit-Migration-Verification.md), [workspace](07-implementation/NorthWrit-Workspace-Verification.md) and [configuration](07-implementation/NorthWrit-Configuration-Verification.md) verification: evidence at each milestone.
+- [Migration path map](07-implementation/NorthWrit-Migration-Paths.json): old-to-new source and supporting-file destinations.
+- [Cloud runbook](07-implementation/NorthWrit-Cloud-Runbook.md): earlier cloud startup investigation; use current setup guides for today's paths and commands.
+
+## Guides
+
+- [Developer guide](guides/developer.md): current setup and verification entry point.
+- [Engineering and operations](engineering/README.md): local infrastructure, integrations, testing and operating procedures.
+- [User guide](guides/user-guide.md): current tasks, workspace choices, model/tool setup and client limitations.
+- [Administrator guide](guides/administrator.md): configuration, roles, connections, operations and offboarding.
+- [Security and privacy overview](guides/security.md): current controls, target requirements and evidence still needed.
+
+## Architecture decisions
+
+- [ADR 0001](decisions/0001-repository-structure.md): initial organization, retained as decision history.
+- [ADR 0002](decisions/0002-expanded-repository-structure.md): accepted expanded layout.
+- [ADR 0004](decisions/0004-retire-source-reference-archive.md): retired reference archive, current provenance and root policies.
+- [ADR 0003](decisions/0003-npm-root-workspace.md): nine private npm workspaces and the authoritative root lockfile.
+
+Preserve the [license](../LICENSE), [notice](../NOTICE.md), [credits](../Credit.md) and [source provenance](06-technical/NorthWrit-Source-Provenance.md). Historical and compatibility identifiers are explained in the configuration record.

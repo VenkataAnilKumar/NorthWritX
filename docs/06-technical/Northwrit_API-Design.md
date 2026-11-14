@@ -1,9 +1,11 @@
 # API Design
 
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
+
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 ## REST resources, gateway interface, agent tools and integrations
 
-**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed (nothing is built yet)
+**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed requirements; delivery tracked in the implementation plan
 
 ---
 
@@ -200,12 +202,12 @@ Tool manifest {
 
 ## 7. MCP and enterprise APIs (P2, CN05)
 
-- **Northwrit as MCP client:** MCP servers are registered as tools through the Tool Gateway with a manifest, so they inherit approval, outbound-boundary and audit rules. MCP tool output is untrusted.
-- **Northwrit as MCP server (optional):** exposes permission-scoped read tools (search, fetch passage, list matters) to approved clients, using the user's identity, never a broader service identity.
+- **NorthWrit as MCP client:** MCP servers are registered as tools through the Tool Gateway with a manifest, so they inherit approval, outbound-boundary and audit rules. MCP tool output is untrusted.
+- **NorthWrit as MCP server (optional):** exposes permission-scoped read tools (search, fetch passage, list matters) to approved clients, using the user's identity, never a broader service identity.
 - **Enterprise API:** the REST resources above, with OAuth client credentials limited to named matters and scopes. Pack tools follow CN03 and CN06: never more access than the running user.
 - No MCP or API client can bypass Shield. A call that would break policy returns `blocked_by_policy`.
 - Details of the protocol version and authorisation flow to be confirmed at implementation time.
 
 ## 8. Versioning and change
 
-Breaking changes go in a new path version. Deprecations are announced with a stated period. The OpenAPI document is part of the release gate alongside Northwrit Bench (QA01).
+Breaking changes go in a new path version. Deprecations are announced with a stated period. The OpenAPI document is part of the release gate alongside NorthWrit Bench (QA01).

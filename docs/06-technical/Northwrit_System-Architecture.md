@@ -1,15 +1,17 @@
 # System Architecture
 
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
+
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 ## Components, flows and non-functional requirements
 
-**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed (nothing is built yet)
+**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed requirements; delivery tracked in the implementation plan
 
 ---
 
 ## 1. Purpose and scope
 
-This document describes the proposed architecture of Northwrit, a privacy-first legal AI workspace for Canadian law firms and in-house teams. It implements the [Feature Specification](../04-specs/Northwrit_Feature-Spec.md); feature IDs (for example RS05, SH02) refer to that document. Related documents:
+This document describes the proposed architecture of NorthWrit, a privacy-first legal AI workspace for Canadian law firms and in-house teams. It implements the [Feature Specification](../04-specs/Northwrit_Feature-Spec.md); feature IDs (for example RS05, SH02) refer to that document. Related documents:
 
 - [Hybrid AI Architecture](Northwrit_Hybrid-AI-Architecture.md): Shield, routing, outbound boundary
 - [Data Model](Northwrit_Data-Model.md)
@@ -110,7 +112,7 @@ flowchart TB
 | **Artifact service** | Folios, versions, comparisons, review states, DOCX export (PDF and Excel at P1). | SO02 to SO06, RS06 |
 | **Audit service** | Append-only audit events, exportable (export at P1). | SA09 |
 | **Admin and policy service** | Model Policy, retention, budgets, roles, feature toggles. | SA05, SA08, SA13 |
-| **Evaluation harness (internal)** | Northwrit Bench runs on every change to models, retrieval, prompts, tools or policy. Release gate. | QA01 |
+| **Evaluation harness (internal)** | NorthWrit Bench runs on every change to models, retrieval, prompts, tools or policy. Release gate. | QA01 |
 | **Local companion (P1)** | Local parsing, indexing, encrypted storage, optional local inference. See Deployment. | SH05 |
 
 ## 5. Key flows
@@ -320,7 +322,7 @@ These are engineering targets to calibrate in the pilot; they are not observed r
 | **Accessibility** | WCAG 2.1 AA for core screens. | Cross-cutting |
 | **Language** | Canadian spelling; English at P0; French is an open decision. | CU01 |
 | **Portability** | Matter export as JSON plus original files. | Cross-cutting |
-| **Maintainability** | Every change to models, retrieval, prompts, tools or policy reruns Northwrit Bench. | QA01 |
+| **Maintainability** | Every change to models, retrieval, prompts, tools or policy reruns NorthWrit Bench. | QA01 |
 
 ## 8. Phasing
 

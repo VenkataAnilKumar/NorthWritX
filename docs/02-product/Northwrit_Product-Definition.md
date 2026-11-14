@@ -1,4 +1,8 @@
-# Northwrit Product Definition Document
+# NorthWrit Product Definition Document
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
+
+For existing product capabilities, use the [NorthWrit product catalogue](NorthWrit-Product-Catalogue.md). The [capability matrix](../04-specs/NorthWrit-Capability-Matrix.md) maps these target requirements to current building blocks and remaining work.
 
 **Version:** 2.0 | **Date:** November 3, 2026 | **Status:** Proposed Baseline
 
@@ -24,12 +28,12 @@
 
 ## 1. Executive Summary
 
-Northwrit is an AI-powered legal intelligence workspace engineered for Canadian law firms (10–300 lawyers, Ontario launch focus) and corporate legal teams. It resolves the three fundamental barriers impeding legal AI adoption:
+NorthWrit is an AI-powered legal intelligence workspace engineered for Canadian law firms (10–300 lawyers, Ontario launch focus) and corporate legal teams. It resolves the three fundamental barriers impeding legal AI adoption:
 1. **Privilege & Confidentiality:** Client files cannot be exposed to foreign cloud models or public training sets.
 2. **Hallucination & Legal Accuracy:** General LLMs invent case citations and distort statutory tests.
 3. **Enterprise Economics:** US enterprise platforms (Harvey, Legora) require six-figure minimum commitments built around US federal practice.
 
-Northwrit solves this by pairing cited legal retrieval with **Northwrit Shield**—a hybrid privacy engine enforcing matter-level routing, on-premises/local model options, and an auditable outbound data boundary.
+NorthWrit solves this by pairing cited legal retrieval with **NorthWrit Shield**—a hybrid privacy engine enforcing matter-level routing, on-premises/local model options, and an auditable outbound data boundary.
 
 ---
 
@@ -79,11 +83,11 @@ Northwrit solves this by pairing cited legal retrieval with **Northwrit Shield**
 
 | Capability | What It Does | Value Proposition |
 |---|---|---|
-| **Northwrit Assist** | Conversational Q&A grounded exclusively in matter records with pinpoint citations. | Rapid, accurate understanding of large complex record disclosures. |
-| **Northwrit Research & CiteCheck** | Live synthesis of Canadian law; verifies every assertion against underlying paragraph text. | Eliminates fabricated case citations; automates memo drafting. |
-| **Northwrit Review (P1)** | Tabular multi-document extraction grid with cited cell values. | Accelerates due diligence, lease analysis, and disclosure audits. |
-| **Northwrit Draft & Playbooks (P1)** | Precedent-driven contract drafting, clause checking, and redlining. | Enforces firm negotiation positions and risk standards. |
-| **Northwrit Shield** | Gateway enforcing Local Only, Hybrid, or Cloud privacy policies per matter. | Preserves solicitor-client privilege and satisfies Canadian privacy laws. |
+| **NorthWrit Assist** | Conversational Q&A grounded exclusively in matter records with pinpoint citations. | Rapid, accurate understanding of large complex record disclosures. |
+| **NorthWrit Research & CiteCheck** | Live synthesis of Canadian law; verifies every assertion against underlying paragraph text. | Eliminates fabricated case citations; automates memo drafting. |
+| **NorthWrit Review (P1)** | Tabular multi-document extraction grid with cited cell values. | Accelerates due diligence, lease analysis, and disclosure audits. |
+| **NorthWrit Draft & Playbooks (P1)** | Precedent-driven contract drafting, clause checking, and redlining. | Enforces firm negotiation positions and risk standards. |
+| **NorthWrit Shield** | Gateway enforcing Local Only, Hybrid, or Cloud privacy policies per matter. | Preserves solicitor-client privilege and satisfies Canadian privacy laws. |
 
 ---
 
@@ -136,7 +140,7 @@ Feature IDs are defined in [Northwrit_Feature-Spec.md](../04-specs/Northwrit_Fea
 | **Model Gateway** | Single internal interface (SH02) over cloud providers (Anthropic, OpenAI, Google) and local runtimes (vLLM, Ollama, llama.cpp). |
 | **Security & Auth** | TLS in transit, AES-256 at rest (SA02), mandatory MFA (SA03), SSO/SCIM at P1 (SA10). |
 | **Accessibility** | WCAG 2.1 AA across all core workspace screens. |
-| **Evaluation** | Northwrit Bench (50–100 lawyer-reviewed tasks plus held-out set) running in CI on every prompt, retrieval, model, or policy change (QA01). |
+| **Evaluation** | NorthWrit Bench (50–100 lawyer-reviewed tasks plus held-out set) running in CI on every prompt, retrieval, model, or policy change (QA01). |
 
 ---
 
@@ -150,7 +154,7 @@ Proposed engineering targets from the Legal SI specification (to calibrate with 
 | **Citation Resolution** | 100% of exported citations resolve or are marked unavailable | G4 |
 | **Citation Validity** | ≥99% of citations labelled *Verified* confirmed by lawyer sampling | G4 |
 | **Claim Support Rate** | ≥95% of sampled material claims supported by cited passage; 0 fabricated authorities | G1 |
-| **Unsupported Claim Rate** | ≤2% of claims with no supporting source on Northwrit Bench | G1 |
+| **Unsupported Claim Rate** | ≤2% of claims with no supporting source on NorthWrit Bench | G1 |
 | **Issue Coverage** | ≥90% recall of reviewer-labelled material issues | G1 |
 | **Operational Completion** | ≥95% completion on supported tasks; no silent partial successes | G6 |
 | **Time Saved** | ≥30% lower median time to an accepted memo vs. baseline | G10 |
@@ -162,7 +166,7 @@ Proposed engineering targets from the Legal SI specification (to calibrate with 
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| **Invented or unsupported citations** | Reliance on bad law; reputational damage | CiteCheck on every answer (RS05); Northwrit Bench gates every release (QA01); explicit four-state labels. |
+| **Invented or unsupported citations** | Reliance on bad law; reputational damage | CiteCheck on every answer (RS05); NorthWrit Bench gates every release (QA01); explicit four-state labels. |
 | **Content terms of use (CanLII)** | Restrictions on automated scraping or full-text storage | Maintain a `source_rights` record per source (D.2); use API metadata as permitted; seek written agreements. |
 | **Redaction misses identifying context** | Confidential facts inferable from context reach cloud | State clearly that redaction does not guarantee anonymity (SH07); require Local Only for highest-risk matters. |
 | **Local models weaker than cloud** | Lower analytical quality in Local Only mode | Display model identity on every answer (AS02); certify a specific task subset and hardware profile (SH05). |
@@ -184,8 +188,8 @@ Synthesizes product benchmarks across Harvey AI (Vault, Workflows, Word Add-in),
 | **Folio** | An editable, versioned work product (memo, review table, draft) opened beside the chat (SO02). |
 | **Bearings** | Pre-search clarification prompt for missing jurisdiction, date, side, and material facts (RS02). |
 | **CiteCheck** | Citation resolution and passage-support verification assigning *Verified*, *Unverified*, *Contradicted*, or *Unavailable* (RS05). |
-| **Northwrit Shield** | The privacy policy engine, Model Gateway, redaction pipeline, and outbound boundary logger (SH01–SH07). |
+| **NorthWrit Shield** | The privacy policy engine, Model Gateway, redaction pipeline, and outbound boundary logger (SH01–SH07). |
 | **Shield Log** | Append-only record of every outbound cloud transmission recording categories and rules without duplicating sensitive payloads (SH03). |
 | **Run Trail** | Step-by-step audit record of an agent or workflow execution (AG02). |
-| **Northwrit Pack** | Installable bundle of practice-area agents, prompts, templates, and playbooks governed by least privilege (CN03). |
-| **Northwrit Bench** | Internal evaluation suite of 50–100 lawyer-reviewed legal tasks run in CI (QA01). |
+| **NorthWrit Pack** | Installable bundle of practice-area agents, prompts, templates, and playbooks governed by least privilege (CN03). |
+| **NorthWrit Bench** | Internal evaluation suite of 50–100 lawyer-reviewed legal tasks run in CI (QA01). |

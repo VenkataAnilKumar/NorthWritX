@@ -1,52 +1,79 @@
-# Northwrit User Guide (Target P0 Pilot)
+# NorthWrit user guide
 
-> Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
+Reviewed November 14, 2026 against baseline `7c08dba`. This guide describes existing application surfaces. Available models, tools and content depend on your account, workspace and instance configuration. The [product catalogue](../02-product/NorthWrit-Product-Catalogue.md) explains capabilities and limitations; the [proposed journeys](../04-specs/Northwrit_User-Journeys.md) describe future legal workflows.
 
-**Status:** Proposed Pilot Guide | **Date:** November 3, 2026
+## Sign in and select a workspace
 
-Northwrit helps you move from a legal question and supporting client documents to a verified, reviewable research memo—while keeping your matter data governed by your firm's privacy policy.
+Open your instance's application URL and sign in. If registering by email, confirm the address before signing in. In the local development stack, confirmation messages appear in Mailpit. An administrator can provide the instance-specific setup and recovery instructions.
 
----
+Select Personal or the relevant organization in the workspace switcher before choosing content, models or connectors. The selected workspace matters: a connection configured in Personal is not automatically available in an organization. Organization membership also does not grant access to every private project or item.
 
-## 1. Create a Matter & Set Privacy Policy
+## Connect an available model
 
-1. Click **New Matter** in the left navigation bar.
-2. Enter the **Matter Name**, **Client/Matter Number**, **Jurisdiction** (e.g., Ontario), and **Standing Instructions** (e.g., *"We act for the respondent; use McGill Guide citations"*).
-3. Choose the **Privacy Mode** (visible at all times in the top bar):
-   - **Hybrid (Canadian Cloud):** Private documents stay in your tenant store; permitted cloud models in Canadian regions may be used under policy, and every outbound call is logged in the **Shield Log**.
-   - **Cloud:** Uses firm-approved cloud models within configured residency and budget limits.
-   - **Local Only (requires P1 Local Companion):** Blocks all external network calls.
+Use the onboarding model step or Settings → Bring Your Own Keys for a personal provider connection. Organization providers are managed through organization settings by authorized administrators. Choose a model offered for the workspace and task; use [provider guidance](../engineering/direct-provider-models.md) if a provider or saved selection is unavailable.
 
----
+A local Ollama or OpenAI-compatible model requires instance configuration and a reachable endpoint. Selecting it does not disable every external connector or web request. Ask the administrator about actual data-handling requirements before using confidential documents.
 
-## 2. Upload Evidence
+## Organize work in Projects
 
-1. Open the **Documents** tab in your matter and upload PDF or Word (`.docx`) files.
-2. Check the ingestion status next to each file:
-   - **Indexed:** Ready for search and pinpoint citation.
-   - **Failed:** Shows the exact reason (for example, a scanned PDF without a text layer prior to OCR enablement). Northwrit never pretends a failed file was read.
+Open Projects to create or select a project, organize files/folders and use project conversations or reviews. Check the project access/sharing settings for the intended collaborators. A project can provide context for a conversation, but the complete proposed Matter workspace and its legal metadata are future work.
 
----
+Keep separate evaluation projects for separate synthetic matters. If a project or file is unavailable, ask an authorized owner to check sharing rather than copying the material into a broader workspace.
 
-## 3. Ask & Research with Bearings
+## Add and inspect documents
 
-1. Type your legal question in the workspace chat and choose your source scope (*Matter Documents*, *Public Legal Sources*, or *Both*).
-2. **Confirm Bearings:** If your question omits the jurisdiction, relevant date, represented side, or key facts, Northwrit prompts you to confirm them before searching.
-3. **Inspect Citations & CiteCheck:**
-   - Every material claim links to a source passage. Click any citation chip to open the **Evidence Viewer** at the exact paragraph.
-   - Check the CiteCheck badge on each citation:
-     - **Verified:** The source was resolved and the passage supports the claim.
-     - **Unverified:** The source resolved, but the passage does not firmly establish the claim.
-     - **Contradicted:** The source passage contradicts the claim.
-     - **Unavailable:** The source text could not be fetched under current source rights.
-   - *Important:* CiteCheck verifies passage support; it is not a citator (good-law) check unless licensed authority-treatment data is enabled.
+Use Library for files/templates or the relevant project/workflow destination for its assets. Upload a supported file and watch its transfer and processing outcome. Successful transfer alone does not mean extraction is complete. Open the processed document to check the expected content before relying on answers about it.
 
----
+If processing fails, keep the named error and document context for support. A scanned document may have incomplete text coverage; do not assume that every page was read. Templates and preset documents can have publisher-specific license terms. See [document text](../engineering/document-text-search.md) and [preset templates](../engineering/preset-templates.md).
 
-## 4. Draft, Review & Export a Memo Folio
+## Ask Assistant and inspect sources
 
-1. Click **Generate Research Memo** (or run the Research-to-Memo workflow) to open an editable **Folio** beside the chat.
-2. Edit the memo directly or ask Northwrit to revise specific sections. Uncited statements are visibly flagged.
-3. **Submit for Review:** Change the Folio state from `Draft` to `In review` and assign a reviewer.
-4. **Approve:** The reviewer inspects the evidence links and marks the version `Approved`. Note that a substantive edit creates a new draft version. A change to cited evidence preserves the content version, records approval invalidation, and returns it to In review. Unrelated uploads do not invalidate approval.
-5. **Export:** Click **Export DOCX** to download the memo with citations, scope assumptions, and version metadata.
+Open Assistant or a project's conversation, select an available model and attach/select authorized context. Ask a focused question and inspect linked source material in the response. Model output needs review even when it includes a citation.
+
+Supported streams can reconnect while their server-owned run exists. Use the explicit Stop control when you intend to cancel; closing a tab or losing the connection does not necessarily stop generation. History provides saved conversations; it is not the Word conversation list.
+
+Optional web search is controlled under Settings → Features and applies to Assistant/project chats. CourtListener can be connected for US case law. These tools do not establish Canadian legal coverage or the planned Verified/Unverified/Contradicted/Unavailable CiteCheck workflow. See [web search](../engineering/web-search.md) and [CourtListener](../engineering/courtlistener.md).
+
+## Review documents in a table
+
+Open Tabular Reviews or a project's review area, select authorized documents and configure the extraction questions. Inspect generated cells and their cited evidence. Missing/failed extraction must not be interpreted as a negative legal finding.
+
+Review chat and generation have different permissions and execution paths. The selected instance may use queued extraction. Do not assume that closing the page cancels the job or that every asynchronous job supports the same Stop behaviour. See [generation contracts](../engineering/backend-architecture.md#tabular-review-generation).
+
+## Draft and use playbooks
+
+Open Playbooks to author rules or import a supported negotiation guide. Inspect compiled rules, preferred/fallback positions and source references before running a contract review. Manually authored rules do not have imported source references. Reviews retain saved-rule snapshots, so editing a playbook is distinct from rerunning a review.
+
+Inspect proposed document edits and accept/reject them deliberately in the applicable editor/client. Existing drafting tools do not establish the proposed Folio reviewer-approval workflow. See [playbooks](../engineering/playbooks.md).
+
+## Reuse workflows and control memory
+
+Use Workflows for reusable Assistant or tabular instructions/assets permitted in your workspace. Check the intended inputs, model and tool requirements before running one. Pack/catalogue availability does not establish a general marketplace or sandboxed plugin platform.
+
+Settings → Memory controls optional user/workspace memory; projects can have shared memory. Inspect or edit it when needed. Memory is reference context, not legal evidence or a permission override. Updates can occur after a conversation becomes quiet rather than during the live answer. See [memory controls](../engineering/memory.md).
+
+## Connect external services and approve actions
+
+In Settings → Connectors, select the correct workspace, browse Discover or add an authorized custom server. Complete the service's consent flow and inspect its enabled tools. Google sign-in is separate from connecting Drive, Gmail or Calendar.
+
+Check read-only and approval settings before allowing writes. When a proposal requires approval, inspect the exact recipient, content or other action details and approve or reject it explicitly. Changing/deleting a connection may invalidate pending actions. MCP, Google Drive, Gmail and Calendar settings can allow writes without approval; do not assume that every external write will present a confirmation.
+
+Word and Tabular Reviews cannot show the required MCP write approval interface and refuse those actions. See [connector controls](../engineering/connectors.md#write-actions-and-approvals) and [Google Workspace](../engineering/google-workspace.md).
+
+## Download and export
+
+Use the relevant document/project export controls for content you are authorized to access. Project manifests can record document-version hashes and accept/reject history. Hashes or optional signatures prove specific integrity properties; they do not certify the document's legal accuracy or approval status. Some older versions have no recorded hash and remain unverifiable. See [export verification](../engineering/tamper-evident-exports.md).
+
+## Use Word or desktop
+
+The [Word task pane](../../apps/word-addin/README.md) supports document-aware chat, workflows, quick actions and tracked edits. It currently uses the Personal workspace; organization documents and workflow assets cannot be attached. Word chat history is separate from web Assistant history. Follow the client guide for HTTPS and sideloading.
+
+The [desktop client](../../apps/desktop/README.md) provides native window/connection behaviour and a macOS local-mode configuration. Installed package capabilities, model setup, native conversion dependencies and signing vary. Ask the administrator which client and release have been accepted for your use.
+
+## When something fails
+
+Check the workspace, item access, provider availability and document processing state first. Keep the safe error message and request identifier for support. Do not include API keys, auth cookies or client document contents in a screenshot/log attachment. The [administrator guide](administrator.md) and [troubleshooting guide](../engineering/troubleshooting.md) cover operational investigation.
+
+## Planned legal workflow
+
+The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) schedules the coherent Matter workspace, Canadian research, Bearings, four-state CiteCheck, Shield and version-bound Folio approvals. Those requirements are described in [workflow contracts](../04-specs/Northwrit_Workflow-Contracts.md) and are not instructions for current controls. See the [capability matrix](../04-specs/NorthWrit-Capability-Matrix.md) for the distinction between existing building blocks and remaining acceptance work.

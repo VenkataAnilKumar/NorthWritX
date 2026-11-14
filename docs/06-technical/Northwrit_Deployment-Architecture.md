@@ -1,18 +1,20 @@
 # Deployment Architecture
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 ## Canadian-region cloud, firm server and local companion
 
-**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed (nothing is built yet)
+**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed requirements; delivery tracked in the implementation plan
 
 ---
 
 ## 1. Deployment tiers
 
-Northwrit is a cloud web application with two optional tiers for firms that need more control. Feature IDs refer to the [Feature Specification](../04-specs/Northwrit_Feature-Spec.md). Related: [System Architecture](Northwrit_System-Architecture.md), [Hybrid AI Architecture](Northwrit_Hybrid-AI-Architecture.md), [Security and Compliance](Northwrit_Security-Compliance.md).
+NorthWrit is a cloud web application with two optional tiers for firms that need more control. Feature IDs refer to the [Feature Specification](../04-specs/Northwrit_Feature-Spec.md). Related: [System Architecture](Northwrit_System-Architecture.md), [Hybrid AI Architecture](Northwrit_Hybrid-AI-Architecture.md), [Security and Compliance](Northwrit_Security-Compliance.md).
 
 | Tier | Where it runs | Who operates it | Phase | Notes |
 |---|---|---|---|---|
-| **1. Canadian-region cloud** | Northwrit control and data planes in a Canadian cloud region | Northwrit | P0 | Default. Shared infrastructure with logical tenant isolation. |
-| **2. Firm server** | Docker Compose on a server the firm controls (on premises or the firm's own Canadian cloud account) | Firm IT, with Northwrit support | Proposed P1 (to be confirmed with design partners) | Data and processing stay inside the firm's environment. |
+| **1. Canadian-region cloud** | NorthWrit control and data planes in a Canadian cloud region | NorthWrit | P0 | Default. Shared infrastructure with logical tenant isolation. |
+| **2. Firm server** | Docker Compose on a server the firm controls (on premises or the firm's own Canadian cloud account) | Firm IT, with NorthWrit support | Proposed P1 (to be confirmed with design partners) | Data and processing stay inside the firm's environment. |
 | **3. Local companion** | A desktop service on a lawyer's computer, paired with tier 1 or 2 | User, managed by the firm | P1 (SH05) | Local parsing, indexing, storage, optional inference. Not a standalone product. |
 
 Full desktop and offline mode is a separate P2 capability (SH08).
@@ -104,11 +106,11 @@ For firms that want data and processing inside their own environment.
 | **Network** | Internal Docker network for services; only `proxy` published. `worker` and `llm-local` have no external route. |
 | **Local Only matters** | `shield-egress` denies all external destinations for these matters; egress tests run in the installer's self-check. |
 | **Updates** | Signed release bundles delivered by the firm's chosen channel; version pinning; migration scripts with a dry-run; rollback to the previous bundle plus database backup. |
-| **Licensing and control plane** | A firm-server deployment must run without sending protected content or operational metadata to Northwrit's cloud. Any optional licence check or update notification carries no matter data and can be disabled for air-gapped installs. |
-| **Backups** | A documented script for database dump and object store copy; encryption; restore drill; firm responsibility, Northwrit guidance. |
+| **Licensing and control plane** | A firm-server deployment must run without sending protected content or operational metadata to NorthWrit's cloud. Any optional licence check or update notification carries no matter data and can be disabled for air-gapped installs. |
+| **Backups** | A documented script for database dump and object store copy; encryption; restore drill; firm responsibility, NorthWrit guidance. |
 | **Sizing** | Reference sizing table per number of users and document volume, produced from pilot measurements. Not yet measured. |
 | **Support** | Diagnostic bundle that excludes content; reviewed by the firm before sharing. |
-| **Limits** | Some features that depend on Northwrit-operated services (for example managed legal-source access, shared Pack directory) may be unavailable or need firm-supplied credentials; the feature matrix per tier is to be documented. |
+| **Limits** | Some features that depend on NorthWrit-operated services (for example managed legal-source access, shared Pack directory) may be unavailable or need firm-supplied credentials; the feature matrix per tier is to be documented. |
 
 A Compose deployment is suited to single-node pilots and small firms. High availability and Kubernetes packaging are not proposed for the first release.
 
@@ -131,7 +133,7 @@ A Compose deployment is suited to single-node pilots and small firms. High avail
 |---|---|---|---|
 | **Local development** | Developer machines using Compose | Synthetic only | Same images as production |
 | **CI** | Build, test, scan | Synthetic | Isolation and egress tests run here |
-| **Evaluation** | Northwrit Bench | Lawyer-reviewed synthetic and consented sets; held-out set kept separate | Reruns after model, retrieval, prompt, tool or policy changes (QA01) |
+| **Evaluation** | NorthWrit Bench | Lawyer-reviewed synthetic and consented sets; held-out set kept separate | Reruns after model, retrieval, prompt, tool or policy changes (QA01) |
 | **Staging** | Pre-release verification, mirrors production topology in Canadian region | Synthetic | Release gates run here |
 | **Production** | Customer service | Customer content | Restricted access, change control |
 | **Pilot (design partner)** | Production with feature flags | Customer content | Tight support and feedback loop |

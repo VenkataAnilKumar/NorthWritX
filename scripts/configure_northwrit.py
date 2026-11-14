@@ -74,7 +74,7 @@ def replace(path, substitutions):
     return content.encode("utf-8")
 
 
-def rebrand_ui_copy(outputs):
+def update_ui_copy(outputs):
     for directory in COPY_ROOTS:
         for path in sorted((ROOT / directory).rglob("*")):
             if path.suffix not in {".ts", ".tsx", ".js", ".mjs", ".html"} or path.name in UPSTREAM_DIAGNOSTICS:
@@ -249,7 +249,7 @@ def changes(social_source):
         ("    SUPPORT_EMAIL,\n", ""),
     ]
     outputs = {path: replace(path, substitutions) for path, substitutions in edits.items()}
-    rebrand_ui_copy(outputs)
+    update_ui_copy(outputs)
 
     # Use the shared theme-aware component so the web and Word surfaces retain
     # upstream animation, size and run-status colours.

@@ -16,8 +16,8 @@ runtime catalog download. Model inference is a separate capability: the base PR
 can connect to Ollama, and the child model-onboarding branch manages the optional
 runtime/model download experience.
 
-Run `npm test --prefix desktop` for the environment/catalog/gateway checks and
-the schema-upgrade test, and `npm run e2e:local --prefix desktop` for the
+Run `npm run test:desktop` for the environment/catalog/gateway checks and
+the schema-upgrade test, and `npm --workspace apps/desktop run e2e:local` for the
 packaged first-run flow followed by a returning-user relaunch (see "Tests"
 below). The local guest uses the same authenticated API as other accounts; its
 random credentials remain in this installation. Removing app data removes the
@@ -101,9 +101,8 @@ loads the hosted service. To develop against a separate local frontend, start
 the stack per the repo README and retarget the shell (⌘⇧, or `--server-url=`):
 
 ```bash
-cd desktop
-npm install
-npm start -- --server-url=http://localhost:3000
+npm run setup:desktop
+npm --workspace apps/desktop start -- --server-url=http://localhost:3000
 ```
 
 ### Overrides (automation / e2e)
@@ -121,6 +120,8 @@ tests use an isolated `NORTHWRIT_USER_DATA_DIR`.
 | `NORTHWRIT_DOWNLOAD_DIR`         | download folder instead of `~/Downloads`        |
 | `NORTHWRIT_E2E_CAPTURE_EXTERNAL` | file path; would-be "open in browser" URLs are appended here instead of opening tabs |
 | `NORTHWRIT_E2E_DOWNLOAD_LOG`     | file path; each finished download appends a JSONL line (`state`, `savePath`, `url`) — needed because an attached CDP automation client diverts downloads away from `setSavePath` |
+
+Unless stated otherwise, packaging/local-runtime commands below run from `apps/desktop/` after a root workspace install.
 
 ## Package & test locally (no Apple account needed)
 

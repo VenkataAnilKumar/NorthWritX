@@ -1,7 +1,9 @@
 # Security and Compliance
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 ## Threat model, controls, legal-source rights and Canadian obligations
 
-**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed (nothing is built yet)
+**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed requirements; delivery tracked in the implementation plan
 
 ---
 
@@ -30,7 +32,7 @@ Feature IDs refer to the [Feature Specification](../04-specs/Northwrit_Feature-S
 | Shield Log and audit events | High: integrity matters |
 | Licensed source content | Governed by rights record |
 
-**Boundaries:** browser and add-ins to API; tenant to tenant; matter to matter; control plane to external providers; firm server or companion to cloud control plane; Northwrit staff to customer data.
+**Boundaries:** browser and add-ins to API; tenant to tenant; matter to matter; control plane to external providers; firm server or companion to cloud control plane; NorthWrit staff to customer data.
 
 ## 3. Threat model
 
@@ -44,7 +46,7 @@ Feature IDs refer to the [Feature Specification](../04-specs/Northwrit_Feature-S
 | T6 | **Fabricated or mis-cited authority** | Model invents a case or misstates a holding | CiteCheck resolves and support-checks; four labels; uncited text marked; export flags unavailable citations; lawyer approval bound to version; Bench measures fabrication | RS05, SO03, QA01 |
 | T7 | **Account takeover** | Phished password | MFA for all users; SSO with firm identity provider; session limits; anomaly alerts; admin step-up | SA03, SA10 |
 | T8 | **Privilege escalation inside the product** | Guest or paralegal reads restricted matter | Role checks in service layer; ethical walls; guest scoping; access-denied audit events | SA07, SA11 |
-| T9 | **Insider threat (staff)** | Northwrit engineer reads client data | No standing access to tenant content; break-glass access with customer approval, time limit and audit; background checks and training per policy; separation of duties | SA09 |
+| T9 | **Insider threat (staff)** | NorthWrit engineer reads client data | No standing access to tenant content; break-glass access with customer approval, time limit and audit; background checks and training per policy; separation of duties | SA09 |
 | T10 | **Malicious files** | Document containing malware or parser exploit | Isolated parsing workers with no network, resource limits, file type validation, malware scanning, sandboxed OCR | RV01 |
 | T11 | **Supply chain** | Compromised dependency or container image | Dependency and image scanning, pinned versions, signed builds, SBOM, review of Pack code (sandboxing, signing at P2) | CN06 |
 | T12 | **Log and telemetry leakage** | Matter text appears in logs or error reports | References not payloads; redaction in error reporting; telemetry content-free; log review in tests | SH04 |
@@ -97,7 +99,7 @@ Feature IDs refer to the [Feature Specification](../04-specs/Northwrit_Feature-S
 | Citation and review | CiteCheck; review states; export with scope and version | RS05, SO03, SO05 |
 | Human approval | Redlines, external writes and outbound messages are proposals until a lawyer approves the exact payload | AG03 |
 | Isolation of execution | Tool and parsing workers in sandboxes with restricted network access and scoped credentials | |
-| Quality gate | Northwrit Bench on every change; adversarial documents included | QA01 |
+| Quality gate | NorthWrit Bench on every change; adversarial documents included | QA01 |
 | Budgets and limits | Per user, firm and run | SA06 |
 
 ### 4.4 Monitoring and response
@@ -133,7 +135,7 @@ Each legal source (CanLII API, other licensed content, government sites, web res
 
 ### 6.1 Law society duties
 
-| Duty (model rules and provincial equivalents) | What the lawyer must do | How Northwrit supports it (proposed) |
+| Duty (model rules and provincial equivalents) | What the lawyer must do | How NorthWrit supports it (proposed) |
 |---|---|---|
 | **Competence**, including understanding the technology used | Understand benefits and risks of tools; supervise output | Visible model and provider; limits shown (coverage, CiteCheck is not a citator); review states; Bench transparency summaries |
 | **Confidentiality** | Protect client information and avoid disclosure without authority | Matter isolation; Processing Policy; Shield Log; outbound boundary; encryption; ethical walls |
@@ -142,18 +144,18 @@ Each legal source (CanLII API, other licensed content, government sites, web res
 | **Conflicts and ethical screens** | Maintain screens between matters | Ethical walls enforced in search, retrieval and agents (SA11) |
 | **Client communication and consent** | Inform clients where appropriate about use of AI and third-party processors | Shield Log and provider list help firms answer; consent wording is the firm's decision |
 | **Records and retention** | Keep records per rules; secure destruction | Retention and deletion controls; audit trail; export (SA05, SA09) |
-| **Privilege** | Take care not to waive privilege | No claim that use of Northwrit preserves privilege; processing limited to listed providers under contract; legal review needed |
+| **Privilege** | Take care not to waive privilege | No claim that use of NorthWrit preserves privilege; processing limited to listed providers under contract; legal review needed |
 
-Law societies have issued guidance on generative AI; the current publications for the launch province should be reviewed and cited in the customer guidance. Northwrit does not provide legal advice and does not replace lawyer judgment.
+Law societies have issued guidance on generative AI; the current publications for the launch province should be reviewed and cited in the customer guidance. NorthWrit does not provide legal advice and does not replace lawyer judgment.
 
 ### 6.2 PIPEDA
 
-PIPEDA applies to private-sector organisations handling personal information in commercial activity; provincial laws may substitute in some provinces. Law firms are generally responsible for information they collect, and Northwrit acts as their service provider (processor). Proposed mapping:
+PIPEDA applies to private-sector organisations handling personal information in commercial activity; provincial laws may substitute in some provinces. Law firms are generally responsible for information they collect, and NorthWrit acts as their service provider (processor). Proposed mapping:
 
 | Principle | Design response |
 |---|---|
 | Accountability | Data processing agreement; designated privacy contact; sub-processor list; staff training |
-| Identifying purposes and consent | Firm controls purposes; Northwrit processes only to provide the service; no training on customer data (SA04) |
+| Identifying purposes and consent | Firm controls purposes; NorthWrit processes only to provide the service; no training on customer data (SA04) |
 | Limiting collection, use, disclosure and retention | Matter scoping; retention controls; data minimisation in outbound payloads |
 | Accuracy | Citations and review; correction of memory entries (CU03) |
 | Safeguards | Controls in §4 proportional to sensitivity |
@@ -171,8 +173,8 @@ If Quebec personal information is processed, the Act respecting the protection o
 |---|---|
 | **Privacy impact assessment** for projects involving personal information systems and for transfers outside Quebec | Template and system facts supplied to customers; Shield Log supports transfer inventory |
 | **Transfers outside Quebec** | Region-aware Processing Policy; Canadian-region option; per-call region record |
-| **Automated decision rules** | Northwrit supports lawyer review and does not make decisions about individuals; documented that outputs are drafts |
-| **Person in charge of protection of personal information** | Customer designation; Northwrit contact for support |
+| **Automated decision rules** | NorthWrit supports lawyer review and does not make decisions about individuals; documented that outputs are drafts |
+| **Person in charge of protection of personal information** | Customer designation; NorthWrit contact for support |
 | **Confidentiality incidents** | Incident register and notification process |
 | **Rights (access, rectification, de-indexation, portability)** | Export in an open format; deletion and correction tools |
 | **Privacy by default** | Strictest policy defaults for new matters (proposed default mode and redaction setting to be decided) |

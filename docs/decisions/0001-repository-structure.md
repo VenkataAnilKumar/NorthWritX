@@ -4,7 +4,7 @@ Status: Initial repository organization completed. The through-Phase-4 layout an
 
 ## Context
 
-Phase 3 imported and rebranded original application under `apps/northwrit/`. The existing web, API, Word and desktop surfaces share contracts and supporting packages. Their Docker build contexts, TypeScript paths, migrations and upstream update instructions depend on that layout. The older v3 blueprint proposed a different stack and many services; it is not evidence that those components exist.
+Phase 3 integrated the original application under `apps/northwrit/`. The existing web, API, Word and desktop surfaces share contracts and supporting packages. Their Docker build contexts, TypeScript paths, migrations and upstream update instructions depend on that layout. The older v3 blueprint proposed a different stack and many services; it is not evidence that those components exist.
 
 ## Decision
 
@@ -24,4 +24,4 @@ Each future extraction must preserve firm/matter authorization at execution, sou
 
 Developers can start from one root README and command list. CI can validate those same aliases. Existing imports, lockfiles and migrations remain stable. Some command and documentation maintenance spans both repository and application boundaries; the [ownership map](../06-technical/NorthWrit-Repository-Ownership.md) assigns that responsibility.
 
-The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md#repository-organization-before-phase-4) governs sequencing. Phase 4 and future extraction are separate implementation work. The archived standalone cloud baseline test is not a gate for this organization change.
+The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md#completed-repository-preparation) governs sequencing. Phase 4 and future extraction are separate implementation work. The archived standalone cloud baseline test is not a gate for this organization change.

@@ -23,41 +23,21 @@ memory learning. This does not purge previously stored chats or memory.
 
 ## Quick start
 
-With the backend running and configured, run from the repository root:
+Install from the repository root using the shared lockfile:
 
 ```bash
-bash word-addin/scripts/dev.sh
+npm run setup:word
 ```
 
-The script installs dependencies, creates `word-addin/.env`, installs the local
-HTTPS certificate, verifies NorthWrit, and launches the add-in in Word
-unless automatic sideloading is disabled. It is safe to run repeatedly.
-
-The first certificate installation may request your keychain or administrator
-password. Fully quit Word and rerun the script afterward so Word reloads the
-certificate trust.
-
-Useful options:
+For a fresh checkout, copy `apps/word-addin/.env.example` to `apps/word-addin/.env`; preserve existing settings when updating. Configure the API/web origins and follow the [HTTPS and sideloading guide](../../docs/engineering/word-addin-development.md). With the configured backend running, start webpack from the repository root:
 
 ```bash
-bash word-addin/scripts/dev.sh --setup-only
-FORCE=1 bash word-addin/scripts/dev.sh
+npm run dev:word
 ```
 
-`--setup-only` prepares the environment without launching Word. `FORCE=1`
-launches even when the backend health check fails.
+This starts development serving without automatic sideloading. To explicitly start the Office sideload flow, use `npm --workspace apps/word-addin start`. Certificate trust and Office installation are platform requirements; the first trust operation may request operating-system approval. The `WORD_ADDIN_SIDELOAD` switch applies to the start helper, not plain `dev:word`.
 
-For normal development, start webpack directly in the foreground without
-opening or sideloading Word:
-
-```bash
-bun dev
-# or
-npm run dev
-```
-
-Use `npm start` when you explicitly want automatic sideloading. The
-`WORD_ADDIN_SIDELOAD` switch applies only to `npm start` and `scripts/dev.sh`.
+The optional `apps/word-addin/scripts/dev.sh` bootstrap helper writes `.env` and runs `npm install`; review its behaviour before using it on an existing checkout. The frozen root install and explicit development commands above are the documented default.
 
 ## What it supports
 
@@ -73,11 +53,11 @@ The add-in requires `WordApi 1.6` for tracked-change review.
 
 ## Commands
 
-Run commands from `word-addin/` unless noted otherwise.
+After installing from the repository root, run the following commands from `apps/word-addin/`, or select that workspace explicitly from the root.
 
 | Command                    | Purpose                                                             |
 | -------------------------- | ------------------------------------------------------------------- |
-| `npm run dev` / `bun dev`  | Start webpack in the foreground without sideloading Word            |
+| `npm run dev`  | Start webpack in the foreground without sideloading Word            |
 | `npm start`                | Start the HTTPS dev server; sideload unless `WORD_ADDIN_SIDELOAD=0` |
 | `npm run stop`             | Stop the sideloaded development session                             |
 | `npm run dev:server`       | Internal alias for starting webpack without launching Word          |

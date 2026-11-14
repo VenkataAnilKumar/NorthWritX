@@ -1,5 +1,7 @@
 # Law Society of Ontario (LSO) CPD Seminar Accreditation & MSP Partnership Guide (GTM-02)
 
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
+
 > **Accredited Legal Education & Managed Service Provider (MSP) Distribution Framework**
 
 ---
@@ -38,7 +40,7 @@
   - Establishing mandatory human-in-the-loop approval gates before any AI-generated legal text is filed with a court or delivered to a counterparty.
   - Maintaining immutable, tamper-evident audit trails (Shield Logs) documenting what model, policy, and lawyer approved each transaction.
 
-#### Module 4: Practical Interactive Workshop with Northwrit [30 min]
+#### Module 4: Practical Interactive Workshop with NorthWrit [30 min]
 - **Learning Objectives:**
   - Hands-on simulation of an Ontario wrongful dismissal reasonable notice analysis using interactive **Bearings**.
   - Reviewing the **Review Grid** comparative clause analysis across commercial agreements with exact paragraph coordinate bounding boxes.
@@ -49,7 +51,7 @@
 ## Part B: Canadian Legal IT Managed Service Provider (MSP) Partnership Framework
 
 ### 1. Strategic Rationale
-Mid-sized Canadian law firms (15–150 lawyers) rarely maintain in-house AI infrastructure engineering teams. To achieve rapid scale across Ontario and nationwide, Northwrit partners with certified legal-specialist Managed Service Providers (MSPs) already managing firm IT infrastructure, Microsoft 365 tenants, and document management systems (iManage, NetDocuments).
+Mid-sized Canadian law firms (15–150 lawyers) rarely maintain in-house AI infrastructure engineering teams. To achieve rapid scale across Ontario and nationwide, NorthWrit partners with certified legal-specialist Managed Service Providers (MSPs) already managing firm IT infrastructure, Microsoft 365 tenants, and document management systems (iManage, NetDocuments).
 
 ### 2. Target Regional MSP Partner Ecosystem
 
@@ -63,4 +65,4 @@ Mid-sized Canadian law firms (15–150 lawyers) rarely maintain in-house AI infr
 ### 3. Commercial Co-Selling & Revenue Share Model
 - **Partner Margin:** 20% recurring annual margin on software subscription licenses for the lifetime of the firm contract.
 - **Implementation Services:** 100% of implementation, tenant setup, and local GPU appliance installation fees retainable by the MSP partner ($5,000–$15,000 per firm).
-- **Certified Training:** Northwrit provides free quarterly technical certifications for MSP systems engineers.
+- **Certified Training:** NorthWrit provides free quarterly technical certifications for MSP systems engineers.

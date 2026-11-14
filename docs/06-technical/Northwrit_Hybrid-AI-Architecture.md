@@ -1,7 +1,9 @@
 # Hybrid AI Architecture
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 ## Shield: policy, routing, redaction, outbound boundary and local companion
 
-**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed (nothing is built yet)
+**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed requirements; delivery tracked in the implementation plan
 
 ---
 
@@ -99,7 +101,7 @@ Inputs: data classification, matter restrictions, provider and region eligibilit
 4. Among the remainder, optimise by cost and latency within the task budget (SA06).
 5. Record the chosen route and the rule that allowed it.
 
-Classification is a recommendation that can only tighten handling. A user or admin can mark a matter or document as confidential; a classifier result of "public" never overrides a matter restriction. Classifier accuracy is measured in Northwrit Bench (QA01).
+Classification is a recommendation that can only tighten handling. A user or admin can mark a matter or document as confidential; a classifier result of "public" never overrides a matter restriction. Classifier accuracy is measured in NorthWrit Bench (QA01).
 
 ## 6. Redact and Restore (SH07, P1)
 
@@ -109,7 +111,7 @@ Classification is a recommendation that can only tighten handling. A user or adm
 4. After the response, restore originals locally and mark restored text so reviewers can see it.
 5. Delete the map on the retention schedule for the run.
 
-**Limits (stated in the product):** redaction reduces exposure but does not guarantee anonymity. Contextual facts (a rare event, a small town, a unique dollar figure) may still identify the matter. Detection can miss entities. Policy can require redaction and also forbid sending a category even after redaction. Redaction quality is evaluated in Northwrit Bench.
+**Limits (stated in the product):** redaction reduces exposure but does not guarantee anonymity. Contextual facts (a rare event, a small town, a unique dollar figure) may still identify the matter. Detection can miss entities. Policy can require redaction and also forbid sending a category even after redaction. Redaction quality is evaluated in NorthWrit Bench.
 
 ## 7. Outbound boundary (SH04)
 
@@ -172,7 +174,7 @@ Blocked decisions are also recorded so admins can see attempted sends. Entries a
 | Egress | Run each supported Local Only workflow with network monitoring at process and network boundary and a deny-all egress rule. | Zero unapproved connections. |
 | Dependency | Run with the control plane unreachable. | Workflow completes, or is blocked with a clear message; no hidden fallback. |
 | Telemetry | Inspect logs and crash reports. | No matter content or identifiers leave. |
-| Capability | Run the Northwrit Bench subset designated for Local Only. | Quality meets the gate set for that subset; unsupported tasks are listed. |
+| Capability | Run the NorthWrit Bench subset designated for Local Only. | Quality meets the gate set for that subset; unsupported tasks are listed. |
 | Fallback | Disable the local runtime. | Step blocked; no silent escalation to cloud. |
 
 **Supported subset:** to be defined from what the chosen local model and hardware profile can do (open decisions on local model and hardware). Anything outside it is blocked in Local Only, with an explanation. Full local-only capability is not marketed until these tests pass.

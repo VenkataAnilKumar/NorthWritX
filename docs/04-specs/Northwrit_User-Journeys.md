@@ -1,4 +1,6 @@
-# Northwrit User Journeys
+# NorthWrit User Journeys
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 
@@ -26,31 +28,31 @@
 ### Step-by-Step Flow
 
 1. **Matter Creation & Policy Setup (MT01, MT02, MT03, SH01):**
-   - Sarah opens Northwrit, selects *New Matter*, enters "Acme v. Tremblay", jurisdiction "Ontario", Matter Instructions *"We act for the defendant employer; cite using McGill Guide"*, and sets Privacy Mode to *Hybrid* (Canadian-region cloud permitted).
+   - Sarah opens NorthWrit, selects *New Matter*, enters "Acme v. Tremblay", jurisdiction "Ontario", Matter Instructions *"We act for the defendant employer; cite using McGill Guide"*, and sets Privacy Mode to *Hybrid* (Canadian-region cloud permitted).
    - System establishes tenant and matter ACL boundaries before accepting files.
 
 2. **Ingest Record Documents (RV01, RV02):**
    - Sarah uploads the employment agreement (`agreement.docx`) and 14 email exchanges (`emails.pdf`).
    - *System Behaviour:* Ingests, parses text, extracts chunks with page/paragraph locators, and records version `v1`.
-   - *Failure Path:* If a scanned PDF lacks a text layer and OCR (RV04, P1) is not yet enabled, Northwrit visibly marks `scan_03.pdf` as `Failed: scanned PDF without text layer` rather than silently ignoring it.
+   - *Failure Path:* If a scanned PDF lacks a text layer and OCR (RV04, P1) is not yet enabled, NorthWrit visibly marks `scan_03.pdf` as `Failed: scanned PDF without text layer` rather than silently ignoring it.
 
 3. **Establish Research Scope via Bearings (RS01, RS02, RS03):**
    - Sarah prompts: *"Does the employee have a claim for reasonable notice beyond statutory ESA minimums given the termination clause?"*
-   - *System Behaviour (Bearings):* Northwrit checks for missing parameters and prompts Sarah to confirm:
+   - *System Behaviour (Bearings):* NorthWrit checks for missing parameters and prompts Sarah to confirm:
      - Jurisdiction: Ontario (CA-ON).
      - Relevant date: June 2026.
      - Material facts: 5 years service, non-executive role.
-   - *Source Unavailable Path:* If an upstream source API is unreachable, Northwrit returns partial findings and explicitly displays a coverage gap banner naming the unavailable source.
+   - *Source Unavailable Path:* If an upstream source API is unreachable, NorthWrit returns partial findings and explicitly displays a coverage gap banner naming the unavailable source.
 
 4. **Live Research & Claim-Level Verification (RS01, RS04, RS05):**
-   - Northwrit synthesizes legal propositions, separating matter facts, supporting authorities, contrary authorities, and unknowns.
+   - NorthWrit synthesizes legal propositions, separating matter facts, supporting authorities, contrary authorities, and unknowns.
    - For every proposition, **CiteCheck** resolves the citation, fetches the passage, checks support, and assigns one of four labels:
      - `[1] Waksdale v. Swegon North America Inc., 2020 ONCA 391 [Verified]`
      - `[2] Cecchetto v. Fiat, 2019 ONSC 1234 [Unverified: passage discusses constructive dismissal, not severability]`
    - The UI clearly states that *Verified* confirms passage support, not subsequent appellate history (citator treatment).
 
 5. **Draft Research Memo Folio (AG01, SO02, RS06):**
-   - Via the bounded Research-to-Memo workflow (AG01), Northwrit opens an editable split-pane **Folio** beside the chat containing Facts, Issues, Rule, Analysis, Authorities Table, and Limitations.
+   - Via the bounded Research-to-Memo workflow (AG01), NorthWrit opens an editable split-pane **Folio** beside the chat containing Facts, Issues, Rule, Analysis, Authorities Table, and Limitations.
 
 6. **Review & Approval State Transition (SO03, SO04):**
    - The Folio opens in state `Draft (v1)`.
@@ -75,7 +77,7 @@
    - The engine checks each clause against standard positions and fallback wording.
    - *Limitation of Liability:* Playbook requires a 12-month fees cap; supplier draft has uncapped data-breach liability. Flagged as `Deviation`.
 4. **Propose Redline & Checkpoint (DR03, DR04, AG03):**
-   - Northwrit generates a Redline Report (DR04) and proposes tracked-change edits in the Folio or Word Add-in (DR05).
+   - NorthWrit generates a Redline Report (DR04) and proposes tracked-change edits in the Folio or Word Add-in (DR05).
    - Marc reviews and approves each proposed redline before export.
 
 ---
@@ -110,5 +112,5 @@
 **Persona:** Liam (Legal Operations Manager)  
 **Goal:** Triage incoming business legal requests, assign ownership, and monitor task budgets.
 
-1. **Intake Queue (AG08):** Business requests arrive in the Intake queue. Northwrit classifies the request type and drafts an initial acknowledgment for lawyer approval (AG03).
+1. **Intake Queue (AG08):** Business requests arrive in the Intake queue. NorthWrit classifies the request type and drafts an initial acknowledgment for lawyer approval (AG03).
 2. **Assign & Track (MT06, SA06):** Liam routes the request to an open matter, assigns an associate, and monitors task budget consumption and turnaround on the Matter Dashboard.

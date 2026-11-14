@@ -1,4 +1,6 @@
-# Northwrit Sovereign Law Firm Pilot Charter (GTM-01, Gate G16)
+# NorthWrit Sovereign Law Firm Pilot Charter (GTM-01, Gate G16)
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 
@@ -8,7 +10,7 @@
 
 ## 1. Executive Summary & Purpose
 
-This Pilot Charter governs the formal 4-week sovereign deployment and evaluation of **Northwrit (`NorthWritX`)** by participating Ontario law firms. The primary objective is to validate lawyer capacity recovery, 4-state citation precision under the McGill Guide 10th Edition, and client disbursement recovery under Law Society of Ontario (LSO) guidelines, prior to commercial conversion.
+This Pilot Charter governs the formal 4-week sovereign deployment and evaluation of **NorthWrit (`NorthWritX`)** by participating Ontario law firms. The primary objective is to validate lawyer capacity recovery, 4-state citation precision under the McGill Guide 10th Edition, and client disbursement recovery under Law Society of Ontario (LSO) guidelines, prior to commercial conversion.
 
 ---
 
@@ -69,7 +71,7 @@ This Pilot Charter governs the formal 4-week sovereign deployment and evaluation
 
 #### Week 3: Parallel Shadow Practice on Active Matters
 - **Deliverables:**
-  - Application of Northwrit across at least 15 live or recent matters in parallel with traditional manual research.
+  - Application of NorthWrit across at least 15 live or recent matters in parallel with traditional manual research.
   - Execution of 50+ grounded CanLII research runs with interactive Bearings dialogue.
   - Validation that 100% of generated citations match McGill Guide 10th Ed. standards.
 
@@ -95,7 +97,7 @@ The pilot shall be deemed successful and trigger commercial execution upon meeti
 
 ## 5. Law Society of Ontario (LSO) Compliance Warranty
 
-Northwrit warrants and covenants that:
+NorthWrit warrants and covenants that:
 - **Zero Model Training on Firm Data:** Customer matter documents, queries, and outputs are never utilized for model fine-tuning or retained in persistent model caches.
 - **Air-Gapped Sovereign Fallback:** In the event of cloud provider connectivity disruptions, the platform gracefully fails closed with structured `blocked_by_policy` codes and never routes unredacted legal text to unauthorized foreign models.
 - **Data Residency Warranty:** All server-side data rest and in-flight transit remains strictly within Canada (`ca-central-1` / `canadaeast`).

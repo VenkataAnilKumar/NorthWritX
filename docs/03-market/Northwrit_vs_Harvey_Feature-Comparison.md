@@ -1,10 +1,10 @@
-# Northwrit vs. Harvey AI
+# NorthWrit vs. Harvey AI
 
-Comparison date: November 9, 2026. The Northwrit side uses the **proposed** v2.0 [Feature Specification](../04-specs/Northwrit_Feature-Spec.md) and [Product Definition](../02-product/Northwrit_Product-Definition.md). The Harvey side uses public product documentation, release notes, and the [Harvey feature inventory](Harvey_Product-Feature-Inventory.md). This is a comparison of documented scope. Northwrit priorities do not establish shipped capabilities, and Harvey access can vary by workspace, region, licensing, or rollout.
+Comparison date: November 9, 2026. The NorthWrit side uses the **proposed** v2.0 [Feature Specification](../04-specs/Northwrit_Feature-Spec.md) and [Product Definition](../02-product/Northwrit_Product-Definition.md). The Harvey side uses public product documentation, release notes, and the [Harvey feature inventory](Harvey_Product-Feature-Inventory.md). This is a comparison of documented scope. NorthWrit priorities do not establish shipped capabilities, and Harvey access can vary by workspace, region, licensing, or rollout.
 
 ## Product positioning
 
-| Dimension | Northwrit | Harvey |
+| Dimension | NorthWrit | Harvey |
 |---|---|---|
 | Audience | Canadian firms and in-house teams, with Ontario as the proposed launch market | Law firms and in-house teams across jurisdictions |
 | Core workflow | A cited, editable research memo grounded in matter records and public authority, with approval tied to a version | A broader suite of legal research, drafting, document review, agents, and matter coordination |
@@ -15,11 +15,11 @@ Comparison date: November 9, 2026. The Northwrit side uses the **proposed** v2.0
 
 Sources: [Harvey Platform](https://www.harvey.ai/platform), [Harvey FAQ](https://help.harvey.ai/articles/harvey-faq), [Harvey Security](https://www.harvey.ai/security).
 
-## Coverage across all 105 Northwrit requirements
+## Coverage across all 105 NorthWrit requirements
 
 **M** = material functional match. **P** = partial match with a material difference or an unverified requirement. **E** = closest public counterpart is in early access. **U** = no counterpart verified in the public sources reviewed. A match indicates comparable function, with implementation and availability varying. An unverified feature may exist in a private tenant or commercial arrangement.
 
-| Northwrit phase | M | P | E | U | Total |
+| NorthWrit phase | M | P | E | U | Total |
 |---|---:|---:|---:|---:|---:|
 | P0 | 10 | 28 | 0 | 0 | 38 |
 | P1 | 23 | 11 | 2 | 3 | 39 |
@@ -28,9 +28,9 @@ Sources: [Harvey Platform](https://www.harvey.ai/platform), [Harvey FAQ](https:/
 
 ## Harvey capabilities with additional depth
 
-This reverse view covers each surface in the Harvey inventory. The IDs identify the nearest Northwrit requirements. The differences column captures the additional Harvey subfeatures or packaging with no explicit match in the Northwrit baseline.
+This reverse view covers each surface in the Harvey inventory. The IDs identify the nearest NorthWrit requirements. The differences column captures the additional Harvey subfeatures or packaging with no explicit match in the NorthWrit baseline.
 
-| Harvey surface | Closest Northwrit scope | Additional depth or scope difference |
+| Harvey surface | Closest NorthWrit scope | Additional depth or scope difference |
 |---|---|---|
 | Assistant and Threads | AS01–AS07, RS01–RS07, SO02, SO05–SO06, SO10 | Multi-task thread view and source nudges, several drafts in a thread, email draft mode, in-thread Office and PDF editing, batch Word edits, and direct Outlook draft creation. |
 | Harvey II, agents, and memory | MT02–MT04, AG01–AG06, AG09–AG14, CU03 | Agent selection across source types and connectors, personal memory import, matter and Space context, and legal-specific model training. |
@@ -49,18 +49,18 @@ This reverse view covers each surface in the Harvey inventory. The IDs identify 
 
 Sources: [Harvey feature inventory](Harvey_Product-Feature-Inventory.md), [Legal Work Orchestration](https://www.harvey.ai/platform/legal-work-orchestration), [Release notes](https://help.harvey.ai/release-notes), [FORUM Chicago announcements](https://www.harvey.ai/blog/forum-chicago-product-announcements).
 
-## Northwrit features with distinct requirements
+## NorthWrit features with distinct requirements
 
 - **Canadian research and verification.** Bearings requires explicit checks for missing research scope. CiteCheck specifies four passage-support states, while licensed authority treatment remains a separate requirement. See RS02–RS06 and RS10.
-- **Artifact review.** Northwrit specifies approval tied to a particular Folio version, invalidation when content or evidence changes, and an approved payload before an external write. See SO03–SO05 and AG03.
-- **Processing boundaries.** Shield specifies stricter-of-firm-or-matter policy, policy-based egress checks, structured logs for every cloud send, and later local inference, reversible redaction, and offline sync. Northwrit also specifies Canadian processing. See SH01–SH08 and SA12.
-- **Extensibility and diagnostics.** Northwrit specifies independent multi-model disagreement reporting, signed installable Packs, a Pack SDK, and a proposed public Pack Exchange. See RS09 and CN03–CN08.
+- **Artifact review.** NorthWrit specifies approval tied to a particular Folio version, invalidation when content or evidence changes, and an approved payload before an external write. See SO03–SO05 and AG03.
+- **Processing boundaries.** Shield specifies stricter-of-firm-or-matter policy, policy-based egress checks, structured logs for every cloud send, and later local inference, reversible redaction, and offline sync. NorthWrit also specifies Canadian processing. See SH01–SH08 and SA12.
+- **Extensibility and diagnostics.** NorthWrit specifies independent multi-model disagreement reporting, signed installable Packs, a Pack SDK, and a proposed public Pack Exchange. See RS09 and CN03–CN08.
 
-## Northwrit feature-by-feature matrix
+## NorthWrit feature-by-feature matrix
 
 ### Assist
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | AS01 | Pinpoint Cites | P0 | M | Cited passages and source inspection |
 | AS02 | Model Picker | P0 | P | Model Selector; per-answer provider attribution contract unverified |
@@ -74,7 +74,7 @@ Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/as
 
 ### Research
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | RS01 | Answer Engine | P0 | M | Cited legal and web answers with source inspection |
 | RS02 | Bearings | P0 | P | Agent clarification and source nudges; mandatory pre-search field checks unverified |
@@ -92,7 +92,7 @@ Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/kn
 
 ### Review
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | RV01 | Smart Upload | P0 | M | Vault upload, indexing and ingestion feedback |
 | RV02 | Document Versions | P0 | P | DMS sync and permission inheritance; full native document version semantics unverified |
@@ -106,21 +106,21 @@ Harvey sources: [Product or help documentation](https://www.harvey.ai/platform/v
 
 ### Draft
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | DR01 | Draft from Precedent | P1 | M | Precedent-based drafting and document templates |
 | DR02 | Playbooks | P1 | M | Playbook Builder and firm negotiation positions |
 | DR03 | Playbook Check and Redline | P1 | M | Web and Word playbook review with redlines |
 | DR04 | Redline Report | P1 | M | Analyze a Redline workflow and issue lists |
-| DR05 | Northwrit for Word | P1 | M | Word add-in for drafting, analysis and playbooks |
-| DR06 | Northwrit for Outlook | P2 | M | Outlook add-in for summaries, replies and Vault filing |
+| DR05 | NorthWrit for Word | P1 | M | Word add-in for drafting, analysis and playbooks |
+| DR06 | NorthWrit for Outlook | P2 | M | Outlook add-in for summaries, replies and Vault filing |
 | DR07 | Translate | P2 | M | DeepL document translation in threads, workflows and Word |
 
 Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/integrations), [Supporting documentation](https://www.harvey.ai/blog/contract-playbook).
 
 ### Matters
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | MT01 | Matter Workspace | P0 | M | Client Matters, Vaults and Spaces together cover core workspace functions |
 | MT02 | Matter Instructions | P0 | P | Matter and project context and Memory; universal application of standing instructions unverified |
@@ -135,9 +135,9 @@ Harvey sources: [Product or help documentation](https://www.harvey.ai/platform/s
 
 ### Search and Outputs
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
-| SO01 | Northwrit Search | P0 | P | Global Search and permission-scoped retrieval; exact artifact coverage and search implementation unverified |
+| SO01 | NorthWrit Search | P0 | P | Global Search and permission-scoped retrieval; exact artifact coverage and search implementation unverified |
 | SO02 | Folios | P0 | M | Editable drafts in Notepad plus Review Tables and document outputs |
 | SO03 | Review States | P0 | P | Space approvals and audit events; version-bound review state machine unverified |
 | SO04 | Folio History | P0 | P | Thread history and ongoing artifacts; compare/restore and reviewer-linked versions unverified |
@@ -154,7 +154,7 @@ Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/as
 
 ### Agents and Automate
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | AG01 | Research-to-Memo Workflow | P0 | P | Guided workflows and planned execution; exact cancellation and retry persistence contract unverified |
 | AG02 | Run Trail | P0 | P | Progress, history and audit logs; per-run tool/model/usage trace schema unverified |
@@ -175,7 +175,7 @@ Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/wo
 
 ### Connect and Packs
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | CN01 | Provider Adapters | P0 | P | Provider and source selection with policies; local runtime adapters unverified |
 | CN02 | First Document Connector | P1 | M | Multiple DMS connectors including SharePoint and iManage |
@@ -183,14 +183,14 @@ Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/wo
 | CN04 | Connector Directory and Permission Sync | P2 | M | Connector Library and permission-aware iManage integration |
 | CN05 | MCP and Enterprise APIs | P2 | M | Hosted and inbound MCP and REST API; trigger scope differs |
 | CN06 | Pack Governance | P2 | P | Admin approval and connector security review; signed pack sandbox and rollback unverified |
-| CN07 | Northwrit SDK | P2 | P | Developer API and MCP integration docs; Pack SDK, CLI and OpenAPI import unverified |
+| CN07 | NorthWrit SDK | P2 | P | Developer API and MCP integration docs; Pack SDK, CLI and OpenAPI import unverified |
 | CN08 | Pack Exchange | P2 | U | Public marketplace for installable legal packs unverified |
 
 Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/integrations), [Supporting documentation](https://developers.harvey.ai/api-reference/authentication), [Additional documentation](https://help.harvey.ai/articles/joining-harvey-mcp-connector-library).
 
 ### Shield
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | SH01 | Processing Policy | P0 | P | Workspace policy and regional hosting; Local Only/Hybrid/Cloud per matter unverified |
 | SH02 | Model Gateway | P0 | P | Cloud Model Selector; unified local/cloud runtime gateway unverified |
@@ -205,7 +205,7 @@ Harvey sources: [Product or help documentation](https://www.harvey.ai/security),
 
 ### Security and Admin
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | SA01 | Tenant Isolation and Authorization | P0 | P | Logical tenant separation and ethical walls; full end-to-end enforcement points unverified |
 | SA02 | Encryption | P0 | P | TLS and AES-256; Canadian hosting option unverified |
@@ -221,19 +221,19 @@ Harvey sources: [Product or help documentation](https://www.harvey.ai/security),
 | SA12 | Canadian Residency | P1 | U | Public security materials list U.S., EU/Switzerland and Australia; Canadian processing unverified |
 | SA13 | Seats, Billing and Feature Toggles | P1 | P | Access and feature administration; subscription and billing controls unverified |
 | SA14 | Insights | P2 | M | Feature adoption and usage analytics with peer benchmarks; outcome metrics differ |
-| SA15 | SOC 2 and ISO 27001 | P2 | M | Harvey reports SOC 2 Type II and ISO 27001; Northwrit specifies readiness |
+| SA15 | SOC 2 and ISO 27001 | P2 | M | Harvey reports SOC 2 Type II and ISO 27001; NorthWrit specifies readiness |
 
 Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/admin-guides), [Supporting documentation](https://www.harvey.ai/platform/command-center), [Additional documentation](https://help.harvey.ai/articles/harvey-faq).
 
 ### Customization
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
 | CU01 | Preferences | P0 | P | Localization, jurisdiction preferences and Memory; complete McGill/Bluebook and bilingual UI coverage unverified |
 | CU02 | House Style | P1 | M | Workspace branding, document templates, writing styles and export formats |
 | CU03 | Memory Controls | P1 | P | User Memory and separate matter/Vault context; same controls across all scopes unverified |
 | CU04 | Personal Library | P1 | M | Saved prompts, reusable agents and Library resources |
-| CU05 | Northwrit Mobile | P2 | M | Native iOS and Android apps |
+| CU05 | NorthWrit Mobile | P2 | M | Native iOS and Android apps |
 | CU06 | Clip to Matter | P2 | U | General-purpose web-page clipping to a matter unverified |
 | CU07 | White-label | P2 | U | Partner-branded product with a custom domain unverified |
 
@@ -241,8 +241,8 @@ Harvey sources: [Product or help documentation](https://help.harvey.ai/topics/as
 
 ### Quality
 
-| ID | Northwrit feature | Phase | Match | Closest Harvey capability and difference |
+| ID | NorthWrit feature | Phase | Match | Closest Harvey capability and difference |
 |---|---|---|---|---|
-| QA01 | Northwrit Bench | P0 | P | Harvey publishes legal benchmarks; Northwrit’s exact CI gate and held-out task requirements unverified |
+| QA01 | NorthWrit Bench | P0 | P | Harvey publishes legal benchmarks; NorthWrit’s exact CI gate and held-out task requirements unverified |
 
 Harvey sources: [Product or help documentation](https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark).

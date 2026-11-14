@@ -1,4 +1,6 @@
-# Northwrit Platform Layers & Surfaces Specification
+# NorthWrit Platform Layers & Surfaces Specification
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 ## Architectural Synthesis: Cohere North Private Agentics × Harvey AI Legal Intelligence
@@ -17,7 +19,7 @@ flowchart TD
     
     H["<b>Harvey AI (Legal Benchmark)</b><br>• Vertical Legal Workflow Automation<br>• Deep Research for Legal (Parallel AI web crawl)<br>• Primary law integrations (LexisNexis, Midpage MCP)<br>• <i>Weakness:</i> Multi-tenant Azure SaaS only (No customer VPC/On-Prem)"]
     
-    NW["<b>Northwrit (NorthWritX)</b><br><b>The Sovereign Legal Agent Platform</b><br>• <b>Cohere North's Private Deployment</b> + <b>Harvey's Legal Intelligence</b><br>• Sovereign Canadian Data Lock (ca-central-1, Local Companion 127.0.0.1:1337)<br>• Northwrit Shield: Signed HMAC decisions + Presidio Canadian PII redaction<br>• McGill Guide 10th Ed., 4-State CiteCheck, Matter RLS Isolation"]
+    NW["<b>NorthWrit (NorthWritX)</b><br><b>The Sovereign Legal Agent Platform</b><br>• <b>Cohere North's Private Deployment</b> + <b>Harvey's Legal Intelligence</b><br>• Sovereign Canadian Data Lock (ca-central-1, Local Companion 127.0.0.1:1337)<br>• NorthWrit Shield: Signed HMAC decisions + Presidio Canadian PII redaction<br>• McGill Guide 10th Ed., 4-State CiteCheck, Matter RLS Isolation"]
 
     CN -.->|Private Deployment & Agent Orchestration| NW
     H -.->|Legal Research, Web Search, Word Add-in, Review Grid| NW
@@ -26,7 +28,7 @@ flowchart TD
 ### The Market Vacuum
 1. **The Limitations of Horizontal Platforms (Cohere North):** While Cohere North delivers the premier private infrastructure model (running in customer VPCs or on-premises), it lacks legal-domain reasoning: it has no comprehension of Canadian court hierarchies (Supreme Court of Canada vs. Ontario Court of Appeal), no McGill Guide 10th Edition citation parser, no 4-state authority classification discipline, and no Matter-scoped confidentiality boundaries.
 2. **The Sovereign Friction of Vertical Platforms (Harvey AI):** Harvey AI is the legal industry benchmark for workflows and deep research. However, Harvey operates almost exclusively as a **multi-tenant cloud SaaS hosted on Microsoft Azure**. It does not provide turnkey on-premise or customer-managed VPC installations. For Canadian law firms bound by Law Society of Ontario (LSO) Rule 3.3 (Client Confidentiality), Quebec Law 25, and PIPEDA, transmitting unredacted privileged matter files to US multi-tenant clouds creates severe regulatory, insurance, and professional responsibility barriers.
-3. **Northwrit's Architectural Mandate:** Combine **Cohere North's private, customer-hosted deployment models** with **Harvey AI's deep legal domain intelligence**, customized specifically for Canadian and Commonwealth jurisdictions.
+3. **NorthWrit's Architectural Mandate:** Combine **Cohere North's private, customer-hosted deployment models** with **Harvey AI's deep legal domain intelligence**, customized specifically for Canadian and Commonwealth jurisdictions.
 
 ---
 
@@ -36,27 +38,27 @@ flowchart TD
 ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                          LAYER 1: CLIENT SURFACES & USER EXPERIENCE                            │
 │  Harvey: Assistant Chat, Document Store, Workflows, Word Add-in, Mobile                        │
-│  Northwrit: Matter Workspace, Folio Editor, Review Grid, Word Add-in, Local Companion          │
+│  NorthWrit: Matter Workspace, Folio Editor, Review Grid, Word Add-in, Local Companion          │
 ├────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                          LAYER 2: LEGAL CAPABILITY & DOMAIN WORKFLOWS                          │
 │  Harvey: Deep Research for Legal, Contract Analysis, Redlining, Citations, Playbooks           │
-│  Northwrit: Bearings, 4-State CiteCheck, Review Grid, Ontario Calculators, Court Book Compiler │
+│  NorthWrit: Bearings, 4-State CiteCheck, Review Grid, Ontario Calculators, Court Book Compiler │
 ├────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                          LAYER 3: AGENT RUNTIME & ORCHESTRATION                                │
 │  Harvey: Multi-agent planner/searcher/drafter, Tool calling, Background jobs                   │
-│  Northwrit: LangGraph Legal Engine, Review Grid extraction, Starter Agent Workflows             │
+│  NorthWrit: LangGraph Legal Engine, Review Grid extraction, Starter Agent Workflows             │
 ├────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                          LAYER 4: RETRIEVAL, PRIMARY LAW & KNOWLEDGE GRAPH                     │
 │  Harvey: LexisNexis / Midpage MCP, Parallel AI web crawl, Vector + Lexical RAG                 │
-│  Northwrit: CanLII REST API, Onyx parser, Pinpoint locators (RV01), PostgreSQL 16 + pgvector   │
+│  NorthWrit: CanLII REST API, Onyx parser, Pinpoint locators (RV01), PostgreSQL 16 + pgvector   │
 ├────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                          LAYER 5: SECURITY, PRIVACY & GOVERNANCE (SHIELD)                      │
 │  Harvey: Multi-tenant Azure encryption, SOC 2, Vendor-managed cloud isolation                  │
-│  Northwrit: Northwrit Shield, HMAC-signed ShieldDecisions, Canadian PII Redaction, Matter RLS │
+│  NorthWrit: NorthWrit Shield, HMAC-signed ShieldDecisions, Canadian PII Redaction, Matter RLS │
 ├────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                          LAYER 6: INFRASTRUCTURE & SOVEREIGN DEPLOYMENT                        │
 │  Harvey: Microsoft Azure Hosted Cloud SaaS only (No customer VPC or On-Prem)                   │
-│  Northwrit: Canadian Cloud (ca-central-1), Turnkey Firm-Server (DP02), Local Companion         │
+│  NorthWrit: Canadian Cloud (ca-central-1), Turnkey Firm-Server (DP02), Local Companion         │
 └────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -64,7 +66,7 @@ flowchart TD
 
 ### Layer 1: Client Surfaces & User Experience
 
-Lawyers interact with Northwrit through a unified design system (`#0F172A` Deep Slate, `#1D4ED8` Authority Blue, `#FAF9F5` Paper Warm):
+Lawyers interact with NorthWrit through a unified design system (`#0F172A` Deep Slate, `#1D4ED8` Authority Blue, `#FAF9F5` Paper Warm):
 
 * **Matter Command Centre (`apps/web/src/app/workspace`):** Unified hub housing matter metadata, counsel directory, matter fact sheets (`MT04`), case chronology timeline (`SO09`), and upcoming Ontario court deadlines.
 * **Legal Assistant Chat Studio:** Threaded conversational interface with pre-search **Bearings** dialogue (`RS01`), dynamic follow-up recommendations, and inline citation chips linking to pinpoint source documents.
@@ -114,7 +116,7 @@ Lawyers interact with Northwrit through a unified design system (`#0F172A` Deep 
 
 ---
 
-### Layer 5: Security, Privacy & Governance (Northwrit Shield)
+### Layer 5: Security, Privacy & Governance (NorthWrit Shield)
 
 * **Zero-Bypass Model Gateway (`packages/gateway`):** Physical network isolation ensuring that no model request can execute without a cryptographically verified `ShieldDecision` token signed via HMAC-SHA256 (`SH01`, `SH02`).
 * **Canadian PII Redaction Engine (`services/shield-pii`):** Microsoft Presidio extended with custom regex and context recognizers for Canadian Social Insurance Numbers (SIN), postal codes, Ontario court file numbers, and Law Society of Ontario (LSO) counsel IDs (`SH07`).
@@ -202,7 +204,7 @@ Lawyers interact with Northwrit through a unified design system (`#0F172A` Deep 
 
 ### Surface 4: Developer & Integration Portal
 * **Interactive OpenAPI/Swagger Console:** Complete endpoint documentation for `/v1/matters`, `/v1/folios`, `/v1/research`, and `/v1/citecheck`.
-* **Model Context Protocol (MCP) Hub:** Test bench for Northwrit's MCP server and management interface for registering external legal MCP tools.
+* **Model Context Protocol (MCP) Hub:** Test bench for NorthWrit's MCP server and management interface for registering external legal MCP tools.
 * **Webhook Subscription Manager:** Event subscriptions for `document.ingested`, `folio.review_approved`, `citecheck.contradicted`, and `matter.hold_enabled`.
 
 ### Surface 5: On-Premise & VPC Operations Console

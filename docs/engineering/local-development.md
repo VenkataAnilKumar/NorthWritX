@@ -17,7 +17,7 @@ All commands below start at the repository root unless a `cd` is shown. Compose 
 
 ## Start the Docker stack
 
-Copy the local environment templates:
+For a fresh checkout, copy the local environment templates below. In an existing checkout, preserve your `.env` files and compare them with the templates instead of overwriting them:
 
 ```bash
 npm run infra:prepare
@@ -41,8 +41,7 @@ docker compose -f infra/docker-compose.yml up --build
 
 Open [http://localhost:3000](http://localhost:3000) and sign up.
 
-`npm run stack:up -- --build` does the same thing but first sweeps stacks left
-behind by earlier checkouts, worktrees, and reviews (see "Stop and clean up").
+The root `stack:up` helper also performs automatic cleanup by default (see "Stop and clean up"). Use the direct Compose command above when you only intend to start this checkout. Read the cleanup scope before using the helper; `NORTHWRIT_GC=0 npm run stack:up -- --build` disables its automatic sweep in Bash.
 
 ## Stop and clean up
 
@@ -56,7 +55,7 @@ creates its own set. Use the lifecycle script to remove containers when done:
 npm run stack:down              # remove containers + network, keep data volumes
 npm run stack:down -- --purge   # also delete the data volumes and local images
 npm run stack:status            # what this repo has running or left behind
-npm run stack:gc                # sweep leftovers (runs automatically before
+npm --workspace tests/browser run stack:gc                # sweep leftovers (runs automatically before
                                 # stack:up and the e2e setup script)
 ```
 
@@ -87,15 +86,15 @@ reuse followed by removal entirely between sweeps cannot be detected. Use
 `NORTHWRIT_GC=0` to disable automatic cleanup when managing volumes outside this
 workflow.
 
-`npm run stack:gc -- --dry-run` previews the same container and volume plan as
+`npm --workspace tests/browser run stack:gc -- --dry-run` previews the same container and volume plan as
 execution, including volumes that become unreferenced after teardown, without
 changing cleanup records. Docker still refuses removal if a new container
 references a volume after planning. Dangling images and old build cache are
 also pruned; `-- --deep` removes all unused images and build cache. Set
 `NORTHWRIT_GC=0` to skip the automatic sweep in `stack:up` and the e2e setup script.
 
-For the Supabase CLI stack used by `npm run test:e2e:local` and
-`npm run test:stack`, `supabase stop` removes the containers and keeps the
+For the Supabase CLI stack used by `npm --workspace tests/browser run test:e2e:local` and
+`npm --workspace apps/api run test:stack`, `supabase stop` removes the containers and keeps the
 data; `supabase stop --no-backup` removes both.
 
 ## Local service endpoints
@@ -215,7 +214,7 @@ Error reporting is enabled by default using NorthWrit's community Sentry project
 Set `SENTRY_DISABLED=true` to opt out on the backend, and use
 `NEXT_PUBLIC_SENTRY_DISABLED=true` or `REACT_APP_SENTRY_DISABLED=true` for the
 web app or Word add-in. To watch events locally instead, run
-`node scripts/sentry-sink.mjs` and point each runtime's DSN at it; see
+`node scripts/application/sentry-sink.mjs` and point each runtime's DSN at it; see
 [observability.md](observability.md).
 
 ## Running application code without Docker
@@ -226,11 +225,11 @@ through environment setup and dependency installation. Then start each package
 in a separate terminal:
 
 ```bash
-npm run dev --prefix backend
+npm run dev:api
 ```
 
 ```bash
-npm run dev --prefix frontend
+npm run dev:web
 ```
 
 Open [http://localhost:3000](http://localhost:3000).

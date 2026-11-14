@@ -1,4 +1,6 @@
-# Northwrit User Stories & Acceptance Criteria
+# NorthWrit User Stories & Acceptance Criteria
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 
@@ -8,7 +10,7 @@
 
 ---
 
-## Module AS: Northwrit Assist (AS01–AS07)
+## Module AS: NorthWrit Assist (AS01–AS07)
 
 ### US-AS01: Pinpoint Citations on Matter Documents (AS01, P0)
 **As a** litigator reviewing matter files,  
@@ -52,7 +54,7 @@
 
 ---
 
-## Module RS: Northwrit Research (RS01–RS11)
+## Module RS: NorthWrit Research (RS01–RS11)
 
 ### US-RS01: Answer Engine & Bearings Clarification (RS01, RS02, P0)
 **As a** researcher querying legal principles,  
@@ -84,7 +86,7 @@
 **So that** I can move from research to a structured, reviewable deliverable.
 - **Given** completed research findings and matter facts,
 - **When** I generate a Research Memo (RS06),
-- **Then** Northwrit creates a structured Folio containing Facts, Issues, Rule, Analysis, Table of Authorities, Limitations, and Conclusion with claim-level citations attached.
+- **Then** NorthWrit creates a structured Folio containing Facts, Issues, Rule, Analysis, Table of Authorities, Limitations, and Conclusion with claim-level citations attached.
 
 ### US-RS05: Deep Research & Beacon Monitoring (RS07, RS08, P1)
 **As a** researcher handling complex or ongoing issues,  
@@ -104,7 +106,7 @@
 
 ---
 
-## Module RV: Northwrit Review (RV01–RV07)
+## Module RV: NorthWrit Review (RV01–RV07)
 
 ### US-RV01: Smart Upload & Document Versions (RV01, RV02, P0)
 **As a** lawyer uploading client disclosures,  
@@ -132,17 +134,17 @@
 
 ---
 
-## Module DR: Northwrit Draft (DR01–DR07)
+## Module DR: NorthWrit Draft (DR01–DR07)
 
 ### US-DR01: Draft from Precedent, Playbooks, Redlining & Word Add-in (DR01, DR02, DR03, DR04, DR05, P1)
 **As** contract counsel drafting and negotiating agreements,  
 **I want** to draft from approved templates (DR01), store firm Playbooks (DR02), run Playbook Check with proposed tracked-change redlines (DR03) and a Redline Report issue list (DR04), and access Assist, Draft, and Playbook Check inside Microsoft Word (DR05),  
 **So that** contracts follow firm positions and redlines remain proposals until I approve them.
-- **Given** approved precedents (DR01) and a versioned Playbook (DR02) in web or Northwrit for Word (DR05),
+- **Given** approved precedents (DR01) and a versioned Playbook (DR02) in web or NorthWrit for Word (DR05),
 - **When** I draft an agreement or run Playbook Check on a counterparty markup (DR03, DR04),
 - **Then** deviations are listed in a Redline Report and proposed tracked changes require lawyer approval before being applied.
 
-### US-DR02: Northwrit for Outlook & Document Translation (DR06, DR07, P2)
+### US-DR02: NorthWrit for Outlook & Document Translation (DR06, DR07, P2)
 **As a** bilingual practitioner working across email and documents,  
 **I want** an Outlook add-in for summaries, draft replies, and filing to matters (DR06), and English/French document translation (DR07),  
 **So that** email threads file cleanly to matters and bilingual documents preserve legal terminology.
@@ -152,7 +154,7 @@
 
 ---
 
-## Module MT: Northwrit Matters (MT01–MT08)
+## Module MT: NorthWrit Matters (MT01–MT08)
 
 ### US-MT01: Matter Workspace, Standing Instructions & Visible Policy (MT01, MT02, MT03, P0)
 **As a** matter lead,  
@@ -183,10 +185,10 @@
 ## Module SO: Search & Outputs (SO01–SO12)
 
 ### US-SO01: Permission-Scoped Hybrid Search (SO01, P0)
-**As a** user searching across Northwrit,  
+**As a** user searching across NorthWrit,
 **I want** one search box combining keyword and semantic search across matters, documents, threads, and Folios (SO01),  
 **So that** I find relevant work immediately without ever seeing content from unauthorized matters.
-- **Given** a search query entered in Northwrit Search (SO01),
+- **Given** a search query entered in NorthWrit Search (SO01),
 - **When** hybrid keyword and vector retrieval executes,
 - **Then** permission, matter, and ethical-wall filters are applied inside the query before ranking.
 
@@ -264,15 +266,15 @@
 
 ### US-CN03: Connector Directory, MCP/APIs, Pack Governance, SDK & Pack Exchange (CN04, CN05, CN06, CN07, CN08, P2)
 **As an** enterprise integrator or Pack developer,  
-**I want** a Connector Directory with permission sync (CN04), permission-scoped MCP and Enterprise APIs (CN05), Pack signing, sandboxing, upload scanning, and admin install approval (CN06), a Northwrit SDK (CN07), and a public Pack Exchange (CN08),  
+**I want** a Connector Directory with permission sync (CN04), permission-scoped MCP and Enterprise APIs (CN05), Pack signing, sandboxing, upload scanning, and admin install approval (CN06), a NorthWrit SDK (CN07), and a public Pack Exchange (CN08),
 **So that** third-party integrations and marketplace Packs cannot exfiltrate data or bypass Shield.
-- **Given** a Pack or MCP integration built with the Northwrit SDK (CN07) and submitted to Firm install or Pack Exchange (CN08),
+- **Given** a Pack or MCP integration built with the NorthWrit SDK (CN07) and submitted to Firm install or Pack Exchange (CN08),
 - **When** scanned, signed, and approved under Pack Governance (CN06) or called via MCP/API (CN05) with synced permissions (CN04),
 - **Then** sandboxed tools pass through the Tool Gateway and Outbound Boundary with full audit logging.
 
 ---
 
-## Module SH: Northwrit Shield (SH01–SH08)
+## Module SH: NorthWrit Shield (SH01–SH08)
 
 ### US-SH01: Processing Policy, Model Gateway, Shield Log & Outbound Boundary (SH01, SH02, SH03, SH04, P0)
 **As a** firm administrator,  
@@ -294,7 +296,7 @@
 **As a** lawyer working while travelling or in air-gapped environments,  
 **I want** a standalone Desktop App with on-device models and Offline Mode (SH08),  
 **So that** I can review documents and draft offline and sync safely on reconnect.
-- **Given** Northwrit Desktop in Offline Mode (SH08),
+- **Given** NorthWrit Desktop in Offline Mode (SH08),
 - **When** I work with no internet connection and later reconnect,
 - **Then** local tasks complete on-device and sync on reconnect respects the matter's Processing Policy.
 
@@ -341,7 +343,7 @@
 ### US-CU01: User Preferences (CU01, P0)
 **As a** lawyer,  
 **I want** to configure my default jurisdiction, citation style (McGill Guide or Bluebook), interface language, theme, and personal instructions (CU01),  
-**So that** Northwrit matches my practice defaults.
+**So that** NorthWrit matches my practice defaults.
 - **Given** my saved Preferences (CU01),
 - **When** I start a research thread or Folio,
 - **Then** my citation style and personal instructions apply unless overridden by Matter Instructions.
@@ -358,14 +360,14 @@
 **As a** practitioner on the go or an institutional partner,  
 **I want** iOS and Android apps (CU05), a Clip to Matter browser extension (CU06), and White-Label partner branding (CU07),  
 **So that** web research clips directly into a matter and mobile access upholds the same Shield and MFA rules.
-- **Given** the Northwrit Mobile app (CU05) or Clip to Matter extension (CU06),
+- **Given** the NorthWrit Mobile app (CU05) or Clip to Matter extension (CU06),
 - **When** I save a web page or view a Folio,
 - **Then** MFA, matter authorization, Shield policy, and audit logging apply identically to the web workspace.
 
-### US-QA01: Northwrit Bench CI Release Gate (QA01, P0)
+### US-QA01: NorthWrit Bench CI Release Gate (QA01, P0)
 **As an** engineering lead,  
 **I want** a versioned suite of 50–100 lawyer-reviewed legal tasks plus a held-out set run automatically on every change to models, retrieval, prompts, tools, or policy (QA01),  
 **So that** any quality or security regression blocks the release.
 - **Given** a pull request modifying prompts, retrieval, model adapters, or Shield policy,
-- **When** the CI pipeline executes Northwrit Bench (QA01),
+- **When** the CI pipeline executes NorthWrit Bench (QA01),
 - **Then** the build fails if claim support, citation resolution, fabrication rate, or isolation metrics fall below gate thresholds (G1–G6).

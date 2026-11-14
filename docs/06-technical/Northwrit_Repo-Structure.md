@@ -1,18 +1,20 @@
 # Modern Architecture & Repository Structure
-## Historical enterprise monorepo proposal for Northwrit (v3.0)
+
+> Historical proposal: The current layout is defined by [ADR 0002](../decisions/0002-expanded-repository-structure.md) and [ADR 0003](../decisions/0003-npm-root-workspace.md). See the [current implementation](NorthWrit-Current-Implementation.md) for the working stack.
+## Historical enterprise monorepo proposal for NorthWrit (v3.0)
 
 **Version:** 3.0 | **Date:** November 5, 2026 | **Status:** Historical proposal; superseded for current delivery
 
 **Document Code:** `NW-ARCH-REPO-STRUCTURE-03`  
 **Cross-References:** [Platform Layers & Surfaces](Northwrit_Platform-Layers-and-Surfaces.md) | [Architecture Stack](Northwrit_Architecture-Stack.md) | [System Architecture](Northwrit_System-Architecture.md) | [Marketing & GTM](../03-market/Northwrit_Marketing-and-GTM-Strategy.md)
 
-The [NorthWrit implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md#repository-organization-before-phase-4) governs current repository work. It now requires the expanded apps/packages/infra migration before Phase 4, as recorded in ADR 0002; the expanded layout is implemented locally with validation recorded in the migration report. Further service extraction and independent scaling remain conditional on operating evidence. The platforms, services and guarantees described below are historical proposals, not verified NorthWrit capabilities or mandatory implementation steps.
+The [NorthWrit implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md#completed-repository-preparation) governs current repository work. It now requires the expanded apps/packages/infra migration before Phase 4, as recorded in ADR 0002; the expanded layout is implemented locally with validation recorded in the migration report. Further service extraction and independent scaling remain conditional on operating evidence. The platforms, services and guarantees described below are historical proposals, not verified NorthWrit capabilities or mandatory implementation steps.
 
 ---
 
 ## 1. Architectural Philosophy: The Sovereign Enterprise Monorepo
 
-As Northwrit scales into an enterprise-grade legal AI platform, it unifies multiple client **surfaces**, specialized administrative and marketing **portals**, and diverse **deployment tiers** within a single **Sovereign Enterprise Monorepo** (**Monorepo at build time, Independent Microservices at runtime**):
+As NorthWrit scales into an enterprise-grade legal AI platform, it unifies multiple client **surfaces**, specialized administrative and marketing **portals**, and diverse **deployment tiers** within a single **Sovereign Enterprise Monorepo** (**Monorepo at build time, Independent Microservices at runtime**):
 
 1. **TypeScript (`pnpm` + Turborepo) — Client Surfaces, Control Plane & Core Packages:**
    * Powers `apps/web` (Lawyer Workspace, Folio Editor, Review Grid, Flow Builder), `apps/marketing`, `apps/control-centre`, `apps/word-addin`, `apps/outlook-addin`, `apps/browser-extension`, and shared `packages/*`.
@@ -29,7 +31,7 @@ As Northwrit scales into an enterprise-grade legal AI platform, it unifies multi
 
 ## 2. Why the v3.0 Monorepo Outperforms Multi-Repo Architectures
 
-| Dimension | Separate Module Repos (Multi-Repo) | **Northwrit v3.0 Enterprise Monorepo** |
+| Dimension | Separate Module Repos (Multi-Repo) | **NorthWrit v3.0 Enterprise Monorepo** |
 |---|---|---|
 | **Cross-Stack Feature Velocity** | Slow: Changing a CiteCheck schema or Shield decision rule requires 4–5 coordinated PRs across separate repositories and publishing intermediate packages. | **Atomic & Instant:** One PR updates the contract (`packages/contracts`), the Python research engine (`services/legal-engine`), the API control plane (`packages/api`), the React UI (`apps/web`), and the Word add-in (`apps/word-addin`). |
 | **Schema & Type Drift** | High risk of JSON payload mismatch between Python microservices and TypeScript APIs. | **Zero Drift:** `@northwrit/contracts` generates TypeScript types and Python Pydantic v2 models from the same source of truth. |
@@ -192,7 +194,7 @@ NorthWritX/
 │       └── src/                       #   └─ Offline Status Tray UI & Local Hardware Profiler
 │
 ├── services/                          # ── SOVEREIGN AI & DOCUMENT MICROSERVICES (Python / uv) ──
-│   ├── shield-pii/                    # Northwrit Shield Redaction Service (FastAPI + Presidio)
+│   ├── shield-pii/                    # NorthWrit Shield Redaction Service (FastAPI + Presidio)
 │   │   ├── app/recognizers/           #   ├─ Canadian SIN, Postal, Court File #, LSO Counsel NER
 │   │   ├── app/vault/                 #   ├─ Reversible Pseudonym Store & Encryption Vault
 │   │   └── app/server.py              #   └─ Warm Analyzer + Anonymizer endpoints (728 lines)

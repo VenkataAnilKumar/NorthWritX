@@ -19,6 +19,7 @@ This is the current layout of the NorthWrit application. The [repository decisio
 | `packages/byok-validation/`, `packages/pdf-text-order/` at repository root | Domain/test maintainers | Shared fixture data and their existing consumers; these directories are not independently installed npm packages |
 | `tests/browser/` and `tests/loadtest/` | Workflow and performance verification | Real browser journeys and measured load; distinguish mocks, live model execution and skipped tests |
 | `infra/` and app Dockerfiles | Operations with domain maintainers | Runtime configuration, auth/storage boundaries and migration ordering |
+| `apps/worker/` | API/domain engineering with operations | Standalone launcher/build boundary; queue handlers and domain services remain API-owned |
 | `scripts/application/` and `docs/engineering/` | Relevant application maintainers | Engineering automation and implemented operating procedures |
 | Source provenance, license, credits and notices | Repository maintenance with release reviewers | Imported source identity, local changes and upstream update compatibility |
 
@@ -42,7 +43,7 @@ Review documentation links and command examples when changing paths. Keep the nu
 
 ## Layout changes
 
-The expanded layout in ADR 0002 has been implemented locally. `apps/worker/` owns process startup and derives its container from the API artifact; API/domain engineering retains service and queue ownership. The [path map](../07-implementation/NorthWrit-Migration-Paths.json) records supporting-file destinations and upstream mapping. See the [verification record](../07-implementation/NorthWrit-Migration-Verification.md) for passed checks and limits; a source move does not establish runtime scalability or Phase 4 isolation.
+The expanded layout in ADR 0002 is merged, as are the root npm workspace. See the [current implementation](NorthWrit-Current-Implementation.md) for the working stack and milestone evidence. `apps/worker/` owns process startup and derives its container from the API artifact; API/domain engineering retains service and queue ownership. The [path map](../07-implementation/NorthWrit-Migration-Paths.json) records supporting-file destinations and upstream mapping. See the [verification record](../07-implementation/NorthWrit-Migration-Verification.md) for passed checks and limits; a source move does not establish runtime scalability or Phase 4 isolation.
 
 ## Workspace ownership
 

@@ -1,4 +1,13 @@
-# Documentation
+# NorthWrit engineering documentation
+
+Use the [developer guide](../guides/developer.md) for setup, the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) for the working stack, and the [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) for delivery status. These guides describe existing engineering interfaces; product targets are indexed separately in the [documentation index](../README.md).
+
+## Product and architecture references
+
+- [Product catalogue](../02-product/NorthWrit-Product-Catalogue.md) — supported surfaces, configuration and limits
+- [System flows](../06-technical/NorthWrit-System-Flows.md) — sessions, ingestion, streams, approvals, exports and recovery
+- [User guide](../guides/user-guide.md) and [administrator guide](../guides/administrator.md) — task and operating guidance
+- [Documentation coverage](../07-implementation/NorthWrit-Documentation-Coverage.md) — implementation references and detailed guide inventory
 
 ## Run and deploy NorthWrit
 
@@ -45,6 +54,9 @@
   `components/ui` primitives, and the accessibility baseline
 
 ## Testing and CI
+
+- [Active CI inventory](../07-implementation/NorthWrit-CI-Inventory.md) — repository, application and container checks; remaining integration/release gaps
+- [Observability](observability.md) — explicit operator DSNs, privacy filtering and local reporting checks
 
 - [End-to-end tests in CI](e2e-ci.md)
 - [Backend unit-test coverage](testing-coverage.md)
