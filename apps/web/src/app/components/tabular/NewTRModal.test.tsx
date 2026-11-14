@@ -9,24 +9,24 @@ import {
     uploadProjectDocuments,
     uploadStandaloneDocuments,
     type OrgMember,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 import { UPLOAD_LIMIT_MESSAGES } from "@northwrit/client";
 import { UNSUPPORTED_DOCUMENT_WARNING_MESSAGE } from "@/app/lib/documentUploadValidation";
 import type { Document } from "../shared/types";
 import { NewTRModal } from "./NewTRModal";
 
-vi.mock("@/app/lib/mikeApi", async () => {
+vi.mock("@/app/lib/northwritApi", async () => {
     // The upload error copy is real shared code; only the network calls are
     // stubbed, so the modal's failure messages are the ones users would see.
     const uploads = await vi.importActual<
         typeof import("@northwrit/client")
     >("@northwrit/client");
-    class MikeApiError extends Error {
+    class NorthWritApiError extends Error {
         status = 500;
     }
     return {
-        MikeApiError,
+        NorthWritApiError,
         UploadBatchError: uploads.UploadBatchError,
         failedUploadMessage: uploads.failedUploadMessage,
         getProject: vi.fn(),
@@ -547,7 +547,7 @@ describe("NewTRModal", () => {
     });
 
     it("reports a thrown upload batch failure", async () => {
-        const { UploadBatchError } = await import("@/app/lib/mikeApi");
+        const { UploadBatchError } = await import("@/app/lib/northwritApi");
         vi.mocked(uploadProjectDocuments).mockRejectedValue(
             new UploadBatchError("batch failed", [
                 {

@@ -1,9 +1,9 @@
 import {
-    MikeApiError,
+    NorthWritApiError,
     UploadBatchError,
     reportedUpstreamMessage,
     type UploadOutcome,
-} from "./mikeApi";
+} from "./northwritApi";
 import type { Operation } from "@northwrit/client";
 
 export type { Operation };
@@ -25,13 +25,13 @@ export function userFacingApiError(
     fallback: string,
 ): string {
     // The 5xx codes with something to say (a migration to apply, a server
-    // to wait for) get their fixed frontend message (mikeApi.ts).
-    if (error instanceof MikeApiError && error.code) {
+    // to wait for) get their fixed frontend message (northwritApi.ts).
+    if (error instanceof NorthWritApiError && error.code) {
         const upstream = reportedUpstreamMessage(error.code);
         if (upstream) return upstream;
     }
     if (
-        error instanceof MikeApiError &&
+        error instanceof NorthWritApiError &&
         error.status >= 400 &&
         error.status < 500 &&
         error.message
@@ -143,7 +143,7 @@ function signInActionHref(): string | null {
  * Send real faults to Sentry, and only real faults.
  *
  * A 4xx is an intentional answer, a transport failure is already reported by
- * the API client under `component: mike-api`, and a cancellation is not a
+ * the API client under `component: northwrit-api`, and a cancellation is not a
  * failure at all. What is left is an unclassifiable throw (a bug in this
  * code) and a 5xx that reached a screen without going through the API
  * client. It runs BEFORE the shared notifier's console.warn so the console
@@ -200,7 +200,7 @@ export function reportFault(
 export function reportFlowFailure(args: {
     operation: Operation;
     /** Which client layer saw it; the API client unless the caller says. */
-    component?: "mike-api" | "assistant-chat";
+    component?: "northwrit-api" | "assistant-chat";
     status?: number | null;
     code?: string | null;
     requestId?: string | null;
@@ -220,7 +220,7 @@ export function reportFlowFailure(args: {
         {
             level: args.level,
             tags: {
-                component: args.component ?? "mike-api",
+                component: args.component ?? "northwrit-api",
                 operation: args.operation,
                 http_status: status,
                 http_method: args.method,
@@ -233,14 +233,14 @@ export function reportFlowFailure(args: {
 }
 
 /**
- * Codes the server side already reported and phrased for users (mikeApi.ts:
+ * Codes the server side already reported and phrased for users (northwritApi.ts:
  * schema_out_of_date, upstream_unavailable) keep that one sentence in a toast
  * too, so the error copy for them has a single source. A call site's own
  * `codeMessages` entry still wins.
  */
 function withReportedUpstreamMessage<T extends DescribeErrorOptions>(error: unknown, options: T): T {
     // Duck-typed like describeError: the code is read off any error shape,
-    // and mikeApi's table is consulted only when there is a code to look up.
+    // and northwritApi's table is consulted only when there is a code to look up.
     const raw = error && typeof error === "object" ? (error as { code?: unknown }).code : null;
     const code = typeof raw === "string" ? raw : null;
     const upstream = code ? reportedUpstreamMessage(code) : null;
@@ -249,7 +249,7 @@ function withReportedUpstreamMessage<T extends DescribeErrorOptions>(error: unkn
 }
 
 /**
- * The web app's `describeError`: the shared classifier plus mikeApi's fixed
+ * The web app's `describeError`: the shared classifier plus northwritApi's fixed
  * sentences for server-reported 5xx codes. Web code imports it from here so
  * an inline message and a notice for the same failure read the same words;
  * calling the shared one directly drops those sentences.

@@ -9,7 +9,7 @@ import * as Sentry from "@sentry/nextjs";
 import {
     privacyBoundaryIntegration,
     type Operation,
-    MIKE_SENTRY_DSN,
+    NORTHWRIT_SENTRY_DSN,
     createEventScrubber,
     sentryEnvironment,
     installKind,
@@ -116,7 +116,7 @@ export function reportApiFailure(failure: {
         applyContext(scope, {
             level: "error",
             tags: {
-                component: "mike-api",
+                component: "northwrit-api",
                 operation: failure.operation,
                 http_status: failure.status,
                 http_method: method,
@@ -274,7 +274,7 @@ export function reportNetworkFailure(
             applyContext(scope, {
                 level: "warning",
                 tags: {
-                    component: "mike-api",
+                    component: "northwrit-api",
                     operation: request.operation,
                     stage: "api-unreachable",
                     network: true,
@@ -298,7 +298,7 @@ export function reportNetworkFailure(
         applyContext(scope, {
             level: "warning",
             tags: {
-                component: "mike-api",
+                component: "northwrit-api",
                 network: true,
                 network_state: networkState,
                 request_origin: requestOrigin,
@@ -336,7 +336,7 @@ export function browserSentryOptions(env: {
         // The SDK requires a valid DSN even with a tunnel. This placeholder
         // never chooses the destination: /monitoring rewrites it. Always
         // initialize so a runtime override can enable a baked-off image.
-        dsn: MIKE_SENTRY_DSN.frontend,
+        dsn: "https://northwrit@northwrit.local/1",
         enabled: true,
         environment: sentryEnvironment(env.environment, env.nodeEnv === "development"),
         release: releaseName(env.release, env.version, env.gitSha),
@@ -365,7 +365,7 @@ export function browserSentryOptions(env: {
         integrations: [privacyBoundaryIntegration(), Sentry.captureConsoleIntegration({ levels: ["error"] })],
         initialScope: {
             tags: {
-                service: "mike-frontend",
+                service: "northwrit-web",
                 runtime: "browser",
                 build_mode: env.nodeEnv,
                 diagnostics_version: "2",
@@ -398,7 +398,7 @@ export type ReportingDestination = {
  *   SENTRY_DSN                    the deployment's project (FRONTEND_SENTRY_DSN in compose)
  *   NEXT_PUBLIC_SENTRY_DSN        the project baked in at image build, for images
  *                                 built with a DSN and run without the runtime one
- *   otherwise                     the built-in Mike project (community default)
+ *   otherwise                     off until an operator configures a DSN
  *
  * The result is printed at boot (sentry.server.config.ts) and answered by
  * GET /monitoring, so an operator can see which rule applied.
@@ -418,7 +418,7 @@ export function reportingDestination(env: NodeJS.ProcessEnv): ReportingDestinati
     const resolved = resolveDsn({
         disabled: runtimeDisabled || env.NEXT_PUBLIC_SENTRY_DISABLED?.trim(),
         dsn: runtimeDsn || buildDsn,
-        fallback: MIKE_SENTRY_DSN.frontend,
+        fallback: NORTHWRIT_SENTRY_DSN.frontend,
         // `next dev` runs with NODE_ENV=development; `next build`/`next
         // start` (every image) with production.
         development: env.NODE_ENV === "development",
@@ -461,7 +461,9 @@ export function describeReportingDestination(destination: ReportingDestination):
         case "build":
             return `[sentry] web app reports → NEXT_PUBLIC_SENTRY_DSN project ${project} (baked at build; set SENTRY_DSN to change it at runtime), browser included`;
         default:
-            return "[sentry] web app reports → upstream project Sentry (community default), browser included. Opt out with SENTRY_DISABLED=true or point SENTRY_DSN at your own project.";
+            return destination.dsn
+                ? `[sentry] web app reports → configured fallback project ${project}, browser included`
+                : "[sentry] web app reports: off (no configured DSN), browser included";
     }
 }
 
@@ -476,7 +478,7 @@ export function serverSentryOptions(
         enabled: dsn.length > 0,
         environment: sentryEnvironment(env.SENTRY_ENVIRONMENT, env.NODE_ENV === "development"),
         integrations: [privacyBoundaryIntegration()],
-        release: releaseName(env.SENTRY_RELEASE, env.MIKE_VERSION, env.GIT_SHA),
+        release: releaseName(env.SENTRY_RELEASE, (env.NORTHWRIT_VERSION ?? env.MIKE_VERSION), env.GIT_SHA),
         tracesSampleRate: parseSampleRate(env.SENTRY_TRACES_SAMPLE_RATE, 0),
         dataCollection: {
             userInfo: false,
@@ -494,7 +496,7 @@ export function serverSentryOptions(
         attachStacktrace: true,
         initialScope: {
             tags: {
-                service: "mike-frontend",
+                service: "northwrit-web",
                 runtime,
                 build_mode: env.NODE_ENV,
                 diagnostics_version: "2",

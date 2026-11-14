@@ -61,7 +61,7 @@ import {
   type Org,
   type OrgInvitation,
   type OrgMember,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
   ORG_ROLE_LABELS,
   ORG_ROLES,

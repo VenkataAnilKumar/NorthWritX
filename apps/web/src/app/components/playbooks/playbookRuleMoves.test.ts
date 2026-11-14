@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { PlaybookContent, PlaybookRule } from "@/app/lib/mikeApi";
+import type { PlaybookContent, PlaybookRule } from "@/app/lib/northwritApi";
 import { movePlaybookRule } from "./playbookRuleMoves";
 
 const rule = (id: string) =>

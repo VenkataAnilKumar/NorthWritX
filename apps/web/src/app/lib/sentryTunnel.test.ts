@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { MIKE_SENTRY_DSN } from "@northwrit/client";
+import { NORTHWRIT_SENTRY_DSN } from "@northwrit/client";
 import { rewriteEnvelope, tunnelDecision } from "./sentryTunnel";
 
 const encoder = new TextEncoder();
@@ -44,14 +44,14 @@ describe("tunnelDecision", () => {
         });
     });
 
-    it("forwards to the built-in Mike project otherwise, with runtime tags", () => {
+    it("forwards to the built-in NorthWrit project otherwise, with runtime tags", () => {
         const decision = tunnelDecision({
             SENTRY_ENVIRONMENT: "production",
             SENTRY_INSTALL: "official",
         } as unknown as NodeJS.ProcessEnv);
         expect(decision).toMatchObject({
             kind: "forward",
-            dsn: MIKE_SENTRY_DSN.frontend,
+            dsn: NORTHWRIT_SENTRY_DSN.frontend,
             environment: "production",
             install: "official",
         });

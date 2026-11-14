@@ -3,12 +3,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getWebSearchSettings,
   updateWebSearchSettings,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { notifyError } from "@/app/lib/userFacingError";
 import { WebSearchSection } from "./WebSearchSection";
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
   getWebSearchSettings: vi.fn(),
   updateWebSearchSettings: vi.fn(),
 }));

@@ -2,7 +2,7 @@
 
 Updated: November 11, 2026
 
-Status: Phase 1 source audit, Phase 3 integration and rebrand, and the initial repository organization are complete. Organization PR #1 merged as `624268de88697d31dee4603548bad25042fdad15`; all four GitHub CI jobs passed. The expanded repository migration is implemented and locally validated, with inherited limitations recorded; [PR #2](https://github.com/VenkataAnilKumar/NorthWritX/pull/2) records GitHub CI/review and merge status for closing the migration gate before Phase 4. Phase 4 has not started; see the migration verification record for current results and limitations.
+Status: Phase 1 source audit, core Phase 3 integration, repository organization, expanded layout and root npm workspace are complete. PR #2 and [PR #3](https://github.com/VenkataAnilKumar/NorthWritX/pull/3) merged with all seven GitHub checks passing; workspace merge commit is `c7cf9cd936b1d4fb50fb81d193d3c8ceb147d943`. The [rebrand-completion pass](NorthWrit-Rebrand-Completion.md) is implemented and locally verified with explicit compatibility exceptions; its GitHub CI/review is pending before Phase 4. Phase 4 has not started.
 
 ## Objective and scope
 
@@ -17,10 +17,10 @@ The active application spans root `apps/` and `packages/`, with [recorded proven
 | Phase | Outcome | Depends on | Status |
 |---|---|---|---|
 | 1. Audit Mike OSS | Source-backed capability map and implementation backlog | Pinned source | Complete |
-| 3. Integrate and rebrand | Maintainable NorthWrit application baseline | Phase 1 | Complete |
+| 3. Integrate and rebrand | Maintainable NorthWrit application baseline | Phase 1 | Complete locally with documented compatibility exceptions |
 | Repository organization | Clear entry points, ownership, documentation and verification commands | Phase 3 | Complete; local verification recorded |
 | Repository structure migration | Separate application surfaces, worker entry point, shared packages and infrastructure | Initial repository organization | Complete; PR #2 merged with all seven checks passing |
-| Root npm workspace | One frozen install graph and NorthWrit package names | Repository structure migration | Implemented locally; checks and inherited host limits recorded |
+| Root npm workspace | One frozen install graph and NorthWrit package names | Repository structure migration | Complete; PR #3 merged with all seven checks passing |
 | 4. Build the legal workspace | Complete matter-based user journeys | Root workspace verification | Planned |
 | 5. Add NorthWrit capabilities | Canadian legal workflows and enforceable governance | Phase 4 | Planned |
 | 6. Extend integrations | Governed agents, connectors, plugins, and MCP | Phase 5 | Planned |
@@ -270,4 +270,4 @@ Deliverables: Release candidate; acceptance report; deployment and rollback runb
 - [UI specification](../05-design/Northwrit_UI-Spec.md)
 - [NorthWrit and Harvey feature comparison](../03-market/Northwrit_vs_Harvey_Feature-Comparison.md)
 
-**Immediate next action:** Review the [migration verification](NorthWrit-Migration-Verification.md), address the recorded baseline limits as appropriate, then require successful GitHub CI and merge of PR #2 before closing the repository migration gate and beginning Phase 4. PR #1 and its CI verification are complete. This migration introduces no Phase 4 features and does not deploy or publish anything.
+**Immediate next action:** Review and commit the locally verified rebrand-completion pass, then require its GitHub CI before merging. Then begin the planned Phase 4 matter-foundation assessment. Repository migrations and the workspace gate are merged; no Phase 4 feature, deployment or publication is included in the rebrand pass.

@@ -10,7 +10,7 @@ import { SettingsTextInput } from "@/app/components/settings/SettingsTextInput";
 import { FieldLabel, FormTextInput } from "@/app/components/ui/form-field";
 import { SettingsRow } from "./SettingsRow";
 import { SettingsDescription, SettingsLabel } from "./SettingsText";
-import { isMfaRequiredError } from "@/app/lib/mikeApi";
+import { isMfaRequiredError } from "@/app/lib/northwritApi";
 import {
   UserVisibleError,
   notifyError,

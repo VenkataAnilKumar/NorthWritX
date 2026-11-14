@@ -10,7 +10,7 @@ import { retainExceptionTypes, diagnosticErrorTags } from "./sentryPrivacy";
  *
  * Two jobs:
  *
- *  1. SCRUB. Mike handles privileged legal documents. An event may carry a
+ *  1. SCRUB. NorthWrit handles privileged legal documents. An event may carry a
  *     user id and a route; it must never carry a request body, a cookie, an
  *     auth header, or anything under a key that looks like a secret.
  *  2. DEDUPE. Every remaining `console.error` is bridged into Sentry so no
@@ -250,26 +250,13 @@ export function redactShaped(value: unknown, depth = 0): unknown {
   return value;
 }
 
-/**
- * The Mike project's own Sentry projects. A DSN is a write-only address:
- * it lets an SDK post events and nothing else, so it is public by design
- * (it ships in every browser bundle). Community installs report here by
- * default so the project learns what forks run into; the opt-out and the
- * override are one variable each (see resolveDsn).
- */
-export const MIKE_SENTRY_DSN = {
-  backend:
-    "https://7d685d2a4e6a4bfd5991b320c0043d23@o4512288166510592.ingest.us.sentry.io/4512288204718080",
-  frontend:
-    "https://1d40513ce9978d4fbd4deeeeff23817a@o4512288166510592.ingest.us.sentry.io/4512288207798272",
-  wordAddin:
-    "https://98e6cb43234267619a432a58c0ad71f9@o4512288166510592.ingest.us.sentry.io/4512288210812928",
-} as const;
+/** No embedded telemetry destinations: operators configure their own DSN. */
+export const NORTHWRIT_SENTRY_DSN = { backend: "", frontend: "", wordAddin: "" } as const;
 
 export type DsnResolution = {
   dsn: string;
   /**
-   * Where the DSN came from; "default" means the Mike project's Sentry and
+   * Where the DSN came from; "default" means the caller's fallback and
    * "development" means off because this is a development build.
    */
   source: "disabled" | "env" | "default" | "development";
@@ -277,8 +264,7 @@ export type DsnResolution = {
 
 /**
  * Off if the runtime's *_SENTRY_DISABLED is "true"; the runtime's own DSN
- * when one is set (a self-hoster's own Sentry); otherwise the built-in Mike
- * project DSN. Test processes are guarded separately by the caller.
+ * when one is set (a self-hoster's own Sentry); otherwise the caller's fallback (empty for NorthWrit runtimes). Test processes are guarded separately by the caller.
  */
 export function resolveDsn(input: {
   disabled?: string;
@@ -286,8 +272,8 @@ export function resolveDsn(input: {
   fallback: string;
   /**
    * A development build (`next dev`, `tsx watch`, the add-in's webpack dev
-   * server): a contributor's laptop, not an install. It never falls back to
-   * the Mike project; only a DSN set on purpose (your own project, or the
+   * server): a contributor's laptop, not an install. Reporting is off unless
+   * a DSN is set on purpose (your own project, or the
    * local sink in scripts/sentry-sink.mjs) turns it on.
    */
   development?: boolean;
@@ -353,7 +339,7 @@ const FILESYSTEM_PATH_PATTERN =
 
 /**
  * A code location without the machine it was found on: everything before
- * the repository directory (`/Users/jane/work/mike/backend/src/x.ts` →
+ * the repository directory (`/Users/jane/work/northwrit/backend/src/x.ts` →
  * `backend/src/x.ts`), the dependency path for node_modules, the URL path
  * for browser bundles, and "[external]" for anything outside the project.
  */
@@ -418,7 +404,7 @@ function mapStringLeaves(
 }
 
 /**
- * COMMUNITY INSTALLS: a fork or self-hosted Mike reporting to the Mike
+ * COMMUNITY INSTALLS: a fork or self-hosted NorthWrit reporting to the NorthWrit
  * project's Sentry sends only what our own code owns and what is too broad
  * to identify anyone. Removed: the machine name, the user id, request
  * headers and host, every breadcrumb, device / app / locale contexts, local
@@ -431,10 +417,10 @@ export function minimiseForCommunity<T extends CommunityEvent>(event: T): T {
   delete event.server_name;
   delete event.user;
   // Breadcrumbs are request history; only our own stage trail stays
-  // (category mike.stage, message a stage name), the privacy boundary
+  // (category northwrit.stage, message a stage name), the privacy boundary
   // checks each one against the diagnostic label format.
   const trail = Array.isArray(event.breadcrumbs)
-    ? event.breadcrumbs.filter((crumb) => (crumb as { category?: unknown })?.category === "mike.stage")
+    ? event.breadcrumbs.filter((crumb) => (crumb as { category?: unknown })?.category === "northwrit.stage")
     : [];
   if (trail.length) event.breadcrumbs = trail;
   else delete event.breadcrumbs;
@@ -581,12 +567,12 @@ function findNested(
 }
 
 /**
- * Code the `next dev` toolchain runs, never Mike's: Next's own dist (the dev
+ * Code the `next dev` toolchain runs, never NorthWrit's: Next's own dist (the dev
  * server, hot reloader, dev overlay, console interceptor), React and the
  * scheduler it drives, and the Turbopack dev runtime. On the server these are
  * `node_modules/<pkg>/…` paths; in the browser Turbopack serves the same
  * modules as chunks named after their path (`node_modules_next_dist_<hash>._.js`).
- * Mike's own code is `src/…` on the server and `[project]`/`src_…` chunks in
+ * NorthWrit's own code is `src/…` on the server and `[project]`/`src_…` chunks in
  * the browser, so it never matches.
  */
 const DEV_TOOLCHAIN_FRAME =
@@ -618,9 +604,9 @@ const STACK_TOKEN_LOCATION = /^([^\s()]+):\d+:\d+$/;
  * next-dev-server `findPageComponents` → base-server rendering `/_error`),
  * forwarded to the browser's dev overlay and caught as unhandled there.
  * MIKE-FRONTEND-K: the dev overlay logging it through console.error. Neither
- * is a defect in Mike and both went to the project's shared community
+ * is a defect in NorthWrit and both went to the project's shared community
  * Sentry. An explicit report, a production build, or any event with a
- * frame in Mike's own code (including the stack of an Error nested in the
+ * frame in NorthWrit's own code (including the stack of an Error nested in the
  * console arguments) is kept.
  */
 function isDevToolchainNoise(event: ScrubbableEvent, automatic: boolean): boolean {
@@ -883,7 +869,7 @@ export const UNVERSIONED = "0.0.0";
 // Semver core plus optional prerelease; the commit is the build metadata.
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 
-/** `MIKE_VERSION` as a semver string, or 0.0.0 when unset or malformed. */
+/** `NORTHWRIT_VERSION` as a semver string, or 0.0.0 when unset or malformed. */
 export function normalizeVersion(raw: string | undefined): string {
     const trimmed = (raw ?? "").trim().replace(/^v/, "");
     return VERSION_PATTERN.test(trimmed) ? trimmed : UNVERSIONED;
@@ -893,10 +879,10 @@ export function normalizeVersion(raw: string | undefined): string {
  * The release every event is tagged with, and the one the build plugins
  * upload source maps under (releaseName.cjs is the CommonJS twin for the
  * build configs). An explicit SENTRY_RELEASE wins; otherwise
- * `mike@<version>+<sha12>` from the MIKE_VERSION and GIT_SHA build
+ * `northwrit@<version>+<sha12>` from the NORTHWRIT_VERSION and GIT_SHA build
  * arguments. Sentry reads `package@version+build` as semver, so releases
  * order by version while the build metadata keeps the exact commit. A build
- * without a version is `mike@0.0.0...`: valid, and visibly not a release.
+ * without a version is `northwrit@0.0.0...`: valid, and visibly not a release.
  */
 export function releaseName(
     explicit: string | undefined,
@@ -906,6 +892,6 @@ export function releaseName(
     const named = explicit?.trim();
     if (named) return named;
     const sha = gitSha?.trim().slice(0, 12);
-    const base = `mike@${normalizeVersion(version)}`;
+    const base = `northwrit@${normalizeVersion(version)}`;
     return sha ? `${base}+${sha}` : base;
 }

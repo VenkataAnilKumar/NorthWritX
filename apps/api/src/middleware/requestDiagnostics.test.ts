@@ -108,9 +108,9 @@ it.each(["community", "official"] as const)("gives console captures private-free
 
 
 it.each([
-  "    at /Users/Private Person/Client Files/mike/backend/src/operation.ts:42:7",
-  "    at work (/Users/Private Person/Client Files/mike/backend/src/operation.ts:42:7)",
-  "    at work (file:///Users/Private Person/Client Files/mike/backend/src/operation.ts:42:7)",
+  "    at /Users/Private Person/Client Files/northwrit/backend/src/operation.ts:42:7",
+  "    at work (/Users/Private Person/Client Files/northwrit/backend/src/operation.ts:42:7)",
+  "    at work (file:///Users/Private Person/Client Files/northwrit/backend/src/operation.ts:42:7)",
 ])("retains nested error locations from paths containing spaces: %s", frame => {
   resetSentryForTests("community");
   const error = new Error(PRIVATE_FILE);

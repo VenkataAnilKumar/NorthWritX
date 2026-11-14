@@ -7,7 +7,7 @@ import {
     downloadUserExport,
     getUserExportStatus,
     startUserExport,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import PrivacyDataPage from "./page";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 
@@ -15,7 +15,7 @@ import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 // These tests pin that wiring (start called with the right type, download
 // only after the poll reports done) — the job itself is backend-tested.
 
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
     deleteAllChats: vi.fn(),
     deleteAllMemories: vi.fn(),
     deleteAllProjects: vi.fn(),
@@ -85,11 +85,11 @@ describe("privacy-data async exports", () => {
             .mockResolvedValueOnce({ status: "pending" })
             .mockResolvedValueOnce({
                 status: "done",
-                filename: "mike-account-export-u1.json",
+                filename: "northwrit-account-export-u1.json",
             });
         mockedDownload.mockResolvedValue({
             blob: new Blob(["{}"], { type: "application/json" }),
-            filename: "mike-account-export-u1.json",
+            filename: "northwrit-account-export-u1.json",
         });
         // jsdom has no createObjectURL.
         globalThis.URL.createObjectURL = vi.fn(() => "blob:mock");
@@ -152,11 +152,11 @@ describe("privacy-data async exports", () => {
         mockedStart.mockResolvedValue({ export_id: "job-memory" });
         mockedStatus.mockResolvedValue({
             status: "done",
-            filename: "mike-memory-export.zip",
+            filename: "northwrit-memory-export.zip",
         });
         mockedDownload.mockResolvedValue({
             blob: new Blob(["zip"], { type: "application/zip" }),
-            filename: "mike-memory-export.zip",
+            filename: "northwrit-memory-export.zip",
         });
         globalThis.URL.createObjectURL = vi.fn(() => "blob:memory");
         globalThis.URL.revokeObjectURL = vi.fn();

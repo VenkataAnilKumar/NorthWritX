@@ -7,7 +7,7 @@ import {
     stopTabularGeneration,
     streamTabularGeneration,
     streamTabularGenerationResume,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type {
     TabularCell,
     TabularReview,
@@ -36,8 +36,8 @@ vi.mock("next/navigation", () => ({
     useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
     useSearchParams: () => new URLSearchParams(),
 }));
-vi.mock("@/app/lib/mikeApi", () => ({
-    MikeApiError: class MikeApiError extends Error {
+vi.mock("@/app/lib/northwritApi", () => ({
+    NorthWritApiError: class NorthWritApiError extends Error {
         status: number;
         code: string | null;
         constructor(args: {
@@ -46,7 +46,7 @@ vi.mock("@/app/lib/mikeApi", () => ({
             code?: string | null;
         }) {
             super(args.message);
-            this.name = "MikeApiError";
+            this.name = "NorthWritApiError";
             this.status = args.status;
             this.code = args.code ?? null;
         }
@@ -298,12 +298,12 @@ describe("TabularReviewView server-owned generation", () => {
     it("falls back to dropping the stream when the server has no run to stop", async () => {
         // An async (queue-backed) deployment, or another replica's run: there
         // is nothing in this process to stop, so Stop means what it used to.
-        const { MikeApiError } = await import("@/app/lib/mikeApi");
+        const { NorthWritApiError } = await import("@/app/lib/northwritApi");
         mockDetail({});
         const stream = openStream();
         vi.mocked(streamTabularGeneration).mockResolvedValue(stream.response);
         vi.mocked(stopTabularGeneration).mockRejectedValue(
-            new MikeApiError({
+            new NorthWritApiError({
                 message: "no run",
                 status: 404,
                 code: "generation_not_found",

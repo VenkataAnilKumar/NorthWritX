@@ -58,7 +58,6 @@ vi.mock("@sentry/node", () => ({
 import * as Sentry from "@sentry/node";
 import {
   bestEffort,
-  MIKE_SENTRY_DSN,
   flushSentry,
   initSentry,
   issueThrottleKeyCountForTests,
@@ -103,8 +102,8 @@ describe("sentryConfiguration", () => {
   ])("keeps %s telemetry disabled with the NorthWrit Compose example", (_kind, disabled, dsn, enabled, expectedDsn) => {
     const sample = parse(readFileSync(path.resolve(__dirname, "../../../../../infra/.env.example")));
     const config = sentryConfiguration({
-      MIKE_BUILD_SENTRY_DISABLED: disabled,
-      MIKE_BUILD_SENTRY_DSN: dsn,
+      NORTHWRIT_BUILD_SENTRY_DISABLED: disabled,
+      NORTHWRIT_BUILD_SENTRY_DSN: dsn,
       ...sample,
       NODE_ENV: "production",
     });
@@ -112,18 +111,18 @@ describe("sentryConfiguration", () => {
     expect(config.dsn).toBe(expectedDsn);
   });
 
-  it("is ON BY DEFAULT: the NorthWrit project DSN, a community install, environment self-hosted", () => {
+  it("is off without a configured NorthWrit DSN, with environment self-hosted", () => {
     const config = sentryConfiguration({ NODE_ENV: "production" } as NodeJS.ProcessEnv);
-    expect(config.enabled).toBe(true);
-    expect(config.dsn).toBe(MIKE_SENTRY_DSN.backend);
+    expect(config.enabled).toBe(false);
+    expect(config.dsn).toBe("");
     expect(config.dsnSource).toBe("default");
     expect(config.install).toBe("community");
     // NODE_ENV no longer leaks into the environment tag: a fork's
     // "production" is not ours.
     expect(config.environment).toBe("self-hosted");
     expect(config.tracesSampleRate).toBe(0);
-    // No MIKE_VERSION or GIT_SHA: a visibly unversioned build, never undefined.
-    expect(config.release).toBe("mike@0.0.0");
+    // No NORTHWRIT_VERSION or GIT_SHA: a visibly unversioned build, never undefined.
+    expect(config.release).toBe("northwrit@0.0.0");
   });
 
   it("is off with SENTRY_DISABLED=true, whatever else is set", () => {
@@ -150,20 +149,20 @@ describe("sentryConfiguration", () => {
     const config = sentryConfiguration({
       SENTRY_DSN: " https://key@o1.ingest.sentry.io/1 ",
       SENTRY_ENVIRONMENT: "staging",
-      SENTRY_RELEASE: "mike@1.2.3",
+      SENTRY_RELEASE: "northwrit@1.2.3",
       SENTRY_TRACES_SAMPLE_RATE: "7",
     } as NodeJS.ProcessEnv);
     expect(config.enabled).toBe(true);
     expect(config.dsn).toBe("https://key@o1.ingest.sentry.io/1");
     expect(config.environment).toBe("staging");
-    expect(config.release).toBe("mike@1.2.3");
+    expect(config.release).toBe("northwrit@1.2.3");
     expect(config.tracesSampleRate).toBe(1);
   });
 
   it.each([undefined, "", "   "])("preserves a fork's baked DSN with runtime override %s", (runtimeDsn) => {
     const config = sentryConfiguration({
       SENTRY_DSN: runtimeDsn,
-      MIKE_BUILD_SENTRY_DSN: " https://fork@self.example/9 ",
+      NORTHWRIT_BUILD_SENTRY_DSN: " https://fork@self.example/9 ",
     });
     expect(config.dsn).toBe("https://fork@self.example/9");
     expect(config.dsnSource).toBe("env");
@@ -172,20 +171,20 @@ describe("sentryConfiguration", () => {
 
   it("lets explicit runtime settings override the baked reporting defaults", () => {
     const baked = {
-      MIKE_BUILD_SENTRY_DSN: "https://fork@self.example/9",
-      MIKE_BUILD_SENTRY_DISABLED: "true",
+      NORTHWRIT_BUILD_SENTRY_DSN: "https://fork@self.example/9",
+      NORTHWRIT_BUILD_SENTRY_DISABLED: "true",
     };
     for (const disabled of [undefined, "", "   ", "true"]) {
       expect(sentryConfiguration({ ...baked, SENTRY_DISABLED: disabled }).enabled).toBe(false);
     }
     expect(sentryConfiguration({ ...baked, SENTRY_DISABLED: " false " })).toMatchObject({
-      enabled: true, dsn: baked.MIKE_BUILD_SENTRY_DSN,
+      enabled: true, dsn: baked.NORTHWRIT_BUILD_SENTRY_DSN,
     });
     expect(sentryConfiguration({
       ...baked, SENTRY_DISABLED: "false", SENTRY_DSN: " https://runtime@self.example/8 ",
     })).toMatchObject({ enabled: true, dsn: "https://runtime@self.example/8" });
     expect(sentryConfiguration({
-      ...baked, MIKE_BUILD_SENTRY_DISABLED: "false", SENTRY_DISABLED: "true",
+      ...baked, NORTHWRIT_BUILD_SENTRY_DISABLED: "false", SENTRY_DISABLED: "true",
     }).enabled).toBe(false);
   });
 
@@ -220,29 +219,29 @@ describe("sentryConfiguration", () => {
     ).toBe(10);
   });
 
-  it("derives mike@<version>+<sha12> from the build args when SENTRY_RELEASE is unset", () => {
+  it("derives northwrit@<version>+<sha12> from the build args when SENTRY_RELEASE is unset", () => {
     expect(
       sentryConfiguration({
         ...quietEnv,
-        MIKE_VERSION: "2.1.0",
+        NORTHWRIT_VERSION: "2.1.0",
         GIT_SHA: "0123456789abcdef0123",
       } as NodeJS.ProcessEnv).release,
-    ).toBe("mike@2.1.0+0123456789ab");
+    ).toBe("northwrit@2.1.0+0123456789ab");
     expect(
       sentryConfiguration({ ...quietEnv, GIT_SHA: "0123456789abcdef0123" } as NodeJS.ProcessEnv)
         .release,
-    ).toBe("mike@0.0.0+0123456789ab");
+    ).toBe("northwrit@0.0.0+0123456789ab");
     expect(releaseName(undefined, "v2.1.0-dev.4", "0123456789abcdef0123")).toBe(
-      "mike@2.1.0-dev.4+0123456789ab",
+      "northwrit@2.1.0-dev.4+0123456789ab",
     );
-    expect(releaseName(undefined, "2.1.0+meta", undefined)).toBe("mike@0.0.0");
+    expect(releaseName(undefined, "2.1.0+meta", undefined)).toBe("northwrit@0.0.0");
     expect(
       sentryConfiguration({
         ...quietEnv,
         GIT_SHA: "0123456789abcdef0123",
-        SENTRY_RELEASE: "mike@2.0.0",
+        SENTRY_RELEASE: "northwrit@2.0.0",
       } as NodeJS.ProcessEnv).release,
-    ).toBe("mike@2.0.0");
+    ).toBe("northwrit@2.0.0");
   });
 
   it("ignores a non-numeric sample rate", () => {
@@ -290,7 +289,7 @@ describe("initSentry", () => {
     expect(options.environment).toBe("staging");
     expect(options.beforeSend).toBe(scrubEvent);
     expect(options.initialScope).toEqual({
-      tags: { service: "mike-backend", role: "worker", install: "community", build_mode: "test", diagnostics_version: "2" },
+      tags: { service: "northwrit-api", role: "worker", install: "community", build_mode: "test", diagnostics_version: "2" },
     });
     expect(sentryMock.httpIntegration).toHaveBeenCalledWith();
     // Crash parity: an unhandled rejection must still take the process
@@ -708,10 +707,10 @@ describe("redactUrl", () => {
     ).toBe("/user/oauth/callback?code=[Filtered]&state=[Filtered]&provider=google");
     expect(
       redactUrl(
-        "https://s3.local/mike/docs/a.pdf?X-Amz-Signature=deadbeef&X-Amz-Credential=AKIA%2Fus&X-Amz-Expires=60",
+        "https://s3.local/northwrit/docs/a.pdf?X-Amz-Signature=deadbeef&X-Amz-Credential=AKIA%2Fus&X-Amz-Expires=60",
       ),
     ).toBe(
-      "https://s3.local/mike/docs/a.pdf?X-Amz-Signature=[Filtered]&X-Amz-Credential=[Filtered]&X-Amz-Expires=60",
+      "https://s3.local/northwrit/docs/a.pdf?X-Amz-Signature=[Filtered]&X-Amz-Credential=[Filtered]&X-Amz-Expires=60",
     );
   });
 
@@ -920,8 +919,8 @@ describe("operation and stage trail", () => {
     markStage("claim");
     markStage("process-file");
     expect(isolationScope.setTag).toHaveBeenCalledWith("operation", "documents.upload.complete");
-    expect(sentryMock.addBreadcrumb).toHaveBeenNthCalledWith(1, { category: "mike.stage", message: "claim", level: "info" });
-    expect(sentryMock.addBreadcrumb).toHaveBeenNthCalledWith(2, { category: "mike.stage", message: "process-file", level: "info" });
+    expect(sentryMock.addBreadcrumb).toHaveBeenNthCalledWith(1, { category: "northwrit.stage", message: "claim", level: "info" });
+    expect(sentryMock.addBreadcrumb).toHaveBeenNthCalledWith(2, { category: "northwrit.stage", message: "process-file", level: "info" });
   });
 
   it("does nothing while reporting is off", () => {
@@ -936,15 +935,15 @@ describe("operation and stage trail", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     initSentry("api", {
       ...dsnEnv,
-      SENTRY_DSN: undefined,
-      MIKE_VERSION: "2.1.0",
+      SENTRY_DSN: "https://test@self.example/1",
+      NORTHWRIT_VERSION: "2.1.0",
       GIT_SHA: "0123456789abcdef0123",
     } as NodeJS.ProcessEnv);
-    expect(log).toHaveBeenCalledWith(expect.stringContaining("release mike@2.1.0+0123456789ab"));
+    expect(log).toHaveBeenCalledWith(expect.stringContaining("release northwrit@2.1.0+0123456789ab"));
     expect(warn).not.toHaveBeenCalled();
     resetSentryForTests();
-    initSentry("api", { ...dsnEnv, SENTRY_DSN: undefined, NODE_ENV: "production" } as NodeJS.ProcessEnv);
-    expect(log).toHaveBeenCalledWith(expect.stringContaining("release mike@0.0.0"));
+    initSentry("api", { ...dsnEnv, SENTRY_DSN: "https://test@self.example/1", NODE_ENV: "production" } as NodeJS.ProcessEnv);
+    expect(log).toHaveBeenCalledWith(expect.stringContaining("release northwrit@0.0.0"));
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("unversioned release"));
   });
 });
@@ -1021,7 +1020,7 @@ describe("community install minimisation", () => {
     const event = {
       server_name: "janes-macbook.local",
       user: { id: "user-1" },
-      message: "ENOENT: /Users/jane/work/mike/backend/uploads/contract.pdf",
+      message: "ENOENT: /Users/jane/work/northwrit/backend/uploads/contract.pdf",
       tags: { component: "http", server_name: "janes-macbook.local", url: "https://firm.example/x" },
       request: {
         url: "https://firm.example/projects/p-1",
@@ -1037,24 +1036,24 @@ describe("community install minimisation", () => {
         trace: { trace_id: "abc" },
       },
       breadcrumbs: [{ message: "user clicked" }],
-      extra: { job_id: "j1", error_stack: "at fn (/home/ubuntu/mike/backend/src/x.ts:3:1)" },
+      extra: { job_id: "j1", error_stack: "at fn (/home/ubuntu/northwrit/backend/src/x.ts:3:1)" },
       exception: {
         values: [
           {
             type: "Error",
-            value: "failed at /home/ubuntu/mike/backend/src/lib/x.ts and C:\\Users\\bob\\y",
+            value: "failed at /home/ubuntu/northwrit/backend/src/lib/x.ts and C:\\Users\\bob\\y",
             stacktrace: {
               frames: [
                 {
-                  filename: "/Users/jane/work/mike/node_modules/express/lib/router.js",
-                  abs_path: "/Users/jane/work/mike/node_modules/express/lib/router.js",
+                  filename: "/Users/jane/work/northwrit/node_modules/express/lib/router.js",
+                  abs_path: "/Users/jane/work/northwrit/node_modules/express/lib/router.js",
                   in_app: false,
                   context_line: "next(err)",
                   vars: { secret: "x" },
                 },
                 {
-                  filename: "/Users/jane/work/mike/backend/src/lib/httpError.ts",
-                  abs_path: "/Users/jane/work/mike/backend/src/lib/httpError.ts",
+                  filename: "/Users/jane/work/northwrit/backend/src/lib/httpError.ts",
+                  abs_path: "/Users/jane/work/northwrit/backend/src/lib/httpError.ts",
                   in_app: true,
                   context_line: "reportError(error)",
                 },
@@ -1118,10 +1117,10 @@ describe("community install minimisation", () => {
 });
 
 // MIKE-BACKEND-B, 8, C, 1V, 1M: culprits under backend/src/... are `tsx
-// watch` checkouts reporting to the Mike project as environment=self-hosted.
+// watch` checkouts reporting to the NorthWrit project as environment=self-hosted.
 describe("development builds", () => {
   it("are the TypeScript source, not the compiled image", () => {
-    expect(isDevelopmentBuild(["node", "/home/dev/mike/backend/src/index.ts"])).toBe(true);
+    expect(isDevelopmentBuild(["node", "/home/dev/northwrit/backend/src/index.ts"])).toBe(true);
     expect(isDevelopmentBuild(["node", "/app/dist/index.js"])).toBe(false);
     expect(isDevelopmentBuild(["node", "/app/dist/jobs/syncWorkflows.js"])).toBe(false);
   });
@@ -1131,7 +1130,7 @@ describe("development builds", () => {
     expect(config).toMatchObject({ enabled: false, dsn: "", dsnSource: "development" });
     // The compiled image under compose's NODE_ENV=development is an install.
     expect(sentryConfiguration({ NODE_ENV: "development" } as NodeJS.ProcessEnv, false)).toMatchObject({
-      enabled: true,
+      enabled: false,
       dsnSource: "default",
       environment: "self-hosted",
     });
@@ -1163,14 +1162,15 @@ describe("development builds", () => {
     expect(initSentry("api", env, true)).toBe(false);
 
     resetSentryForTests();
-    expect(initSentry("api", { ...env, SENTRY_SOURCE_RUN_IS_INSTALL: "TRUE" } as NodeJS.ProcessEnv, true)).toBe(true);
+    expect(initSentry("api", { ...env, SENTRY_SOURCE_RUN_IS_INSTALL: "TRUE" } as NodeJS.ProcessEnv, true)).toBe(false);
+    expect(initSentry("api", { ...env, SENTRY_SOURCE_RUN_IS_INSTALL: "TRUE", SENTRY_DSN: "https://test@self.example/1" } as NodeJS.ProcessEnv, true)).toBe(true);
     const options = vi.mocked(Sentry.init).mock.calls[0][0]!;
-    expect(options).toMatchObject({ dsn: MIKE_SENTRY_DSN.backend, environment: "self-hosted" });
+    expect(options).toMatchObject({ dsn: "https://test@self.example/1", environment: "self-hosted" });
     expect(options.initialScope).toMatchObject({ tags: { build_mode: "production" } });
   });
 
   it("report as environment development to a DSN set on purpose, unless SENTRY_ENVIRONMENT says otherwise", () => {
-    const dsn = "http://mike@localhost:9999/1";
+    const dsn = "http://northwrit@localhost:9999/1";
     expect(sentryConfiguration({ SENTRY_DSN: dsn } as NodeJS.ProcessEnv, true)).toMatchObject({
       enabled: true,
       dsn,

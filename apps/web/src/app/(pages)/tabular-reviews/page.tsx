@@ -12,7 +12,7 @@ import {
     grantTabularReviewAccess,
     listProjects,
     updateTabularReview,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type { TabularReview, Project } from "@/app/components/shared/types";
 import { TableToolbar } from "@/app/components/shared/TableToolbar";
 import { NewTRModal } from "@/app/components/tabular/NewTRModal";
@@ -198,7 +198,7 @@ function TabularReviewsWorkspacePage({ workspace }: { workspace?: string }) {
         model: string,
         accessAssignments: {
             email: string;
-            role: import("@/app/lib/mikeApi").AccessAssignmentRole;
+            role: import("@/app/lib/northwritApi").AccessAssignmentRole;
         }[],
     ): Promise<string | void> => {
         setCreating(true);

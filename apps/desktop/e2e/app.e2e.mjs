@@ -1,5 +1,5 @@
-// End-to-end proof that the packaged Mike.app hosts the real product against
-// a real local stack: launches the packaged Mike.app (dist/mac-arm64 on Apple
+// End-to-end proof that the packaged NorthWrit.app hosts the real product against
+// a real local stack: launches the packaged NorthWrit.app (dist/mac-arm64 on Apple
 // silicon, dist/mac on Intel) with a debugging port, drives it with Playwright
 // over CDP (the shell's window IS a Chromium page), signs up and onboards a
 // fresh user, creates a project, and screenshots each stage.
@@ -7,10 +7,10 @@
 // Prereqs: the docker-compose stack is up and the app has been packaged
 // (npm run dist). Run from desktop/:
 //   node e2e/app.e2e.mjs
-//   MIKE_E2E_URL=http://localhost:3100 node e2e/app.e2e.mjs   # shifted stack
+//   NORTHWRIT_E2E_URL=http://localhost:3100 node e2e/app.e2e.mjs   # shifted stack
 //
-// The app is launched with --server-url=$MIKE_E2E_URL (default
-// http://localhost:3000) plus MIKE_DOWNLOAD_DIR and MIKE_E2E_CAPTURE_EXTERNAL
+// The app is launched with --server-url=$NORTHWRIT_E2E_URL (default
+// http://localhost:3000) plus NORTHWRIT_DOWNLOAD_DIR and NORTHWRIT_E2E_CAPTURE_EXTERNAL
 // pointed into e2e/artifacts/, so a test run never reads or writes the user's
 // real settings.json, ~/Downloads, or default browser.
 //
@@ -36,14 +36,14 @@ const APP_BINARY = packagedAppBinary(path.join(here, ".."));
 const ARTIFACTS = path.join(here, "artifacts");
 // Where the app under test points. Trailing slash stripped so `${SERVER_URL}/x`
 // composes cleanly.
-const SERVER_URL = (process.env.MIKE_E2E_URL ?? "http://localhost:3000").replace(
+const SERVER_URL = (process.env.NORTHWRIT_E2E_URL ?? "http://localhost:3000").replace(
   /\/$/,
   "",
 );
 const DOWNLOAD_DIR = path.join(ARTIFACTS, "downloads");
 const CAPTURE_FILE = path.join(ARTIFACTS, "external-urls.txt");
 // Isolated userData: never touch the developer's real settings/window bounds,
-// and never collide with a running Mike.app on the single-instance lock.
+// and never collide with a running NorthWrit.app on the single-instance lock.
 const USER_DATA_DIR = path.join(ARTIFACTS, "userdata");
 const CDP_PORT = 9223;
 const RUN_ID = Date.now().toString(36);
@@ -91,9 +91,9 @@ const app = spawn(
     // calls are captured to a file instead of spraying real browser tabs.
     env: {
       ...process.env,
-      MIKE_DOWNLOAD_DIR: DOWNLOAD_DIR,
-      MIKE_E2E_CAPTURE_EXTERNAL: CAPTURE_FILE,
-      MIKE_USER_DATA_DIR: USER_DATA_DIR,
+      NORTHWRIT_DOWNLOAD_DIR: DOWNLOAD_DIR,
+      NORTHWRIT_E2E_CAPTURE_EXTERNAL: CAPTURE_FILE,
+      NORTHWRIT_USER_DATA_DIR: USER_DATA_DIR,
     },
   },
 );
@@ -181,7 +181,7 @@ try {
   //    Read via waitForFunction — document.title is briefly empty during
   //    client-side transitions, and a one-shot read can catch that window.
   const titleOk = await page
-    .waitForFunction(() => /mike/i.test(document.title), null, {
+    .waitForFunction(() => /northwrit/i.test(document.title), null, {
       timeout: 10_000,
     })
     .catch(() => null);

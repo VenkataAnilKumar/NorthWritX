@@ -41,9 +41,9 @@ import {
     updateTabularReview,
     revokeTabularReviewAccess,
     uploadReviewDocument,
-    MikeApiError,
+    NorthWritApiError,
     type ContentAccessGrant,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type {
     ColumnConfig,
     Document,
@@ -163,7 +163,7 @@ export function TRView({ reviewId, projectId }: Props) {
     const [grants, setGrants] = useState<ContentAccessGrant[] | null>(null);
     // The organization whose members a standalone review can be shared with,
     // as the server says: null for a personal review, which can go to any
-    // Mike user. Undefined until the access summary has loaded.
+    // NorthWrit user. Undefined until the access summary has loaded.
     const [accessOrgId, setAccessOrgId] = useState<string | null | undefined>(
         undefined,
     );
@@ -715,7 +715,7 @@ export function TRView({ reviewId, projectId }: Props) {
             );
         } catch (err) {
             if (
-                err instanceof MikeApiError &&
+                err instanceof NorthWritApiError &&
                 (err.code === "review_running" || err.code === "review_stale")
             ) {
                 await loadLatestReview();
@@ -1160,7 +1160,7 @@ export function TRView({ reviewId, projectId }: Props) {
             // worse than detaching, so it ends the same way.
             if (
                 !(
-                    err instanceof MikeApiError &&
+                    err instanceof NorthWritApiError &&
                     err.code === "generation_not_found"
                 )
             )
@@ -1397,7 +1397,7 @@ export function TRView({ reviewId, projectId }: Props) {
             );
         } catch (err) {
             if (
-                err instanceof MikeApiError &&
+                err instanceof NorthWritApiError &&
                 (err.code === "review_running" || err.code === "review_stale")
             ) {
                 await loadLatestReview();

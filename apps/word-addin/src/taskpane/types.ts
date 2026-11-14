@@ -195,7 +195,7 @@ export interface Workflow {
 
 /**
  * The fields of GET /playbooks the composer's picker reads. The full shape
- * is frontend/src/app/lib/mikeApi.ts `Playbook`.
+ * is frontend/src/app/lib/northwritApi.ts `Playbook`.
  */
 export interface Playbook {
   id: string;

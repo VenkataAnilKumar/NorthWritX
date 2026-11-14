@@ -1,5 +1,5 @@
 import { useEffect, useSyncExternalStore } from "react";
-import { listQuickActions } from "../api/mikeApi";
+import { listQuickActions } from "../api/northwritApi";
 import type { QuickAction } from "../types";
 import { notifyError } from "./notify";
 

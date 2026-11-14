@@ -27,11 +27,11 @@ import {
   reviewDocumentWithPlaybook,
   updatePlaybook,
   deletePlaybook,
-  MikeApiError,
+  NorthWritApiError,
   type Playbook,
   type PlaybookImport,
   type PlaybookRun,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { showToast } from "@/app/components/ui/toast";
 import { clearToasts, getSnapshot as getToastSnapshot, SETTINGS_MODELS } from "@northwrit/client";
 import { PlaybooksWorkspaceLayout as PlaybooksPage } from "./PlaybooksWorkspace";
@@ -47,7 +47,7 @@ const navigation = vi.hoisted(() => {
     search: "",
   };
   const go = (href: string) => {
-    const url = new URL(href, "http://mike.test");
+    const url = new URL(href, "http://northwrit.test");
     const match = url.pathname.match(/^\/playbooks\/([^/]+)$/);
     state.params = match ? { playbookId: match[1] } : {};
     state.search = url.search.slice(1);
@@ -99,8 +99,8 @@ vi.mock("next/navigation", async () => {
   };
 });
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
   getDocumentFile: vi.fn(),
   getPlaybookPeople: vi.fn(),
   listPlaybookShares: vi.fn(),
@@ -661,7 +661,7 @@ describe("playbooks page", () => {
     const detail =
       "This playbook is being replaced. Wait for the import to finish.";
     vi.mocked(updatePlaybook).mockRejectedValue(
-      new MikeApiError({ message: detail, status: 409 }),
+      new NorthWritApiError({ message: detail, status: 409 }),
     );
     clearToasts();
     render(<PlaybooksPage />);

@@ -9,7 +9,7 @@ import { SettingsDescription } from "@/app/components/settings/SettingsText";
 import {
   getCustomInstructions,
   updateCustomInstructions,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 
 /** Mirrors CUSTOM_INSTRUCTIONS_MAX_LENGTH in the backend user module. */

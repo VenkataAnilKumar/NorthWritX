@@ -16,7 +16,7 @@ import {
   normalizeCustomBaseUrl,
   normalizeVertexLocation,
 } from "@/app/lib/cloudProviderSettings";
-import type { ApiKeyProvider, ApiKeySettings } from "@/app/lib/mikeApi";
+import type { ApiKeyProvider, ApiKeySettings } from "@/app/lib/northwritApi";
 import { isRouterSlug } from "@northwrit/client";
 
 export type ByokProvider = {

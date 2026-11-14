@@ -64,7 +64,7 @@ import {
     uploadProjectDocuments,
     uploadStandaloneDocuments,
     type UploadProgress,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { useWorkspaceIdentity } from "@/app/hooks/useWorkspaceIdentity";
 import { useDocumentWorkspace } from "@/app/contexts/WorkspaceContext";
 import {

@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 import SettingsPage from "./page";
-import { deleteAccount } from "@/app/lib/mikeApi";
+import { deleteAccount } from "@/app/lib/northwritApi";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 
 const state = vi.hoisted(() => ({
@@ -51,10 +51,10 @@ vi.mock("@/app/contexts/UserProfileContext", () => ({
 }));
 
 // The real module is spread back in because userFacingApiError resolves
-// MikeApiError from it; a bare object mock leaves that `instanceof` check
+// NorthWritApiError from it; a bare object mock leaves that `instanceof` check
 // comparing against undefined.
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     deleteAccount: state.deleteAccount,
     isMfaRequiredError: vi.fn(() => false),
 }));
@@ -180,7 +180,7 @@ describe("SettingsPage Google email changes", () => {
         const detail =
             "You are the only owner of Elite Law LLP. Make another member an owner, or delete the organization, before deleting your account.";
         state.deleteAccount.mockRejectedValue(
-            new MikeApiError({
+            new NorthWritApiError({
                 status: 409,
                 code: "org_successor_required",
                 message: detail,

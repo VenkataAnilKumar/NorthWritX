@@ -12,7 +12,7 @@ import {
     addDocumentToProject,
     getProject,
     type UploadProgress,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { useDocumentWorkspace } from "@/app/contexts/WorkspaceContext";
 import type { Document, Folder } from "../shared/types";
 import { FileDirectory } from "../shared/FileDirectory";

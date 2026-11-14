@@ -55,7 +55,7 @@ import {
 import { useHasMultipleWorkspaces } from "@/app/hooks/useHasMultipleWorkspaces";
 import {
   type McpConnectorSummary,
-  MikeApiError,
+  NorthWritApiError,
   isConnectorSetupError,
   createMcpConnector,
   deleteMcpConnector,
@@ -66,7 +66,7 @@ import {
   setMcpToolEnabled,
   startMcpConnectorOAuth,
   updateMcpConnector,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { reportFault } from "@/app/lib/userFacingError";
 import { SettingsDescription } from "@/app/components/settings/SettingsText";
 import { SettingsHeading } from "@/app/components/settings/SettingsHeading";
@@ -1008,7 +1008,7 @@ function WorkspaceConnectors({
           setAddAuthMessage(null);
         }
         if (
-          err instanceof MikeApiError &&
+          err instanceof NorthWritApiError &&
           err.code === "connector_cleanup_failed"
         ) {
           // Creation failed after the backend inserted the row and its own
@@ -1172,7 +1172,7 @@ function WorkspaceConnectors({
         try {
           replaceConnector(await refreshMcpConnectorTools(connectorId));
         } catch (err) {
-          if (err instanceof MikeApiError && err.code === "oauth_required") {
+          if (err instanceof NorthWritApiError && err.code === "oauth_required") {
             // COOP-strict providers make the consent popup's fate
             // unobservable, so without an explicit escape hatch a
             // closed popup would leave the Refresh button stuck

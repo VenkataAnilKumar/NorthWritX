@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MikeIcon } from "@northwrit/ui";
+import { NorthWritIcon } from "@northwrit/ui";
 
 /**
  * `waiting`: the response has paused to ask the user for input or approval.
@@ -50,11 +50,11 @@ export function ResponseStatus({ status }: { status: StatusState }) {
 
     return (
         <div className="w-full h-9 flex items-center mb-2">
-            <MikeIcon
+            <NorthWritIcon
                 spin={isActive}
                 done={showDone && doneVisible}
                 error={isError}
-                mike={!isError && !(showDone && doneVisible)}
+                northwrit={!isError && !(showDone && doneVisible)}
                 size={22}
             />
         </div>

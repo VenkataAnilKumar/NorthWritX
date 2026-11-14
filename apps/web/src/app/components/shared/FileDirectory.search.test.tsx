@@ -8,8 +8,8 @@ const { searchProjectDirectory, searchLibraryDocuments } = vi.hoisted(() => ({
     searchLibraryDocuments: vi.fn(),
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     searchProjectDirectory,
     searchLibraryDocuments,
 }));

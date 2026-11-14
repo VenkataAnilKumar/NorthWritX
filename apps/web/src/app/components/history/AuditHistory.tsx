@@ -19,7 +19,7 @@ import {
   MoreHorizontal,
   X,
 } from "lucide-react";
-import { getAuditHistory, type AuditActor, type AuditEvent } from "@/app/lib/mikeApi";
+import { getAuditHistory, type AuditActor, type AuditEvent } from "@/app/lib/northwritApi";
 import { HistoryActorFilter } from "./HistoryActorFilter";
 import { runUserExport } from "@/app/lib/asyncExport";
 import { appendUniqueRows } from "@/app/lib/paginatedRows";

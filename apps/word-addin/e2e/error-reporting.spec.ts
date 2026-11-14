@@ -86,12 +86,12 @@ test("a backend 5xx is reported with the operation, route, status, and request i
   await page.getByRole("menuitem", { name: "Workflows" }).click();
 
   const event = await nextEvent;
-  expect(event.message).toBe("Failure in workflows.run / mike-api / GET / /workflows / 500 / internal_error");
+  expect(event.message).toBe("Failure in workflows.run / northwrit-api / GET / /workflows / 500 / internal_error");
   expect(event.level).toBe("error");
   expect(tagsOf(event)).toMatchObject({
-    service: "mike-word-addin",
+    service: "northwrit-word-addin",
     surface: "taskpane",
-    component: "mike-api",
+    component: "northwrit-api",
     operation: "workflows.run",
     // Tag values keep their JS type in the envelope; Sentry stringifies on
     // ingest.
@@ -104,7 +104,7 @@ test("a backend 5xx is reported with the operation, route, status, and request i
   // no user id leaves the machine at all; the request id is the correlation
   // key and it survives.
   expect(event.user).toBeUndefined();
-  expect(JSON.stringify(event)).not.toContain("e2e@mike.local");
+  expect(JSON.stringify(event)).not.toContain("e2e@northwrit.local");
   expect(event).not.toHaveProperty("request.data");
   expect(event).not.toHaveProperty("request.cookies");
 });
@@ -156,7 +156,7 @@ test("a transport failure is reported as a warning grouped by endpoint", async (
   const event = await nextEvent;
   expect(event.level).toBe("warning");
   expect(tagsOf(event)).toMatchObject({
-    component: "mike-api",
+    component: "northwrit-api",
     network: true,
     http_method: "GET",
   });

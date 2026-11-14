@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { listProjectChats, listProjectsPage } from "@/app/lib/mikeApi";
+import { listProjectChats, listProjectsPage } from "@/app/lib/northwritApi";
 import { beginAssistantTurn } from "@/app/lib/assistantTurns";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 import { AppSidebar } from "./AppSidebar";
@@ -29,7 +29,7 @@ vi.mock("next/image", () => ({
   ),
 }));
 
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
   listProjectsPage: vi.fn(),
   listProjectChats: vi.fn(async () => []),
   listTabularReviews: vi.fn(async () => []),
@@ -59,7 +59,7 @@ vi.mock("@/app/contexts/ChatHistoryContext", () => ({
 
 vi.mock("@northwrit/ui", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@northwrit/ui")>()),
-  MikeIcon: () => <span aria-hidden="true" />,
+  NorthWritIcon: () => <span aria-hidden="true" />,
 }));
 
 describe("AppSidebar account dropdown", () => {

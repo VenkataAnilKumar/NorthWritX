@@ -13,8 +13,8 @@
  * reattached pane handles everything a fresh one does, client tool calls
  * included.
  */
-import { streamWordChat, streamWordChatTurn, readSSE } from "./mikeApi";
-import { MikeApiError, parseApiErrorBody } from "./client";
+import { streamWordChat, streamWordChatTurn, readSSE } from "./northwritApi";
+import { NorthWritApiError, parseApiErrorBody } from "./client";
 import {
   WordChatTerminalError,
   terminalErrorFromFrame,
@@ -115,7 +115,7 @@ async function consumeTurnStream(
       body,
       requestId: res.headers.get("x-request-id"),
     });
-    throw new MikeApiError({
+    throw new NorthWritApiError({
       status: res.status,
       code: parsed.code,
       requestId: parsed.requestId,

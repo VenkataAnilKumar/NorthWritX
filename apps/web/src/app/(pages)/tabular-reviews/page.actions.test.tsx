@@ -20,8 +20,8 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/app/contexts/AuthContext", () => ({
     useAuth: () => ({ user: { id: "owner" } }),
 }));
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     listProjects: vi.fn(async () => []),
     deleteTabularReview: deleteReview,
 }));

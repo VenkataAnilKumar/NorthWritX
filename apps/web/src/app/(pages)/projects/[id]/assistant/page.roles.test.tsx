@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Suspense, type ReactNode } from "react";
 import type { Chat } from "@/app/components/shared/types";
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 import ProjectAssistantPage from "./page";
 
 // What this file pins: WHO the client offers chat deletion to, and what the
@@ -23,11 +23,11 @@ const { deleteChat, renameChat, setOwnerOnlyAction, setProjectChats } =
 
 const chats = vi.hoisted(() => ({ current: [] as Chat[] }));
 
-// importOriginal so MikeApiError stays the real class — userFacingApiError
+// importOriginal so NorthWritApiError stays the real class — userFacingApiError
 // decides whether to show the server's message with an `instanceof` test, and
 // a stubbed-out class would silently take the generic branch.
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     deleteChat: (...args: unknown[]) => deleteChat(...args),
     renameChat: (...args: unknown[]) => renameChat(...args),
 }));
@@ -151,7 +151,7 @@ describe("project assistant chat deletion gating", () => {
 
     it("surfaces a refused delete instead of dropping the row", async () => {
         deleteChat.mockRejectedValue(
-            new MikeApiError({
+            new NorthWritApiError({
                 message: "You do not have permission to delete this chat",
                 status: 403,
             }),

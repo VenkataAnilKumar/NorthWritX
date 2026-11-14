@@ -7,7 +7,7 @@
  * is unreachable) each file one event per failure, with detail a client
  * cannot see. A client copy would be one more issue per endpoint per page
  * view for the same incident, so every client that reports 5xx answers (the
- * web app's mikeApi and authApi, the Word add-in's API client) checks this
+ * web app's northwritApi and authApi, the Word add-in's API client) checks this
  * table first: these codes are only marked handled, and show their own
  * sentence instead of the generic server-failure one.
  */

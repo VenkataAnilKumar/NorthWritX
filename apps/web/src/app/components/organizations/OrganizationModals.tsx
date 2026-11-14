@@ -14,7 +14,7 @@ import {
   resendOrgInvitation,
   type Org,
   type OrgInvitation,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
   INVITABLE_ORG_ROLES,
   ORG_ROLE_DESCRIPTIONS,

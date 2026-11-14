@@ -6,7 +6,7 @@ Only workflows in the root `.github/workflows/` directory execute in this reposi
 
 | Job | Checks | Dependencies |
 |---|---|---|
-| Repository | `check:repo`, `check:whitespace`, workspace audit boundary tests | Node.js and Git; no application install or services |
+| Repository | `check:repo`, `check:whitespace`, workspace audit boundary tests, branding guard and its regression tests | Node.js and Git; no application install or services |
 | API | Frozen install, backend tests, production/test/contract type checks, build | Root lockfile; selected API workspace |
 | Web | Frozen install, tests, lint, type check, production build | Root lockfile; selected web workspace |
 | Word | Frozen install, HTTP host tests, type checks and production build | Root lockfile; selected Word workspace; reserved build-only web/add-in URLs |

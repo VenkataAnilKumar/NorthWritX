@@ -71,7 +71,7 @@ interface Props {
      */
     awaitingInput?: boolean;
     isError?: boolean;
-    /** Human-readable error text rendered alongside the red Mike icon. */
+    /** Human-readable error text rendered alongside the red NorthWrit icon. */
     errorMessage?: string;
     citations?: Citation[];
     citationStatus?: "started" | "partial" | "final";
@@ -892,8 +892,8 @@ function AssistantMessageImpl({
         return null;
     };
 
-    // Mike's steps in a pre-answer group. Consecutive delegations are
-    // subagents Mike ran in parallel; they render as one group.
+    // NorthWrit's steps in a pre-answer group. Consecutive delegations are
+    // subagents NorthWrit ran in parallel; they render as one group.
     const tints = subagentTints(events ?? []);
     // Settings > Features > Response details: the model, effort and tokens
     // under the answer and in each subagent's details. Off without a profile.

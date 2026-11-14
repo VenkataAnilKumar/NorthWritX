@@ -98,7 +98,7 @@ Preserve the accessibility baseline:
 - Route and page components live in `apps/web/src/app/`.
 - Shared domain types live in
   `apps/web/src/app/components/shared/types.ts`.
-- Calls to the Express backend belong in `apps/web/src/app/lib/mikeApi.ts` so
+- Calls to the Express backend belong in `apps/web/src/app/lib/northwritApi.ts` so
   authentication, API error parsing, and request behavior stay consistent.
 - Reusable client behavior belongs in `apps/web/src/app/hooks/` or
   `apps/web/src/app/lib/`, with a colocated `*.test.ts` or `*.test.tsx` file.

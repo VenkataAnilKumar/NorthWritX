@@ -6,15 +6,15 @@ import {
     getTabularChatMessages,
     streamTabularChat,
     streamTabularChatTurn,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type { Message } from "@/app/components/shared/types";
 import { TRChatPanel } from "./TRChatPanel";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     getTabularChats: vi.fn(),
     getTabularChatMessages: vi.fn(),
     streamTabularChat: vi.fn(),

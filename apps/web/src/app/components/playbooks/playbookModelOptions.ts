@@ -3,7 +3,7 @@ import { isModelAvailable } from "@/app/lib/modelAvailability";
 import type {
     ApiKeyState,
     PlaybookConfiguration,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 
 export function buildPlaybookModelOptions(
     catalog: ModelOption[],

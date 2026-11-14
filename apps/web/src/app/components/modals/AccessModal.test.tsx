@@ -5,16 +5,16 @@ import {
     getOrg,
     listOrgMembers,
     lookupUserByEmail,
-    MikeApiError,
-} from "@/app/lib/mikeApi";
+    NorthWritApiError,
+} from "@/app/lib/northwritApi";
 import { AccessModal } from "./AccessModal";
 import { OrganizationAccessEditor } from "./AccessEditor";
 
-// `importOriginal` keeps the real `MikeApiError` class: `userFacingApiError`
+// `importOriginal` keeps the real `NorthWritApiError` class: `userFacingApiError`
 // decides with `instanceof`, so a stand-in class would make every 4xx look
 // like an unexpected failure and the tests below would pass vacuously.
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     getOrg: vi.fn(),
     listOrgMembers: vi.fn(),
     lookupUserByEmail: vi.fn().mockResolvedValue({
@@ -358,7 +358,7 @@ describe("AccessModal — per-recipient roles", () => {
         renderRoleAware({
             onGrant: () =>
                 Promise.reject(
-                    new MikeApiError({
+                    new NorthWritApiError({
                         status: 400,
                         message:
                             "The project creator already has owner access",
@@ -389,7 +389,7 @@ describe("AccessModal — per-recipient roles", () => {
         renderRoleAware({
             onGrant: () =>
                 Promise.reject(
-                    new MikeApiError({
+                    new NorthWritApiError({
                         status: 500,
                         message:
                             'duplicate key value violates unique constraint "grants_pkey"',
@@ -418,7 +418,7 @@ describe("AccessModal — per-recipient roles", () => {
         renderRoleAware({
             onGrant: () =>
                 Promise.reject(
-                    new MikeApiError({
+                    new NorthWritApiError({
                         status: 403,
                         message:
                             "Only a project owner can change who has access.",

@@ -12,7 +12,7 @@ import {
   removeOrgMember,
   type OrgMember,
   type OrgMemberHandover,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 
 // Shared work is handed to one successor; unshared work is archived for
 // 30 days. Existing co-owned items stay with their remaining owners.

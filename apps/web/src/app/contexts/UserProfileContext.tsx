@@ -23,7 +23,7 @@ import {
     completeUserOnboarding,
     getUserProfile,
     isMfaRequiredError,
-    MikeApiError,
+    NorthWritApiError,
     saveApiKey,
     setApiKeyEnabled,
     setUserProfilePhoto,
@@ -36,7 +36,7 @@ import {
     updateTabularChatReasoningLevel,
     updateLastSelectedChatSettings,
     parseTabularChatSelectionKey,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { apiKeyStateFromStatus } from "@/app/lib/apiKeyState";
 import type { Message } from "@/app/components/shared/types";
 import { applyDarkMode } from "@/app/lib/theme";
@@ -727,7 +727,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
                 // A 400 is the server rejecting the value (an unusable base
                 // URL, a malformed key file); the caller shows its reason
                 // instead of a "try again" a retry cannot fix.
-                if (error instanceof MikeApiError && error.status === 400) {
+                if (error instanceof NorthWritApiError && error.status === 400) {
                     throw error;
                 }
                 // Not reported here: every caller is an ApiKeyField, which

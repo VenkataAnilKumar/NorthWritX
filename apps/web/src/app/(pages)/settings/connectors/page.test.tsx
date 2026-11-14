@@ -2,7 +2,7 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ConnectorsPage from "./page";
 import {
-    MikeApiError,
+    NorthWritApiError,
     type McpConnectorSummary,
     cancelGoogleDriveOAuth,
     createMcpConnector,
@@ -21,14 +21,14 @@ import {
     updateGoogleDriveSettings,
     updateGoogleWorkspaceSettings,
     updateMcpConnector,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type { GoogleWorkspaceStatus } from "@northwrit/contracts";
 import { needsMfaVerification } from "@/app/components/popups/MfaVerificationPopup";
 
 // Replace only the network functions the OAuth popup flow drives; keep the real
-// MikeApiError / isMfaRequiredError so `instanceof` checks in the page behave.
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => {
-    const actual = await importOriginal<typeof import("@/app/lib/mikeApi")>();
+// NorthWritApiError / isMfaRequiredError so `instanceof` checks in the page behave.
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@/app/lib/northwritApi")>();
     return {
         ...actual,
         listMcpConnectors: vi.fn(),
@@ -261,7 +261,7 @@ describe("ConnectorsPage OAuth poll cancellation", () => {
         // stuck busy for the full five-minute timeout.
         vi.mocked(listMcpConnectors).mockResolvedValue([makeSummary()]);
         vi.mocked(refreshMcpConnectorTools).mockRejectedValueOnce(
-            new MikeApiError({
+            new NorthWritApiError({
                 message: "Authorization required.",
                 status: 409,
                 code: "oauth_required",
@@ -347,7 +347,7 @@ describe("ConnectorsPage OAuth poll cancellation", () => {
 
     it("surfaces custom connector failures in the warning popup", async () => {
         vi.mocked(createMcpConnector).mockRejectedValueOnce(
-            new MikeApiError({
+            new NorthWritApiError({
                 message: "The connector URL could not be reached.",
                 status: 400,
                 code: "invalid_connector",
@@ -439,7 +439,7 @@ describe("ConnectorsPage OAuth poll cancellation", () => {
             .mockResolvedValueOnce([])
             .mockResolvedValueOnce([connector]);
         vi.mocked(createMcpConnector).mockRejectedValueOnce(
-            new MikeApiError({
+            new NorthWritApiError({
                 message:
                     "Connector validation failed, and the incomplete connector could not be removed. Remove it from Installed before trying again.",
                 status: 409,
@@ -508,7 +508,7 @@ describe("ConnectorsPage operator setup guidance", () => {
         const instructions =
             "Slack MCP requires administrator setup because Slack does not support dynamic client registration.";
         vi.mocked(createMcpConnector).mockRejectedValue(
-            new MikeApiError({
+            new NorthWritApiError({
                 message: instructions,
                 status: 400,
                 code: "connector_setup_required",
@@ -534,7 +534,7 @@ describe("ConnectorsPage operator setup guidance", () => {
             screen.getByRole("link", { name: "Open connector setup guide" }),
         ).toHaveAttribute(
             "href",
-            "https://github.com/open-legal-products/mike/blob/main/docs/connectors.md#slack",
+            "https://github.com/open-legal-products/northwrit/blob/main/docs/connectors.md#slack",
         );
         expect(refreshMcpConnectorTools).not.toHaveBeenCalled();
         expect(startMcpConnectorOAuth).not.toHaveBeenCalled();
@@ -979,7 +979,7 @@ describe("Google Drive connection lifecycle", () => {
 
     it("shows the server's setup steps in the same warning as Slack", async () => {
         vi.mocked(startGoogleDriveOAuth).mockRejectedValue(
-            new MikeApiError({
+            new NorthWritApiError({
                 message:
                     "Google Drive needs an OAuth client. Register http://localhost:3000/api/user/integrations/google-drive/oauth/callback.",
                 status: 400,

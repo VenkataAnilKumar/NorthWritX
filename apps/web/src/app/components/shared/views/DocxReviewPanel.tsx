@@ -199,7 +199,7 @@ function CommentColumn({
         <aside
             ref={ref}
             aria-label="Document comments"
-            className="flex min-h-0 w-[calc(var(--mike-docx-comment-width)+24px)] flex-none flex-col text-xs text-foreground"
+            className="flex min-h-0 w-[calc(var(--northwrit-docx-comment-width)+24px)] flex-none flex-col text-xs text-foreground"
             onKeyDown={(event) => {
                 event.stopPropagation();
                 // Escape in a portaled card menu closes only that menu.

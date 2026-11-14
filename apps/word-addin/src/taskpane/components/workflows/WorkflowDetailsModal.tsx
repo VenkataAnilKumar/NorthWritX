@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { WorkflowSlashCommandUI } from "@northwrit/ui";
 import type { Workflow } from "../../types";
-import { deleteWorkflow, updateWorkflow } from "../../api/mikeApi";
+import { deleteWorkflow, updateWorkflow } from "../../api/northwritApi";
 import { Modal } from "../primitives/Modal";
 import {
   ModalFieldLabel,

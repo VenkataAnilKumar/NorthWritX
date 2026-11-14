@@ -14,7 +14,7 @@ vi.mock("../../../../word-addin/src/taskpane/lib/errorReporting", async (importO
     ...(await importOriginal<typeof import("../../../../word-addin/src/taskpane/lib/errorReporting")>()),
     ...reporting,
 }));
-import { configureMikeApiClient, uploadStandaloneDocuments as uploadWordDocuments } from "../../../../word-addin/src/taskpane/api/client";
+import { configureNorthWritApiClient, uploadStandaloneDocuments as uploadWordDocuments } from "../../../../word-addin/src/taskpane/api/client";
 
 import {
     UploadBatchError,
@@ -30,7 +30,7 @@ import {
     uploadStandaloneDocument,
     uploadStandaloneDocuments,
     uploadWorkflowAssets,
-} from "./mikeApi";
+} from "./northwritApi";
 import { uploadProcessingPollDelayMs } from "@northwrit/client";
 
 const fetchMock = vi.fn();
@@ -949,7 +949,7 @@ describe("direct upload sessions", () => {
         for (const [, context] of reporting.reportError.mock.calls) {
             expect(context).toEqual({
                 tags: {
-                    component: "mike-api",
+                    component: "northwrit-api",
                     operation: "upload_session.storage",
                     http_method: "PUT",
                     http_status: 503,
@@ -1004,7 +1004,7 @@ describe("direct upload sessions", () => {
     it.each([true, false])("Word reports only exhausted storage retries (recovers: %s)", async recovers => {
         let attempts = 0;
         installSuccessfulSessionServer({ storageUpload: async () => new Response(null, { status: ++attempts > 1 && recovers ? 200 : 503 }) });
-        configureMikeApiClient({ baseUrl: "https://word-api.test", getAuthHeaders: async () => ({}), fetchImpl: (input, init) => fetchMock(String(input).replace("https://word-api.test", "/api"), init) });
+        configureNorthWritApiClient({ baseUrl: "https://word-api.test", getAuthHeaders: async () => ({}), fetchImpl: (input, init) => fetchMock(String(input).replace("https://word-api.test", "/api"), init) });
         const outcomes = await uploadWordDocuments([new File(["a"], "contract.pdf")]);
         expect(outcomes).toMatchObject([{ status: recovers ? "completed" : "error" }]);
         expect(attempts).toBe(recovers ? 2 : 3);

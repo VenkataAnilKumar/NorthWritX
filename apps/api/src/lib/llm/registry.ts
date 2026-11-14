@@ -6,7 +6,7 @@ import type {
 } from "./types";
 
 // Deployment-declared models. The static catalog in models.ts covers the
-// hosted providers Mike ships with; this registry is how an operator adds a
+// hosted providers NorthWrit ships with; this registry is how an operator adds a
 // self-hosted or third-party endpoint (and, in a later change, committees)
 // without a code change. Everything is read from one env var so the
 // configuration travels with the deployment rather than the database.
@@ -23,7 +23,7 @@ let cached: ModelRegistryConfig | undefined;
 export function loadModelRegistry(): ModelRegistryConfig {
   if (cached) return cached;
 
-  const raw = process.env.MIKE_MODEL_CONFIG_JSON?.trim();
+  const raw = (process.env.NORTHWRIT_MODEL_CONFIG_JSON ?? process.env.MIKE_MODEL_CONFIG_JSON)?.trim();
   if (!raw) {
     cached = EMPTY_CONFIG;
     return cached;
@@ -34,7 +34,7 @@ export function loadModelRegistry(): ModelRegistryConfig {
     parsed = JSON.parse(raw);
   } catch (error) {
     throw new Error(
-      `MIKE_MODEL_CONFIG_JSON is not valid JSON: ${
+      `NORTHWRIT_MODEL_CONFIG_JSON is not valid JSON: ${
         error instanceof Error ? error.message : String(error)
       }`,
     );

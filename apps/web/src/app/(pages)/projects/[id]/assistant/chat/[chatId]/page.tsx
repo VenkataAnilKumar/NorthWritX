@@ -36,7 +36,7 @@ import {
     moveSubfolderToFolder,
     resolveProjectFolderPath,
     type UploadProgress,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
     chatActivityAt,
     sortChatsByActivity,
@@ -1479,10 +1479,10 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                             onDrop={async (e) => {
                                 e.preventDefault();
                                 const docId = e.dataTransfer.getData(
-                                    "application/mike-doc",
+                                    "application/northwrit-doc",
                                 );
                                 const folderId = e.dataTransfer.getData(
-                                    "application/mike-folder",
+                                    "application/northwrit-folder",
                                 );
                                 if (docId) {
                                     e.stopPropagation();

@@ -21,7 +21,7 @@ async function loadFsStorage(root: string) {
 let root: string;
 
 beforeEach(async () => {
-  root = await fs.mkdtemp(path.join(os.tmpdir(), "mike-storage-fs-"));
+  root = await fs.mkdtemp(path.join(os.tmpdir(), "northwrit-storage-fs-"));
 });
 
 afterEach(async () => {
@@ -269,7 +269,7 @@ describe("filesystem storage driver", () => {
       "parent traversal": "../outside.bin",
       "deep traversal": "documents/u1/../../../../../../etc/passwd",
       "traversal that ends up back inside is still a traversal attempt":
-        "documents/../../mike-storage-fs-elsewhere/x.bin",
+        "documents/../../northwrit-storage-fs-elsewhere/x.bin",
       "absolute key ignores the root entirely": "/etc/passwd",
       // Resolves inside the root, but outside the prefix a route checked:
       // the playbook staged-upload traversal.
@@ -305,8 +305,8 @@ describe("filesystem storage driver", () => {
     }
 
     it("rejects a sibling directory that merely shares the root's prefix", async () => {
-      // The classic off-by-one: "/tmp/mike-storage-fs-abc-evil" starts with
-      // "/tmp/mike-storage-fs-abc", which is why the check compares against
+      // The classic off-by-one: "/tmp/northwrit-storage-fs-abc-evil" starts with
+      // "/tmp/northwrit-storage-fs-abc", which is why the check compares against
       // root + path.sep rather than root.
       const storage = await loadFsStorage(root);
       const sibling = path.basename(root) + "-evil";

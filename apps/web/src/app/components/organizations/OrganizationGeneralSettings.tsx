@@ -30,7 +30,7 @@ import {
   isMfaRequiredError,
   saveOrgLogo,
   updateOrg,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
   ORG_LOGO_ACCEPT,
   OrgLogoImageError,
@@ -42,7 +42,7 @@ import {
   isOrgOwner,
 } from "@/app/lib/permissions";
 import { userFacingApiError } from "@/app/lib/userFacingError";
-import { GlassCardUI, MikeIcon, PillButtonUI } from "@northwrit/ui";
+import { GlassCardUI, NorthWritIcon, PillButtonUI } from "@northwrit/ui";
 import { OrganizationLogoModal } from "./OrganizationLogoModal";
 import { useOrganizationSettings } from "./OrganizationSettingsShell";
 
@@ -309,7 +309,7 @@ export function OrganizationGeneralSettings() {
                   ) : logo === undefined ? (
                     <span className="h-8 w-8 animate-pulse rounded bg-gray-200" />
                   ) : (
-                    <MikeIcon size={20} />
+                    <NorthWritIcon size={20} />
                   )}
                 </span>
                 <div className="min-w-0 space-y-1">

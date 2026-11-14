@@ -1,6 +1,6 @@
 import { useEffect, type Dispatch, type SetStateAction } from "react";
 import type { Document } from "../components/shared/types";
-import { getDocumentStatuses } from "../lib/mikeApi";
+import { getDocumentStatuses } from "../lib/northwritApi";
 import { settleWithConcurrency } from "@northwrit/client";
 
 export function useDocumentConversionPolling(documents: Document[], setDocuments: Dispatch<SetStateAction<Document[]>>) {

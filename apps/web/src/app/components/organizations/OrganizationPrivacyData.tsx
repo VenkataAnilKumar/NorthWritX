@@ -25,7 +25,7 @@ import {
   setOrgMemberDataPolicy,
   type OrgDataKind,
   type OrgMemberDataPolicy,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { isOrgOwner } from "@/app/lib/permissions";
 import { notifyError } from "@/app/lib/userFacingError";
 import { GlassCardUI, PillButtonUI, ToggleSwitchUI } from "@northwrit/ui";

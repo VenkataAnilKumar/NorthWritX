@@ -16,8 +16,8 @@ const {
     uploadWorkflowAssets: vi.fn(),
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => {
-    const actual = await importOriginal<typeof import("@/app/lib/mikeApi")>();
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@/app/lib/northwritApi")>();
     return {
         ...actual,
         copyDocumentsToWorkflowAssets,

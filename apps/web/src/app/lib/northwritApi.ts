@@ -19,7 +19,7 @@ export type {
 } from "@northwrit/contracts";
 
 /**
- * Mike API client — all browser requests use the same-origin `/api` gateway.
+ * NorthWrit API client — all browser requests use the same-origin `/api` gateway.
  * Authentication is carried only by the backend-managed HttpOnly cookie.
  */
 
@@ -158,7 +158,7 @@ const devLog = (...args: Parameters<typeof console.log>) => {
     if (isDev) console.log(...args);
 };
 
-export class MikeApiError extends Error {
+export class NorthWritApiError extends Error {
     status: number;
     code: string | null;
     requestId: string | null;
@@ -170,7 +170,7 @@ export class MikeApiError extends Error {
         requestId?: string | null;
     }) {
         super(args.message);
-        this.name = "MikeApiError";
+        this.name = "NorthWritApiError";
         this.status = args.status;
         this.code = args.code ?? null;
         this.requestId = args.requestId ?? null;
@@ -182,7 +182,7 @@ export const MALFORMED_ERROR_RESPONSE_MESSAGE =
     "The request could not be completed. Please try again.";
 // The 5xx codes the server side already reported, and their fixed messages,
 // are shared with the Word add-in (packages/client); they are re-exported
-// here because API consumers know them as mikeApi's answers.
+// here because API consumers know them as northwritApi's answers.
 export {
     SCHEMA_OUT_OF_DATE_CODE,
     SCHEMA_OUT_OF_DATE_MESSAGE,
@@ -193,7 +193,7 @@ export {
 
 export function isMfaRequiredError(error: unknown) {
     return (
-        error instanceof MikeApiError &&
+        error instanceof NorthWritApiError &&
         error.status === 403 &&
         error.code === "mfa_verification_required"
     );
@@ -249,14 +249,14 @@ export async function uploadFilesWithSession<T>(args: {
             onStorageFailure: ({ error, status, network }) => reportError(error, {
                 ...(network ? { level: "warning" as const } : {}),
                 tags: {
-                    component: "mike-api", operation: "upload_session.storage", http_method: "PUT",
+                    component: "northwrit-api", operation: "upload_session.storage", http_method: "PUT",
                     ...(status !== undefined ? { http_status: status } : {}),
                     ...(network ? { network: true } : {}),
                 },
             }),
             shouldRetryControlRequest: createControlRequestRetryPolicy(
                 (error) =>
-                    error instanceof MikeApiError
+                    error instanceof NorthWritApiError
                         ? { status: error.status, code: error.code }
                         : null,
             ),
@@ -304,7 +304,7 @@ async function toApiError(
             typeof parsed.request_id === "string"
                 ? parsed.request_id
                 : response.headers.get("x-request-id");
-        devLog("[mike-api] non-ok response", {
+        devLog("[northwrit-api] non-ok response", {
             path,
             status: response.status,
             code: parsed.code,
@@ -315,7 +315,7 @@ async function toApiError(
         // sentence for it (never the body's `detail`); reportApiFailure
         // below only marks it, so no screen files it a second time.
         const upstreamMessage = code ? reportedUpstreamMessage(code) : null;
-        const apiError = new MikeApiError({
+        const apiError = new NorthWritApiError({
             status: response.status,
             code,
             requestId,
@@ -351,12 +351,12 @@ async function toApiError(
         }
         return apiError;
     } catch {
-        devLog("[mike-api] non-ok non-json response", {
+        devLog("[northwrit-api] non-ok non-json response", {
             path,
             status: response.status,
             requestId: response.headers.get("x-request-id"),
         });
-        const apiError = new MikeApiError({
+        const apiError = new NorthWritApiError({
             status: response.status,
             requestId: response.headers.get("x-request-id"),
             message:
@@ -1459,9 +1459,9 @@ export type GoogleDriveStatus = import("@northwrit/contracts").GoogleDriveStatus
  */
 export const CONNECTOR_SETUP_REQUIRED_CODE = "connector_setup_required";
 
-export function isConnectorSetupError(error: unknown): error is MikeApiError {
+export function isConnectorSetupError(error: unknown): error is NorthWritApiError {
     return (
-        error instanceof MikeApiError &&
+        error instanceof NorthWritApiError &&
         error.code === CONNECTOR_SETUP_REQUIRED_CODE
     );
 }
@@ -1903,7 +1903,7 @@ export async function getOrgLogo(orgId: string): Promise<string | null> {
         );
         return logo.data_url || null;
     } catch (error) {
-        if (error instanceof MikeApiError && error.status === 404) return null;
+        if (error instanceof NorthWritApiError && error.status === 404) return null;
         throw error;
     }
 }
@@ -2814,7 +2814,7 @@ export async function getDocumentStatuses(documentIds: string[], signal?: AbortS
         // Self-hosted frontends and backends may be upgraded independently.
         // Only an unsupported endpoint selects the legacy reads: auth/server
         // failures must retain their normal handling and retry behavior.
-        if (!(error instanceof MikeApiError) || ![404, 405].includes(error.status)) throw error;
+        if (!(error instanceof NorthWritApiError) || ![404, 405].includes(error.status)) throw error;
         signal?.throwIfAborted();
         const results = await settleWithConcurrency([...new Set(documentIds)], 2, async id => {
             signal?.throwIfAborted();
@@ -2825,7 +2825,7 @@ export async function getDocumentStatuses(documentIds: string[], signal?: AbortS
             if (result.status === "fulfilled") return [result.value];
             // The batch endpoint also omits deleted or no-longer-readable
             // documents. Other failures must not look like an empty result.
-            if (result.reason instanceof MikeApiError && result.reason.status === 404) return [];
+            if (result.reason instanceof NorthWritApiError && result.reason.status === 404) return [];
             throw result.reason;
         });
     }

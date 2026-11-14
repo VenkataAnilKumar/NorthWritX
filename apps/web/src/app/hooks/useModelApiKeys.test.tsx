@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { API_KEY_PROVIDERS, apiKeyStateFromStatus } from "@/app/lib/apiKeyState";
-import type { ApiKeyStatus } from "@/app/lib/mikeApi";
+import type { ApiKeyStatus } from "@/app/lib/northwritApi";
 import { useModelApiKeys } from "./useModelApiKeys";
 
 const mocks = vi.hoisted(() => ({

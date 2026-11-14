@@ -13,8 +13,8 @@ vi.mock("@/app/components/popups/MfaVerificationPopup", () => ({
     MfaVerificationPopup: () => null,
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...await importOriginal<typeof import("@/app/lib/mikeApi")>(),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...await importOriginal<typeof import("@/app/lib/northwritApi")>(),
     isMfaRequiredError: () => false,
 }));
 

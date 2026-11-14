@@ -1,4 +1,4 @@
-// Keep Mike's license and exact source identity beside its packaged servers.
+// Keep NorthWrit's license and exact source identity beside its packaged servers.
 import fs from "node:fs/promises";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
@@ -23,10 +23,11 @@ await fs.cp(nativeNotices, path.join(destination, "service-notices"), { recursiv
 const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
 const dirty = execFileSync("git", ["status", "--porcelain", "--untracked-files=no"], { cwd: repo, encoding: "utf8" }).trim().length > 0;
 await fs.writeFile(path.join(destination, "SOURCE.json"), JSON.stringify({
-  product: "Mike", license: "AGPL-3.0-only",
-  repository: "https://github.com/Open-Legal-Products/mike",
-  commit, source: `https://github.com/Open-Legal-Products/mike/tree/${commit}`,
-  sourceArchive: `https://github.com/Open-Legal-Products/mike/archive/${commit}.tar.gz`,
+  product: "NorthWrit", license: "AGPL-3.0-only",
+  repository: "https://github.com/VenkataAnilKumar/NorthWritX",
+  commit, source: `https://github.com/VenkataAnilKumar/NorthWritX/tree/${commit}`,
+  sourceArchive: `https://github.com/VenkataAnilKumar/NorthWritX/archive/${commit}.tar.gz`,
+  upstream: { repository: "https://github.com/Open-Legal-Products/mike", commit: "a5c147d6587ca465f301e8479f6c50fbc5731c45" },
   workingTreeModified: dirty, nativeServices: manifest.sources,
 }, null, 2) + "\n");
-console.log(`Staged Mike license, source identity and ${manifest.sources.length} service notices`);
+console.log(`Staged NorthWrit license, source identity and ${manifest.sources.length} service notices`);

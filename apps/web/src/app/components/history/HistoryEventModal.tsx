@@ -18,9 +18,9 @@ import {
   getWorkflow,
   openOrgPrivateContent,
   closeOrgPrivateContent,
-  MikeApiError,
+  NorthWritApiError,
   type AuditEvent,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { knownErrorCodeMessage } from "@/app/lib/userFacingError";
 import {
   auditAction,
@@ -103,9 +103,9 @@ export function HistoryEventModal({
       .catch((cause: unknown) => {
         if (!current) return;
         setError(
-          cause instanceof MikeApiError && cause.status === 403
+          cause instanceof NorthWritApiError && cause.status === 403
             ? "You do not have access to this document."
-            : cause instanceof MikeApiError && cause.status === 404
+            : cause instanceof NorthWritApiError && cause.status === 404
               ? "This document is no longer available."
               : knownErrorCodeMessage(
                   cause,
@@ -448,7 +448,7 @@ function HistoryDocumentPreview({
 }
 
 function privateAccessError(cause: unknown, fallback: string): string {
-  if (cause instanceof MikeApiError) {
+  if (cause instanceof NorthWritApiError) {
     if (cause.status === 403)
       return "You no longer have permission to access this item.";
     if (cause.status === 404) return "This item is no longer available.";

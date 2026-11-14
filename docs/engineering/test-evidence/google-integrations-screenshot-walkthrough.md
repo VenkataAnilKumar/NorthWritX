@@ -1,3 +1,5 @@
+> Historical imported upstream evidence. This record is not a NorthWrit acceptance result.
+
 # Google integrations: screenshot walkthrough
 
 **Historical layout:** the separate Google accounts section and preconnection dialogs shown below have been superseded. [See the current Discover layout and direct OAuth flow](google-discover-2026-09-24.md). The inline Assistant and earlier live-read captures remain useful evidence for their recorded states.

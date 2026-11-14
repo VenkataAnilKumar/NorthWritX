@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useEffect } from "react";
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 import { OrganizationProvidersSettings } from "./OrganizationProvidersSettings";
 import {
   OrganizationSettingsFrame,
@@ -51,8 +51,8 @@ vi.mock("./OrganizationProviderKeys", () => ({
     <div data-testid="provider-keys">{orgName}</div>
   ),
 }));
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
   getOrg: mocks.getOrg,
 }));
 
@@ -217,7 +217,7 @@ describe("the frame", () => {
   it("tells somebody outside the organization nothing about it, and offers a retry", async () => {
     const user = userEvent.setup();
     mocks.getOrg.mockRejectedValueOnce(
-      new MikeApiError({ message: "Organization not found", status: 404 }),
+      new NorthWritApiError({ message: "Organization not found", status: 404 }),
     );
     renderShell();
 

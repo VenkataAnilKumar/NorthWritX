@@ -43,13 +43,13 @@ export type {
 
 type AuthHeaderProvider = () => Promise<Record<string, string>>;
 
-interface MikeApiClientConfig {
+interface NorthWritApiClientConfig {
   baseUrl?: string;
   getAuthHeaders?: AuthHeaderProvider;
   fetchImpl?: typeof fetch;
 }
 
-interface ResolvedMikeApiClientConfig {
+interface ResolvedNorthWritApiClientConfig {
   baseUrl: string;
   getAuthHeaders: AuthHeaderProvider;
   fetchImpl: typeof fetch;
@@ -66,7 +66,7 @@ const devLog = (...args: Parameters<typeof console.log>): void => {
  * logs (`requestId`). `message` is only ever safe-to-show text: the
  * backend's own 4xx `detail`, or a generic line for 5xx.
  */
-export class MikeApiError extends Error {
+export class NorthWritApiError extends Error {
   readonly status: number;
   readonly code: string | null;
   readonly requestId: string | null;
@@ -78,7 +78,7 @@ export class MikeApiError extends Error {
     requestId?: string | null;
   }) {
     super(args.message);
-    this.name = "MikeApiError";
+    this.name = "NorthWritApiError";
     this.status = args.status;
     this.code = args.code ?? null;
     this.requestId = args.requestId ?? null;
@@ -153,7 +153,7 @@ export function parseApiErrorBody(args: {
   };
 }
 
-let clientConfig: ResolvedMikeApiClientConfig = {
+let clientConfig: ResolvedNorthWritApiClientConfig = {
   baseUrl: "http://localhost:3001",
   getAuthHeaders: async () => ({}),
   // A wrapper keeps native fetch detached from the config object. Chromium
@@ -161,7 +161,7 @@ let clientConfig: ResolvedMikeApiClientConfig = {
   fetchImpl: (...args: Parameters<typeof fetch>) => fetch(...args),
 };
 
-export function configureMikeApiClient(config: MikeApiClientConfig): void {
+export function configureNorthWritApiClient(config: NorthWritApiClientConfig): void {
   clientConfig = {
     baseUrl: config.baseUrl ?? clientConfig.baseUrl,
     getAuthHeaders: config.getAuthHeaders ?? clientConfig.getAuthHeaders,
@@ -216,14 +216,14 @@ export async function responseError(
   method = "GET",
   /** The user-level flow the request belonged to, for a 5xx's report. */
   operation?: AddinOperation,
-): Promise<MikeApiError> {
+): Promise<NorthWritApiError> {
   const text = await response.text().catch(() => "");
   const parsed = parseApiErrorBody({
     status: response.status,
     body: text,
     requestId: response.headers.get("x-request-id"),
   });
-  devLog("[mike-api] non-ok response", {
+  devLog("[northwrit-api] non-ok response", {
     path: path ?? response.url,
     status: response.status,
     code: parsed.code,
@@ -234,7 +234,7 @@ export async function responseError(
   // session toast or login gate said what happened, and the body's "Not
   // authenticated" would only contradict it.
   const handled = sessionHandledError(response);
-  const apiError = new MikeApiError({
+  const apiError = new NorthWritApiError({
     status: response.status,
     code: handled?.code ?? parsed.code,
     requestId: parsed.requestId,
@@ -312,13 +312,13 @@ async function uploadSessionFiles<T>(args: {
       onStorageFailure: ({ error, status, network }) => reportError(error, {
         ...(network ? { level: "warning" as const } : {}),
         tags: {
-          component: "mike-api", operation: "upload_session.storage", http_method: "PUT",
+          component: "northwrit-api", operation: "upload_session.storage", http_method: "PUT",
           ...(status !== undefined ? { http_status: status } : {}),
           ...(network ? { network: true } : {}),
         },
       }),
       shouldRetryControlRequest: createControlRequestRetryPolicy((error) =>
-        error instanceof MikeApiError
+        error instanceof NorthWritApiError
           ? { status: error.status, code: error.code }
           : null,
       ),

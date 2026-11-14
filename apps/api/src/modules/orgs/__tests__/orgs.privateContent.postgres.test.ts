@@ -3,10 +3,10 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, it } from "vitest";
 
-// Opt in with MIKE_TEST_POSTGRES_CONTAINER=supabase_db_backend. The existing
+// Opt in with NORTHWRIT_TEST_POSTGRES_CONTAINER=supabase_db_backend. The existing
 // application database is never touched: this suite owns a disposable DB.
-const container = process.env.MIKE_TEST_POSTGRES_CONTAINER;
-const database = `mike_test_private_access_${process.pid}_${Date.now()}`;
+const container = process.env.NORTHWRIT_TEST_POSTGRES_CONTAINER;
+const database = `northwrit_test_private_access_${process.pid}_${Date.now()}`;
 function sql(query: string) {
     execFileSync("docker", ["exec", "-i", container!, "psql", "-U", "postgres", "-d", database, "-v", "ON_ERROR_STOP=1", "-Xq"], {
         input: query, encoding: "utf8", timeout: 60_000, stdio: ["pipe", "pipe", "pipe"],

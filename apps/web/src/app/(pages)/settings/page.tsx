@@ -16,7 +16,7 @@ import {
   needsMfaVerification,
 } from "@/app/components/popups/MfaVerificationPopup";
 import { WarningPopup } from "@/app/components/popups/WarningPopup";
-import { deleteAccount, isMfaRequiredError } from "@/app/lib/mikeApi";
+import { deleteAccount, isMfaRequiredError } from "@/app/lib/northwritApi";
 import { authMessages } from "@/app/lib/authMessages";
 import {
   describeError,

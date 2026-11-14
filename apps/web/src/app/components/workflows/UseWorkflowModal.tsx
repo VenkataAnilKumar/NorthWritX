@@ -5,7 +5,7 @@ import { useWorkspaceIdentity } from "@/app/hooks/useWorkspaceIdentity";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Document, Workflow } from "../shared/types";
-import { createTabularReview, listWorkflows } from "@/app/lib/mikeApi";
+import { createTabularReview, listWorkflows } from "@/app/lib/northwritApi";
 import { useRouter } from "next/navigation";
 import { useDirectoryData } from "../shared/useDirectoryData";
 import { FileDirectory } from "../shared/FileDirectory";

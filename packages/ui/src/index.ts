@@ -50,6 +50,6 @@ export * from "./PlaybookPillUI";
 export * from "./useReasoningDisclosure";
 
 // Brand and auth
-export * from "./MikeIconUI";
+export * from "./NorthWritIconUI";
 export * from "./GoogleIconUI";
 export * from "./AuthDividerUI";

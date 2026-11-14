@@ -28,9 +28,10 @@ RUN npm run build
 # --enable-source-maps: every entrypoint in this image (API, worker,
 # sync:workflows) reports stack frames as src/*.ts lines, not dist/*.js.
 # Release identity: the product version and the commit this image was built
-# from (docs/observability.md); Sentry tags events mike@<version>+<sha12>
-# unless SENTRY_RELEASE is set. A build without them is mike@0.0.0.
+# from (docs/observability.md); Sentry tags events northwrit@<version>+<sha12>
+# unless SENTRY_RELEASE is set. A build without them is northwrit@0.0.0.
 ARG MIKE_VERSION=
+ARG NORTHWRIT_VERSION=$MIKE_VERSION
 ARG GIT_SHA=
 # Reporting defaults a fork's published image can bake in (both stay
 # overridable at runtime): SENTRY_DISABLED=true for a fork without its own
@@ -39,7 +40,7 @@ ARG GIT_SHA=
 ARG SENTRY_DISABLED=
 ARG SENTRY_DSN=
 ENV NODE_ENV=production NODE_OPTIONS=--enable-source-maps \
-    MIKE_VERSION=$MIKE_VERSION GIT_SHA=$GIT_SHA \
-    MIKE_BUILD_SENTRY_DISABLED=$SENTRY_DISABLED MIKE_BUILD_SENTRY_DSN=$SENTRY_DSN
+    NORTHWRIT_VERSION=$NORTHWRIT_VERSION GIT_SHA=$GIT_SHA \
+    NORTHWRIT_BUILD_SENTRY_DISABLED=$SENTRY_DISABLED NORTHWRIT_BUILD_SENTRY_DSN=$SENTRY_DSN
 EXPOSE 3001
 CMD ["npm", "start"]

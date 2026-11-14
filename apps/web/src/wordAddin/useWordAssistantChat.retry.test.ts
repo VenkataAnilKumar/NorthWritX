@@ -9,7 +9,7 @@ vi.mock('../../../word-addin/src/taskpane/api/stream', async () => ({
 }));
 vi.mock('../../../word-addin/src/taskpane/hooks/useWordDoc', () => ({ useWordDoc: () => ({ readDocumentMarkdown: async () => 'document' }) }));
 vi.mock('../../../word-addin/src/taskpane/lib/errorReporting', () => ({ reportError: vi.fn() }));
-vi.mock('../../../word-addin/src/taskpane/api/mikeApi', () => ({ postWordChatToolResult: vi.fn(), stopWordChatTurn: vi.fn() }));
+vi.mock('../../../word-addin/src/taskpane/api/northwritApi', () => ({ postWordChatToolResult: vi.fn(), stopWordChatTurn: vi.fn() }));
 vi.mock('../../../word-addin/src/taskpane/lib/localWordChats', () => ({ saveLocalWordMessage: vi.fn(), setLocalWordChatActiveTurn: vi.fn() }));
 vi.mock('../../../word-addin/src/taskpane/lib/wordDocumentIdentity', () => ({ readCurrentDocumentName: () => 'test.docx' }));
 vi.mock('../../../word-addin/src/taskpane/lib/notify', async () => ({ ...(await import('@northwrit/client')), notifyError: mocks.notify, notifyInfo: mocks.info }));

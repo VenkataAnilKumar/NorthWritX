@@ -1,3 +1,4 @@
+import { readWordPreference } from "./wordPreferenceStorage";
 import { useCallback, useEffect, useState } from "react";
 
 import type { WordChatStorageMode } from "./wordChatTypes";
@@ -16,8 +17,8 @@ export type { WordChatStorageMode };
  */
 export type WordEditApplyMode = "approval" | "direct";
 
-const STORAGE_KEY = "mike_word_chat_storage_mode";
-const APPLY_MODE_KEY = "mike_word_edit_apply_mode";
+const STORAGE_KEY = "northwrit_word_chat_storage_mode";
+const APPLY_MODE_KEY = "northwrit_word_edit_apply_mode";
 
 function storageKey(ownerId: string): string {
   return `${STORAGE_KEY}:${ownerId}`;
@@ -39,8 +40,7 @@ export function useWordChatStoragePreference(ownerId: string | null): {
     }
     let cancelled = false;
     setLoading(true);
-    void OfficeRuntime.storage
-      .getItem(storageKey(ownerId))
+    void readWordPreference(OfficeRuntime.storage, storageKey(ownerId))
       .then((stored) => {
         if (!cancelled && stored === "local") setModeState("local");
       })
@@ -80,8 +80,7 @@ export function useWordEditApplyMode(): {
 
   useEffect(() => {
     let cancelled = false;
-    void OfficeRuntime.storage
-      .getItem(APPLY_MODE_KEY)
+    void readWordPreference(OfficeRuntime.storage, APPLY_MODE_KEY)
       .then((stored) => {
         if (!cancelled && stored === "direct") setModeState("direct");
       })

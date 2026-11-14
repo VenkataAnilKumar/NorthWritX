@@ -14,7 +14,7 @@ import {
     readStoredWorkspace,
 } from "@/app/contexts/WorkspaceContext";
 import { apiKeyStateFromStatus } from "@/app/lib/apiKeyState";
-import { getOrgApiKeys, listOrgs, type ApiKeyState } from "@/app/lib/mikeApi";
+import { getOrgApiKeys, listOrgs, type ApiKeyState } from "@/app/lib/northwritApi";
 import { PillButtonUI } from "@northwrit/ui";
 
 export default function OnboardingModelsPage() {

@@ -6,9 +6,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 // Real PostgreSQL semantics in a disposable database. PGlite is an optional
 // local alternative, not an application dependency; CI can use the same
 // Docker/Postgres container as the departure-retention suite.
-const container = process.env.MIKE_TEST_POSTGRES_CONTAINER;
-const pgliteModule = process.env.MIKE_TEST_PGLITE_MODULE;
-const database = `mike_lifecycle_${process.pid}_${Date.now()}`;
+const container = process.env.NORTHWRIT_TEST_POSTGRES_CONTAINER;
+const pgliteModule = process.env.NORTHWRIT_TEST_PGLITE_MODULE;
+const database = `northwrit_lifecycle_${process.pid}_${Date.now()}`;
 const uid = (n: number) =>
     `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const q = (n: number) => `'${uid(n)}'`;

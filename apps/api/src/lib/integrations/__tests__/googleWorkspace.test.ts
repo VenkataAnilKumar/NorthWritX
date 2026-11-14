@@ -127,7 +127,7 @@ describe("Google Workspace opt-in and OAuth", () => {
         store.db,
         personalConnectorOwner("u1"),
         provider,
-        "https://mike.test/callback",
+        "https://northwrit.test/callback",
       );
       const url = new URL(authorizationUrl);
       expect(url.searchParams.get("scope")?.split(" ")).toEqual(
@@ -173,11 +173,11 @@ describe("Google Workspace opt-in and OAuth", () => {
       workspaceDb().db,
       personalConnectorOwner("u"),
       "gmail",
-      "https://mike.test/callback",
+      "https://northwrit.test/callback",
     );
     await expect(started).rejects.toBeInstanceOf(ConnectorSetupError);
     await expect(started).rejects.toThrow(
-      /Gmail needs an OAuth client.*https:\/\/mike\.test\/callback/,
+      /Gmail needs an OAuth client.*https:\/\/northwrit\.test\/callback/,
     );
   });
   it("rejects cross-provider and cancelled states before contacting Google", async () => {
@@ -186,7 +186,7 @@ describe("Google Workspace opt-in and OAuth", () => {
       s.db,
       personalConnectorOwner("u1"),
       "gmail",
-      "https://mike.test",
+      "https://northwrit.test",
     );
     const state = new URL(start.authorizationUrl).searchParams.get("state")!;
     await expect(
@@ -208,7 +208,7 @@ describe("Google Workspace opt-in and OAuth", () => {
         s.db,
         personalConnectorOwner("attacker"),
         provider,
-        "https://mike.test/api/callback",
+        "https://northwrit.test/api/callback",
       );
       const state = new URL(authorizationUrl).searchParams.get("state")!;
       await expect(
@@ -235,7 +235,7 @@ describe("Google Workspace opt-in and OAuth", () => {
       s.db,
       personalConnectorOwner("u1"),
       "google-calendar",
-      "https://mike.test",
+      "https://northwrit.test",
     );
     fetchMock.mockResolvedValueOnce(
       json({
@@ -262,7 +262,7 @@ describe("Google Workspace opt-in and OAuth", () => {
       s.db,
       personalConnectorOwner("u1"),
       "gmail",
-      "https://mike.test",
+      "https://northwrit.test",
     );
     fetchMock
       .mockImplementationOnce(async () => {
@@ -329,7 +329,7 @@ describe("Google Workspace opt-in and OAuth", () => {
 describe.each(["gmail", "google-calendar"] as const)("%s OAuth error classification", (provider) => {
   it.each([401, 503])("classifies token-exchange HTTP %i without losing the status", async (status) => {
     const store = workspaceDb();
-    const start = await startWorkspaceOAuth(store.db, personalConnectorOwner("u1"), provider, "https://mike.test/callback");
+    const start = await startWorkspaceOAuth(store.db, personalConnectorOwner("u1"), provider, "https://northwrit.test/callback");
     fetchMock.mockResolvedValueOnce(json({ error: "provider failure" }, status));
     await expect(completeWorkspaceOAuth(store.db, "u1", provider, new URL(start.authorizationUrl).searchParams.get("state")!, "code"))
       .rejects.toMatchObject({ kind: status >= 500 ? "google.api_failed" : "google.auth_failed", cause: { status } });
@@ -338,7 +338,7 @@ describe.each(["gmail", "google-calendar"] as const)("%s OAuth error classificat
 
   it.each([401, 503])("classifies userinfo HTTP %i without losing the status", async (status) => {
     const store = workspaceDb();
-    const start = await startWorkspaceOAuth(store.db, personalConnectorOwner("u1"), provider, "https://mike.test/callback");
+    const start = await startWorkspaceOAuth(store.db, personalConnectorOwner("u1"), provider, "https://northwrit.test/callback");
     fetchMock.mockResolvedValueOnce(json({ access_token: "access", refresh_token: "refresh", expires_in: 3600, scope: grantedScope(provider, false) }))
       .mockResolvedValueOnce(json({ error: "provider failure" }, status));
     await expect(completeWorkspaceOAuth(store.db, "u1", provider, new URL(start.authorizationUrl).searchParams.get("state")!, "code"))
@@ -868,7 +868,7 @@ describe("additional Google service regression coverage", () => {
       s.db,
       personalConnectorOwner("u1"),
       "gmail",
-      "https://mike.test",
+      "https://northwrit.test",
     );
     fetchMock
       .mockResolvedValueOnce(
@@ -903,7 +903,7 @@ describe("additional Google service regression coverage", () => {
       s.db,
       personalConnectorOwner("u1"),
       "gmail",
-      "https://mike.test/api/callback",
+      "https://northwrit.test/api/callback",
     );
     const config = JSON.parse(
       decryptFields(s.tables.google_workspace_oauth_states[0], "state_config"),

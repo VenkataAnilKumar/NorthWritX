@@ -60,7 +60,7 @@ import {
   type OrgDepartureItem,
   type OrgDepartureList,
   type OrgMember,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { notifySuccess, userFacingApiError } from "@/app/lib/userFacingError";
 import { cn } from "@/app/lib/utils";
 import { DropdownItem } from "@northwrit/ui";

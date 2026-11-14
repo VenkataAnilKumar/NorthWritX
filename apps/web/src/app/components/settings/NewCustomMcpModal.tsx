@@ -6,7 +6,7 @@ import {
     McpConnectorForm,
     type McpConnectorFormDraft,
 } from "@/app/components/settings/McpConnectorForm";
-import type { McpConnectorSummary } from "@/app/lib/mikeApi";
+import type { McpConnectorSummary } from "@/app/lib/northwritApi";
 
 export type NewCustomMcpDraft = McpConnectorFormDraft;
 

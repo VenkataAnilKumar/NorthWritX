@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { listDocumentVersions, type DocumentVersion } from "@/app/lib/mikeApi";
+import { listDocumentVersions, type DocumentVersion } from "@/app/lib/northwritApi";
 import {
     Dropdown,
     DropdownContent,

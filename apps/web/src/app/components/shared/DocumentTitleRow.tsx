@@ -11,7 +11,7 @@ import { TextButtonUI, textButtonUIClassName } from "@northwrit/ui";
 import { WarningPopup } from "../popups/WarningPopup";
 import { FileTypeIcon } from "./FileTypeIcon";
 import { DocumentVersionPicker } from "./DocumentVersionPicker";
-import type { DocumentVersion } from "@/app/lib/mikeApi";
+import type { DocumentVersion } from "@/app/lib/northwritApi";
 import { VersionChip } from "./VersionChip";
 import type { PanelDocument } from "./types";
 import type { DocxSaveState } from "./views/DocxRenderer.types";

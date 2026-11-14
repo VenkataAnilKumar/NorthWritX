@@ -38,7 +38,7 @@ function encryptionSecret(): string {
     return secret;
 }
 
-const KEY_SALT = "mike-user-mcp-v1";
+const KEY_SALT = "northwrit-user-mcp-v1";
 // scryptSync is deliberately slow (~40ms); connector auth configs are
 // encrypted/decrypted on every tool call, so cache the derived key per
 // (secret, salt) pair instead of re-deriving it each time.

@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { listProjectsPage, listTabularReviews } from "@/app/lib/mikeApi";
+import { listProjectsPage, listTabularReviews } from "@/app/lib/northwritApi";
 import type { Chat, TabularReview } from "@/app/components/shared/types";
 import { AppSidebar } from "./AppSidebar";
 import { notifyTabularReviewsChanged } from "@/app/lib/tabularReviewChanges";
@@ -37,7 +37,7 @@ vi.mock("next/image", () => ({
   ),
 }));
 
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
   listProjectsPage: vi.fn(),
   listProjectChats: vi.fn(async () => []),
   listTabularReviews: vi.fn(async () => []),
@@ -82,7 +82,7 @@ vi.mock("@/app/contexts/WorkspaceContext", async (importOriginal) => ({
 
 vi.mock("@northwrit/ui", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@northwrit/ui")>()),
-  MikeIcon: () => <span aria-hidden="true" />,
+  NorthWritIcon: () => <span aria-hidden="true" />,
 }));
 
 const project = (id: string, name: string) => ({
@@ -193,7 +193,7 @@ describe("AppSidebar workspace switcher", () => {
   });
 
   it("shows a placeholder, not NorthWrit, while a remembered organization's name loads", () => {
-    // "Mike" means personal work. Saying it for the moment before the
+    // "NorthWrit" means personal work. Saying it for the moment before the
     // organization's name arrives would name the wrong workspace.
     state.organizations = null;
     state.workspaceId = ACME.id;

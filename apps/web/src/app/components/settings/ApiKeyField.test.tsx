@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 import { ApiKeyField } from "./ApiKeyField";
 
@@ -106,7 +106,7 @@ describe("ApiKeyField", () => {
     renderField({
       onSave: vi
         .fn()
-        .mockRejectedValue(new MikeApiError({ message: reason, status: 400 })),
+        .mockRejectedValue(new NorthWritApiError({ message: reason, status: 400 })),
     });
 
     await user.type(

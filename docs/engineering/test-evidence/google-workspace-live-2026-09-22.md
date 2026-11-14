@@ -1,3 +1,5 @@
+> Historical imported upstream evidence. This record is not a NorthWrit acceptance result.
+
 # Superseded Google test evidence
 
 The screenshots and acceptance claims from the old `mikeamal` OAuth client have

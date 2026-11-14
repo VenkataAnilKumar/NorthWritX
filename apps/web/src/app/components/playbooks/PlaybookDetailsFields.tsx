@@ -3,7 +3,7 @@
 import { useId } from "react";
 import { ModalTextarea } from "@/app/components/modals/ModalTextarea";
 import { FieldLabel, FormTextInput } from "@/app/components/ui/form-field";
-import type { PlaybookContent } from "@/app/lib/mikeApi";
+import type { PlaybookContent } from "@/app/lib/northwritApi";
 import { PlaybookListField } from "./PlaybookListField";
 import { PLAYBOOK_JURISDICTION_OPTIONS } from "./playbookJurisdictions";
 

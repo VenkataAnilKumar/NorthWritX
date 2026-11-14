@@ -25,7 +25,7 @@ import {
   listPlaybookRuns,
   type PlaybookFinding,
   type PlaybookRun,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { reportFault } from "@/app/lib/userFacingError";
 import {
   notifyPlaybookRunsChanged,

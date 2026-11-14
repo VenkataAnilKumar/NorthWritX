@@ -29,7 +29,7 @@ import {
     mapTRMessages,
     type TRChat,
     type TRCitationAnnotation,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
     isPanelDocument,
     type AssistantEvent,

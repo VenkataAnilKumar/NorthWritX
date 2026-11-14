@@ -245,7 +245,7 @@ host = "smtp.resend.com"
 port = 465
 user = "resend"
 pass = "env(RESEND_API_KEY)"
-admin_email = "noreply@mikeoss.com"
+admin_email = "noreply@northwrit.local"
 sender_name = "NorthWrit (No Reply)"
 
 # Uncomment to customize email template

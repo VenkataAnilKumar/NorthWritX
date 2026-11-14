@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { AssistantSidePanel } from "../assistant/AssistantSidePanel";
 import { ProjectDocumentTabs } from "../projects/ProjectDocumentTabs";
 import { panelDocumentAtVersion } from "@/app/lib/panelDocumentAtVersion";
-import type { DocumentVersion } from "@/app/lib/mikeApi";
+import type { DocumentVersion } from "@/app/lib/northwritApi";
 import {
     act,
     fireEvent,
@@ -43,8 +43,8 @@ vi.mock("./views/SpreadsheetView", () => ({
         return <div>Sheet canvas</div>;
     },
 }));
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     getDocument: vi.fn().mockResolvedValue({ can_edit: true, can_delete: true }),
     resolveDocumentEdit: resolveEdit,
     listDocumentVersions: loadVersions,

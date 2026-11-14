@@ -14,7 +14,7 @@ import { FullScreenLoader } from "@/app/components/shared/FullScreenLoader";
 import { HeaderButtonUI, HeaderButtonsUI } from "@northwrit/ui";
 import { cn } from "@/app/lib/utils";
 
-export default function MikeLayout({
+export default function NorthWritLayout({
     children,
 }: {
     children: React.ReactNode;

@@ -1,3 +1,5 @@
+> Historical imported upstream evidence. This record is not a NorthWrit acceptance result.
+
 # Sentry data audit
 
 ## Current policy after the audit fixes

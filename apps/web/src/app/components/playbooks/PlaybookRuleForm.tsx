@@ -18,7 +18,7 @@ import type {
   PlaybookClauseUsage,
   PlaybookPosition,
   PlaybookRule,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { cn } from "@/app/lib/utils";
 
 type PositionKind = "standard" | "fallbacks" | "unacceptable";

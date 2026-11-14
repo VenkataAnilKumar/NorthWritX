@@ -5,7 +5,7 @@ import {
     canonicalModelId,
     routerSelections as selectionsFromProfile,
 } from "@northwrit/client";
-import type { ApiKeyState } from "../lib/mikeApi";
+import type { ApiKeyState } from "../lib/northwritApi";
 
 const keys: ApiKeyState = {
     claude: { configured: true, source: "user" },

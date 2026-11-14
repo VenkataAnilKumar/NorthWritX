@@ -28,8 +28,8 @@ vi.mock("@/app/contexts/UserProfileContext", () => ({
         updateApiKeyEnabled: mocks.updateApiKeyEnabled,
     }),
 }));
-vi.mock("@/app/lib/mikeApi", async (original) => ({
-    ...await original<typeof import("@/app/lib/mikeApi")>(),
+vi.mock("@/app/lib/northwritApi", async (original) => ({
+    ...await original<typeof import("@/app/lib/northwritApi")>(),
     listOrgs: mocks.listOrgs,
     getOrgApiKeys: mocks.getOrgApiKeys,
 }));

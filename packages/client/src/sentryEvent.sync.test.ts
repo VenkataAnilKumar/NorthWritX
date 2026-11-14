@@ -45,9 +45,9 @@ describe("shared-redaction block", () => {
  */
 function dsnTable(file: string): string {
     const match = readFileSync(file, "utf8").match(
-        /export const MIKE_SENTRY_DSN = \{[\s\S]*?\}(?: as const)?;/,
+        /export const NORTHWRIT_SENTRY_DSN = \{[\s\S]*?\}(?: as const)?;/,
     );
-    if (!match) throw new Error(`no MIKE_SENTRY_DSN table in ${file}`);
+    if (!match) throw new Error(`no NORTHWRIT_SENTRY_DSN table in ${file}`);
     return match[0]
         .split("\n")
         .map((line) => line.trim())
@@ -57,7 +57,7 @@ function dsnTable(file: string): string {
 
 it("keeps the default DSN table identical in the backend and the shared scrubber", () => {
     expect(dsnTable(BACKEND)).toBe(dsnTable(SHARED));
-    expect(dsnTable(SHARED)).toMatch(/backend:\s*"https:\/\/[0-9a-f]+@o\d+\.ingest/);
+    expect(dsnTable(SHARED)).toContain('backend: "", frontend: "", wordAddin: ""');
 });
 
 

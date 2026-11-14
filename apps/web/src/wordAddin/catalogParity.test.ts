@@ -23,7 +23,7 @@ import {
 } from "../../../word-addin/src/taskpane/lib/modelCatalog";
 import type { ApiKeyStatus } from "../../../word-addin/src/taskpane/types";
 import { isModelAvailable as webIsModelAvailable } from "../app/lib/modelAvailability";
-import type { ApiKeyState } from "../app/lib/mikeApi";
+import type { ApiKeyState } from "../app/lib/northwritApi";
 import {
     CLAUDE_MAIN_MODELS,
     GEMINI_MAIN_MODELS,

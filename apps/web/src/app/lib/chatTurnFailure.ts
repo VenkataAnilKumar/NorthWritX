@@ -39,7 +39,7 @@ export function errorFrameFailure(
         retryable: !verbatim,
     });
     // The frame's code and request id ride on the error the way they ride on
-    // a MikeApiError, so the report of this failure carries them as tags and
+    // a NorthWritApiError, so the report of this failure carries them as tags and
     // the support email can quote the id. Neither is ever rendered.
     return Object.assign(failure, {
         ...(frame.reportingOwner === "backend" ? { reportingOwner: "backend" as const } : {}),

@@ -1,4 +1,4 @@
-import type { AuditEvent, OrgPrivateContentKind } from "@/app/lib/mikeApi";
+import type { AuditEvent, OrgPrivateContentKind } from "@/app/lib/northwritApi";
 
 export interface AuditPrivateAccess {
   kind: OrgPrivateContentKind;

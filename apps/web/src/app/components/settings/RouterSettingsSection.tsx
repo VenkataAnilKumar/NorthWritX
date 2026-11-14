@@ -18,7 +18,7 @@ import {
   getVercelModels,
   type ApiKeySettings,
   type RouterCatalogModel,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
   routerSelections,
   type RouterSelections,

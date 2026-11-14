@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { KeyRound, X } from "lucide-react";
-import { getApiKeyStatus, type ApiKeyStatus } from "../../api/mikeApi";
+import { getApiKeyStatus, type ApiKeyStatus } from "../../api/northwritApi";
 import { WEB_APP_URL, openExternalUrl } from "../../lib/openExternalUrl";
 
 const DISMISS_KEY = "apiKeyBannerDismissed";

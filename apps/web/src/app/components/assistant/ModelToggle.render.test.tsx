@@ -6,7 +6,7 @@ import { underlyingProviderGroup } from "@northwrit/client";
 import type {
     ApiKeyState,
     ConfiguredModelOption,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 
 const { configuredModels, workspace } = vi.hoisted(() => ({
     configuredModels: [] as ConfiguredModelOption[],

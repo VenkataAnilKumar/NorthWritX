@@ -1,5 +1,5 @@
 // The local stack supervisor — docker-compose reimplemented as a process
-// tree, so `Mike.app` can run the entire product on one Mac with nothing
+// tree, so `NorthWrit.app` can run the entire product on one Mac with nothing
 // installed.
 //
 // It boots, in dependency order (mirroring compose's depends_on/healthcheck
@@ -264,7 +264,7 @@ async function startLocalStack(app, status = () => {}) {
         // mode (the connect screen says so) — GoTrue only touches SMTP when
         // asked to actually send.
         GOTRUE_MAILER_AUTOCONFIRM: "true",
-        GOTRUE_SMTP_ADMIN_EMAIL: "admin@mike.local",
+        GOTRUE_SMTP_ADMIN_EMAIL: "admin@northwrit.local",
         GOTRUE_SMTP_SENDER_NAME: "NorthWrit",
         GOTRUE_MAILER_URLPATHS_CONFIRMATION: "/auth/v1/verify",
         GOTRUE_MAILER_URLPATHS_RECOVERY: "/auth/v1/verify",

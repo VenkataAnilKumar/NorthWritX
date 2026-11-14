@@ -93,10 +93,10 @@ const sourceMapUploadConfigured = Boolean(
 // The release the maps are uploaded under must be the string the SDKs tag
 // events with (packages/client/src/sentryEvent.ts reads the same
 // variables at runtime), or Sentry files the maps under a release no event
-// carries. MIKE_VERSION and GIT_SHA are the image build arguments.
+// carries. NORTHWRIT_VERSION and GIT_SHA are the image build arguments.
 const release = releaseName(
     process.env.SENTRY_RELEASE ?? process.env.NEXT_PUBLIC_SENTRY_RELEASE,
-    process.env.MIKE_VERSION,
+    (process.env.NORTHWRIT_VERSION ?? process.env.MIKE_VERSION),
     process.env.GIT_SHA,
 );
 

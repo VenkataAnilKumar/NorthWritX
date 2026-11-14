@@ -6,6 +6,7 @@ NorthWrit is a legal workspace being developed for Canadian law firms. The activ
 
 - [Developer guide](docs/guides/developer.md): setup and verification.
 - [Repository ownership](docs/06-technical/NorthWrit-Repository-Ownership.md): where code and documentation belong.
+- [Rebrand completion](docs/07-implementation/NorthWrit-Rebrand-Completion.md): current names, local defaults and compatibility policy.
 - [CI inventory](docs/07-implementation/NorthWrit-CI-Inventory.md): active checks and gaps.
 - [Phase 4 extension map](docs/07-implementation/NorthWrit-Phase-4-Extension-Map.md): existing matter workflow building blocks.
 - [Application provenance](docs/upstream/mike/NORTHWRIT.md): source revision, attribution and upstream updates.

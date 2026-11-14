@@ -10,7 +10,7 @@ import {
     LIQUID_GLASS_HOVER_CLASS,
     LIQUID_GLASS_SELECTED_CLASS,
 } from "@/app/components/ui/liquid-surface";
-import type { PlaybookRunHistoryItem } from "@/app/lib/mikeApi";
+import type { PlaybookRunHistoryItem } from "@/app/lib/northwritApi";
 import { playbookRunPath } from "@/app/lib/playbookRunActivity";
 import { cn } from "@/app/lib/utils";
 import {

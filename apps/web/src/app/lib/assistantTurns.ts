@@ -4,7 +4,7 @@ import type {
   ActiveAssistantTurn,
   Message,
 } from "@/app/components/shared/types";
-import { getChat, stopChatTurn, streamChatTurn } from "./mikeApi";
+import { getChat, stopChatTurn, streamChatTurn } from "./northwritApi";
 import {
   createTurnCursor,
   createTurnEventSink,

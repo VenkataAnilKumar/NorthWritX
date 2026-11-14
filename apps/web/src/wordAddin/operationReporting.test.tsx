@@ -51,7 +51,7 @@ import {
     reportNetworkFailure,
     reportWordFailure,
 } from "../../../word-addin/src/taskpane/lib/errorReporting";
-import { configureMikeApiClient, MikeApiError, updateWorkflow } from "../../../word-addin/src/taskpane/api/client";
+import { configureNorthWritApiClient, NorthWritApiError, updateWorkflow } from "../../../word-addin/src/taskpane/api/client";
 import {
     notifyError,
     reportFault,
@@ -119,7 +119,7 @@ describe("reportWordFailure", () => {
 
 describe("API and transport reports", () => {
     it("carry the operation the request belonged to", () => {
-        const failed = new MikeApiError({ status: 500, message: "x", requestId: "r-1" });
+        const failed = new NorthWritApiError({ status: 500, message: "x", requestId: "r-1" });
         reportApiFailure({
             path: "/auth/session",
             method: "GET",
@@ -130,7 +130,7 @@ describe("API and transport reports", () => {
             error: failed,
         });
         expect(tagsOf(state.scopes[0])).toMatchObject({
-            component: "mike-api",
+            component: "northwrit-api",
             operation: "word.session",
             http_status: 500,
             error_code: "internal_error",
@@ -141,7 +141,7 @@ describe("API and transport reports", () => {
         const dead = new TypeError("Load failed");
         reportNetworkFailure(dead, { method: "POST", url: "/api/auth/login", operation: "word.session" });
         expect(tagsOf(state.scopes[1])).toMatchObject({
-            component: "mike-api",
+            component: "northwrit-api",
             operation: "word.session",
             network: true,
         });
@@ -156,7 +156,7 @@ describe("API and transport reports", () => {
             // missing migration once per key; the gateway files a backend
             // outage. A pane copy per request would be a second issue for the
             // same incident.
-            const failed = new MikeApiError({ status: 503, code, message: "x", requestId: "r-2" });
+            const failed = new NorthWritApiError({ status: 503, code, message: "x", requestId: "r-2" });
             expect(
                 reportApiFailure({
                     path: "/auth/session",
@@ -189,7 +189,7 @@ describe("what a notice reports", () => {
     });
 
     it("carries the server's code and request id on a 5xx nobody filed", () => {
-        const failed = new MikeApiError({
+        const failed = new NorthWritApiError({
             status: 500,
             code: "internal_error",
             message: "x",
@@ -218,8 +218,8 @@ describe("what a notice reports", () => {
 
     it("stays quiet for failures that are not faults", () => {
         // An intentional 4xx answer.
-        notifyError(new MikeApiError({ status: 400, message: "Bad." }), { operation: "workflows.run" });
-        // The transport, which the API client reports under mike-api itself.
+        notifyError(new NorthWritApiError({ status: 400, message: "Bad." }), { operation: "workflows.run" });
+        // The transport, which the API client reports under northwrit-api itself.
         notifyError(new TypeError("Failed to fetch"), { operation: "workflows.run" });
         // A cancellation the user caused.
         notifyError(new DOMException("x", "AbortError"), { operation: "workflows.run" });
@@ -247,7 +247,7 @@ describe("userMessage", () => {
     it("reportFault files a swallowed fault under its flow", () => {
         reportFault(new Error("unparseable session body"), { operation: "word.session" });
         expect(tagsOf(state.scopes[0])).toEqual({ component: "notify", operation: "word.session" });
-        reportFault(new MikeApiError({ status: 401, message: "no" }), { operation: "word.session" });
+        reportFault(new NorthWritApiError({ status: 401, message: "no" }), { operation: "word.session" });
         expect(Sentry.captureException).toHaveBeenCalledTimes(1);
     });
 });
@@ -265,7 +265,7 @@ describe("the session refresh", () => {
         await expect(refreshSession()).rejects.toMatchObject({ status: 502 });
         expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
         expect(tagsOf(state.scopes[0])).toMatchObject({
-            component: "mike-api",
+            component: "northwrit-api",
             operation: "word.session",
             http_status: 502,
             request_id: "req-5",
@@ -279,7 +279,7 @@ describe("the session refresh", () => {
         await expect(refreshSession()).rejects.toMatchObject({ kind: "network" });
         expect(Sentry.captureException).toHaveBeenCalledTimes(1);
         expect(tagsOf(state.scopes[0])).toMatchObject({
-            component: "mike-api",
+            component: "northwrit-api",
             operation: "word.session",
             network: true,
             http_method: "GET",
@@ -306,7 +306,7 @@ describe("workflow API failure identity", () => {
     it.each([false, true])("captures the API operation before a delayed screen handler (wrapped: %s)", async wrapped => {
         vi.useFakeTimers();
         try {
-            configureMikeApiClient({
+            configureNorthWritApiClient({
                 baseUrl: "https://api.example.test",
                 getAuthHeaders: async () => ({}),
                 fetchImpl: async () => new Response(JSON.stringify({ code: "internal_error" }), {
@@ -315,7 +315,7 @@ describe("workflow API failure identity", () => {
             });
             const error = await updateWorkflow("11111111-2222-4333-8444-555555555555", { skill_md: "# Workflow" })
                 .catch((error: unknown) => error);
-            expect(error).toBeInstanceOf(MikeApiError);
+            expect(error).toBeInstanceOf(NorthWritApiError);
             expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
             expect(tagsOf(state.scopes[0]).operation).toBe("workflows.run");
             await vi.advanceTimersByTimeAsync(1000);
@@ -326,7 +326,7 @@ describe("workflow API failure identity", () => {
             expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
             expect(Sentry.captureException).not.toHaveBeenCalled();
             expect(tagsOf(state.scopes[0])).toMatchObject({
-                component: "mike-api", operation: "workflows.run", http_status: 500,
+                component: "northwrit-api", operation: "workflows.run", http_status: 500,
                 http_method: "PATCH", http_route: "/workflows/:id", request_id: "req-workflow",
                 error_code: "internal_error",
             });
@@ -340,7 +340,7 @@ describe("workflow API failure identity", () => {
 it("sends immediately without a screen and suppresses a later notice", async () => {
     vi.useFakeTimers();
     try {
-        const error = new MikeApiError({ status: 500, message: "Failed" });
+        const error = new NorthWritApiError({ status: 500, message: "Failed" });
         reportApiFailure({ path: "/workflows", status: 500, error });
         expect(isReported(error)).toBe(true);
         expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);

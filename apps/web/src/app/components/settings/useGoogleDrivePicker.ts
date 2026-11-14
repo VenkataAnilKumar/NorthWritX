@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import {
   createGoogleDrivePickerSession,
   isMfaRequiredError,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { openGoogleDrivePicker } from "@/app/lib/googlePicker";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 

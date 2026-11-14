@@ -1,4 +1,4 @@
-import type { PlaybookRule } from "@/app/lib/mikeApi";
+import type { PlaybookRule } from "@/app/lib/northwritApi";
 
 export function createPlaybookRule(index: number): PlaybookRule {
   return {

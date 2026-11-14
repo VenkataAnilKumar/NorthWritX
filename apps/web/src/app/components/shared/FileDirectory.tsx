@@ -23,7 +23,7 @@ import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
 import {
   searchLibraryDocuments,
   searchProjectDirectory,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { useDocumentWorkspace } from "@/app/contexts/WorkspaceContext";
 import { missingById } from "@/app/lib/idCollections";
 import {

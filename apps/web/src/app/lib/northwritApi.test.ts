@@ -1,12 +1,12 @@
-import { listOrgPrivateContent, setOrgPrivateContentPermission, openOrgPrivateContent, closeOrgPrivateContent } from "./mikeApi";
-import { setUserProfilePhoto, listDeletedOrganizations, restoreOrganization } from "./mikeApi";
-import { listOrgDepartures, reassignOrgDepartureArchives, deleteOrgDepartureArchives } from "./mikeApi";
-import { getGoogleWorkspaceStatus, startGoogleWorkspaceOAuth, cancelGoogleWorkspaceOAuth, disconnectGoogleWorkspace, updateGoogleWorkspaceSettings, setGoogleWorkspaceToolEnabled, updateGoogleDriveSettings, setGoogleDriveToolEnabled, createGoogleDrivePickerSession } from "./mikeApi";
-import { getCourtListenerConnector, setCourtListenerConnectorEnabled, saveCourtListenerConnectorToken, deleteCourtListenerConnectorToken } from "./mikeApi";
+import { listOrgPrivateContent, setOrgPrivateContentPermission, openOrgPrivateContent, closeOrgPrivateContent } from "./northwritApi";
+import { setUserProfilePhoto, listDeletedOrganizations, restoreOrganization } from "./northwritApi";
+import { listOrgDepartures, reassignOrgDepartureArchives, deleteOrgDepartureArchives } from "./northwritApi";
+import { getGoogleWorkspaceStatus, startGoogleWorkspaceOAuth, cancelGoogleWorkspaceOAuth, disconnectGoogleWorkspace, updateGoogleWorkspaceSettings, setGoogleWorkspaceToolEnabled, updateGoogleDriveSettings, setGoogleDriveToolEnabled, createGoogleDrivePickerSession } from "./northwritApi";
+import { getCourtListenerConnector, setCourtListenerConnectorEnabled, saveCourtListenerConnectorToken, deleteCourtListenerConnectorToken } from "./northwritApi";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AssistantEvent, Chat } from "@/app/components/shared/types";
 import { subscribeTabularReviewChanges } from "./tabularReviewChanges";
-import { getTabularReviewHistoryStatuses } from "./mikeApi";
+import { getTabularReviewHistoryStatuses } from "./northwritApi";
 
 // Backend 5xx responses are reported to Sentry from the client with the
 // request id; the reporter is mocked so these tests assert the call, and
@@ -23,7 +23,7 @@ vi.mock("@/app/lib/errorReporting", () => ({
 
 import { userFacingApiError } from "./userFacingError";
 import {
-    MikeApiError,
+    NorthWritApiError,
     SCHEMA_OUT_OF_DATE_MESSAGE,
     UPSTREAM_UNAVAILABLE_MESSAGE,
     addDocumentToProject,
@@ -224,7 +224,7 @@ import {
     updateUserMemory,
     importWorkflowAddon,
     listQuickActions,
-} from "./mikeApi";
+} from "./northwritApi";
 
 const fetchMock = vi.fn();
 
@@ -345,25 +345,25 @@ describe("document status polling across backend versions", () => {
     });
 });
 
-describe("MikeApiError / isMfaRequiredError", () => {
+describe("NorthWritApiError / isMfaRequiredError", () => {
     it("carries status and code, defaulting code to null", () => {
-        const withCode = new MikeApiError({
+        const withCode = new NorthWritApiError({
             message: "nope",
             status: 403,
             code: "mfa_verification_required",
         });
-        expect(withCode.name).toBe("MikeApiError");
+        expect(withCode.name).toBe("NorthWritApiError");
         expect(withCode.status).toBe(403);
         expect(withCode.code).toBe("mfa_verification_required");
 
-        const withoutCode = new MikeApiError({ message: "nope", status: 500 });
+        const withoutCode = new NorthWritApiError({ message: "nope", status: 500 });
         expect(withoutCode.code).toBeNull();
     });
 
     it("recognizes exactly the 403 + mfa_verification_required combination", () => {
         expect(
             isMfaRequiredError(
-                new MikeApiError({
+                new NorthWritApiError({
                     message: "x",
                     status: 403,
                     code: "mfa_verification_required",
@@ -372,12 +372,12 @@ describe("MikeApiError / isMfaRequiredError", () => {
         ).toBe(true);
         expect(
             isMfaRequiredError(
-                new MikeApiError({ message: "x", status: 403, code: "other" }),
+                new NorthWritApiError({ message: "x", status: 403, code: "other" }),
             ),
         ).toBe(false);
         expect(
             isMfaRequiredError(
-                new MikeApiError({
+                new NorthWritApiError({
                     message: "x",
                     status: 401,
                     code: "mfa_verification_required",
@@ -486,7 +486,7 @@ describe("apiRequest plumbing (via thin wrappers)", () => {
         await expect(deleteAllChats()).resolves.toBeUndefined();
     });
 
-    it("maps a JSON error body to a MikeApiError with code and detail", async () => {
+    it("maps a JSON error body to a NorthWritApiError with code and detail", async () => {
         fetchMock.mockResolvedValue(
             jsonResponse(
                 { detail: "MFA required", code: "mfa_verification_required" },
@@ -496,8 +496,8 @@ describe("apiRequest plumbing (via thin wrappers)", () => {
 
         const error = await getUserProfile().catch((e: unknown) => e);
 
-        expect(error).toBeInstanceOf(MikeApiError);
-        const apiError = error as MikeApiError;
+        expect(error).toBeInstanceOf(NorthWritApiError);
+        const apiError = error as NorthWritApiError;
         expect(apiError.status).toBe(403);
         expect(apiError.code).toBe("mfa_verification_required");
         expect(apiError.message).toBe("MFA required");
@@ -579,7 +579,7 @@ describe("apiRequest plumbing (via thin wrappers)", () => {
             requestId: "req-public-123",
             // The thrown error itself travels along so a later
             // console.error(..., error) is not reported twice.
-            error: expect.any(MikeApiError),
+            error: expect.any(NorthWritApiError),
         });
     });
 
@@ -646,7 +646,7 @@ describe("apiRequest plumbing (via thin wrappers)", () => {
             method: "GET",
             status: 502,
             requestId: null,
-            error: expect.any(MikeApiError),
+            error: expect.any(NorthWritApiError),
         });
     });
 
@@ -774,7 +774,7 @@ describe("blob requests (downloadUserExport)", () => {
         expect((await downloadUserExport("e1")).filename).toBeNull();
     });
 
-    it("throws a MikeApiError on failure", async () => {
+    it("throws a NorthWritApiError on failure", async () => {
         fetchMock.mockResolvedValue(
             jsonResponse({ detail: "not allowed" }, { status: 403 }),
         );

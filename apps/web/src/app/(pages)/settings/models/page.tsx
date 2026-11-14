@@ -19,7 +19,7 @@ import {
   useUserProfile,
   type PreferenceField,
 } from "@/app/contexts/UserProfileContext";
-import { type ApiKeyState } from "@/app/lib/mikeApi";
+import { type ApiKeyState } from "@/app/lib/northwritApi";
 import { mergeConfiguredModelOptions } from "@/app/components/assistant/ModelToggle";
 import {
   MODELS,

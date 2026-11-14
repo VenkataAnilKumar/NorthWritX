@@ -9,7 +9,7 @@ import {
   listProjects,
   uploadStandaloneDocuments,
   type UploadProgress,
-} from "../../api/mikeApi";
+} from "../../api/northwritApi";
 import {
   partitionSupportedDocumentFiles,
   SUPPORTED_DOCUMENT_ACCEPT,

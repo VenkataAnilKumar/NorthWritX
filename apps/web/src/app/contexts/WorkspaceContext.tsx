@@ -24,12 +24,12 @@ import {
     listOrgs,
     type Org,
     type OrgApiKeySettings,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 
 export const PERSONAL_WORKSPACE = "personal";
 export const PERSONAL_WORKSPACE_LABEL = "Personal";
 
-const STORAGE_PREFIX = "mike.activeWorkspace.";
+const STORAGE_PREFIX = "northwrit.activeWorkspace.";
 
 interface WorkspaceContextValue {
     /** Account that owns ephemeral state in this workspace. */
@@ -76,6 +76,7 @@ export function readStoredWorkspace(userId: string | undefined): string {
     try {
         return (
             window.localStorage.getItem(STORAGE_PREFIX + userId) ||
+            window.localStorage.getItem("mike.activeWorkspace." + userId) ||
             PERSONAL_WORKSPACE
         );
     } catch {

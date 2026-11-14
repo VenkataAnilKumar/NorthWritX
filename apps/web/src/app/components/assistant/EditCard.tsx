@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { EditCardUI } from "@northwrit/ui";
-import { resolveDocumentEdit } from "@/app/lib/mikeApi";
+import { resolveDocumentEdit } from "@/app/lib/northwritApi";
 import type { EditAnnotation } from "../shared/types";
 import { RESPONSE_GLASS_SURFACE } from "./message/messageStyles";
 import { docxRevisionElements } from "../shared/views/docxRevisionElements";

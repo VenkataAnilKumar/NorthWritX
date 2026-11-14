@@ -100,7 +100,7 @@ describe("ProjectExplorer actions", () => {
         });
 
         expect(dataTransfer.setData).toHaveBeenCalledWith(
-            "application/mike-doc",
+            "application/northwrit-doc",
             "doc-1",
         );
         expect(dataTransfer.effectAllowed).toBe("copyMove");
@@ -293,9 +293,9 @@ describe("ProjectExplorer moves", () => {
         );
 
         const dataTransfer = {
-            types: ["application/mike-doc"],
+            types: ["application/northwrit-doc"],
             getData: (type: string) =>
-                type === "application/mike-doc" ? "doc-1" : "",
+                type === "application/northwrit-doc" ? "doc-1" : "",
         };
         fireEvent.drop(screen.getByText("Drafts").closest("div[draggable]")!, {
             dataTransfer,

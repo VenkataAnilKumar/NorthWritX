@@ -1,3 +1,5 @@
+> Historical imported upstream evidence. This record is not a NorthWrit acceptance result.
+
 # Streaming regression recordings
 
 These GIFs are shortened recordings of **passing Playwright tests** on

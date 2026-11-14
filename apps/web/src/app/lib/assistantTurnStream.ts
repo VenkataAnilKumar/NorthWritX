@@ -1,6 +1,6 @@
 "use client";
 
-import { streamChatTurn } from "@/app/lib/mikeApi";
+import { streamChatTurn } from "@/app/lib/northwritApi";
 import { readSseFrames } from "@/app/lib/sse";
 import { isAbortError } from "@northwrit/client";
 import { isPanelDocument } from "@/app/components/shared/types";

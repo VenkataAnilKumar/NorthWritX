@@ -1,4 +1,4 @@
-import type { ApiKeyProvider, ApiKeyState, ApiKeyStatus } from "./mikeApi";
+import type { ApiKeyProvider, ApiKeyState, ApiKeyStatus } from "./northwritApi";
 
 export const API_KEY_PROVIDERS: readonly ApiKeyProvider[] = [
     "claude",

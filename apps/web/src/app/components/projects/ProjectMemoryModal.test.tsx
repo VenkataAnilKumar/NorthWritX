@@ -8,11 +8,11 @@ import {
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  MikeApiError,
+  NorthWritApiError,
   getProjectMemory,
   setProjectMemoryEnabled,
   updateProjectMemory,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { ProjectMemoryModal } from "./ProjectMemoryModal";
 
 vi.mock("@/app/components/ui/markdown-editor", () => ({
@@ -38,8 +38,8 @@ vi.mock("@/app/components/ui/markdown-editor", () => ({
   ),
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
   getProjectMemory: vi.fn(),
   setProjectMemoryEnabled: vi.fn(),
   updateProjectMemory: vi.fn(),
@@ -310,7 +310,7 @@ describe("ProjectMemoryModal", () => {
       .mockResolvedValueOnce(latest);
     vi.mocked(updateProjectMemory)
       .mockRejectedValueOnce(
-        new MikeApiError({
+        new NorthWritApiError({
           status: 409,
           code: "memory_revision_conflict",
           message: "Memory changed",

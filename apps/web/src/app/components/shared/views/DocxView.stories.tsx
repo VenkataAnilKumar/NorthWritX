@@ -34,7 +34,7 @@ export function EditDocument() {
                 styles: { default: { document: { run: { font: "Times New Roman", size: 24 } } } },
                 footnotes: { "1": { children: [new Paragraph("This is a synthetic footnote for editor testing.")] } },
                 sections: [{
-                    headers: { default: new Header({ children: [new Paragraph("MIKE — SYNTHETIC DOCUMENT")] }) },
+                    headers: { default: new Header({ children: [new Paragraph("NORTHWRIT — SYNTHETIC DOCUMENT")] }) },
                     footers: { default: new Footer({ children: [new Paragraph("Local editor sample")] }) },
                     children: [
                         new Paragraph({ text: "Sample services agreement", heading: HeadingLevel.TITLE }),

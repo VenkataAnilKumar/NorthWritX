@@ -14,7 +14,7 @@
 // that vintage would carry), upgrade it with schema.applySchema, and demand
 // the result fingerprints identically to a fresh install through the same
 // code. Needs the fetched pg binaries (`npm run local:fetch`, or
-// MIKE_LOCAL_FETCH_ONLY=postgres for just these) and git history reaching
+// NORTHWRIT_LOCAL_FETCH_ONLY=postgres for just these) and git history reaching
 // BASELINE_REF (CI checks out with fetch-depth: 0).
 
 const test = require("node:test");
@@ -40,10 +40,10 @@ const FINGERPRINT_SQL = path.join(BACKEND, "scripts", "schema-fingerprint.sql");
 const pgAvailable = fs.existsSync(path.join(PG_BIN, "postgres"));
 const gitHasBaseline =
   spawnSync("git", ["-C", REPO, "cat-file", "-e", `${BASELINE_REF}^{commit}`]).status === 0;
-const required = process.env.MIKE_REQUIRE_LOCAL_STACK === "1";
+const required = process.env.NORTHWRIT_REQUIRE_LOCAL_STACK === "1";
 if (required) {
-  assert.ok(pgAvailable, `MIKE_REQUIRE_LOCAL_STACK=1 but no postgres at ${PG_BIN} — run local:fetch`);
-  assert.ok(gitHasBaseline, `MIKE_REQUIRE_LOCAL_STACK=1 but git cannot see ${BASELINE_REF} — shallow clone?`);
+  assert.ok(pgAvailable, `NORTHWRIT_REQUIRE_LOCAL_STACK=1 but no postgres at ${PG_BIN} — run local:fetch`);
+  assert.ok(gitHasBaseline, `NORTHWRIT_REQUIRE_LOCAL_STACK=1 but git cannot see ${BASELINE_REF} — shallow clone?`);
 }
 const skip = !pgAvailable
   ? `bundled postgres not fetched (${PG_BIN})`
@@ -72,7 +72,7 @@ async function freePort() {
 // A throwaway cluster from the same binaries the app bundles. Trust auth on
 // loopback: this is a test database that lives for a few seconds.
 async function startCluster() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mike-upgrade-test-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "northwrit-upgrade-test-"));
   const pgdata = path.join(dir, "pgdata");
   const res = spawnSync(path.join(PG_BIN, "initdb"),
     ["-D", pgdata, "-U", "postgres", "-E", "UTF8", "--auth=trust"], { encoding: "utf8" });

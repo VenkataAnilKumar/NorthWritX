@@ -1,4 +1,4 @@
-import { getDocumentFile } from "./mikeApi";
+import { getDocumentFile } from "./northwritApi";
 
 /** Download bytes with consistent filename handling and object-URL cleanup. */
 export function downloadBlob(blob: Blob, filename: string) {

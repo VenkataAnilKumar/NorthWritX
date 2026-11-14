@@ -133,7 +133,7 @@ describe("Google Workspace routes", () => {
   it.each(["google-drive", "gmail", "google-calendar"])(
     "relays %s callbacks to the fixed frontend and rejects unauthenticated completion",
     async (provider) => {
-      vi.stubEnv("FRONTEND_URL", "https://app.mike.test");
+      vi.stubEnv("FRONTEND_URL", "https://app.northwrit.test");
       mocks.auth = false;
       const relay = await request(app)
         .get(`/user/integrations/${provider}/oauth/callback`)
@@ -141,7 +141,7 @@ describe("Google Workspace routes", () => {
         .set("Host", "attacker.test");
       expect(relay.status).toBe(303);
       expect(relay.headers.location).toBe(
-        `https://app.mike.test/api/user/integrations/${provider}/oauth/finish?state=s&code=c`,
+        `https://app.northwrit.test/api/user/integrations/${provider}/oauth/finish?state=s&code=c`,
       );
       expect(relay.headers["cache-control"]).toBe("no-store");
       expect(relay.headers["referrer-policy"]).toBe("no-referrer");

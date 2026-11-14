@@ -24,7 +24,7 @@ const CITATION_HIGHLIGHT = "citation";
 const CITATION_HIGHLIGHT_COLOR = "var(--pdf-highlight-background)";
 
 /**
- * The ranges of a native review item that belong to one Mike edit. A native
+ * The ranges of a native review item that belong to one NorthWrit edit. A native
  * replacement can pair this edit with a neighbouring revision; its leading
  * `replacedRangeCount` ranges are the deletion and the rest the insertion.
  */
@@ -89,7 +89,7 @@ export default function DocxRenderer({ bytes, mode, toolbarVisible = true, filen
                 onFontError={() => setFontWarning(true)}
                 onReady={(editor) => {
                     // Preserve the unobstructed document view on open; the native
-                    // Comments button controls Mike's comment panel.
+                    // Comments button controls NorthWrit's comment panel.
                     if (editor.snapshot().reviewPaneOpen) editor.exec({ type: "toggleReviewPane" });
                     setReviewEditor(editor);
                     setToolbar(host.current?.querySelector<HTMLElement>(".docx-toolbar") ?? null);

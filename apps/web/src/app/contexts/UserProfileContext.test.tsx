@@ -35,8 +35,8 @@ vi.mock("@/app/contexts/AuthContext", () => ({
     }),
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     setUserProfilePhoto: (...args: unknown[]) => setUserProfilePhoto(...args),
     getUserProfile: (...args: unknown[]) => getUserProfile(...args),
     updateUserProfile: (...args: unknown[]) => updateUserProfile(...args),
@@ -51,7 +51,7 @@ vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
 }));
 
 import { UserProfileProvider, useUserProfile } from "./UserProfileContext";
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 import { subscribeToTabularChatSettingsUpdates } from "@/app/lib/tabularChatSettingsEvents";
 
 function apiProfile(darkMode: boolean) {
@@ -212,7 +212,7 @@ it("passes a rejected key's 400 to the caller and reports other failures as fals
                         baseUrl: "https://10.0.0.1/v1",
                     }).then(
                         (ok) => outcomes.push(`resolved:${ok}`),
-                        (error: MikeApiError) =>
+                        (error: NorthWritApiError) =>
                             outcomes.push(`rejected:${error.status}`),
                     )
                 }
@@ -223,7 +223,7 @@ it("passes a rejected key's 400 to the caller and reports other failures as fals
     }
     saveApiKey
         .mockRejectedValueOnce(
-            new MikeApiError({ message: "A public https base URL is required.", status: 400 }),
+            new NorthWritApiError({ message: "A public https base URL is required.", status: 400 }),
         )
         .mockRejectedValueOnce(new Error("network down"));
     render(<UserProfileProvider><SaveKey /></UserProfileProvider>);

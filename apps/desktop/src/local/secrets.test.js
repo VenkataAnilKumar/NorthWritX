@@ -6,7 +6,7 @@ const path = require("node:path");
 const { loadOrCreateSecrets } = require("./secrets");
 
 function tempFile() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mike-secrets-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "northwrit-secrets-"));
   return path.join(dir, "local", "secrets.json");
 }
 
@@ -42,4 +42,11 @@ test("tops up guest credentials without touching the existing secrets", () => {
   assert.ok(loaded.guestEmail && loaded.guestPassword);
   assert.deepEqual(JSON.parse(fs.readFileSync(file, "utf8")), loaded);
   assert.deepEqual(fs.readdirSync(path.dirname(file)), ["secrets.json"]);
+});
+
+test("retains an existing guest identity when installing the NorthWrit rename", () => {
+  const file = tempFile();
+  const existing = { ...loadOrCreateSecrets(file), guestEmail: "guest@mike.local" };
+  fs.writeFileSync(file, JSON.stringify(existing));
+  assert.deepEqual(loadOrCreateSecrets(file), existing);
 });

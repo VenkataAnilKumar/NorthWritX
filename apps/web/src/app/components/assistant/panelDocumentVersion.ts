@@ -1,9 +1,9 @@
 import type { PanelDocument } from "../shared/types";
 import {
     listDocumentVersions,
-    MikeApiError,
+    NorthWritApiError,
     type DocumentVersion,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 
 type VersionList = {
     current_version_id: string | null;
@@ -36,7 +36,7 @@ export type PanelDocumentResolution =
 
 function isAccessRefusal(error: unknown): boolean {
     return (
-        error instanceof MikeApiError &&
+        error instanceof NorthWritApiError &&
         (error.status === 403 || error.status === 404)
     );
 }

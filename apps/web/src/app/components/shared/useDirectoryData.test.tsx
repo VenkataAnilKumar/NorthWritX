@@ -13,7 +13,7 @@ const { getLibrary, getLibraryFolderChildren, listProjectSummaries } =
         listProjectSummaries: vi.fn(),
     }));
 
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
     getLibrary,
     getLibraryFolderChildren,
     getProjectDirectoryLevel: vi.fn(),

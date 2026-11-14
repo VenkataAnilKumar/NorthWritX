@@ -2,7 +2,7 @@
 
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { deleteChat, renameChat } from "@/app/lib/mikeApi";
+import { deleteChat, renameChat } from "@/app/lib/northwritApi";
 import { deleteTabularReviewsWithConcurrency } from "@/app/lib/deleteTabularReviewsWithConcurrency";
 import { ProjectAssistantTable } from "@/app/components/projects/ProjectAssistantTable";
 import {

@@ -4,20 +4,20 @@ import { ResponseStatus, type StatusState } from "./ResponseStatus";
 
 vi.mock("@northwrit/ui", async (importOriginal) => ({
     ...(await importOriginal<typeof import("@northwrit/ui")>()),
-    MikeIcon: ({
+    NorthWritIcon: ({
         spin,
         done,
-        mike,
+        northwrit,
     }: {
         spin?: boolean;
         done?: boolean;
-        mike?: boolean;
+        northwrit?: boolean;
     }) => (
         <span
             data-testid="icon"
             data-spin={String(!!spin)}
             data-done={String(!!done)}
-            data-mike={String(!!mike)}
+            data-northwrit={String(!!northwrit)}
         />
     ),
 }));
@@ -54,7 +54,7 @@ describe("ResponseStatus", () => {
 
         expect(icon()).toHaveAttribute("data-spin", "false");
         expect(icon()).toHaveAttribute("data-done", "false");
-        expect(icon()).toHaveAttribute("data-mike", "true");
+        expect(icon()).toHaveAttribute("data-northwrit", "true");
     });
 
     it("does not show done on the paused message once the user answers", async () => {

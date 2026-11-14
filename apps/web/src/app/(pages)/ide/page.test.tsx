@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { listProjects } from "@/app/lib/mikeApi";
+import { listProjects } from "@/app/lib/northwritApi";
 import IdePage from "./page";
 
 const state = vi.hoisted(() => ({
@@ -24,8 +24,8 @@ vi.mock("next/image", () => ({
     ),
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => {
-    const actual = await importOriginal<typeof import("@/app/lib/mikeApi")>();
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@/app/lib/northwritApi")>();
     return { ...actual, listProjects: vi.fn() };
 });
 

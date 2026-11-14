@@ -13,7 +13,7 @@ import type {
     ContentVisibility,
     Project,
 } from "@/app/components/shared/types";
-import { listOrgs, type Org } from "@/app/lib/mikeApi";
+import { listOrgs, type Org } from "@/app/lib/northwritApi";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import { ProjectPracticeField } from "./ProjectPracticeField";
 

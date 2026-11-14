@@ -5,7 +5,7 @@ import { Loader2, UserPlus } from "lucide-react";
 import {
     lookupUserByEmail,
     type UserLookupResult,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { PillButtonUI, LIQUID_GLASS_SUBTLE_CLASS } from "@northwrit/ui";
 import { cn } from "@/app/lib/utils";
 import { userFacingApiError } from "@/app/lib/userFacingError";
@@ -29,7 +29,7 @@ interface AddUserInputProps {
     inputEndControl?: ReactNode;
     className?: string;
     /**
-     * Refuse addresses that don't already belong to a Mike account.
+     * Refuse addresses that don't already belong to a NorthWrit account.
      *
      * True is right where the address must resolve to a user immediately.
      * Organization invitations are the exceptional flow: they are intended

@@ -1,3 +1,5 @@
+> Historical imported upstream evidence. This record is not a NorthWrit acceptance result.
+
 # Combined Google integrations verification
 
 PR: [#434](https://github.com/open-legal-products/mike/pull/434). The former

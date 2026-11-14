@@ -311,7 +311,7 @@ export async function cleanupUploadProcessingTempFiles(
   await Promise.all(
     entries
       .filter(
-        (entry) => entry.isDirectory() && entry.name.startsWith("mike-upload-"),
+        (entry) => entry.isDirectory() && entry.name.startsWith("northwrit-upload-"),
       )
       .map(async (entry) => {
         const directory = join(root, entry.name);
@@ -329,7 +329,7 @@ async function requireSealedFile(
 ): Promise<SealedFileArtifact> {
   const temporaryRoot = uploadProcessingTempRoot();
   await mkdir(temporaryRoot, { recursive: true });
-  const directory = await mkdtemp(join(temporaryRoot, "mike-upload-"));
+  const directory = await mkdtemp(join(temporaryRoot, "northwrit-upload-"));
   const extension = /^[a-z0-9]{1,16}$/.test(file.file_type)
     ? file.file_type
     : "bin";

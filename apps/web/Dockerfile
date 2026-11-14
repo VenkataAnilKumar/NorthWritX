@@ -39,6 +39,8 @@ COPY packages/client /repo/packages/client
 # Baked Sentry defaults for the Next server and browser tunnel (optional).
 # Non-empty runtime SENTRY_* values override them. See docs/observability.md.
 ARG FRONTEND_URL=http://localhost:3000
+ARG NEXT_PUBLIC_NORTHWRIT_TERMS_URL=http://northwrit.local/terms
+ARG NEXT_PUBLIC_NORTHWRIT_PRIVACY_URL=http://northwrit.local/privacy
 ARG NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL=
 ARG NEXT_PUBLIC_SENTRY_DSN=
 ARG NEXT_PUBLIC_SENTRY_DISABLED=
@@ -47,18 +49,22 @@ ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT=
 ARG NEXT_PUBLIC_SENTRY_RELEASE=
 # Release identity: the product version (VERSION, or VERSION-dev.<run> for a
 # main build) and the commit, both from the publish workflow. Together they
-# make the release `mike@<version>+<sha12>` for the browser bundle (inlined)
-# and the Next server; a local build without them is `mike@0.0.0...`.
+# make the release `northwrit@<version>+<sha12>` for the browser bundle (inlined)
+# and the Next server; a local build without them is `northwrit@0.0.0...`.
 ARG MIKE_VERSION=
+ARG NORTHWRIT_VERSION=$MIKE_VERSION
 ARG GIT_SHA=
-ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN \
+ENV NEXT_PUBLIC_NORTHWRIT_TERMS_URL=$NEXT_PUBLIC_NORTHWRIT_TERMS_URL \
+    NEXT_PUBLIC_NORTHWRIT_PRIVACY_URL=$NEXT_PUBLIC_NORTHWRIT_PRIVACY_URL \
+    NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL=$NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL \
+    NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN \
     NEXT_PUBLIC_SENTRY_DISABLED=$NEXT_PUBLIC_SENTRY_DISABLED \
     NEXT_PUBLIC_SENTRY_INSTALL=$NEXT_PUBLIC_SENTRY_INSTALL \
     NEXT_PUBLIC_SENTRY_ENVIRONMENT=$NEXT_PUBLIC_SENTRY_ENVIRONMENT \
     NEXT_PUBLIC_SENTRY_RELEASE=$NEXT_PUBLIC_SENTRY_RELEASE \
-    NEXT_PUBLIC_MIKE_VERSION=$MIKE_VERSION \
+    NEXT_PUBLIC_NORTHWRIT_VERSION=$NORTHWRIT_VERSION \
     NEXT_PUBLIC_GIT_SHA=$GIT_SHA \
-    MIKE_VERSION=$MIKE_VERSION \
+    NORTHWRIT_VERSION=$NORTHWRIT_VERSION \
     GIT_SHA=$GIT_SHA
 
 # Sentry source-map upload (docs/observability.md). Needs all three; the token

@@ -5,7 +5,7 @@ import {
     deleteProject,
     getProject,
     getProjectAccess,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { ProjectWorkspaceProvider } from "./ProjectWorkspace";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 
@@ -14,7 +14,7 @@ vi.mock("next/navigation", () => ({
     useSelectedLayoutSegments: () => [],
 }));
 
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
     createTabularReview: vi.fn(),
     deleteProject: vi.fn(),
     getProject: vi.fn(),

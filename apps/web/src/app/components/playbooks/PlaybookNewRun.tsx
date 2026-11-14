@@ -9,7 +9,7 @@ import { useUserProfile } from "@/app/contexts/UserProfileContext";
 import { useModelApiKeys } from "@/app/hooks/useModelApiKeys";
 import { useModelRouterSelections } from "@/app/hooks/useModelRouterSelections";
 import type { NoModelsReason } from "@northwrit/client";
-import type { PlaybookReviewScope } from "@/app/lib/mikeApi";
+import type { PlaybookReviewScope } from "@/app/lib/northwritApi";
 import { EDITOR_SURFACE_CLASS } from "@/app/components/ui/liquid-surface";
 import { PillButtonUI } from "@northwrit/ui";
 import {

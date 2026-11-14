@@ -12,8 +12,8 @@ import {
     listWorkflows,
     uploadProjectDocuments,
     uploadStandaloneDocuments,
-} from "@/app/lib/mikeApi";
-import type { AccessAssignmentRole } from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
+import type { AccessAssignmentRole } from "@/app/lib/northwritApi";
 import {
     useDocumentWorkspace,
     useWorkspace,

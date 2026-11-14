@@ -34,7 +34,7 @@ import {
   type ApiKeyStatus,
   type UploadOutcome,
   type UploadProgress,
-} from "../../api/mikeApi";
+} from "../../api/northwritApi";
 import { useSelectedModel } from "../../hooks/useSelectedModel";
 import type { Document, Workflow } from "../../types";
 import {

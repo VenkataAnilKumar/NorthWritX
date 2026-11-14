@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { RESPONSE_LANGUAGE_CODES } from "../../../../api/src/lib/responseLanguages";
-import { RESPONSE_STYLE_OPTIONS } from "./mikeApi";
+import { RESPONSE_STYLE_OPTIONS } from "./northwritApi";
 
 // The selector's languages are listed in the frontend for ordering and
 // labels, and validated by the backend. A language offered here that the

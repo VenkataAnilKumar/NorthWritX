@@ -19,7 +19,7 @@ import {
 import { EmptyState } from "@/app/components/ui/empty-state";
 import { useWorkspace } from "@/app/contexts/WorkspaceContext";
 import { useItemWorkspace } from "@/app/hooks/useItemWorkspace";
-import { getOrg, type Org } from "@/app/lib/mikeApi";
+import { getOrg, type Org } from "@/app/lib/northwritApi";
 import { isOrgAdmin, isOrgOwner } from "@/app/lib/permissions";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import { PillButtonUI } from "@northwrit/ui";

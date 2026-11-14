@@ -4,11 +4,11 @@ import {
   getResponseStyle,
   updateResponseStyle,
   type ResponseStyle,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { ResponseStyleSection } from "./ResponseStyleSection";
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
   getResponseStyle: vi.fn(),
   updateResponseStyle: vi.fn(),
 }));

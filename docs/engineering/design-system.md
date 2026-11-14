@@ -1,6 +1,6 @@
 # Design system
 
-Mike uses Tailwind v4 with shadcn-derived `new-york` primitives for selected
+NorthWrit uses Tailwind v4 with shadcn-derived `new-york` primitives for selected
 controls, alongside its own liquid-glass component system. Lucide supplies the
 icon set. This page documents what already exists so contributors can reuse it
 instead of re-deriving it. It is a description of the current system, not a
@@ -65,7 +65,7 @@ Word add-in's `word-addin/src/taskpane/styles.css` both import that file, so a
 token change reaches both targets. Do not redeclare one of these tokens in either
 entry stylesheet; `DesignTokensUI.test.ts` fails if you do.
 
-### App surfaces (Mike's own)
+### App surfaces (NorthWrit's own)
 
 These back the "liquid glass" chrome and are the ones most feature code needs.
 
@@ -111,7 +111,7 @@ the meaning ("this is the destructive action") rather than a specific color.
 
 ### Blue is overridden
 
-`@theme inline` redefines part of Tailwind's blue scale to Mike's azure:
+`@theme inline` redefines part of Tailwind's blue scale to NorthWrit's azure:
 
 ```css
 --color-blue:     rgb(0, 136, 255);
@@ -122,7 +122,7 @@ the meaning ("this is the destructive action") rather than a specific color.
 --color-blue-700: rgb(0, 120, 230);
 ```
 
-`bg-blue-600` is therefore Mike azure, not Tailwind blue. `blue-300`, `-400`,
+`bg-blue-600` is therefore NorthWrit azure, not Tailwind blue. `blue-300`, `-400`,
 `-500`, `-800` and `-900` are *not* overridden, so the scale is discontinuous —
 stay on the overridden steps for brand blue.
 
@@ -135,7 +135,7 @@ liquid-glass material tokens all have `.dark` values. The user preference adds
 without component-level `dark:` shadow recipes. The preference lives in
 Settings > Appearance.
 
-`MikeIcon` is the exception: the mark is inline SVG, so no class-based
+`NorthWritIcon` is the exception: the mark is inline SVG, so no class-based
 remapping reaches its gradient stops. It subscribes to the document theme class
 itself and swaps its dark-glass blades for the white ones. Anything else drawing
 brand-colored SVG should follow the same pattern rather than hard-coding a

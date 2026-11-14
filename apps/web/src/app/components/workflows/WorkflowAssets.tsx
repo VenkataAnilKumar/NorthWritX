@@ -22,7 +22,7 @@ import {
   uploadDocumentVersion,
   uploadWorkflowAssets,
   type DocumentVersion,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
   SUPPORTED_DOCUMENT_ACCEPT,
   formatUnsupportedDocumentWarning,

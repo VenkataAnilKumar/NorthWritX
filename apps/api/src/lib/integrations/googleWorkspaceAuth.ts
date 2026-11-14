@@ -94,7 +94,7 @@ export function googleWorkspaceEnv() {
   return googleDriveOAuthEnv();
 }
 /**
- * Mike asks for write access on every connect. Google lets the user untick
+ * NorthWrit asks for write access on every connect. Google lets the user untick
  * individual permissions and lets Workspace admins block them, so write access
  * is whatever Google actually granted — see `grantedWriteAccess`.
  */
@@ -103,8 +103,8 @@ export function requestedScopes(provider: GoogleProvider): string[] {
   return ["openid", "email", ...config.read, ...config.write];
 }
 /**
- * Broader scopes that cover narrower ones Mike checks for. gmail.modify was
- * Mike's Gmail write scope before gmail.compose; listing it keeps those grants
+ * Broader scopes that cover narrower ones NorthWrit checks for. gmail.modify was
+ * NorthWrit's Gmail write scope before gmail.compose; listing it keeps those grants
  * readable and writable without a reconnect.
  */
 const IMPLIED_SCOPES: Record<string, readonly string[]> = {

@@ -283,7 +283,7 @@ describe("upload processing", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    processingTempRoot = await mkdtemp(join(tmpdir(), "mike-upload-test-"));
+    processingTempRoot = await mkdtemp(join(tmpdir(), "northwrit-upload-test-"));
     process.env.UPLOAD_PROCESSING_TEMP_DIR = processingTempRoot;
     mocks.createFileReadStream.mockImplementation(() =>
       Readable.from([pdfBytes]),
@@ -1040,7 +1040,7 @@ describe("upload processing", () => {
   });
 
   it("removes stale temporary upload directories left by an interrupted worker", async () => {
-    const staleDirectory = join(processingTempRoot, "mike-upload-stale");
+    const staleDirectory = join(processingTempRoot, "northwrit-upload-stale");
     await mkdir(staleDirectory);
     const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
     await utimes(staleDirectory, twoHoursAgo, twoHoursAgo);
