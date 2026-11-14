@@ -64,8 +64,8 @@ describe("tunnelDecision", () => {
     });
 
     it("drops events when no operator DSN is configured", () => {
-        expect(tunnelDecision({} as NodeJS.ProcessEnv)).toEqual({ kind: "drop" });
-        expect(tunnelDecision({ SENTRY_INSTALL: "official" } as NodeJS.ProcessEnv)).toEqual({ kind: "drop" });
+        expect(tunnelDecision({ NODE_ENV: "production" })).toEqual({ kind: "drop" });
+        expect(tunnelDecision({ NODE_ENV: "production", SENTRY_INSTALL: "official" })).toEqual({ kind: "drop" });
     });
 
     it("uses the DSN baked at build when no runtime DSN is set", () => {
