@@ -31,7 +31,7 @@ describe("useQuickActions", () => {
     beforeEach(() => {
         scope.accountId = "u1"; scope.workspace = "personal";
         vi.clearAllMocks();
-        window.localStorage.setItem("mike.quickActions.databaseMigrated", "1");
+        window.localStorage.setItem("northwrit.quickActions.databaseMigrated", "1");
         listQuickActions.mockResolvedValue([proofread]);
     });
 
@@ -56,7 +56,7 @@ describe("useQuickActions", () => {
 
 it("hides previous actions immediately and ignores delayed loads after workspace/account changes", async () => {
     scope.accountId = "u1"; scope.workspace = "a";
-    window.localStorage.setItem("mike.quickActions.databaseMigrated", "1");
+    window.localStorage.setItem("northwrit.quickActions.databaseMigrated", "1");
     let resolveA!: (actions: QuickAction[]) => void;
     listQuickActions.mockImplementation((_surface, workspace) => workspace === "a" ? new Promise(resolve => { resolveA = resolve; }) : Promise.resolve([]));
     const { result, rerender } = renderHook(() => useQuickActions());

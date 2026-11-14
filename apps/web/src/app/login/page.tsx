@@ -74,9 +74,6 @@ function describeLoginError(error: unknown): UserFacingError {
 type GuestCredentials = { email: string; password: string };
 declare global {
     interface Window {
-        mikeDesktop?: {
-            guestCredentials?: () => Promise<GuestCredentials | null>;
-        };
         northwritDesktop?: {
             guestCredentials?: () => Promise<GuestCredentials | null>;
         };
@@ -119,7 +116,7 @@ export default function LoginPage() {
 
     useEffect(() => {
         let cancelled = false;
-        (window.northwritDesktop ?? window.mikeDesktop)
+        (window.northwritDesktop)
             ?.guestCredentials?.()
             .then((creds) => {
                 if (!cancelled && creds?.email && creds?.password) {

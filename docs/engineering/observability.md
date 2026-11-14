@@ -15,7 +15,7 @@ Every NorthWrit runtime can report unexpected failures to [Sentry](https://sentr
 
 The browser SDK uses a local carrier DSN (`https://northwrit@northwrit.local/1`) and the same-origin `/monitoring` tunnel. This address is a placeholder, never the outbound reporting destination. The server discards envelopes when no DSN is configured and forwards only to its configured project. Runtime configuration can enable reporting without rebuilding the browser.
 
-Before sending, every runtime filters document content, credentials and request data through the existing privacy boundary. The [historical upstream guide](../upstream/mike/OBSERVABILITY.md) preserves the earlier account audit; it does not describe a NorthWrit account or an active release pipeline.
+Before sending, every runtime filters document content, credentials and request data through the existing privacy boundary. The [historical upstream guide](../upstream/original-source/OBSERVABILITY.md) preserves the earlier account audit; it does not describe a NorthWrit account or an active release pipeline.
 
 ### Quota protection and its limits
 
@@ -435,4 +435,4 @@ app only; build the add-in image separately.
 
 #### How CI publishes (and what a fork gets)
 
-The active NorthWrit workflows validate applications and build images without pushing them. Publication requires a separately configured registry and release process. Imported workflows under `docs/upstream/mike/.github/` remain historical references. Consult the [CI inventory](../07-implementation/NorthWrit-CI-Inventory.md) before enabling release automation.
+The active NorthWrit workflows validate applications and build images without pushing them. Publication requires a separately configured registry and release process. Imported workflows under `docs/upstream/original-source/.github/` remain historical references. Consult the [CI inventory](../07-implementation/NorthWrit-CI-Inventory.md) before enabling release automation.

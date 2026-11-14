@@ -86,7 +86,7 @@ it("distinguishes an unavailable converter from a rejected document without stde
   });
 });
 
-// MIKE-BACKEND-M: soffice can exit 0 without writing a PDF (it prints
+// NORTHWRIT-BACKEND-M: soffice can exit 0 without writing a PDF (it prints
 // "Error: source file could not be loaded" to stderr and still succeeds).
 // The follow-up access() then threw a bare ENOENT whose top frame was the
 // access call, so the issue read as a missing file rather than a rejected

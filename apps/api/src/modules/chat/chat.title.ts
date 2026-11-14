@@ -47,7 +47,7 @@ function providerFailureClass(error: unknown): number | "config" | null {
  * aborted. The title call usually uses the same keys and provider as the
  * reply, so when both fail the same way (rejected key, no credit, an outage)
  * the reply's report already covers it and a second report only duplicated
- * it (MIKE-BACKEND-D). But the title may run on a different model or
+ * it (NORTHWRIT-BACKEND-D). But the title may run on a different model or
  * provider (titleModelForChat accepts an override), and even the same
  * provider can refuse the short title call alone (a rate limit), so a title
  * failure the reply did NOT share is reported once, as a warning, under its

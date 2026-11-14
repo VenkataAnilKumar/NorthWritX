@@ -1,22 +1,12 @@
 #!/usr/bin/env bash
 
-# Temporary environment aliases for existing installations; NorthWrit values win.
-while IFS= read -r _northwrit_legacy_name; do
-  [[ $_northwrit_legacy_name == MIKE_* ]] || continue
-  _northwrit_name="NORTHWRIT_${_northwrit_legacy_name#MIKE_}"
-  if [[ ! -v $_northwrit_name ]]; then
-    printf -v "$_northwrit_name" '%s' "${!_northwrit_legacy_name}"
-    export "$_northwrit_name"
-  fi
-done < <(compgen -e)
-unset _northwrit_legacy_name _northwrit_name
 # Regression test for scripts/stack.sh gc. Needs a running Docker daemon.
 #
 #   bash scripts/stack.test.sh
 #
 # Each run uses unique project names and an isolated cleanup record. Fixtures
 # cover stopped/young stacks, deleted checkouts, running and paused services,
-# known foreign mike-prefixed projects (including an unmounted data volume),
+# known foreign northwrit-prefixed projects (including an unmounted data volume),
 # Supabase CLI labels, repeated sweeps, dry-run parity, and explicit purge.
 # The planner tests exercise old timestamps without waiting seven days:
 #   node --test scripts/stack-plan.test.mjs
@@ -28,11 +18,11 @@ STACK="$ROOT/scripts/application/stack.sh"
 node --test "$ROOT/scripts/application/stack-plan.test.mjs"
 # Confine every sweep to the fixtures so the test never touches real stacks.
 RUN_ID="$(date +%s)-$$"
-STOPPED="mike-gctest-$RUN_ID-stopped"
-GONE="mike-gctest-$RUN_ID-gone"
-RUNNING="mike-gctest-$RUN_ID-running"
-OTHER="mike-gctest-$RUN_ID-other"
-PAUSED="mike-gctest-$RUN_ID-paused"
+STOPPED="northwrit-gctest-$RUN_ID-stopped"
+GONE="northwrit-gctest-$RUN_ID-gone"
+RUNNING="northwrit-gctest-$RUN_ID-running"
+OTHER="northwrit-gctest-$RUN_ID-other"
+PAUSED="northwrit-gctest-$RUN_ID-paused"
 SUPA="gctest-$RUN_ID-supa"
 export NORTHWRIT_GC_ONLY="*gctest-$RUN_ID-*"
 export NORTHWRIT_GC_SUPABASE_PROJECTS="$SUPA"
@@ -64,7 +54,7 @@ fixture() {
     local dir=$1 marker=$2
     mkdir -p "$dir"
     {
-        [ "$marker" = mike ] && echo "# MikeOSS — test fixture (marker line recognised by scripts/stack.sh)"
+        [ "$marker" = northwrit ] && echo "# NorthWritOSS — test fixture (marker line recognised by scripts/stack.sh)"
         cat <<'EOF'
 services:
   job:
@@ -103,11 +93,11 @@ echo "Creating fixtures in $WORK"
 docker info >/dev/null 2>&1 || { echo "Docker is not running" >&2; exit 1; }
 docker image inspect alpine:3.20 >/dev/null 2>&1 || docker pull -q alpine:3.20 >/dev/null
 
-fixture "$WORK/stopped" mike
-fixture "$WORK/gone"    mike
-fixture "$WORK/running" mike
+fixture "$WORK/stopped" northwrit
+fixture "$WORK/gone"    northwrit
+fixture "$WORK/running" northwrit
 fixture "$WORK/other"   none
-fixture "$WORK/paused"  mike
+fixture "$WORK/paused"  northwrit
 
 (cd "$WORK/stopped" && docker compose -p "$STOPPED" up -d >/dev/null 2>&1 && docker compose -p "$STOPPED" stop -t 1 >/dev/null 2>&1)
 (cd "$WORK/gone"    && docker compose -p "$GONE"    up -d >/dev/null 2>&1 && docker compose -p "$GONE"    stop -t 1 >/dev/null 2>&1)
@@ -115,7 +105,7 @@ rm -rf "$WORK/gone"
 (cd "$WORK/running" && docker compose -p "$RUNNING" up -d >/dev/null 2>&1)
 (cd "$WORK/other"   && docker compose -p "$OTHER"         up -d >/dev/null 2>&1 && docker compose -p "$OTHER"         stop -t 1 >/dev/null 2>&1)
 (cd "$WORK/paused" && docker compose -p "$PAUSED" up -d >/dev/null 2>&1 && docker compose -p "$PAUSED" pause svc >/dev/null 2>&1)
-# A declared but unmounted volume from a known foreign mike-prefixed project.
+# A declared but unmounted volume from a known foreign northwrit-prefixed project.
 docker volume create --label "com.docker.compose.project=$OTHER" --label com.docker.compose.volume=unused "${OTHER}_unused" >/dev/null
 supa_fixture "$SUPA"
 

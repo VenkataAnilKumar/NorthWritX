@@ -46,7 +46,7 @@ test("tops up guest credentials without touching the existing secrets", () => {
 
 test("retains an existing guest identity when installing the NorthWrit rename", () => {
   const file = tempFile();
-  const existing = { ...loadOrCreateSecrets(file), guestEmail: "guest@mike.local" };
+  const existing = { ...loadOrCreateSecrets(file), guestEmail: "guest@northwrit.local" };
   fs.writeFileSync(file, JSON.stringify(existing));
   assert.deepEqual(loadOrCreateSecrets(file), existing);
 });

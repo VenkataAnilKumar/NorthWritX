@@ -117,7 +117,7 @@ export function initAddinErrorReporting(surface: AddinSurface): boolean {
     install: process.env.REACT_APP_SENTRY_INSTALL,
     environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
     release: process.env.REACT_APP_SENTRY_RELEASE,
-    version: (process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION),
+    version: (process.env.REACT_APP_NORTHWRIT_VERSION),
     gitSha: process.env.REACT_APP_GIT_SHA,
     tracesSampleRate: process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE,
     nodeEnv: process.env.NODE_ENV,

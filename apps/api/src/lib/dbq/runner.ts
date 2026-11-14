@@ -57,7 +57,7 @@ const CLAIM_MAX_BACKOFF_MS = 60_000;
  * missing because migrations were not applied, database unreachable). One
  * report per failure class, quiet repeats with a once-a-minute count, and a
  * backed-off poll — reporting every tick filed 1,167 events plus 1,227
- * console duplicates from one worker thread (MIKE-BACKEND-P / -3).
+ * console duplicates from one worker thread (NORTHWRIT-BACKEND-P / -3).
  */
 export function createDbJobClaimGate(): PollFailureGate {
     return createPollFailureGate({
@@ -331,7 +331,7 @@ async function runClaimedJob(
         } else {
             // The reported Error rides along so the console bridge recognises
             // it and files no second, context-free "Failure in application"
-            // issue (MIKE-BACKEND-G mirrored MIKE-BACKEND-F 1:1).
+            // issue (NORTHWRIT-BACKEND-G mirrored NORTHWRIT-BACKEND-F 1:1).
             console.error(
                 spent
                     ? "[dbq] job permanently failed"

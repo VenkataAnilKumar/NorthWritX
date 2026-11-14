@@ -108,7 +108,7 @@ describe("OnboardingModelsPage", () => {
     });
 
     it("names the organization just joined when it has models", async () => {
-        window.localStorage.setItem("mike.activeWorkspace.user-1", "org-1");
+        window.localStorage.setItem("northwrit.activeWorkspace.user-1", "org-1");
         mocks.listOrgs.mockResolvedValue([{ id: "org-1", name: "Example LLP", role: "member" }]);
         mocks.getOrgApiKeys.mockResolvedValue({ effective: { claude: true, sources: { claude: "org" } } });
         render(<OnboardingModelsPage />);
@@ -118,7 +118,7 @@ describe("OnboardingModelsPage", () => {
     });
 
     it("keeps the general wording when the joined organization has no models", async () => {
-        window.localStorage.setItem("mike.activeWorkspace.user-1", "org-1");
+        window.localStorage.setItem("northwrit.activeWorkspace.user-1", "org-1");
         mocks.listOrgs.mockResolvedValue([{ id: "org-1", name: "Example LLP", role: "member" }]);
         mocks.getOrgApiKeys.mockResolvedValue({ effective: { claude: false } });
         render(<OnboardingModelsPage />);

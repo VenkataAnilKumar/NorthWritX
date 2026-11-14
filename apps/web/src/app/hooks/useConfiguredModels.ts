@@ -76,7 +76,7 @@ export function useConfiguredModels(): ConfiguredModelOption[] {
         // instead meant every picker that mounted after the provider's
         // request had resolved (the page chunk always mounts later than the
         // shell) sent a second GET /models/configured per page load
-        // (MIKE-FRONTEND-C). The age bound covers what the provider cannot
+        // (NORTHWRIT-FRONTEND-C). The age bound covers what the provider cannot
         // see: a key change made in another tab.
         const stale =
             cache !== null && Date.now() - loadedAt > CONFIGURED_MODELS_MAX_AGE_MS;

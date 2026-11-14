@@ -17,7 +17,7 @@ const CHAT_ID = "chat-client-tools";
 const ASSISTANT_MESSAGE_ID = "assistant-client-tools";
 const TOOL_CALL_ID = "5f0e19cf-9be0-4b53-a1c4-2f2ffb92e601";
 const TOOL_RESULT_GLOB = "**/word-chat/tool-result";
-const ANCHOR_SETTINGS_KEY = "mike.wordEditAnchors.v1";
+const ANCHOR_SETTINGS_KEY = "northwrit.wordEditAnchors.v1";
 /** First card key a tool edit claims; see TOOL_EDIT_INDEX_BASE. */
 const FIRST_TOOL_BLOCK_INDEX = 1000;
 

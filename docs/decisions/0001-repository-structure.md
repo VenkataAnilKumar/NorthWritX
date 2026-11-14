@@ -4,7 +4,7 @@ Status: Initial repository organization completed. The through-Phase-4 layout an
 
 ## Context
 
-Phase 3 imported and rebranded Mike OSS under `apps/northwrit/`. The existing web, API, Word and desktop surfaces share contracts and supporting packages. Their Docker build contexts, TypeScript paths, migrations and upstream update instructions depend on that layout. The older v3 blueprint proposed a different stack and many services; it is not evidence that those components exist.
+Phase 3 imported and rebranded original application under `apps/northwrit/`. The existing web, API, Word and desktop surfaces share contracts and supporting packages. Their Docker build contexts, TypeScript paths, migrations and upstream update instructions depend on that layout. The older v3 blueprint proposed a different stack and many services; it is not evidence that those components exist.
 
 ## Decision
 

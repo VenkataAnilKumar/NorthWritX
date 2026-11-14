@@ -74,7 +74,7 @@ async function proxy(request: NextRequest, context: RouteContext) {
         // A connection-level failure (ECONNREFUSED, DNS, reset, connect
         // timeout) means the backend is down or misaddressed: an operator
         // condition, not an application bug, and every request fails the
-        // same way while it lasts (MIKE-FRONTEND-J/4: ten events in two
+        // same way while it lasts (NORTHWRIT-FRONTEND-J/4: ten events in two
         // minutes, one issue per HTTP method). It is reported as ONE pinned
         // issue per cause, at warning level, at most once a minute.
         const unreachable =

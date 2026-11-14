@@ -9,7 +9,7 @@
  */
 import { rememberAppliedEditId } from "./editApplyOutcome";
 
-const WORD_EDIT_ANCHORS_SETTING = "mike.wordEditAnchors.v1";
+const WORD_EDIT_ANCHORS_SETTING = "northwrit.wordEditAnchors.v1";
 
 /**
  * Stable edit IDs this document has already had applied to it, newest last.
@@ -26,7 +26,7 @@ const WORD_EDIT_ANCHORS_SETTING = "mike.wordEditAnchors.v1";
  * text, so the setting adds no document content to the file. The list is
  * capped at MAX_APPLIED_EDIT_IDS (oldest dropped) by rememberAppliedEditId.
  */
-const WORD_APPLIED_EDITS_SETTING = "mike.wordAppliedEdits.v1";
+const WORD_APPLIED_EDITS_SETTING = "northwrit.wordAppliedEdits.v1";
 
 interface WordEditAnchor {
   bookmarkName: string;
@@ -102,7 +102,7 @@ function stableDigest(value: string): string {
  * Leading `_` makes this an invisible bookmark in Word's normal bookmark UI.
  */
 export function bookmarkNameForEdit(stableEditId: string): string {
-  return `_MikeEdit_${stableDigest(stableEditId)}`;
+  return `_NorthWritEdit_${stableDigest(stableEditId)}`;
 }
 
 /**

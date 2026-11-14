@@ -1,7 +1,7 @@
 // How the DB-queue runner reports to Sentry: one report per failure class
 // for a claim that fails every tick, the PostgREST code on the reported
 // error, and console lines the console bridge can recognise as already
-// reported (MIKE-BACKEND-P, -3, -G).
+// reported (NORTHWRIT-BACKEND-P, -3, -G).
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({ reportError: vi.fn() }));
@@ -189,7 +189,7 @@ describe("job pool claim failure reporting", () => {
         );
 
         // The same class minutes after it was reported is a flap, not news
-        // (MIKE-BACKEND-M): one log line, no second event.
+        // (NORTHWRIT-BACKEND-M): one log line, no second event.
         error = { code: "ECONNREFUSED", message: "connect ECONNREFUSED" };
         await tick();
         expect(claimReports()).toHaveLength(2);
@@ -207,7 +207,7 @@ describe("job pool claim failure reporting", () => {
 });
 
 describe("processClaimedJob console lines", () => {
-    it("logs a failed job with the reported Error, so the bridge files no duplicate (MIKE-BACKEND-G)", async () => {
+    it("logs a failed job with the reported Error, so the bridge files no duplicate (NORTHWRIT-BACKEND-G)", async () => {
         const db = makeDb(async () => ({ data: [], error: null }));
         await processClaimedJob(db as never, {
             "test.kind": async () => {

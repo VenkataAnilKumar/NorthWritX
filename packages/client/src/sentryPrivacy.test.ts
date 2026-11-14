@@ -287,7 +287,7 @@ it('allows only bounded network context and known model endpoints', () => {
   }
 });
 
-// MIKE-FRONTEND-J/4: an unreachable backend is one condition, not one issue
+// NORTHWRIT-FRONTEND-J/4: an unreachable backend is one condition, not one issue
 // per route/method/stack. A pinned caller fingerprint from a fixed vocabulary
 // replaces code-location grouping; any other caller fingerprint is ignored.
 it('groups a pinned unreachable-dependency condition as one issue per cause', () => {
@@ -318,7 +318,7 @@ it('keeps a bounded folded network-failure count and drops anything else', () =>
 
 // Node prints its own process warnings through console.error from node:*
 // frames only; before this the boundary reduced them to "Failure in
-// application" with four SDK frames and no identifying tag (MIKE-BACKEND-2).
+// application" with four SDK frames and no identifying tag (NORTHWRIT-BACKEND-2).
 it('keeps a Node process warning diagnosable: name, code and builtin frames, never its text', () => {
   const out = diagnosticEvent({
     tags: { component: 'runtime-warning', warning_name: 'DeprecationWarning', warning_code: 'DEP0040', stage: 'PRIVATE_STAGE' },

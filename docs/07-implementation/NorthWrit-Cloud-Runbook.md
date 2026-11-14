@@ -1,4 +1,4 @@
-# Archived Mike OSS cloud startup notes
+# Archived original application cloud startup notes
 
 The standalone Codex Cloud test was removed from the roadmap. These notes preserve the setup reference.
 
@@ -21,9 +21,9 @@ Confirm the server responds to Docker commands and Compose is at least 2.24 for 
 From a scratch directory in the test environment:
 
 ```bash
-git init mike-upstream
-cd mike-upstream
-git fetch --depth=1 https://github.com/Open-Legal-Products/mike.git a5c147d6587ca465f301e8479f6c50fbc5731c45
+git init northwrit-upstream
+cd northwrit-upstream
+# Use the retained source snapshot pinned to a5c147d6587ca465f301e8479f6c50fbc5731c45.
 git checkout --detach FETCH_HEAD
 test "$(git rev-parse HEAD)" = a5c147d6587ca465f301e8479f6c50fbc5731c45
 umask 077
@@ -33,20 +33,20 @@ cp -n backend/.env.example backend/.env
 
 Set `SENTRY_DISABLED=true` in root `.env` before building. The Compose build passes this value into the browser bundle. Set `GOTRUE_EXTERNAL_GOOGLE_ENABLED=false` for the email-only test and leave email confirmation enabled. In `backend/.env`, set separate random values for `DOWNLOAD_SIGNING_SECRET` and `USER_API_KEYS_ENCRYPTION_SECRET` using a secure editor or secret injection. Each can be generated with `openssl rand -hex 32`. Root `.env` takes precedence over backend values where both define a name.
 
-Auth, project creation and upload can be checked before choosing a model. For AI checks, use an authorized supported provider or a tool-capable Ollama model that fits the environment. Configure only the selected provider using secret injection or the supported per-user settings. Record the model ID and route. Confirm that tools actually run if testing with Ollama, because Mike can retry without tools.
+Auth, project creation and upload can be checked before choosing a model. For AI checks, use an authorized supported provider or a tool-capable Ollama model that fits the environment. Configure only the selected provider using secret injection or the supported per-user settings. Record the model ID and route. Confirm that tools actually run if testing with Ollama, because NorthWrit can retry without tools.
 
-At startup `workflow-sync` fetches the separate `Open-Legal-Products/mike-workflows` catalogue, which defaults to `main`. Resolve and record an accessible commit and set `MIKE_WORKFLOWS_REF` in `backend/.env` for a repeatable test. If a catalogue dependency fails, check network, ref and validation logs before modifying source.
+At startup `workflow-sync` fetches the separate `Open Legal Products` catalogue, which defaults to `main`. Resolve and record an accessible commit and set `NORTHWRIT_WORKFLOWS_REF` in `backend/.env` for a repeatable test. If a catalogue dependency fails, check network, ref and validation logs before modifying source.
 
 ## 3. Start and inspect the stack
 
 Use a distinct Compose project. Keep test ports private. The demo Compose file uses known local infrastructure credentials and binds some ports on all interfaces. In a shared environment, apply an environment-specific port override or firewall before startup and verify the bindings. Use an in-environment browser on loopback for the first pass.
 
 ```bash
-docker compose -p mike-baseline config --quiet
-docker compose -p mike-baseline config --services
-GIT_SHA="$(git rev-parse HEAD)" docker compose -p mike-baseline up -d --build
-docker compose -p mike-baseline ps --all
-docker compose -p mike-baseline logs --tail=100 db-init createbucket workflow-sync backend frontend
+docker compose -p northwrit-baseline config --quiet
+docker compose -p northwrit-baseline config --services
+GIT_SHA="$(git rev-parse HEAD)" docker compose -p northwrit-baseline up -d --build
+docker compose -p northwrit-baseline ps --all
+docker compose -p northwrit-baseline logs --tail=100 db-init createbucket workflow-sync backend frontend
 curl -fsS http://localhost:3001/health
 curl -fsS http://localhost:3000/api/health
 ```
@@ -80,6 +80,6 @@ Use a synthetic NDA in PDF and a synthetic services agreement in DOCX. Put an ex
 | Drafting | Draft a short notice using the cited clause. Check names, dates and required assumptions. Test DOCX export if offered in the chosen flow. |
 | Persistence and permissions | Restart services and reopen results. From a second unshared account, attempt a direct project and document link. Record authorization behaviour. |
 
-Record commit, image digests, catalogue revision, model, resource usage, results and any blocked checks. Redact tokens, signed URLs and auth email links from evidence. Stop and remove test containers with `docker compose -p mike-baseline down` when finished. This preserves test volumes.
+Record commit, image digests, catalogue revision, model, resource usage, results and any blocked checks. Redact tokens, signed URLs and auth email links from evidence. Stop and remove test containers with `docker compose -p northwrit-baseline down` when finished. This preserves test volumes.
 
-Pinned upstream references are `docs/local-development.md`, `docs/deployment.md`, `docs/safe-local-testing.md`, `docker-compose.yml` and `backend/.env.example` inside the Mike checkout.
+Pinned upstream references are `docs/local-development.md`, `docs/deployment.md`, `docs/safe-local-testing.md`, `docker-compose.yml` and `backend/.env.example` inside the NorthWrit checkout.

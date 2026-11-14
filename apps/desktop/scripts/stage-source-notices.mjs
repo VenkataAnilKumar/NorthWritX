@@ -27,7 +27,7 @@ await fs.writeFile(path.join(destination, "SOURCE.json"), JSON.stringify({
   repository: "https://github.com/VenkataAnilKumar/NorthWritX",
   commit, source: `https://github.com/VenkataAnilKumar/NorthWritX/tree/${commit}`,
   sourceArchive: `https://github.com/VenkataAnilKumar/NorthWritX/archive/${commit}.tar.gz`,
-  upstream: { repository: "https://github.com/Open-Legal-Products/mike", commit: "a5c147d6587ca465f301e8479f6c50fbc5731c45" },
+  upstream: { repository: "https://github.com/Open-Legal-Products/northwrit", commit: "a5c147d6587ca465f301e8479f6c50fbc5731c45" },
   workingTreeModified: dirty, nativeServices: manifest.sources,
 }, null, 2) + "\n");
 console.log(`Staged NorthWrit license, source identity and ${manifest.sources.length} service notices`);

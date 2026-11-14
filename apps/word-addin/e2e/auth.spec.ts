@@ -196,7 +196,7 @@ test.describe("auth flow", () => {
         ).__OAUTH_DIALOG__;
         state.sendMessage(
           JSON.stringify({
-            type: "mike-google-oauth",
+            type: "northwrit-google-oauth",
             requestId,
             status: "success",
             handoffTicket: "a".repeat(43),
@@ -236,7 +236,7 @@ test.describe("auth flow", () => {
         ).__OAUTH_DIALOG__;
         state.sendMessage(
           JSON.stringify({
-            type: "mike-google-oauth",
+            type: "northwrit-google-oauth",
             requestId,
             status: "success",
             handoffTicket: "a".repeat(43),
@@ -268,7 +268,7 @@ test.describe("auth flow", () => {
       const requestId = new URL(state.url).searchParams.get("requestId");
       state.sendMessage(
         JSON.stringify({
-          type: "mike-google-oauth",
+          type: "northwrit-google-oauth",
           requestId,
           status: "error",
           message: "Google access was denied",

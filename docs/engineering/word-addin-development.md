@@ -50,7 +50,7 @@ steps manually:
    REACT_APP_WEB_APP_URL=http://localhost:3000
    API_PROXY_TARGET=http://localhost:3001
    OBJECT_STORAGE_PROXY_TARGET=http://localhost:9000
-   OBJECT_STORAGE_BUCKET_NAME=mike
+   OBJECT_STORAGE_BUCKET_NAME=northwrit
    ```
 
    The browser-facing API URL remains on the HTTPS dev server; the proxy target

@@ -76,7 +76,7 @@ export function readStoredWorkspace(userId: string | undefined): string {
     try {
         return (
             window.localStorage.getItem(STORAGE_PREFIX + userId) ||
-            window.localStorage.getItem("mike.activeWorkspace." + userId) ||
+            window.localStorage.getItem("northwrit.activeWorkspace." + userId) ||
             PERSONAL_WORKSPACE
         );
     } catch {

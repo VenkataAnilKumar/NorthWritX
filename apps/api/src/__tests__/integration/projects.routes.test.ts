@@ -1912,7 +1912,7 @@ describe("projects.routes", () => {
                     Buffer.from(published.public_key, "hex"),
                 ]);
                 const payload = Buffer.concat([
-                    Buffer.from("mike-project-manifest-v1\0", "utf8"),
+                    Buffer.from("northwrit-project-manifest-v1\0", "utf8"),
                     Buffer.from(res.body.digest.value, "hex"),
                 ]);
                 expect(

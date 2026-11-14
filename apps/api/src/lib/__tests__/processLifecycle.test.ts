@@ -32,7 +32,7 @@ afterEach(async () => {
   await Sentry.close();
 });
 
-describe("failBoot (MIKE-BACKEND-2 / -3)", () => {
+describe("failBoot (NORTHWRIT-BACKEND-2 / -3)", () => {
   // One failed boot used to arrive as two issues: the explicit fatal report
   // and a console-bridge copy of the logged message string. Runs the real
   // console integration and beforeSend so the dedupe is exercised end to end.
@@ -95,7 +95,7 @@ describe("failBoot (MIKE-BACKEND-2 / -3)", () => {
     expect(effects.exit).toHaveBeenCalledWith(1);
   });
 
-  // MIKE-BACKEND-N: 54 "Failure in boot" events from a restart loop, none of
+  // NORTHWRIT-BACKEND-N: 54 "Failure in boot" events from a restart loop, none of
   // which said WHICH variable was wrong. Runs the real validator, failBoot,
   // beforeSend and the outbound privacy boundary: the event that leaves the
   // process must be titled by stage + code and carry the field NAMES only.
@@ -167,7 +167,7 @@ describe("failBoot (MIKE-BACKEND-2 / -3)", () => {
   });
 });
 
-describe("listenOrFail (MIKE-BACKEND-7 root cause)", () => {
+describe("listenOrFail (NORTHWRIT-BACKEND-7 root cause)", () => {
   it("fails the boot instead of reporting 'running' when the port is taken", async () => {
     const holder = http.createServer();
     await new Promise<void>((resolve) => holder.listen(0, resolve));
@@ -211,7 +211,7 @@ describe("listenOrFail (MIKE-BACKEND-7 root cause)", () => {
   });
 });
 
-describe("graceful shutdown (MIKE-BACKEND-7)", () => {
+describe("graceful shutdown (NORTHWRIT-BACKEND-7)", () => {
   it("treats a server that never bound its port as already closed", async () => {
     const neverListened = http.createServer();
     await expect(closeHttpServer(neverListened)).resolves.toBeUndefined();

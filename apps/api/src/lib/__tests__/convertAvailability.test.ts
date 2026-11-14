@@ -1,4 +1,4 @@
-// MIKE-BACKEND-9: "Failure in upload-worker / conversion" from a developer
+// NORTHWRIT-BACKEND-9: "Failure in upload-worker / conversion" from a developer
 // machine running the backend outside Docker. The Docker image installs
 // LibreOffice (/usr/bin/soffice), but the official macOS installer puts
 // soffice inside the app bundle and adds nothing to PATH, so the worker

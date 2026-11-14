@@ -96,7 +96,7 @@ const sourceMapUploadConfigured = Boolean(
 // carries. NORTHWRIT_VERSION and GIT_SHA are the image build arguments.
 const release = releaseName(
     process.env.SENTRY_RELEASE ?? process.env.NEXT_PUBLIC_SENTRY_RELEASE,
-    (process.env.NORTHWRIT_VERSION ?? process.env.MIKE_VERSION),
+    (process.env.NORTHWRIT_VERSION),
     process.env.GIT_SHA,
 );
 

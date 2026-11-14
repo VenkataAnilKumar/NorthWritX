@@ -108,7 +108,7 @@ describe("sendInternalError", () => {
     );
   });
 
-  // MIKE-BACKEND-H: GET /chat on an install whose migrations were never
+  // NORTHWRIT-BACKEND-H: GET /chat on an install whose migrations were never
   // applied (the list RPC does not exist, PGRST202) answered an opaque 500
   // internal_error, and the operator log said nothing about migrations.
   it.each(["PGRST202", "PGRST203", "PGRST204", "PGRST205", "42P01", "42703"])(

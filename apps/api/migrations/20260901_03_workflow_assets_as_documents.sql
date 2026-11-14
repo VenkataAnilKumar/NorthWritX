@@ -111,52 +111,52 @@ drop table if exists public.workflow_addon_reference_files;
 
 do $$
 begin
-  if to_regclass('public.mike_workflow_reference_files') is not null
-     and to_regclass('public.mike_workflow_assets') is null then
-    alter table public.mike_workflow_reference_files
-      rename to mike_workflow_assets;
+  if to_regclass('public.northwrit_workflow_reference_files') is not null
+     and to_regclass('public.northwrit_workflow_assets') is null then
+    alter table public.northwrit_workflow_reference_files
+      rename to northwrit_workflow_assets;
   end if;
 end
 $$;
 
-alter index if exists public.mike_workflow_reference_files_name_unique
-  rename to mike_workflow_assets_name_unique;
+alter index if exists public.northwrit_workflow_reference_files_name_unique
+  rename to northwrit_workflow_assets_name_unique;
 
 do $$
 begin
   if exists (
     select 1 from pg_constraint
-    where conname = 'mike_workflow_reference_files_pkey'
-      and conrelid = 'public.mike_workflow_assets'::regclass
+    where conname = 'northwrit_workflow_reference_files_pkey'
+      and conrelid = 'public.northwrit_workflow_assets'::regclass
   ) then
-    alter table public.mike_workflow_assets
-      rename constraint mike_workflow_reference_files_pkey
-      to mike_workflow_assets_pkey;
+    alter table public.northwrit_workflow_assets
+      rename constraint northwrit_workflow_reference_files_pkey
+      to northwrit_workflow_assets_pkey;
   end if;
 
   if exists (
     select 1 from pg_constraint
-    where conname = 'mike_workflow_reference_files_mike_workflow_id_fkey'
-      and conrelid = 'public.mike_workflow_assets'::regclass
+    where conname = 'northwrit_workflow_reference_files_northwrit_workflow_id_fkey'
+      and conrelid = 'public.northwrit_workflow_assets'::regclass
   ) then
-    alter table public.mike_workflow_assets
-      rename constraint mike_workflow_reference_files_mike_workflow_id_fkey
-      to mike_workflow_assets_mike_workflow_id_fkey;
+    alter table public.northwrit_workflow_assets
+      rename constraint northwrit_workflow_reference_files_northwrit_workflow_id_fkey
+      to northwrit_workflow_assets_northwrit_workflow_id_fkey;
   end if;
 
   if exists (
     select 1 from pg_constraint
-    where conname = 'mike_workflow_reference_files_hash_check'
-      and conrelid = 'public.mike_workflow_assets'::regclass
+    where conname = 'northwrit_workflow_reference_files_hash_check'
+      and conrelid = 'public.northwrit_workflow_assets'::regclass
   ) then
-    alter table public.mike_workflow_assets
-      rename constraint mike_workflow_reference_files_hash_check
-      to mike_workflow_assets_hash_check;
+    alter table public.northwrit_workflow_assets
+      rename constraint northwrit_workflow_reference_files_hash_check
+      to northwrit_workflow_assets_hash_check;
   end if;
 end
 $$;
 
-create or replace function public.replace_mike_workflows(
+create or replace function public.replace_northwrit_workflows(
   p_source_commit text,
   p_workflows jsonb
 )
@@ -179,8 +179,8 @@ begin
     raise exception 'workflow catalog payload must be an array';
   end if;
 
-  perform pg_advisory_xact_lock(hashtextextended('mike_workflows', 0));
-  update public.mike_workflows set active = false where active;
+  perform pg_advisory_xact_lock(hashtextextended('northwrit_workflows', 0));
+  update public.northwrit_workflows set active = false where active;
 
   for item in select value from jsonb_array_elements(p_workflows)
   loop
@@ -191,7 +191,7 @@ begin
       from jsonb_array_elements_text(item->'jurisdictions');
     end if;
 
-    insert into public.mike_workflows (
+    insert into public.northwrit_workflows (
       workflow_key, distribution, version, title, description, type,
       prompt_md, columns_config, contributors, language, practice,
       jurisdictions, pack_key, pack_title, pack_description, pack_version,
@@ -255,8 +255,8 @@ begin
       updated_at = now()
     returning id into workflow_uuid;
 
-    delete from public.mike_workflow_assets
-    where mike_workflow_id = workflow_uuid;
+    delete from public.northwrit_workflow_assets
+    where northwrit_workflow_id = workflow_uuid;
 
     -- reference_files remains a rollout-only alias for catalog payloads
     -- produced immediately before workflow assets were renamed.
@@ -268,8 +268,8 @@ begin
       for asset_item in
         select value from jsonb_array_elements(asset_items)
       loop
-        insert into public.mike_workflow_assets (
-          mike_workflow_id, filename, file_type, storage_path,
+        insert into public.northwrit_workflow_assets (
+          northwrit_workflow_id, filename, file_type, storage_path,
           size_bytes, content_hash
         ) values (
           workflow_uuid,
@@ -285,7 +285,7 @@ begin
 end;
 $$;
 
-revoke all on public.mike_workflow_assets from anon, authenticated;
+revoke all on public.northwrit_workflow_assets from anon, authenticated;
 grant select, insert, update, delete
-  on public.mike_workflow_assets
+  on public.northwrit_workflow_assets
   to service_role;

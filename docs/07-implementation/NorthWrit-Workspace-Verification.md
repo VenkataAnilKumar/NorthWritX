@@ -31,7 +31,7 @@ The full API run hit the migration suite's existing 20-second timeout. All 21 mi
 
 The process-limit fixture expects fake LibreOffice process IDs before a short cold-start deadline and reports `expected [] to have a length of 2` on this host. Three of its four tests pass. The [layout migration record](NorthWrit-Migration-Verification.md) already reproduces this exact failure against original source. No extraction implementation, assertion or timeout was changed. The complete API run is not recorded as passing.
 
-The branding checker reports seven existing raster-icon byte differences under Pillow 13.0.0. Every flagged asset is unchanged by this task; the earlier migration record documents the same baseline differences. No active `@mike/*` package imports remain, and database/migration files are unchanged.
+The branding checker reports seven existing raster-icon byte differences under Pillow 13.0.0. Every flagged asset is unchanged by this task; the earlier migration record documents the same baseline differences. No active `@northwrit/*` package imports remain, and database/migration files are unchanged.
 
 ## Dependency graph and regression corrections
 

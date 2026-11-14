@@ -3,7 +3,7 @@ import { readWordPreference } from "../../../word-addin/src/taskpane/lib/wordPre
 
 describe("Word preference namespace transition", () => {
   const key = "northwrit_word_chat_storage_mode:user-1";
-  const legacy = "mike_word_chat_storage_mode:user-1";
+  const legacy = "northwrit_word_chat_storage_mode:user-1";
   it("preserves a local-only preference and stores it under the new key", async () => {
     const values = new Map([[legacy, "local"]]);
     const storage = { getItem: vi.fn(async (name: string) => values.get(name)), setItem: vi.fn(async (name: string, value: string) => { values.set(name, value); }) };

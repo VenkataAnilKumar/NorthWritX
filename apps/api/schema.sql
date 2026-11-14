@@ -1,7 +1,7 @@
--- Mike Supabase schema
+-- NorthWrit Supabase schema
 -- Use this for a fresh Supabase database. Existing deployments should instead
 -- apply the dated incremental migration files in backend/migrations that are
--- newer than the version of Mike they currently have deployed.
+-- newer than the version of NorthWrit they currently have deployed.
 
 create extension if not exists "pgcrypto";
 create extension if not exists "pg_trgm";
@@ -1860,7 +1860,7 @@ alter table public.quick_actions enable row level security;
 revoke all on public.default_workflow_installations from public, anon, authenticated;
 revoke all on public.quick_actions from public, anon, authenticated;
 
-create table if not exists public.mike_workflows (
+create table if not exists public.northwrit_workflows (
   id uuid primary key default gen_random_uuid(),
   workflow_key text not null,
   distribution text not null,
@@ -1889,27 +1889,27 @@ create table if not exists public.mike_workflows (
   active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint mike_workflows_key_hash_unique
+  constraint northwrit_workflows_key_hash_unique
     unique(workflow_key, content_hash),
-  constraint mike_workflows_distribution_check
+  constraint northwrit_workflows_distribution_check
     check(distribution in ('default', 'addon')),
-  constraint mike_workflows_type_check
+  constraint northwrit_workflows_type_check
     check(type in ('assistant', 'tabular')),
-  constraint mike_workflows_source_commit_check
+  constraint northwrit_workflows_source_commit_check
     check(source_commit is null or source_commit ~ '^[0-9a-f]{40}$'),
-  constraint mike_workflows_content_hash_check
+  constraint northwrit_workflows_content_hash_check
     check(content_hash ~ '^[0-9a-f]{64}$')
 );
 
-create unique index if not exists mike_workflows_active_key_idx
-  on public.mike_workflows(workflow_key)
+create unique index if not exists northwrit_workflows_active_key_idx
+  on public.northwrit_workflows(workflow_key)
   where active;
 
-create index if not exists mike_workflows_active_distribution_type_idx
-  on public.mike_workflows(active, distribution, type, title);
+create index if not exists northwrit_workflows_active_distribution_type_idx
+  on public.northwrit_workflows(active, distribution, type, title);
 
-create index if not exists mike_workflows_active_pack_idx
-  on public.mike_workflows(active, pack_key, title);
+create index if not exists northwrit_workflows_active_pack_idx
+  on public.northwrit_workflows(active, pack_key, title);
 
 alter table public.documents
   add column if not exists workflow_id uuid
@@ -1919,19 +1919,19 @@ create index if not exists idx_documents_workflow
   on public.documents(workflow_id, created_at)
   where workflow_id is not null;
 
-create table if not exists public.mike_workflow_assets (
+create table if not exists public.northwrit_workflow_assets (
   id uuid primary key default gen_random_uuid(),
-  mike_workflow_id uuid not null
-    references public.mike_workflows(id) on delete cascade,
+  northwrit_workflow_id uuid not null
+    references public.northwrit_workflows(id) on delete cascade,
   filename text not null,
   file_type text not null,
   storage_path text not null,
   size_bytes integer,
   content_hash text not null,
   created_at timestamptz not null default now(),
-  constraint mike_workflow_assets_name_unique
-    unique(mike_workflow_id, filename),
-  constraint mike_workflow_assets_hash_check
+  constraint northwrit_workflow_assets_name_unique
+    unique(northwrit_workflow_id, filename),
+  constraint northwrit_workflow_assets_hash_check
     check(content_hash ~ '^[0-9a-f]{64}$')
 );
 
@@ -1971,7 +1971,7 @@ create index if not exists workflow_addons_active_pack_idx
 
 -- Replace the active catalog as one transaction. Content-addressed historical
 -- rows remain available for old builtin-* workflow references.
-create or replace function public.replace_mike_workflows(
+create or replace function public.replace_northwrit_workflows(
   p_source_commit text,
   p_workflows jsonb
 )
@@ -1994,8 +1994,8 @@ begin
     raise exception 'workflow catalog payload must be an array';
   end if;
 
-  perform pg_advisory_xact_lock(hashtextextended('mike_workflows', 0));
-  update public.mike_workflows set active = false where active;
+  perform pg_advisory_xact_lock(hashtextextended('northwrit_workflows', 0));
+  update public.northwrit_workflows set active = false where active;
 
   for item in select value from jsonb_array_elements(p_workflows)
   loop
@@ -2006,7 +2006,7 @@ begin
       from jsonb_array_elements_text(item->'jurisdictions');
     end if;
 
-    insert into public.mike_workflows (
+    insert into public.northwrit_workflows (
       workflow_key, distribution, version, title, description, type,
       prompt_md, columns_config, contributors, language, practice,
       jurisdictions, pack_key, pack_title, pack_description, pack_version,
@@ -2070,8 +2070,8 @@ begin
       updated_at = now()
     returning id into workflow_uuid;
 
-    delete from public.mike_workflow_assets
-    where mike_workflow_id = workflow_uuid;
+    delete from public.northwrit_workflow_assets
+    where northwrit_workflow_id = workflow_uuid;
 
     -- reference_files remains a rollout-only alias for catalog payloads
     -- produced immediately before workflow assets were renamed.
@@ -2083,8 +2083,8 @@ begin
       for asset_item in
         select value from jsonb_array_elements(asset_items)
       loop
-        insert into public.mike_workflow_assets (
-          mike_workflow_id, filename, file_type, storage_path,
+        insert into public.northwrit_workflow_assets (
+          northwrit_workflow_id, filename, file_type, storage_path,
           size_bytes, content_hash
         ) values (
           workflow_uuid,
@@ -2112,7 +2112,7 @@ security definer
 set search_path = public
 as $$
 declare
-  catalog_item public.mike_workflows%rowtype;
+  catalog_item public.northwrit_workflows%rowtype;
   workflow_uuid uuid;
   installed_count integer := 0;
 begin
@@ -2120,7 +2120,7 @@ begin
 
   for catalog_item in
     select catalog.*
-    from public.mike_workflows catalog
+    from public.northwrit_workflows catalog
     where catalog.active
       and catalog.distribution = 'default'
     order by catalog.default_sort_order nulls last, catalog.workflow_key
@@ -2199,7 +2199,7 @@ end;
 $$;
 
 -- Deprecated rollback-only overload used by backend releases that predate
--- mike_workflows. New code calls the one-argument function above.
+-- northwrit_workflows. New code calls the one-argument function above.
 create or replace function public.install_missing_default_workflows(
   p_user_id text,
   p_defaults jsonb
@@ -3470,7 +3470,7 @@ drop function if exists public.get_project_ids_overview(text, text, text, text, 
 -- Workflows overview pagination
 -- ============================================================================
 -- Mirrors the Projects pagination above. Catalog workflows live in the shared
--- mike_workflows table and have no user-data growth. They are deliberately
+-- northwrit_workflows table and have no user-data growth. They are deliberately
 -- NOT part of this RPC. This migration only
 -- paginates the one part of /workflows with real growth: a user's owned +
 -- shared workflows. Every other caller of GET /workflows (the workflow picker
@@ -6714,9 +6714,9 @@ begin
   perform 1 from public.organizations where id=old.org_id for update;
   if not found then return old; end if;
   if public.org_is_team(old.org_id) then
-    successor:=coalesce(nullif(current_setting('mike.departure_successor',true),'')::uuid,
+    successor:=coalesce(nullif(current_setting('northwrit.departure_successor',true),'')::uuid,
       public.org_default_departure_successor(old.org_id,array[old.user_id]));
-    actor:=coalesce(nullif(current_setting('mike.departure_actor',true),'')::uuid,successor);
+    actor:=coalesce(nullif(current_setting('northwrit.departure_actor',true),'')::uuid,successor);
     -- Sharing writes lock their parent. Lock roots before classifying them.
     perform id from public.projects where org_id=old.org_id order by id for update;
     perform id from public.workflows where org_id=old.org_id order by id for update;
@@ -6877,8 +6877,8 @@ revoke all on public.hidden_workflows from anon, authenticated;
 revoke all on public.workflow_shares from anon, authenticated;
 revoke all on public.workflow_org_access_overrides from anon, authenticated;
 revoke all on public.workflow_open_source_submissions from anon, authenticated;
-revoke all on public.mike_workflows from anon, authenticated;
-revoke all on public.mike_workflow_assets from anon, authenticated;
+revoke all on public.northwrit_workflows from anon, authenticated;
+revoke all on public.northwrit_workflow_assets from anon, authenticated;
 revoke all on public.workflow_addons from anon, authenticated;
 revoke all on public.chats from anon, authenticated;
 revoke all on public.chat_access_grants from anon, authenticated;
@@ -6921,7 +6921,7 @@ revoke all on public.memory_consolidation_states from anon, authenticated;
 revoke all on public.memory_conversation_activity from anon, authenticated;
 revoke all on public.memory_conversation_turn_leases from anon, authenticated;
 revoke all on public.memory_consolidation_results from anon, authenticated;
-revoke all on function public.replace_mike_workflows(text, jsonb)
+revoke all on function public.replace_northwrit_workflows(text, jsonb)
   from public, anon, authenticated;
 revoke all on function public.install_missing_default_workflows(text)
   from public, anon, authenticated;
@@ -7004,9 +7004,9 @@ revoke all on function public.claim_upload_processing_job(text, integer, integer
 grant select, insert, update, delete
   on public.default_workflow_installations,
      public.quick_actions,
-     public.mike_workflows,
+     public.northwrit_workflows,
      public.workflow_addons,
-     public.mike_workflow_assets,
+     public.northwrit_workflow_assets,
      public.memory_files,
      public.memory_consolidation_states,
      public.memory_conversation_activity,
@@ -7015,7 +7015,7 @@ grant select, insert, update, delete
   to service_role;
 
 grant execute
-  on function public.replace_mike_workflows(text, jsonb)
+  on function public.replace_northwrit_workflows(text, jsonb)
   to service_role;
 grant execute
   on function public.install_missing_default_workflows(text)
@@ -7930,11 +7930,11 @@ begin
   if p_successor_id is not null and (p_successor_id=p_user_id or not exists (
     select 1 from public.org_members where org_id=p_org_id and user_id=p_successor_id
   )) then raise exception 'Choose another current organization member' using errcode='23514'; end if;
-  perform set_config('mike.departure_successor',coalesce(p_successor_id::text,''),true);
-  perform set_config('mike.departure_actor',p_actor_id::text,true);
+  perform set_config('northwrit.departure_successor',coalesce(p_successor_id::text,''),true);
+  perform set_config('northwrit.departure_actor',p_actor_id::text,true);
   delete from public.org_members where org_id=p_org_id and user_id=p_user_id;
-  perform set_config('mike.departure_successor','',true);
-  perform set_config('mike.departure_actor','',true);
+  perform set_config('northwrit.departure_successor','',true);
+  perform set_config('northwrit.departure_actor','',true);
 end;
 $$;
 
@@ -8695,9 +8695,9 @@ begin
   perform 1 from public.organizations where id=old.org_id for update;
   if not found or not public.org_is_active(old.org_id) then return old; end if;
   if public.org_is_team(old.org_id) then
-    successor:=coalesce(nullif(current_setting('mike.departure_successor',true),'')::uuid,
+    successor:=coalesce(nullif(current_setting('northwrit.departure_successor',true),'')::uuid,
       public.org_default_departure_successor(old.org_id,array[old.user_id]));
-    actor:=coalesce(nullif(current_setting('mike.departure_actor',true),'')::uuid,successor);
+    actor:=coalesce(nullif(current_setting('northwrit.departure_actor',true),'')::uuid,successor);
     -- Sharing writes lock their parent. Lock roots before classifying them.
     perform id from public.projects where org_id=old.org_id order by id for update;
     perform id from public.workflows where org_id=old.org_id order by id for update;
@@ -9188,7 +9188,7 @@ $$;
 
 -- GET /chat. The list form of chat_access_role above: the same ladder, evaluated
 -- with set-based joins so the planner reaches the caller's chats through indexes
--- instead of calling the verdict for every row (MIKE-BACKEND-F). Kept next to
+-- instead of calling the verdict for every row (NORTHWRIT-BACKEND-F). Kept next to
 -- the verdict it mirrors; backend/src/modules/chat/__tests__/chat.overview.sql
 -- proves the two agree row for row.
 create or replace function public.get_chats_overview(
@@ -9554,9 +9554,9 @@ begin
     -- The auth row is already gone during an account-deletion cascade.
     select id into former_user from auth.users where id=old.user_id;
     if active then
-      successor:=coalesce(nullif(current_setting('mike.departure_successor',true),'')::uuid,
+      successor:=coalesce(nullif(current_setting('northwrit.departure_successor',true),'')::uuid,
       public.org_default_departure_successor(old.org_id,array[old.user_id]));
-      actor:=coalesce(nullif(current_setting('mike.departure_actor',true),'')::uuid,successor);
+      actor:=coalesce(nullif(current_setting('northwrit.departure_actor',true),'')::uuid,successor);
     end if;
     -- Sharing writes lock their parent. Lock roots before classifying them.
     perform id from public.projects where org_id=old.org_id order by id for update;
@@ -11875,9 +11875,9 @@ begin
     -- The auth row is already gone during an account-deletion cascade.
     select id into former_user from auth.users where id=old.user_id;
     if active then
-      successor:=coalesce(nullif(current_setting('mike.departure_successor',true),'')::uuid,
+      successor:=coalesce(nullif(current_setting('northwrit.departure_successor',true),'')::uuid,
       public.org_default_departure_successor(old.org_id,array[old.user_id]));
-      actor:=coalesce(nullif(current_setting('mike.departure_actor',true),'')::uuid,successor);
+      actor:=coalesce(nullif(current_setting('northwrit.departure_actor',true),'')::uuid,successor);
     end if;
     -- Keep the organization serialization fence (also used by membership
     -- and account deletion). Projects/workflows need only affected-root locks.

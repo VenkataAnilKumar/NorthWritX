@@ -25,7 +25,7 @@ metadata:
   author: "Open Legal Products"
   language: "English"
   northwrit-display-name: "${options.title}"
-  mike-type: "${options.type}"
+  northwrit-type: "${options.type}"
   northwrit-availability: "system"
   practice: "General Transactions"
   jurisdictions: "General"
@@ -36,7 +36,7 @@ Run the test workflow.
 
 async function archive(options: { duplicate?: boolean } = {}) {
   const zip = new JSZip();
-  const root = "mike-workflows-test/";
+  const root = "northwrit-workflows-test/";
   for (const [key, title] of [
     ["compare-documents", "Compare Documents"],
     ["extract-key-terms", "Extract Key Terms"],

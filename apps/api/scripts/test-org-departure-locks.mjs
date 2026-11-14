@@ -3,11 +3,11 @@
 import { randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import assert from "node:assert/strict";
-const container = (process.env.NORTHWRIT_TEST_POSTGRES_CONTAINER ?? process.env.MIKE_TEST_POSTGRES_CONTAINER);
-const database = (process.env.NORTHWRIT_TEST_POSTGRES_DATABASE ?? process.env.MIKE_TEST_POSTGRES_DATABASE);
+const container = (process.env.NORTHWRIT_TEST_POSTGRES_CONTAINER);
+const database = (process.env.NORTHWRIT_TEST_POSTGRES_DATABASE);
 const url = new URL(process.env.SUPABASE_TEST_DB_URL ?? "postgres://invalid");
-if (container ? !database?.startsWith("mike_sql_") : !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) {
-  throw new Error("Use a disposable loopback database or an explicitly named mike_sql_ test database");
+if (container ? !database?.startsWith("northwrit_sql_") : !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) {
+  throw new Error("Use a disposable loopback database or an explicitly named northwrit_sql_ test database");
 }
 const command = container ? "docker" : "psql";
 const args = container ? ["exec", "-i", container, "psql", "-U", "postgres", "-d", database, "-XAtq", "-v", "ON_ERROR_STOP=1"] : ["-XAtq", "-v", "ON_ERROR_STOP=1"];

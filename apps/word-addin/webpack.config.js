@@ -101,7 +101,7 @@ module.exports = async (_env, options) => {
     const objectStorageTarget =
       process.env.OBJECT_STORAGE_PROXY_TARGET || "http://localhost:9000";
     const objectStorageBucketName =
-      process.env.OBJECT_STORAGE_BUCKET_NAME || "mike";
+      process.env.OBJECT_STORAGE_BUCKET_NAME || "northwrit";
     if (!/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/.test(objectStorageBucketName)) {
       throw new Error("OBJECT_STORAGE_BUCKET_NAME is not a valid bucket name");
     }
@@ -145,7 +145,7 @@ module.exports = async (_env, options) => {
           release: {
             name: releaseName(
               process.env.REACT_APP_SENTRY_RELEASE,
-              (process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION),
+              (process.env.REACT_APP_NORTHWRIT_VERSION),
               process.env.REACT_APP_GIT_SHA,
             ),
           },
@@ -269,8 +269,7 @@ module.exports = async (_env, options) => {
           process.env.REACT_APP_SENTRY_ENVIRONMENT || "",
         REACT_APP_SENTRY_RELEASE: process.env.REACT_APP_SENTRY_RELEASE || "",
         REACT_APP_GIT_SHA: process.env.REACT_APP_GIT_SHA || "",
-        REACT_APP_MIKE_VERSION: process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION ?? "",
-        REACT_APP_NORTHWRIT_VERSION: (process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION) || "",
+        REACT_APP_NORTHWRIT_VERSION: (process.env.REACT_APP_NORTHWRIT_VERSION) || "",
         REACT_APP_SENTRY_TRACES_SAMPLE_RATE:
           process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE || "",
       }),

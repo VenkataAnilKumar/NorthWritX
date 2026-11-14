@@ -5,7 +5,7 @@ import path from "path";
 import JSZip, { type JSZipObject } from "jszip";
 import { parse as parseYaml } from "yaml";
 
-const DEFAULT_REPOSITORY = "Open-Legal-Products/mike-workflows";
+const DEFAULT_REPOSITORY = "Open-Legal-Products/northwrit-workflows";
 const DEFAULT_REF = "main";
 const COMMIT_PATTERN = /^[0-9a-f]{40}$/;
 const REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
@@ -200,11 +200,11 @@ function githubHeaders(token?: string): Record<string, string> {
 function sourceConfiguration(options: WorkflowCatalogSourceOptions) {
   const repository =
     options.repository ??
-    (process.env.NORTHWRIT_WORKFLOWS_REPOSITORY ?? process.env.MIKE_WORKFLOWS_REPOSITORY) ??
+    (process.env.NORTHWRIT_WORKFLOWS_REPOSITORY) ??
     DEFAULT_REPOSITORY;
-  const ref = options.ref ?? (process.env.NORTHWRIT_WORKFLOWS_REF ?? process.env.MIKE_WORKFLOWS_REF) ?? DEFAULT_REF;
+  const ref = options.ref ?? (process.env.NORTHWRIT_WORKFLOWS_REF) ?? DEFAULT_REF;
   const githubToken =
-    options.githubToken ?? (process.env.NORTHWRIT_WORKFLOWS_GITHUB_TOKEN ?? process.env.MIKE_WORKFLOWS_GITHUB_TOKEN);
+    options.githubToken ?? (process.env.NORTHWRIT_WORKFLOWS_GITHUB_TOKEN);
   if (!REPOSITORY_PATTERN.test(repository)) {
     throw new Error(
       "NORTHWRIT_WORKFLOWS_REPOSITORY must use the owner/repository form",
@@ -485,11 +485,11 @@ async function parseArchive(
     requiredString(frontmatter.license, `${skillPath}.license`);
     const metadata = asRecord(frontmatter.metadata, `${skillPath}.metadata`);
     const metadataType = requiredString(
-      metadata["mike-type"],
-      `${skillPath}.metadata.mike-type`,
+      metadata["northwrit-type"],
+      `${skillPath}.metadata.northwrit-type`,
     );
     if (metadataType !== type) {
-      throw new Error(`${skillPath}.metadata.mike-type must be '${type}'`);
+      throw new Error(`${skillPath}.metadata.northwrit-type must be '${type}'`);
     }
     const availability = optionalString(
       metadata["northwrit-availability"],
@@ -754,7 +754,7 @@ export async function prepareWorkflowCatalog(
   options: WorkflowCatalogSourceOptions = {},
 ): Promise<PreparedWorkflowCatalog> {
   const directory = await mkdtemp(
-    path.join(options.temporaryRoot ?? tmpdir(), "mike-workflows-"),
+    path.join(options.temporaryRoot ?? tmpdir(), "northwrit-workflows-"),
   );
   try {
     const archivePath = path.join(directory, "source.zip");

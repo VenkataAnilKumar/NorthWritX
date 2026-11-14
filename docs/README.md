@@ -1,6 +1,6 @@
 # Northwrit Product Documentation
 
-The [Open-Source References](03-market/Northwrit_Open-Source-References.md) register records MikeOSS as the application foundation and links to its source, workflows, and local setup.
+The [Open-Source References](03-market/Northwrit_Open-Source-References.md) register records NorthWritOSS as the application foundation and links to its source, workflows, and local setup.
 
 The [implementation plan](07-implementation/NorthWrit-Implementation-Plan.md) governs current delivery. Use the [repository ownership map](06-technical/NorthWrit-Repository-Ownership.md) for documentation authority. Product specifications describe target behaviour; document availability and check marks below do not establish that a feature or security guarantee is implemented or validated.
 
@@ -10,7 +10,7 @@ The [implementation plan](07-implementation/NorthWrit-Implementation-Plan.md) go
 
 ## Complete Documentation Index
 
-The index groups product specifications, technical designs, the current Mike OSS implementation plan, and operational guides.
+The index groups product specifications, technical designs, the current original application implementation plan, and operational guides.
 
 | # | Document | What It Answers | Status |
 |---|---|---|---|
@@ -39,7 +39,7 @@ The index groups product specifications, technical designs, the current Mike OSS
 | 17 | [Security & Compliance](06-technical/Northwrit_Security-Compliance.md) | Threat model (prompt injection, leakage), source rights records, LSO duties, PIPEDA & Law 25 | ✅ |
 | 18 | [Deployment Architecture](06-technical/Northwrit_Deployment-Architecture.md) | Canadian-region cloud tier, Firm Server (Docker Compose), Local Companion, backups & observability | ✅ |
 | 19 | [Repository Ownership](06-technical/NorthWrit-Repository-Ownership.md) | Current layout, dependency boundaries and documentation authority | Accepted structure |
-| 20 | [Source Audit](07-implementation/NorthWrit-Source-Audit.md) | Pinned Mike OSS architecture, candidate building blocks and gaps | Static review |
+| 20 | [Source Audit](07-implementation/NorthWrit-Source-Audit.md) | Pinned original application architecture, candidate building blocks and gaps | Static review |
 | 21 | [Platform Layers & Surfaces](06-technical/Northwrit_Platform-Layers-and-Surfaces.md) | Architectural synthesis: Cohere North private agentics × Harvey AI legal intelligence (6 layers, 5 surfaces) | ✅ |
 | **07 Implementation** | | | |
 | 22 | [NorthWrit Implementation Plan](07-implementation/NorthWrit-Implementation-Plan.md) | Current roadmap: audit, rebrand, legal workspace, NorthWrit capabilities, integrations, and release | Planned |

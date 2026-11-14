@@ -14,7 +14,7 @@ do $$
 declare actor uuid:=gen_random_uuid(); review uuid; row_id uuid; i integer;
 begin
   insert into auth.users(id,email) values(actor,actor||'@example.test');
-  perform set_config('mike.test_counts_actor',actor::text,true);
+  perform set_config('northwrit.test_counts_actor',actor::text,true);
   -- Ties on every key (names, counts, timestamps) exercise the tiebreakers.
   insert into public.projects(user_id,name,cm_number,created_at,updated_at)
     select actor,'Matter '||(n%7),'CM-'||(n%5),now()-(n%9)*interval '1 day',now()-(n%4)*interval '1 hour' from generate_series(1,40) n;
@@ -40,7 +40,7 @@ begin
 end;
 $$;
 do $$
-declare actor text:=current_setting('mike.test_counts_actor'); key text; dir text; whole jsonb; paged jsonb; expected jsonb; page integer;
+declare actor text:=current_setting('northwrit.test_counts_actor'); key text; dir text; whole jsonb; paged jsonb; expected jsonb; page integer;
 begin
   foreach key in array array['name','cm','files','chats','reviews','created','updated'] loop
     foreach dir in array array['asc','desc'] loop
@@ -88,7 +88,7 @@ $$;
 -- would hide the difference between counting one row and counting all.
 set local enable_seqscan=off;
 do $$
-declare actor text:=current_setting('mike.test_counts_actor'); before bigint; reads bigint;
+declare actor text:=current_setting('northwrit.test_counts_actor'); before bigint; reads bigint;
 begin
   before:=pg_temp.rel_work('public.documents');
   perform * from public.get_projects_overview(actor,'','all',1,0,null,'created','desc',null,null);

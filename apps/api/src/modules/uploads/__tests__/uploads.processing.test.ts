@@ -466,7 +466,7 @@ describe("upload processing", () => {
   });
 
   it("keeps the upload and reports a missing LibreOffice once, as a warning grouped by file type", async () => {
-    // MIKE-BACKEND-9: the worker on a host without soffice.
+    // NORTHWRIT-BACKEND-9: the worker on a host without soffice.
     const officeBytes = Buffer.from([1, 2, 3, 4]);
     mocks.createFileReadStream.mockImplementation(() => Readable.from([officeBytes]));
     const officeFile = {
@@ -952,7 +952,7 @@ describe("upload processing", () => {
     );
   });
 
-  it("names a job, session or file row that is no longer there (MIKE-BACKEND-M)", async () => {
+  it("names a job, session or file row that is no longer there (NORTHWRIT-BACKEND-M)", async () => {
     const job = {
       id: "job-1",
       session_id: baseSession.id,
@@ -1086,7 +1086,7 @@ describe("upload processing", () => {
     }
   });
 
-  it("reports a claim loop that fails every tick once, with its code, and backs off (MIKE-BACKEND-K)", async () => {
+  it("reports a claim loop that fails every tick once, with its code, and backs off (NORTHWRIT-BACKEND-K)", async () => {
     vi.useFakeTimers();
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});

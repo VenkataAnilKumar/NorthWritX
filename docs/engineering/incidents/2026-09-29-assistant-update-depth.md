@@ -8,7 +8,7 @@ its locked Next.js 16.3.5 and React 19.3.0 dependencies.
 This records the original scroll-effect diagnosis. The subsequent
 [class audit](2026-09-29-streaming-effects-audit.md) adds six related fixes,
 including reveal scheduling, and expands the regression matrix. Both are
-consolidated in [PR #556](https://github.com/open-legal-products/mike/pull/556).
+consolidated in PR #556.
 
 ## Reproduction and cause
 
@@ -53,10 +53,10 @@ production performance regression.
 ## History
 
 The offending scroll effect dates to the repository's initial import,
-[`d9690965b`](https://github.com/Open-Legal-Products/mike/commit/d9690965b5b160ce68fde56e0950bd0f6b07a23b),
+`d9690965b`,
 on April 29, 2026. GitHub associates no PR with that commit. The reveal hook was
-introduced later in [PR #206](https://github.com/Open-Legal-Products/mike/pull/206)
-and adjusted in [PR #219](https://github.com/Open-Legal-Products/mike/pull/219).
+introduced later in PR #206
+and adjusted in PR #219.
 These facts do not establish either PR, or the latest main PR #540, as the first
 release where customers encountered the interaction.
 
@@ -103,7 +103,7 @@ error capture.
 
 A recheck of the preceding 12 hours across environments found one frontend
 event: an unrelated upload-session HTTP 500 in
-[MIKE-FRONTEND-S](https://mike-xp.sentry.io/issues/MIKE-FRONTEND-S), with
+NORTHWRIT-FRONTEND-S, with
 `capture_source=exception` and `build_mode=development`. There was no matching
 React console event. Sanitization explains search limitations; it does not
 establish why this customer's report is missing. The customer's reporting

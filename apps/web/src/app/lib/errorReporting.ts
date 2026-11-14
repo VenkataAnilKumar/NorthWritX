@@ -194,7 +194,7 @@ function pageIsBeingLeft(): boolean {
  * How long one "API unreachable" report stands for further unreachable
  * failures on the same page. When the backend is down, every screen fires
  * several requests at mount (profile, models, projects, chats…) and each
- * one fails with the same bare TypeError in the same second (MIKE-FRONTEND
+ * one fails with the same bare TypeError in the same second (NORTHWRIT-FRONTEND
  * -C and -G: /api/models/:id and /api/projects/:id failed 5 ms apart). Per
  * route, that is five issues and five events for one outage, and none of
  * them points at a route because no route is at fault: the server is.
@@ -478,7 +478,7 @@ export function serverSentryOptions(
         enabled: dsn.length > 0,
         environment: sentryEnvironment(env.SENTRY_ENVIRONMENT, env.NODE_ENV === "development"),
         integrations: [privacyBoundaryIntegration()],
-        release: releaseName(env.SENTRY_RELEASE, (env.NORTHWRIT_VERSION ?? env.MIKE_VERSION), env.GIT_SHA),
+        release: releaseName(env.SENTRY_RELEASE, (env.NORTHWRIT_VERSION), env.GIT_SHA),
         tracesSampleRate: parseSampleRate(env.SENTRY_TRACES_SAMPLE_RATE, 0),
         dataCollection: {
             userInfo: false,

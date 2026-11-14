@@ -113,7 +113,7 @@ export interface Addin {
   expectAuthedShell(): Promise<void>;
 
   // ----- reads -----
-  /** Read legacy `mike_token` storage (must remain null after initialization). */
+  /** Read legacy `northwrit_token` storage (must remain null after initialization). */
   getToken(): Promise<string | null>;
   /** Read legacy refresh-token storage (must remain null after initialization). */
   getRefreshToken(): Promise<string | null>;
@@ -518,7 +518,7 @@ export const test = base.extend<{ addin: Addin }>({
                 storage: { getItem(k: string): Promise<string | null> };
               };
             }
-          ).OfficeRuntime.storage.getItem("mike_token"),
+          ).OfficeRuntime.storage.getItem("northwrit_token"),
         );
       },
 
@@ -537,7 +537,7 @@ export const test = base.extend<{ addin: Addin }>({
                 storage: { getItem(k: string): Promise<string | null> };
               };
             }
-          ).OfficeRuntime.storage.getItem("mike_refresh_token"),
+          ).OfficeRuntime.storage.getItem("northwrit_refresh_token"),
         );
       },
 

@@ -136,7 +136,7 @@ type CreateSurface = "modal" | "page";
 const AUTOSAVE_DELAY_MS = 1200;
 
 const CONNECTOR_SETUP_GUIDE_URL =
-  "https://github.com/open-legal-products/mike/blob/main/docs/connectors.md";
+  "https://github.com/open-legal-products/northwrit/blob/main/docs/connectors.md";
 
 const emptyAddDraft: AddDraft = {
   name: "",
@@ -325,7 +325,7 @@ function ConnectorBrandIcon({ name }: { name: string }) {
 }
 
 function googleSetupGuideUrl(provider: GoogleConnectorProvider) {
-  return `https://github.com/open-legal-products/mike/blob/main/docs/google-workspace.md#${
+  return `https://github.com/open-legal-products/northwrit/blob/main/docs/google-workspace.md#${
     provider === "google-drive" ? "google-drive" : "gmail-and-google-calendar"
   }`;
 }
@@ -765,7 +765,7 @@ function WorkspaceConnectors({
   ): Promise<McpConnectorSummary | null> => {
     const popup = window.open(
       "about:blank",
-      "mike_mcp_oauth",
+      "northwrit_mcp_oauth",
       "popup,width=560,height=720,menubar=no,toolbar=no,location=no,status=no",
     );
     let started: Awaited<ReturnType<typeof startMcpConnectorOAuth>>;

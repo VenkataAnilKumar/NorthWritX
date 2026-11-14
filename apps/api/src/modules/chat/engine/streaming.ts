@@ -1134,7 +1134,7 @@ export async function runLLMStream(params: {
       // is the user's configuration rather than our bug: still one event, so
       // operators see a rejected key with its provider_error tag, but a
       // warning, not an error. (Left unreported, the console bridge filed it
-      // anyway, at error level, as MIKE-BACKEND-E.)
+      // anyway, at error level, as NORTHWRIT-BACKEND-E.)
       // The kind says what the provider did (rejected the key, rate limited,
       // unavailable) so one cause is one issue; the provider's own error
       // stays underneath as the cause, where provider_error and

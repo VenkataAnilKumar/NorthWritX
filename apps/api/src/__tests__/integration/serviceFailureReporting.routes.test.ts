@@ -1,4 +1,4 @@
-// MIKE-BACKEND-A: "Failure in http / GET / /:id / 500" whose only stack was
+// NORTHWRIT-BACKEND-A: "Failure in http / GET / /:id / 500" whose only stack was
 // rooted inside the Sentry reporter. A supabase-js query returns its error
 // as a PLAIN object ({ code, message, details, hint }); a service hands that
 // to internalFailure(), and nothing on the way to Sentry had a stack for it,
@@ -99,7 +99,7 @@ describe("a PostgREST error returned by a list service", () => {
       const res = await request(app).get(path);
 
       // A table missing from the schema is an install that skipped
-      // migrations (MIKE-BACKEND-H): an intentional 503 with a fixed code and
+      // migrations (NORTHWRIT-BACKEND-H): an intentional 503 with a fixed code and
       // fixed text, the request id, and nothing raw.
       expect(res.status).toBe(503);
       expect(res.body).toEqual({
@@ -129,7 +129,7 @@ describe("a PostgREST error returned by a list service", () => {
   );
 });
 
-// MIKE-BACKEND-H: GET /chat on an install whose database lacks the
+// NORTHWRIT-BACKEND-H: GET /chat on an install whose database lacks the
 // get_chats_overview RPC (migrations not applied) answered 500
 // internal_error, 8 times in 3 minutes, with nothing telling the operator
 // that the fix is to apply migrations.

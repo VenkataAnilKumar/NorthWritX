@@ -49,7 +49,7 @@ async function installBundledWorkflows({ client, backendDir, storageRoot }) {
     throw new Error("The bundled workflow catalog is invalid. Reinstall NorthWrit.");
   }
   const installed = await client.query(
-    "select count(*)::int as count from public.mike_workflows where active and source_commit = $1",
+    "select count(*)::int as count from public.northwrit_workflows where active and source_commit = $1",
     [document.source_commit],
   );
   if (installed.rows[0]?.count === document.workflows.length) return;
@@ -67,7 +67,7 @@ async function installBundledWorkflows({ client, backendDir, storageRoot }) {
       }
       const bytes = await fs.readFile(path.join(directory, "assets", asset.content_hash));
       verifiedAsset(bytes, asset);
-      const storagePath = `mike-workflows/${workflow.workflow_key}/${asset.content_hash}/${asset.filename}`;
+      const storagePath = `northwrit-workflows/${workflow.workflow_key}/${asset.content_hash}/${asset.filename}`;
       const target = path.join(storageRoot, storagePath);
       await fs.mkdir(path.dirname(target), { recursive: true });
       await fs.writeFile(target, bytes);
@@ -75,7 +75,7 @@ async function installBundledWorkflows({ client, backendDir, storageRoot }) {
     }
     workflows.push({ ...workflow, assets });
   }
-  await client.query("select public.replace_mike_workflows($1::text, $2::jsonb)", [
+  await client.query("select public.replace_northwrit_workflows($1::text, $2::jsonb)", [
     document.source_commit, JSON.stringify(workflows),
   ]);
 }

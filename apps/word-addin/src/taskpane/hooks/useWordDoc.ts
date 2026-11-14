@@ -223,7 +223,7 @@ function serializeWordMutation<T>(operation: () => Promise<T>): Promise<T> {
 
 function createTrackedEditHandle(): TrackedEditHandle {
   nextTrackedEditHandle += 1;
-  return `mike-edit-${Date.now().toString(36)}-${nextTrackedEditHandle.toString(36)}-${createSecureUuid()}` as TrackedEditHandle;
+  return `northwrit-edit-${Date.now().toString(36)}-${nextTrackedEditHandle.toString(36)}-${createSecureUuid()}` as TrackedEditHandle;
 }
 
 function rememberTerminalState(

@@ -1,4 +1,4 @@
-// MIKE-BACKEND-5 (storage / seal-recover) and MIKE-BACKEND-6 (storage /
+// NORTHWRIT-BACKEND-5 (storage / seal-recover) and NORTHWRIT-BACKEND-6 (storage /
 // session-expiry): best-effort deletes reported as warnings, two events per
 // operation (staging + sealed key), with nothing on the event that said WHY.
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";

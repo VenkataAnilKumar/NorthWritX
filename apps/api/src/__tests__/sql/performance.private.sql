@@ -13,9 +13,9 @@ begin
     assert exists(select 1 from public.org_private_content_item(org,item.kind,item.item_id) p
       where p.title is not distinct from item.title and p.user_id is not distinct from item.user_id), 'keyed catalogue parity';
   end loop;
-  perform set_config('mike.test_private_org',org::text,true);
-  perform set_config('mike.test_private_owner',owner_id::text,true);
-  perform set_config('mike.test_private_doc',doc::text,true);
+  perform set_config('northwrit.test_private_org',org::text,true);
+  perform set_config('northwrit.test_private_owner',owner_id::text,true);
+  perform set_config('northwrit.test_private_doc',doc::text,true);
 end;
 $$;
 create or replace function public.org_private_content_items(p_org_id uuid)
@@ -23,8 +23,8 @@ returns table(kind text,item_id uuid,title text,user_id uuid) language plpgsql s
 begin raise exception 'Single-item permission check expanded the whole catalogue'; end;
 $$;
 do $$
-declare org uuid:=current_setting('mike.test_private_org')::uuid; actor text:=current_setting('mike.test_private_owner');
-  doc uuid:=current_setting('mike.test_private_doc')::uuid;
+declare org uuid:=current_setting('northwrit.test_private_org')::uuid; actor text:=current_setting('northwrit.test_private_owner');
+  doc uuid:=current_setting('northwrit.test_private_doc')::uuid;
 begin
   assert public.org_private_access_role(org,'document',doc,actor)='viewer', 'keyed role';
   assert public.org_private_document_access(org,doc,actor), 'keyed document role';

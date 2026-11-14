@@ -98,7 +98,7 @@ describe("workflow add-on catalog routes", () => {
 
   it("lists only active add-ons and preserves the public addon_key field", async () => {
     from.mockImplementation((table: string) =>
-      table === "mike_workflows"
+      table === "northwrit_workflows"
         ? queryReturning([
             {
               id: "c0a7a1e1-0000-4000-8000-000000000001",
@@ -111,7 +111,7 @@ describe("workflow add-on catalog routes", () => {
         : queryReturning([
             {
               id: "reference-1",
-              mike_workflow_id: "c0a7a1e1-0000-4000-8000-000000000001",
+              northwrit_workflow_id: "c0a7a1e1-0000-4000-8000-000000000001",
               filename: "Precedent.docx",
               file_type: "docx",
               size_bytes: 42,
@@ -161,7 +161,7 @@ describe("workflow add-on catalog routes", () => {
     const insertedDocuments: unknown[] = [];
     const insertedVersions: unknown[] = [];
     from.mockImplementation((table: string) => {
-      if (table === "mike_workflows") {
+      if (table === "northwrit_workflows") {
         return singleQueryReturning({
           id: "c0a7a1e1-0000-4000-8000-000000000001",
           title: "Design Partner Draft",
@@ -187,12 +187,12 @@ describe("workflow add-on catalog routes", () => {
           created_at: "2026-08-28T00:00:00.000Z",
         });
       }
-      if (table === "mike_workflow_assets") {
+      if (table === "northwrit_workflow_assets") {
         return queryReturning([
           {
             filename: "Precedent.docx",
             file_type: "docx",
-            storage_path: "mike-workflows/c0a7a1e1-0000-4000-8000-000000000001/precedent.docx",
+            storage_path: "northwrit-workflows/c0a7a1e1-0000-4000-8000-000000000001/precedent.docx",
             size_bytes: 9,
           },
         ]);
@@ -223,7 +223,7 @@ describe("workflow add-on catalog routes", () => {
 
     expect(response.status, JSON.stringify(response.body)).toBe(201);
     expect(downloadFile).toHaveBeenCalledWith(
-      "mike-workflows/c0a7a1e1-0000-4000-8000-000000000001/precedent.docx",
+      "northwrit-workflows/c0a7a1e1-0000-4000-8000-000000000001/precedent.docx",
     );
     expect(uploadFile).toHaveBeenCalledTimes(2);
     expect(insertedDocuments).toEqual([
@@ -253,7 +253,7 @@ describe("workflow add-on catalog routes", () => {
     const cause = Object.assign(new Error("bucket gone"), { name: "NoSuchKey" });
     downloadFile.mockRejectedValue(cause);
     from.mockImplementation((table: string) => {
-      if (table === "mike_workflows") {
+      if (table === "northwrit_workflows") {
         return singleQueryReturning({
           id: "c0a7a1e1-0000-4000-8000-000000000001",
           title: "Design Partner Draft",
@@ -268,12 +268,12 @@ describe("workflow add-on catalog routes", () => {
       if (table === "workflows") {
         return singleQueryReturning({ id: "workflow-1", user_id: "u1" });
       }
-      if (table === "mike_workflow_assets") {
+      if (table === "northwrit_workflow_assets") {
         return queryReturning([
           {
             filename: "Precedent.docx",
             file_type: "docx",
-            storage_path: "mike-workflows/c0a7a1e1-0000-4000-8000-000000000001/precedent.docx",
+            storage_path: "northwrit-workflows/c0a7a1e1-0000-4000-8000-000000000001/precedent.docx",
             size_bytes: 9,
           },
         ]);
@@ -307,18 +307,18 @@ describe("workflow add-on catalog routes", () => {
 
   it("streams an add-on asset and converts presentations for PdfView", async () => {
     from.mockImplementation((table: string) => {
-      if (table === "mike_workflows") {
+      if (table === "northwrit_workflows") {
         return singleQueryReturning({
           id: "c0a7a1e1-0000-4000-8000-000000000001",
           type: "assistant",
         });
       }
-      if (table === "mike_workflow_assets") {
+      if (table === "northwrit_workflow_assets") {
         return singleQueryReturning({
           id: "reference-1",
           filename: "Deck.pptx",
           file_type: "pptx",
-          storage_path: "mike-workflows/c0a7a1e1-0000-4000-8000-000000000001/deck.pptx",
+          storage_path: "northwrit-workflows/c0a7a1e1-0000-4000-8000-000000000001/deck.pptx",
         });
       }
       throw new Error(`Unexpected table ${table}`);
@@ -330,7 +330,7 @@ describe("workflow add-on catalog routes", () => {
 
     expect(response.status).toBe(200);
     expect(downloadFile).toHaveBeenCalledWith(
-      "mike-workflows/c0a7a1e1-0000-4000-8000-000000000001/deck.pptx",
+      "northwrit-workflows/c0a7a1e1-0000-4000-8000-000000000001/deck.pptx",
     );
     expect(docxToPdf).toHaveBeenCalledTimes(1);
     expect(response.headers["content-type"]).toMatch(/^application\/pdf/);

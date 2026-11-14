@@ -587,7 +587,7 @@ export async function streamAiSdk(
       // the raw provider error is logged — and filed by the Sentry console
       // bridge — before the same failure reaches the "error" part below,
       // where it is classified and the caller reports it once
-      // (MIKE-BACKEND-C). Every failure still arrives through fullStream.
+      // (NORTHWRIT-BACKEND-C). Every failure still arrives through fullStream.
       onError: () => {},
       ...(config.courtlistenerCitationReminder ||
       params.finishWithoutToolsOnLastStep

@@ -23,14 +23,14 @@
     "apps/northwrit/AGENTS.md": "apps/AGENTS.md",
     "apps/northwrit/.gitattributes": ".gitattributes",
     "apps/northwrit/.gitignore": "infra/imported.gitignore",
-    "apps/northwrit/.github": "docs/upstream/mike/.github",
-    "apps/northwrit/.gitleaks.toml": "docs/upstream/mike/.gitleaks.toml",
-    "apps/northwrit/CLAUDE.md": "docs/upstream/mike/CLAUDE.md",
-    "apps/northwrit/CONTRIBUTING.md": "docs/upstream/mike/CONTRIBUTING.md",
-    "apps/northwrit/CREDITS.md": "docs/upstream/mike/CREDITS.md",
-    "apps/northwrit/LICENSE": "docs/upstream/mike/LICENSE",
-    "apps/northwrit/NORTHWRIT.md": "docs/upstream/mike/NORTHWRIT.md",
-    "apps/northwrit/README.md": "docs/upstream/mike/README.md",
-    "apps/northwrit/SECURITY.md": "docs/upstream/mike/SECURITY.md"
+    "apps/northwrit/.github": "docs/upstream/original-source/.github",
+    "apps/northwrit/.gitleaks.toml": "docs/upstream/original-source/.gitleaks.toml",
+    "apps/northwrit/CLAUDE.md": "docs/upstream/original-source/CLAUDE.md",
+    "apps/northwrit/CONTRIBUTING.md": "docs/upstream/original-source/CONTRIBUTING.md",
+    "apps/northwrit/CREDITS.md": "docs/upstream/original-source/CREDITS.md",
+    "apps/northwrit/LICENSE": "docs/upstream/original-source/LICENSE",
+    "apps/northwrit/NORTHWRIT.md": "docs/upstream/original-source/NORTHWRIT.md",
+    "apps/northwrit/README.md": "docs/upstream/original-source/README.md",
+    "apps/northwrit/SECURITY.md": "docs/upstream/original-source/SECURITY.md"
   }
 }

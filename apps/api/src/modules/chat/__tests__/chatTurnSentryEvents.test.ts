@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as Sentry from "@sentry/node";
 
-// MIKE-BACKEND-B/-C/-D/-E: one chat turn whose provider rejected the API key
+// NORTHWRIT-BACKEND-B/-C/-D/-E: one chat turn whose provider rejected the API key
 // arrived in Sentry as FOUR issues sharing one request id. This drives the
 // real pieces of that turn — the real Sentry client with the production
 // initSentry() configuration (console bridge included), the real Gemini

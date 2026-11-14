@@ -53,7 +53,7 @@
 
 ## Open-source acknowledgments
 
-- [Open-source credits](../upstream/mike/CREDITS.md) — the libraries, tools, and
+- [Open-source credits](../upstream/original-source/CREDITS.md) — the libraries, tools, and
   infrastructure behind NorthWrit
 
 ## Historical design and investigation notes
@@ -64,5 +64,5 @@ or architecture guidance.
 - [Legal workflows design spec](superpowers/specs/2026-06-29-legal-workflows-design.md)
 - [Word add-in assistant scroll-jump report](word-addin-chat-scroll-report.md)
 
-Contribution and disclosure policies live in [CONTRIBUTING.md](../upstream/mike/CONTRIBUTING.md)
-and [SECURITY.md](../upstream/mike/SECURITY.md).
+Contribution and disclosure policies live in [CONTRIBUTING.md](../upstream/original-source/CONTRIBUTING.md)
+and [SECURITY.md](../upstream/original-source/SECURITY.md).

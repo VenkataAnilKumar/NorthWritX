@@ -3,8 +3,8 @@
 // A loop that polls every second against a database whose RPC is missing
 // (migrations not applied) or unreachable fails EVERY tick, identically,
 // for as long as the fault lasts. Reporting each tick filed ~3,600 Sentry
-// events in 8.5 hours for two loops of one worker thread (MIKE-BACKEND-K,
-// MIKE-BACKEND-P) — all of them after the first carried no new information,
+// events in 8.5 hours for two loops of one worker thread (NORTHWRIT-BACKEND-K,
+// NORTHWRIT-BACKEND-P) — all of them after the first carried no new information,
 // and the per-issue throttle in sentry.ts only capped the rate, it did not
 // stop the flood. Hammering the broken dependency at full speed also helps
 // nobody.
@@ -20,7 +20,7 @@
 //     repeat window. A loop that alternates one failed tick with successful
 //     ones (a lease lost on every long job, a deadlocked claim every few
 //     minutes) is flapping, not newly broken: re-reporting it on every flap
-//     filed MIKE-BACKEND-M dozens of times per hour with no new information.
+//     filed NORTHWRIT-BACKEND-M dozens of times per hour with no new information.
 //   - optionally (repeatWhilePersistingMs), report a class that keeps failing
 //     again once per that window, so a long outage stays on the issue's
 //     timeline. Off by default: a poll loop's backed-off line is enough.

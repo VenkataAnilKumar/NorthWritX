@@ -1,16 +1,16 @@
-# Mike
+# NorthWrit
 
-![Mike](../../engineering/assets/link-image.jpg)
+![NorthWrit](../../engineering/assets/link-image.jpg)
 
-Mike (MikeOSS) is an open-source legal AI platform for document review,
+NorthWrit (NorthWritOSS) is an open-source legal AI platform for document review,
 drafting, and legal research.
 
 It combines a Next.js frontend, an Express backend, Supabase Auth/Postgres,
 and Cloudflare R2-compatible object storage.
 
-Website: [mikeoss.com](https://mikeoss.com)
+Website: northwritoss.com
 
-![Mike assistant home screen](../../engineering/assets/mike-home.png)
+![NorthWrit assistant home screen](../../engineering/assets/northwrit-home.png)
 
 ## Features
 
@@ -24,7 +24,7 @@ Website: [mikeoss.com](https://mikeoss.com)
 
 ## Quick start
 
-The included Docker Compose stack runs Mike, Supabase, RustFS object storage,
+The included Docker Compose stack runs NorthWrit, Supabase, RustFS object storage,
 and local email capture without requiring managed infrastructure.
 
 1. Copy the local environment templates:
@@ -48,7 +48,7 @@ and local email capture without requiring managed infrastructure.
    their Sentry source maps and release) by pinning a version in `.env`:
 
    ```bash
-   echo "MIKE_IMAGE_TAG=$(cat VERSION)" >> .env
+   echo "NORTHWRIT_IMAGE_TAG=$(cat VERSION)" >> .env
    docker compose pull && docker compose up --no-build -d
    ```
 
@@ -70,7 +70,7 @@ authentication behavior, Ollama setup, and first-run guidance.
 
 ### Telemetry
 
-Mike sends scrubbed error reports (no document content, user identities, or
+NorthWrit sends scrubbed error reports (no document content, user identities, or
 request data) to the project's Sentry by default. Development builds (`next dev`,
 the backend run from source, the add-in's dev server) send nothing unless you
 set a DSN yourself. Set `SENTRY_DISABLED=true` to
@@ -112,13 +112,13 @@ variables, and the [Sentry data audit](../../engineering/sentry-data-audit.md).
 
 ## System workflows
 
-Mike's system assistant and tabular-review workflows are maintained in the
-[`Open-Legal-Products/mike-workflows`](https://github.com/Open-Legal-Products/mike-workflows)
-repository. See [Contributing](CONTRIBUTING.md#mike-workflows) for how they are
+NorthWrit's system assistant and tabular-review workflows are maintained in the
+`Open Legal Products`
+repository. See [Contributing](CONTRIBUTING.md#northwrit-workflows) for how they are
 packaged and synchronized with this application.
 
 ## License
 
-Mike is available under the [GNU Affero General Public License v3.0](LICENSE).
+NorthWrit is available under the [GNU Affero General Public License v3.0](LICENSE).
 Bundled [public contract templates](../../engineering/preset-templates.md#maintaining-the-catalog)
 retain their publishers' separate licenses and notices.

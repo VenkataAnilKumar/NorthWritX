@@ -23,9 +23,9 @@
 | Layer | Selected Technology | Why It Fits Northwrit | Proven Reference / Upstream |
 |---|---|---|---|
 | **Monorepo Build & Orchestration** | **Turborepo + `pnpm` Catalogs** (TS) & **`uv` Workspaces** (Python) | Affected-only incremental builds; unified lockfiles per language; clean boundary enforcement across Phases 1–3. | `sim`, `kortix`, `onyx` |
-| **Web Client (`apps/web`)** | **Next.js 15 (App Router) + React 19 + Tailwind CSS v4 + Radix UI** | Responsive split-screen layout (Matter Chat + Folio Editor + Evidence Drawer) with WCAG 2.1 AA accessibility. | `LobeHub`, `MikeOSS` |
-| **Folio Editor (`packages/ui`)** | **Tiptap (ProseMirror)** | Structured JSON document model supporting custom `<CitationBadge />` nodes, version diffing, and `.docx` export (SO02–SO05). | `MikeOSS` |
-| **Word Add-in (`apps/word-addin`, P1)** | **Office.js + React + Shared `@northwrit/contracts`** | Runs inside Microsoft Word task pane for clause drafting, playbook comparison, and tracked-changes redlining (DR05). | `open-legal-products/mike` |
+| **Web Client (`apps/web`)** | **Next.js 15 (App Router) + React 19 + Tailwind CSS v4 + Radix UI** | Responsive split-screen layout (Matter Chat + Folio Editor + Evidence Drawer) with WCAG 2.1 AA accessibility. | `LobeHub`, `NorthWritOSS` |
+| **Folio Editor (`packages/ui`)** | **Tiptap (ProseMirror)** | Structured JSON document model supporting custom `<CitationBadge />` nodes, version diffing, and `.docx` export (SO02–SO05). | `NorthWritOSS` |
+| **Word Add-in (`apps/word-addin`, P1)** | **Office.js + React + Shared `@northwrit/contracts`** | Runs inside Microsoft Word task pane for clause drafting, playbook comparison, and tracked-changes redlining (DR05). | `open-legal-products/northwrit` |
 | **Core Control API (`apps/api`)** | **Fastify (TypeScript / Node 22) + Zod + OpenAPI** | High-throughput REST + SSE server sharing exact Zod schemas (`packages/contracts`) with `apps/web` and `packages/db`. | `sim`, `kortix` |
 | **Workflow Orchestration (`services/legal-engine`)** | **LangGraph (Python) + Redis/BullMQ** | Durable state persistence, step-level checkpoints, cancellation, and human-in-the-loop approval gates (AG01–AG03). | `langchain-ai/langgraph`, `agno` |
 | **Relational, FTS & Vector Store (`packages/db`)** | **PostgreSQL 16 + `pgvector` + Drizzle ORM** | **One database first:** relational tables, BM25 full-text search, and vector embeddings enforced by PostgreSQL Row-Level Security (`tenant_id`, `matter_id`). | `sim`, `onyx` |

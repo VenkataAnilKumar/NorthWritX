@@ -346,7 +346,7 @@ describe("browserSentryOptions", () => {
     });
 });
 
-// MIKE-FRONTEND-2, 9, N, S: `next dev` checkouts reported to the NorthWrit
+// NORTHWRIT-FRONTEND-2, 9, N, S: `next dev` checkouts reported to the NorthWrit
 // project as environment=self-hosted, indistinguishable from installs.
 describe("development builds", () => {
     const own = "https://k@o9.ingest.sentry.io/9";
@@ -576,7 +576,7 @@ describe("reportNetworkFailure", () => {
     });
 });
 
-// MIKE-FRONTEND-C/G/D/E/B: one unreachable backend produced one warning PER
+// NORTHWRIT-FRONTEND-C/G/D/E/B: one unreachable backend produced one warning PER
 // ENDPOINT per page (C and G landed 5 ms apart), i.e. five issues for one
 // outage. It is one "API unreachable" issue, reported once per window.
 describe("reportNetworkFailure when the API is unreachable", () => {
@@ -697,7 +697,7 @@ it('tolerates unavailable browser network state', () => {
     expect(state.scopes[0].setTag).toHaveBeenCalledWith('request_origin', 'unknown');
 });
 
-// MIKE-FRONTEND-B/C/D/E: all four mount-time requests of one page failed in
+// NORTHWRIT-FRONTEND-B/C/D/E: all four mount-time requests of one page failed in
 // the same second, repeatedly, while the session request of that same page
 // had just succeeded. A browser rejects in-flight fetches with the same bare
 // "Failed to fetch" TypeError when the page is reloaded or left, so those

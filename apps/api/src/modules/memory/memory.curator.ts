@@ -688,7 +688,7 @@ const SAFE_DIAGNOSTIC_CODE = /^[A-Za-z0-9_]{2,40}$/;
  * failed": provider and storage errors can echo the prompt, credentials or
  * the transcript, and the message is persisted as the job's last_error. But
  * with the original error dropped entirely, the Sentry event could never say
- * WHY (MIKE-BACKEND-F: eight memory.consolidate warnings with no
+ * WHY (NORTHWRIT-BACKEND-F: eight memory.consolidate warnings with no
  * failure_code, provider_error or dependency_status). The privacy boundary
  * only ever reads `name`, `code` and an HTTP status from an error's cause
  * chain, so the cause carries exactly those, copied by allowlist shape —
@@ -730,7 +730,7 @@ const SCOPE_DEPENDENCY_FAILURE = "Memory curator scope dependency failed";
  * The fixed-text scope failure, under its kind, with the original's
  * classification and stack frames as its cause. A `new Error` built here had
  * only this function's stack, so Sentry could not say where the dependency
- * failed (MIKE-BACKEND-F). The frames are code locations and travel; the
+ * failed (NORTHWRIT-BACKEND-F). The frames are code locations and travel; the
  * stack's first line is the original message and is replaced, so neither
  * the event nor the operator log (which renders the cause chain) sees it.
  * A failure with no stack and nothing safe to say has no cause.

@@ -129,7 +129,7 @@ describe("same-origin API gateway", () => {
         });
     });
 
-    // MIKE-FRONTEND-4/5/8: a self-hoster whose browser gets a 502 has to be
+    // NORTHWRIT-FRONTEND-4/5/8: a self-hoster whose browser gets a 502 has to be
     // able to find WHY in their own Next server log (ECONNREFUSED, DNS,
     // TLS). Their local log is not the privacy boundary; the Sentry
     // transport is, and it drops this log line as already reported.
@@ -208,7 +208,7 @@ describe("same-origin API gateway", () => {
         );
     });
 
-    // MIKE-FRONTEND-J/4: a stopped backend behind the gateway produced an
+    // NORTHWRIT-FRONTEND-J/4: a stopped backend behind the gateway produced an
     // error-level issue per HTTP method (and per route), ten events in two
     // minutes, and the browser got a bare 502. It is one condition.
     describe("unreachable backend", () => {

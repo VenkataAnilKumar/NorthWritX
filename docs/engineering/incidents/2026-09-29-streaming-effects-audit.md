@@ -1,7 +1,7 @@
 # Streaming effect audit, 2026-09-29
 
 This follows [the assistant update-depth investigation](2026-09-29-assistant-update-depth.md)
-and is consolidated into [PR #556](https://github.com/open-legal-products/mike/pull/556).
+and is consolidated into PR #556.
 The failures below were reproduced with the original scroll-button fix already
 applied. All reproduction data is synthetic; no provider, customer account or
 production database is used.

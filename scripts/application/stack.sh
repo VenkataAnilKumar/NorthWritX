@@ -1,15 +1,5 @@
 #!/usr/bin/env bash
 
-# Temporary environment aliases for existing installations; NorthWrit values win.
-while IFS= read -r _northwrit_legacy_name; do
-  [[ $_northwrit_legacy_name == MIKE_* ]] || continue
-  _northwrit_name="NORTHWRIT_${_northwrit_legacy_name#MIKE_}"
-  if [[ ! -v $_northwrit_name ]]; then
-    printf -v "$_northwrit_name" '%s' "${!_northwrit_legacy_name}"
-    export "$_northwrit_name"
-  fi
-done < <(compgen -e)
-unset _northwrit_legacy_name _northwrit_name
 # Lifecycle for NorthWrit's Docker stacks: start, stop, and garbage-collect.
 #
 #   scripts/stack.sh up [compose up args…]      # gc, then `docker compose up`
@@ -27,7 +17,7 @@ unset _northwrit_legacy_name _northwrit_name
 # What `gc` removes — only resources it can attribute to this repository:
 #   1. Fully stopped Compose projects whose compose file is this repo's
 #      docker-compose.yml (or whose checkout directory no longer exists and
-#      whose project name starts with "mike"): containers + network go
+#      whose project name starts with "northwrit"): containers + network go
 #      (non-forced `docker rm`); named volumes are kept until the
 #      project has been idle for NORTHWRIT_GC_VOLUME_AGE_DAYS (default 7).
 #   2. Fully stopped Supabase CLI stacks for this checkout's project_id
@@ -51,7 +41,7 @@ unset _northwrit_legacy_name _northwrit_name
 # NORTHWRIT_GC_ONLY=<glob> restricts the sweep to matching project names and skips
 # the machine-wide parts (anonymous volumes, images, build cache).
 # NORTHWRIT_GC_STATE_DIR overrides the shared cleanup record directory (default:
-# ${XDG_STATE_HOME:-$HOME/.local/state}/mike/stack-gc). Records are isolated by
+# ${XDG_STATE_HOME:-$HOME/.local/state}/northwrit/stack-gc). Records are isolated by
 # Docker daemon and volume creation timestamp. Dry runs do not change them.
 set -euo pipefail
 
@@ -91,7 +81,7 @@ default_project() {
 
 # Is this compose file ours? It is identified by the marker on its first lines
 # rather than by path, so worktrees and renamed checkouts are all recognised.
-is_legacy_compose_file() { [ -f "$1" ] && head -5 "$1" | grep -q 'MikeOSS'; }
+is_legacy_compose_file() { [ -f "$1" ] && head -5 "$1" | grep -q 'NorthWritOSS'; }
 
 # Inventories print "-" for empty fields (a bare tab would be collapsed by
 # `read`); blank() maps it back to the empty string.
@@ -117,7 +107,7 @@ list_compose_containers() {
 }
 
 # Classify a compose project. Prints one of:
-#   mike      — this repo's docker-compose.yml, checkout still exists
+#   northwrit      — this repo's docker-compose.yml, checkout still exists
 #   orphan    — checkout directory is gone and the name looks like ours
 #   supabase  — Supabase CLI stack (handled separately)
 #   other     — not ours; never touched
@@ -128,9 +118,9 @@ classify_project() {
     # config_files may list several paths separated by commas; use the first.
     local first=${config%%,*}
     if [ -e "$first" ]; then
-        if is_legacy_compose_file "$first"; then echo mike; else echo other; fi
+        if is_legacy_compose_file "$first"; then echo northwrit; else echo other; fi
     else
-        case "$project" in mike*) echo orphan;; *) echo other;; esac
+        case "$project" in northwrit*) echo orphan;; *) echo other;; esac
     fi
 }
 
@@ -149,7 +139,7 @@ gc() (
     local work state_dir state_file daemon lock_owned=0 state_tmp=""
     work="$(mktemp -d)"
     trap 'rm -rf "$work"; [ -z "$state_tmp" ] || rm -f "$state_tmp"; [ "$lock_owned" = 0 ] || rmdir "$state_file.lock"' EXIT
-    state_dir="${NORTHWRIT_GC_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/mike/stack-gc}"
+    state_dir="${NORTHWRIT_GC_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/northwrit/stack-gc}"
     daemon="$(docker info --format '{{.ID}}')"
     [ -n "$daemon" ] || die "Cannot identify the Docker daemon; refusing cleanup."
     state_file="$state_dir/$(printf '%s' "$daemon" | tr -c '[:alnum:]_-' '_').json"
@@ -294,7 +284,7 @@ status() {
     done | sort | uniq -c | sed 's/^ *\([0-9]*\) /  \1× /'
     log "Volumes:"
     docker volume ls --format '{{.Name}}\t{{.Label "com.docker.compose.project"}}' |
-        awk -F'\t' '$2 ~ /^mike/ || $1 ~ /^supabase_/ { print "  " $1 }'
+        awk -F'\t' '$2 ~ /^northwrit/ || $1 ~ /^supabase_/ { print "  " $1 }'
     log "Disk:"
     docker system df | sed 's/^/  /'
 }
