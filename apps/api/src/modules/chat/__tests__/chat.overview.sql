@@ -3,7 +3,7 @@
 -- Transactional fixtures only; everything rolls back.
 --
 -- get_chats_overview evaluates the chat access ladder with set-based joins
--- instead of calling chat_access_role() per row (MIKE-BACKEND-F). This file is
+-- instead of calling chat_access_role() per row (NORTHWRIT-BACKEND-F). This file is
 -- the contract between the two: for every branch of the ladder and every
 -- actor, the list returns exactly the rows the per-row verdict grants, with
 -- the same role, provenance, order and pages, and it never calls that verdict.

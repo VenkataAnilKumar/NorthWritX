@@ -816,7 +816,7 @@ async function heartbeatJob(db: Db, jobId: string, workerId: string) {
 /**
  * The job row no longer says this worker holds it: another worker claimed
  * it after the lease aged out, or a sweep retired it. Named, so Sentry files
- * it under its own kind (MIKE-BACKEND-M grouped every code-less iteration
+ * it under its own kind (NORTHWRIT-BACKEND-M grouped every code-less iteration
  * failure as one anonymous "Failure in upload-worker / iteration").
  */
 function leaseLost(): AppError {
@@ -1336,7 +1336,7 @@ export function startUploadProcessingWorkers(options: {
   // One report per failure class per PROCESS, quiet repeats, backed-off
   // polling. Every loop hits the same database, so one broken RPC fails all
   // of them on every tick; a gate per loop would still file `concurrency`
-  // reports, and none at all meant one per tick for hours (MIKE-BACKEND-K:
+  // reports, and none at all meant one per tick for hours (NORTHWRIT-BACKEND-K:
   // 2,451 events from one worker thread).
   const failures = createPollFailureGate({
     label: "[upload-worker] iteration",

@@ -12,7 +12,7 @@ const API_BASE = (process.env.REACT_APP_API_BASE_URL || "/api").replace(
   /\/+$/,
   "",
 );
-const REQUEST_STORAGE_KEY = "mike-word-google-oauth-request";
+const REQUEST_STORAGE_KEY = "northwrit-word-google-oauth-request";
 
 function setStatus(message: string): void {
   const element = document.getElementById("status");
@@ -50,8 +50,8 @@ function sendError(requestId: string, message: string): void {
 function clearTemporaryAuthStorage(): void {
   // Sweep up PKCE/session keys left by older browser-Supabase builds.
   for (const storage of [window.sessionStorage, window.localStorage]) {
-    storage.removeItem("mike-word-google-oauth");
-    storage.removeItem("mike-word-google-oauth-code-verifier");
+    storage.removeItem("northwrit-word-google-oauth");
+    storage.removeItem("northwrit-word-google-oauth-code-verifier");
   }
   window.sessionStorage.removeItem(REQUEST_STORAGE_KEY);
 }

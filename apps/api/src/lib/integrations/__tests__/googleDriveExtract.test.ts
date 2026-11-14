@@ -31,7 +31,7 @@ describe("isolated Google Drive document parsing", () => {
             sections: [
                 {
                     children: [
-                        new Paragraph("MIKE434 liability cap USD 43,210"),
+                        new Paragraph("NORTHWRIT434 liability cap USD 43,210"),
                     ],
                 },
             ],
@@ -46,7 +46,7 @@ describe("isolated Google Drive document parsing", () => {
     });
     it("extracts a real PDF in the child process", async () => {
         const content =
-            "BT /F1 12 Tf 72 720 Td (MIKE434 payment 17 days) Tj ET";
+            "BT /F1 12 Tf 72 720 Td (NORTHWRIT434 payment 17 days) Tj ET";
         const objects = [
             "<< /Type /Catalog /Pages 2 0 R >>",
             "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",

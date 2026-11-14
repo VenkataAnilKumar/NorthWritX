@@ -23,7 +23,7 @@ let cached: ModelRegistryConfig | undefined;
 export function loadModelRegistry(): ModelRegistryConfig {
   if (cached) return cached;
 
-  const raw = (process.env.NORTHWRIT_MODEL_CONFIG_JSON ?? process.env.MIKE_MODEL_CONFIG_JSON)?.trim();
+  const raw = (process.env.NORTHWRIT_MODEL_CONFIG_JSON)?.trim();
   if (!raw) {
     cached = EMPTY_CONFIG;
     return cached;

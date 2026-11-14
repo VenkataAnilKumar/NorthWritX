@@ -34,8 +34,8 @@ begin
   perform public.open_org_private_content(org,admin_id,'project',pid);
   insert into public.project_org_access_overrides(project_id,org_id,user_id,role) values(pid,org,member_id,'viewer');
   insert into public.projects(user_id,org_id,name,visibility) values(null,org,'Ownerless','private');
-  perform set_config('mike.test_project_actor',owner_id::text,true);
-  perform set_config('mike.test_project_member',member_id::text,true);
+  perform set_config('northwrit.test_project_actor',owner_id::text,true);
+  perform set_config('northwrit.test_project_member',member_id::text,true);
 end;
 $$;
 create temporary table project_expected as
@@ -73,7 +73,7 @@ begin
 end;
 $$;
 do $$
-declare actor text:=current_setting('mike.test_project_actor'); calls bigint; candidates bigint;
+declare actor text:=current_setting('northwrit.test_project_actor'); calls bigint; candidates bigint;
 begin
   select count(*) into candidates from public.projects p where p.user_id=actor::uuid
     or p.org_id in (select org_id from public.org_members where user_id=actor::uuid)
@@ -87,7 +87,7 @@ $$;
 -- unless an override, grant or opened private item names it. Candidates the
 -- ladder rejects can only be denials, archived items or inactive orgs.
 do $$
-declare actor text:=current_setting('mike.test_project_member'); calls bigint; visible bigint;
+declare actor text:=current_setting('northwrit.test_project_member'); calls bigint; visible bigint;
 begin
   perform setval('pg_temp.project_verdict_calls',1,false);
   select count(*) into visible from public.get_projects_overview(actor,actor||'@example.test');

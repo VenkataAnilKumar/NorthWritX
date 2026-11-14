@@ -13,7 +13,7 @@ async function fixture(t) {
   const temporaryPath = path.join(root, "source.txt");
   await fs.writeFile(temporaryPath, bytes);
   const document = {
-    source_repository: "Open-Legal-Products/mike-workflows", source_ref: "main", source_commit: "a".repeat(40),
+    source_repository: "Open-Legal-Products/northwrit-workflows", source_ref: "main", source_commit: "a".repeat(40),
     workflows: [{ workflow_key: "example", title: "Example", assets: [{
       filename: "reference.txt", file_type: "txt", size_bytes: bytes.length,
       content_hash: createHash("sha256").update(bytes).digest("hex"), temporary_path: temporaryPath,
@@ -31,7 +31,7 @@ async function fixture(t) {
 test("bundled workflows install from portable files without network and use the existing atomic catalog RPC", async (t) => {
   const f = await fixture(t);
   await installBundledWorkflows({ client: f.client, backendDir: f.root, storageRoot: path.join(f.root, "storage") });
-  assert.match(f.queries[1].sql, /replace_mike_workflows/);
+  assert.match(f.queries[1].sql, /replace_northwrit_workflows/);
   const payload = JSON.parse(f.queries[1].params[1]);
   const asset = payload[0].assets[0];
   assert.equal(asset.temporary_path, undefined);

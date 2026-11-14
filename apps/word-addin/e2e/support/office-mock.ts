@@ -170,12 +170,12 @@ interface StoredDocumentState {
  */
 export function installOfficeMock(seed: OfficeSeed): void {
   const w = window as any;
-  const documentStateKey = "__mike_word_e2e_document_v1";
-  const officeStorageKey = "__mike_word_e2e_office_storage_v1";
-  const accessTokenKey = "mike_token";
-  const refreshTokenKey = "mike_refresh_token";
-  const editApplyModeKey = "mike_word_edit_apply_mode";
-  const chatStorageModePrefix = "mike_word_chat_storage_mode:";
+  const documentStateKey = "__northwrit_word_e2e_document_v1";
+  const officeStorageKey = "__northwrit_word_e2e_office_storage_v1";
+  const accessTokenKey = "northwrit_token";
+  const refreshTokenKey = "northwrit_refresh_token";
+  const editApplyModeKey = "northwrit_word_edit_apply_mode";
+  const chatStorageModePrefix = "northwrit_word_chat_storage_mode:";
 
   const clone = <T>(value: T): T => {
     if (value === undefined) return value;
@@ -366,7 +366,7 @@ export function installOfficeMock(seed: OfficeSeed): void {
   let settingsWorkingCopy = clone(documentState.settings);
   const settings = {
     get: (key: string) => {
-      if (key === "mike.wordEditAnchors.v1") wordCalls.anchorRegistryReads++;
+      if (key === "northwrit.wordEditAnchors.v1") wordCalls.anchorRegistryReads++;
       return clone(settingsWorkingCopy[key]);
     },
     set: (key: string, value: unknown) => {

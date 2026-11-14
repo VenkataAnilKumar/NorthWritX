@@ -2,7 +2,7 @@
 // the packaged NorthWrit.app over CDP and asserts, one by one, the behaviors the
 // window-open / navigation / download rework promises:
 //
-//   a. OAuth popup mechanics — window.open("about:blank","mike_mcp_oauth")
+//   a. OAuth popup mechanics — window.open("about:blank","northwrit_mcp_oauth")
 //      yields a real in-shell popup with a live window.opener back-channel
 //      that survives a cross-origin hop, and the popup gets NO northwritDesktop
 //      bridge (a third-party consent page must never see privileged APIs).
@@ -261,7 +261,7 @@ try {
     const { proxyNonNull } = await page.evaluate(() => {
       const w = window.open(
         "about:blank",
-        "mike_mcp_oauth",
+        "northwrit_mcp_oauth",
         "popup,width=560,height=720",
       );
       window.__northwritE2e.popup = w;
@@ -269,7 +269,7 @@ try {
     });
     assert(
       proxyNonNull,
-      "window.open('about:blank', 'mike_mcp_oauth') returned null — shell denied the OAuth popup",
+      "window.open('about:blank', 'northwrit_mcp_oauth') returned null — shell denied the OAuth popup",
     );
     popup = await waitForNewPage(context, before, 10_000);
     assert(popup, "no new in-shell window appeared for the OAuth popup");

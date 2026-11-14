@@ -62,7 +62,7 @@ npm run stack:gc                # sweep leftovers (runs automatically before
 
 The sweep removes containers and networks from fully stopped Compose projects
 identified by this repository's Compose marker (or a missing checkout with a
-`mike` project prefix), and Supabase CLI stacks for this checkout's `project_id`
+`northwrit` project prefix), and Supabase CLI stacks for this checkout's `project_id`
 plus ids in `NORTHWRIT_GC_SUPABASE_PROJECTS`. Only `created`, `exited`, and `dead`
 containers qualify. Running, paused, restarting, and other active states are
 protected; removal is never forced if a container starts during the sweep.
@@ -72,11 +72,11 @@ Data volumes require verified ownership and at least `NORTHWRIT_GC_VOLUME_AGE_DA
 and observed activity after containers are removed, so repeated sweeps keep
 recently used data. Volume creation age is never treated as last use. Known
 foreign projects and volumes still referenced by other containers are kept.
-Unknown named volumes are kept even if their project name starts with `mike`;
+Unknown named volumes are kept even if their project name starts with `northwrit`;
 remove these explicitly after inspecting them. Allowed Supabase and anonymous
 orphans without history start a fresh grace period when first observed.
 
-Records live under `${XDG_STATE_HOME:-$HOME/.local/state}/mike/stack-gc`, shared
+Records live under `${XDG_STATE_HOME:-$HOME/.local/state}/northwrit/stack-gc`, shared
 across checkouts but isolated by Docker daemon and volume creation timestamp.
 `NORTHWRIT_GC_STATE_DIR` overrides that directory. Keep the same directory across
 runs. Missing history causes conservative retention; malformed records or a

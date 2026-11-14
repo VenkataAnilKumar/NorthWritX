@@ -46,7 +46,7 @@ function downloadTimeoutMs(): number {
 
 export function createS3StorageAdapter(): StorageAdapter {
   // Preserve omitted-bucket behavior for existing installs; new examples set northwrit explicitly.
-  const bucket = process.env.R2_BUCKET_NAME ?? "mike";
+  const bucket = process.env.R2_BUCKET_NAME ?? "northwrit";
   const enabled = Boolean(
     process.env.R2_ENDPOINT_URL &&
       process.env.R2_ACCESS_KEY_ID &&

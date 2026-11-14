@@ -291,9 +291,9 @@ npm run sync:workflows
 ```
 
 The job resolves `NORTHWRIT_WORKFLOWS_REF`, downloads and validates the raw
-`Open-Legal-Products/mike-workflows` archive, uploads reference assets to the
+`Open Legal Products` archive, uploads reference assets to the
 configured S3-compatible storage, and transactionally replaces the active
-`mike_workflows` catalog. Temporary archive and JSON files are deleted when the
+`northwrit_workflows` catalog. Temporary archive and JSON files are deleted when the
 job exits. Run this as a release job before directing traffic to the new
 backend; backend startup itself only reads the database. Docker Compose runs
 this sequence automatically for local/self-hosted deployments.
@@ -882,5 +882,5 @@ of on the next fresh install.
 - Review storage, logging, retention, and deletion behavior before processing
   confidential documents.
 
-See [Safe local testing](safe-local-testing.md), the [security policy](../upstream/mike/SECURITY.md),
+See [Safe local testing](safe-local-testing.md), the [security policy](../upstream/original-source/SECURITY.md),
 and [Troubleshooting](troubleshooting.md) for related guidance.

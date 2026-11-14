@@ -599,11 +599,11 @@ const STACK_TOKEN_LOCATION = /^([^\s()]+):\d+:\d+$/;
 /**
  * True for an AUTOMATIC capture (console bridge, global unhandled handler)
  * in a `next dev` build whose every known frame is dev-toolchain code.
- * MIKE-FRONTEND-M: a Turbopack compile error of the developer's own
+ * NORTHWRIT-FRONTEND-M: a Turbopack compile error of the developer's own
  * unsaved edits (hot-reloader-turbopack `getCompilationErrors` →
  * next-dev-server `findPageComponents` → base-server rendering `/_error`),
  * forwarded to the browser's dev overlay and caught as unhandled there.
- * MIKE-FRONTEND-K: the dev overlay logging it through console.error. Neither
+ * NORTHWRIT-FRONTEND-K: the dev overlay logging it through console.error. Neither
  * is a defect in NorthWrit and both went to the project's shared community
  * Sentry. An explicit report, a production build, or any event with a
  * frame in NorthWrit's own code (including the stack of an Error nested in the

@@ -1,4 +1,4 @@
-# Phase 1 — Mike OSS source audit
+# Phase 1 — original application source audit
 
 Reviewed November 10, 2026 at `a5c147d6587ca465f301e8479f6c50fbc5731c45` (source version `2.1.0`). Evidence below refers to paths within the pinned checkout. This is a static review. Live behaviour, deployment reachability and NorthWrit security guarantees require implementation and release validation.
 
@@ -38,8 +38,8 @@ The browser talks to the Next.js API gateway for application traffic and uses a 
 
 ## Decisions and unresolved checks
 
-- Keep Mike’s existing schema and services as the imported baseline. Treat architecture proposals in NorthWrit’s older design documents as requirements to reconcile during implementation.
-- Preserve Mike’s license, credits and source revision. Review package manifests, lockfiles, image inputs and the separate workflow catalogue before importing upstream code or content. The nested checkout remains separate.
+- Keep NorthWrit’s existing schema and services as the imported baseline. Treat architecture proposals in NorthWrit’s older design documents as requirements to reconcile during implementation.
+- Preserve NorthWrit’s license, credits and source revision. Review package manifests, lockfiles, image inputs and the separate workflow catalogue before importing upstream code or content. The nested checkout remains separate.
 - Reuse existing model adapters, provider settings, connector controls and stored write approvals where verified. NorthWrit’s matter scope, policy precedence, run provenance and exact-payload requirements still need executable tests.
 - Build Canadian research coverage after confirming usable sources and access terms. Legal accuracy, treatment checks and Canadian data residency have no baseline sign-off.
 - Before deployment, verify capacity, workflow catalogue availability and model access. Browser routing must cover application, confirmation links and signed uploads.

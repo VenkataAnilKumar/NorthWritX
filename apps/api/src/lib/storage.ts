@@ -272,7 +272,7 @@ export function deleteFileBestEffort(
  * upload's staging and sealed copies). Every key is attempted, but the
  * operation reports at most one warning: when storage is unreachable or the
  * credentials are wrong, every key fails for the same reason, and one event
- * per key only multiplies the noise (MIKE-BACKEND-5/6 arrived in pairs).
+ * per key only multiplies the noise (NORTHWRIT-BACKEND-5/6 arrived in pairs).
  * Null/empty keys are skipped: there is nothing to delete.
  */
 export function deleteFilesBestEffort(

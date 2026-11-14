@@ -1,6 +1,6 @@
 # Preset contract templates
 
-Feature proposal: [#560](https://github.com/open-legal-products/mike/issues/560).
+Feature proposal: #560.
 
 ## Problem
 

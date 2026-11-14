@@ -1,7 +1,7 @@
 import { render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// MIKE-FRONTEND-B/C/D/E: every burst of browser "Failed to fetch" reports
+// NORTHWRIT-FRONTEND-B/C/D/E: every burst of browser "Failed to fetch" reports
 // carried /api/models/configured twice. This pins the request count of one
 // signed-in page mount, with the real API client and a network that never
 // answers, so the double fetch cannot come back.

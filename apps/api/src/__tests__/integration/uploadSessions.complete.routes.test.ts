@@ -428,7 +428,7 @@ describe("upload session completion", () => {
   });
 
   it("reports a database without the extend RPC once, not once per file", async () => {
-    // MIKE-BACKEND-1H: an install behind on migrations has no
+    // NORTHWRIT-BACKEND-1H: an install behind on migrations has no
     // extend_upload_session_expiry, and every completed file used to file a
     // console error event.
     resetSchemaOutOfDateReportsForTests();

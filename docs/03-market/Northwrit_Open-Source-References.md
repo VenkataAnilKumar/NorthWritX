@@ -4,13 +4,13 @@ Updated November 10, 2026. This register records the platform decision and compo
 
 ## Selected foundation
 
-**MikeOSS is the sole application foundation for NorthWritX.** Its legal workspace, document review, drafting, and Word workflows align with the Harvey-style product direction.
+**The application source from Open Legal Products is the foundation for NorthWritX.** Its legal workspace, document review, drafting, and Word workflows align with the Harvey-style product direction.
 
-- [Application source](https://github.com/Open-Legal-Products/mike) · [Legal workflows](https://github.com/Open-Legal-Products/mike-workflows) · [AGPL-3.0 license](https://github.com/Open-Legal-Products/mike/blob/main/LICENSE)
+- Application source · Legal workflows · AGPL-3.0 license
 - **Starting surfaces** include Projects, Assistant, Library, Tabular Reviews, Workflows, Connectors, and the Word add-in.
-- **NorthWrit work** includes matter permissions and roles, Canadian research sources, Bearings, four-state CiteCheck, Shield, and version-bound Folio review. Mike's CourtListener integration covers U.S. case law.
+- **NorthWrit work** includes matter permissions and roles, Canadian research sources, Bearings, four-state CiteCheck, Shield, and version-bound Folio review. NorthWrit's CourtListener integration covers U.S. case law.
 
-The earlier Onyx prototype is available in Git history at commit `df85641`. The pinned Mike OSS revision `a5c147d6587ca465f301e8479f6c50fbc5731c45` is imported into the [NorthWrit application](../../docs/upstream/mike/NORTHWRIT.md). Follow the [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md).
+The earlier Onyx prototype is available in Git history at commit `df85641`. The pinned original source revision `a5c147d6587ca465f301e8479f6c50fbc5731c45` is imported into the [NorthWrit application](../../docs/upstream/original-source/NORTHWRIT.md). Follow the [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md).
 
 ## Other evaluated platforms
 

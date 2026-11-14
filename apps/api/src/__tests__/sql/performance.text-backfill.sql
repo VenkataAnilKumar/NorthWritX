@@ -76,16 +76,16 @@ begin
     insert into public.document_versions(document_id,version_number,storage_path,filename) values(doc,1,'synthetic/'||doc||'/1','A.pdf') returning id into v1;
     insert into public.document_versions(document_id,version_number,storage_path,filename) values(doc,2,case when i=6 then null else 'synthetic/'||doc||'/2' end,'A.pdf') returning id into v2;
     update public.documents set current_version_id=case when i%2=0 then v1 else v2 end where id=doc;
-    perform set_config('mike.backfill_v1_'||i,v1::text,true); perform set_config('mike.backfill_v2_'||i,v2::text,true);
+    perform set_config('northwrit.backfill_v1_'||i,v1::text,true); perform set_config('northwrit.backfill_v2_'||i,v2::text,true);
   end loop;
   -- Jobs lost for most rows (the sweep's reason to exist); two keep a live job.
   delete from public.db_jobs where kind='document.extract_text'
-    and payload->>'versionId' not in (current_setting('mike.backfill_v1_1'),current_setting('mike.backfill_v2_2'));
+    and payload->>'versionId' not in (current_setting('northwrit.backfill_v1_1'),current_setting('northwrit.backfill_v2_2'));
   perform public.publish_document_text(v.id,v.text_revision,'text',null,0) from public.document_versions v
-    where v.id::text in (current_setting('mike.backfill_v1_3'),current_setting('mike.backfill_v2_3'),current_setting('mike.backfill_v1_8'));
-  update public.document_version_texts set status='processing' where version_id::text=current_setting('mike.backfill_v2_4');
-  update public.document_version_texts set status='failed',error_code='extraction_failed' where version_id::text in (current_setting('mike.backfill_v1_7'),current_setting('mike.backfill_v2_9'));
-  update public.document_versions set deleted_at=now() where id::text=current_setting('mike.backfill_v1_10');
+    where v.id::text in (current_setting('northwrit.backfill_v1_3'),current_setting('northwrit.backfill_v2_3'),current_setting('northwrit.backfill_v1_8'));
+  update public.document_version_texts set status='processing' where version_id::text=current_setting('northwrit.backfill_v2_4');
+  update public.document_version_texts set status='failed',error_code='extraction_failed' where version_id::text in (current_setting('northwrit.backfill_v1_7'),current_setting('northwrit.backfill_v2_9'));
+  update public.document_versions set deleted_at=now() where id::text=current_setting('northwrit.backfill_v1_10');
   insert into pre_jobs select id from public.db_jobs;
 end;
 $$;
@@ -102,11 +102,11 @@ end;
 $$;
 -- Versions as text search found them: no row, a ready row for an older
 -- revision, a ready row from an older extractor.
-delete from public.document_version_texts where version_id::text in (current_setting('mike.backfill_v1_11'),current_setting('mike.backfill_v2_12'));
+delete from public.document_version_texts where version_id::text in (current_setting('northwrit.backfill_v1_11'),current_setting('northwrit.backfill_v2_12'));
 update public.document_version_texts set status='ready',text_content='old',source_revision=gen_random_uuid()
-  where version_id::text=current_setting('mike.backfill_v2_11');
+  where version_id::text=current_setting('northwrit.backfill_v2_11');
 update public.document_version_texts set status='ready',text_content='old',extractor_version=0
-  where version_id::text=current_setting('mike.backfill_v1_12');
+  where version_id::text=current_setting('northwrit.backfill_v1_12');
 create temporary table legacy_expected as
   select lim,retry,array(select pg_temp.backfill_oracle(lim,retry)) ids
   from unnest(array[1,3,7,100]) lim cross join unnest(array[false,true]) retry;

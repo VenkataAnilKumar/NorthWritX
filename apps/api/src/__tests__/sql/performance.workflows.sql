@@ -32,8 +32,8 @@ begin
   perform public.open_org_private_content(org,admin_id,'workflow',wid);
   insert into public.workflows(user_id,org_id,title,type,visibility) values(actor,org,'Public, denied','assistant','organization') returning id into wid;
   insert into public.workflow_org_access_overrides(workflow_id,org_id,user_id,role) values(wid,org,other_actor,'deny'),(wid,org,admin_id,'deny');
-  perform set_config('mike.test_workflow_actor',actor::text,true);
-  perform set_config('mike.test_workflow_member',other_actor::text,true);
+  perform set_config('northwrit.test_workflow_actor',actor::text,true);
+  perform set_config('northwrit.test_workflow_member',other_actor::text,true);
 end;
 $$;
 do $$
@@ -60,7 +60,7 @@ returns text language plpgsql set search_path=public as $$
 begin perform nextval('pg_temp.workflow_calls');return public.workflow_role_oracle(p_workflow_id,p_workflow_user_id,p_org_id,p_user_id,p_user_email);end;
 $$;
 do $$
-declare actor text:=current_setting('mike.test_workflow_actor'); candidates integer;
+declare actor text:=current_setting('northwrit.test_workflow_actor'); candidates integer;
 begin
   select count(*) into candidates from public.workflows w where w.user_id=actor::uuid
     or w.org_id in(select org_id from public.org_members where user_id=actor::uuid)
@@ -73,7 +73,7 @@ $$;
 -- unless an override, share or opened private item names it. Candidates the
 -- ladder rejects can only be denials, archived items or inactive orgs.
 do $$
-declare actor text:=current_setting('mike.test_workflow_member'); calls bigint; visible bigint;
+declare actor text:=current_setting('northwrit.test_workflow_member'); calls bigint; visible bigint;
 begin
   perform setval('pg_temp.workflow_calls',1,false);
   select count(*) into visible from public.get_workflows_overview(actor,actor||'@example.test',null);

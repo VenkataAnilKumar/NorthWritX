@@ -6,17 +6,17 @@ Status: Phase 1 source audit, core Phase 3 integration, repository organization,
 
 ## Objective and scope
 
-Build NorthWrit as a Harvey-style legal AI workspace for Canadian law firms using **Mike OSS as the sole application foundation**. Integrate and rebrand the pinned source, then deliver matter-based workflows, Canadian research, evidence-backed review and drafting, governed AI execution, and integrations.
+Build NorthWrit as a Harvey-style legal AI workspace for Canadian law firms using **original application as the sole application foundation**. Integrate and rebrand the pinned source, then deliver matter-based workflows, Canadian research, evidence-backed review and drafting, governed AI execution, and integrations.
 
-This is the current implementation roadmap. It replaces the older implementation phases, sprint plan, implementation checklist, reuse execution plan, agent prompts, and v3 roadmap. Existing product specifications remain requirements inputs; their release labels and architecture proposals must be reconciled with the Mike audit rather than treated as verified implementation.
+This is the current implementation roadmap. It replaces the older implementation phases, sprint plan, implementation checklist, reuse execution plan, agent prompts, and v3 roadmap. Existing product specifications remain requirements inputs; their release labels and architecture proposals must be reconciled with the NorthWrit audit rather than treated as verified implementation.
 
-The active application spans root `apps/` and `packages/`, with [recorded provenance](../upstream/mike/NORTHWRIT.md), imported from the upstream revision `a5c147d6587ca465f301e8479f6c50fbc5731c45`. [Upstream source](https://github.com/Open-Legal-Products/mike)
+The active application spans root `apps/` and `packages/`, with [recorded provenance](../upstream/original-source/NORTHWRIT.md), imported from the upstream revision `a5c147d6587ca465f301e8479f6c50fbc5731c45`. Upstream source
 
 ## Delivery sequence
 
 | Phase | Outcome | Depends on | Status |
 |---|---|---|---|
-| 1. Audit Mike OSS | Source-backed capability map and implementation backlog | Pinned source | Complete |
+| 1. Audit original application | Source-backed capability map and implementation backlog | Pinned source | Complete |
 | 3. Integrate and rebrand | Maintainable NorthWrit application baseline | Phase 1 | Complete locally with documented compatibility exceptions |
 | Repository organization | Clear entry points, ownership, documentation and verification commands | Phase 3 | Complete; local verification recorded |
 | Repository structure migration | Separate application surfaces, worker entry point, shared packages and infrastructure | Initial repository organization | Complete; PR #2 merged with all seven checks passing |
@@ -74,7 +74,7 @@ Completed work:
 1. Add the root README, repository instructions and command wrappers. Point setup, development, formatting, type checks, tests and builds to the active application. Keep existing package manifests and lockfiles; wrappers do not introduce a new workspace or package manager.
 2. Document ownership and dependency rules. Backend domains use the existing service facades; authorization stays in shared access helpers. Shared contracts, client behaviour and UI retain their existing package boundaries. Document how API and worker entry points invoke the same domain services.
 3. Clarify documentation authority. Root `docs/` holds NorthWrit requirements, decisions and delivery evidence. Application `docs/` describes implemented engineering and operating behaviour. Identify historical proposals and reconcile conflicting setup guidance without deleting provenance or applicable notices.
-4. Review imported workflows under `docs/upstream/mike/.github/`. Record which checks NorthWrit runs from root `.github/workflows/`; nested workflow files do not execute automatically. Update active CI paths, build contexts and command documentation together when required.
+4. Review imported workflows under `docs/upstream/original-source/.github/`. Record which checks NorthWrit runs from root `.github/workflows/`; nested workflow files do not execute automatically. Update active CI paths, build contexts and command documentation together when required.
 5. Record the Phase 4 extension map: the existing Projects implementation provides the Matter compatibility layer; document access, source versions, review, drafting and export remain in their existing domains where they fit. Identify shared policy seams and test ownership before adding parallel implementations.
 6. Verify root commands from their documented working directory, internal documentation links, CI paths and affected builds/type checks/regressions. Record failures and inherited limitations. Do not restart the archived standalone cloud baseline test; use the checks required for the repository changes.
 
@@ -131,7 +131,7 @@ The user requested a root workspace after the directory migration. [ADR 0003](..
 
 Consolidate overrides and frozen installs; adapt Docker contexts, CI cache keys, shared type/runtime resolution, desktop staging and scoped audit tooling. Verify repository checks, clean installation, affected tests/types/lint, host and container builds. Record results and limitations in the [workspace verification record](NorthWrit-Workspace-Verification.md). This work introduces no Phase 4 features and performs no deployment or publication.
 
-## Phase 1 — Audit Mike OSS
+## Phase 1 — Audit original application
 
 **Goal:** Establish exactly what the pinned source provides and what NorthWrit must build.
 
@@ -140,7 +140,7 @@ Work:
 - Inventory routes, navigation, settings, APIs, services, database schema, migrations, storage, authentication, model providers, background jobs, and deployment configuration.
 - Trace Projects, Assistant, Library, Tabular Reviews, Workflows, connectors, and the Word add-in through source and documentation. Record agents, plugins, and MCP as supported, partial, absent, or unverified based on evidence.
 - Map the existing NorthWrit feature IDs and user journeys to reuse, adapt, build, or defer decisions. Record permission boundaries and failure paths, not just visible screens.
-- Identify differences between Mike and existing NorthWrit architecture documents. Prefer the working foundation unless a documented requirement justifies a change.
+- Identify differences between NorthWrit and existing NorthWrit architecture documents. Prefer the working foundation unless a documented requirement justifies a change.
 - Record upstream revision, dependency notices, update strategy, runtime prerequisites, required secrets by name, and likely cloud resource requirements.
 
 Deliverables: Capability matrix with source paths; architecture and data-flow inventory; requirements gap backlog; cloud startup runbook; decision log.
@@ -155,11 +155,11 @@ Results: [Source audit and gap backlog](NorthWrit-Source-Audit.md), [105-feature
 
 Work:
 
-- Import the verified Mike snapshot into a tracked application directory, proposed as `apps/northwrit/`, with source provenance and an upstream update procedure. Avoid accidentally committing the nested checkout as a Git link.
+- Import the verified NorthWrit snapshot into a tracked application directory, proposed as `apps/northwrit/`, with source provenance and an upstream update procedure. Avoid accidentally committing the nested checkout as a Git link.
 - Preserve applicable licenses and attribution. Record imported paths and subsequent local changes.
 - Apply NorthWrit branding to user-visible names, logos, page metadata, emails, navigation, help text, and configuration defaults.
 - Review technical identifiers individually; preserve migration history and compatibility-sensitive names unless there is a tested migration.
-- Replace obsolete deployment guidance with Mike-based setup instructions. Establish formatting, build, type-check, and relevant test commands in CI.
+- Replace obsolete deployment guidance with NorthWrit-based setup instructions. Establish formatting, build, type-check, and relevant test commands in CI.
 
 Deliverables: Tracked NorthWrit application; brand/configuration changes; provenance record; developer setup; baseline CI.
 
@@ -210,7 +210,7 @@ Deliverables: Canadian research pipeline; citation evaluation set; Review Grid a
 
 Work:
 
-- Use the Phase 1 inventory to distinguish existing Mike functionality from new implementation.
+- Use the Phase 1 inventory to distinguish existing NorthWrit functionality from new implementation.
 - Define agents as governed task runners, connectors as external data access/synchronization, plugins as packaged capabilities, and MCP as a tool/resource protocol. Define configuration, permissions, and lifecycle for each.
 - Add only the integrations needed for the pilot; select initial systems based on firm requirements and verified API access.
 - Implement credential storage, scopes, synchronization status, retries, revocation, and deletion propagation for connectors.
@@ -250,7 +250,7 @@ Deliverables: Release candidate; acceptance report; deployment and rollback runb
 
 | Dependency or uncertainty | Resolution phase | Required evidence |
 |---|---|---|
-| Mike feature coverage and fit with existing specifications | 1 | Source-backed matrix and reconciled backlog |
+| NorthWrit feature coverage and fit with existing specifications | 1 | Source-backed matrix and reconciled backlog |
 | Model access and operating cost | 7 | Successful synthetic AI journey and usage record |
 | Import layout and upstream update process | 3 | Tracked source and repeatable update procedure |
 | Repository entry points, ownership and documentation authority | Before 4 | Verified root commands, active CI inventory and recorded decisions |

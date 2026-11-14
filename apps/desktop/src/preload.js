@@ -22,5 +22,3 @@ const desktopBridge = {
 };
 
 contextBridge.exposeInMainWorld("northwritDesktop", desktopBridge);
-// Temporary bridge alias for existing desktop clients.
-contextBridge.exposeInMainWorld("mikeDesktop", desktopBridge);

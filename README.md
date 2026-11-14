@@ -1,6 +1,6 @@
 # NorthWrit
 
-NorthWrit is a legal workspace being developed for Canadian law firms. The active application spans `apps/` and `packages/`; the [provenance record](docs/upstream/mike/NORTHWRIT.md) identifies its Mike OSS source snapshot. See the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for delivery status. Matter workflows and the later Canadian research and governance capabilities are planned work, not release guarantees.
+NorthWrit is a legal workspace being developed for Canadian law firms. The active application spans `apps/` and `packages/`; the [provenance record](docs/upstream/original-source/NORTHWRIT.md) identifies its original application source snapshot. See the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for delivery status. Matter workflows and the later Canadian research and governance capabilities are planned work, not release guarantees.
 
 ## Start here
 
@@ -9,7 +9,7 @@ NorthWrit is a legal workspace being developed for Canadian law firms. The activ
 - [Rebrand completion](docs/07-implementation/NorthWrit-Rebrand-Completion.md): current names, local defaults and compatibility policy.
 - [CI inventory](docs/07-implementation/NorthWrit-CI-Inventory.md): active checks and gaps.
 - [Phase 4 extension map](docs/07-implementation/NorthWrit-Phase-4-Extension-Map.md): existing matter workflow building blocks.
-- [Application provenance](docs/upstream/mike/NORTHWRIT.md): source revision, attribution and upstream updates.
+- [Application provenance](docs/upstream/original-source/NORTHWRIT.md): source revision, attribution and upstream updates.
 
 ## Repository layout
 
@@ -31,7 +31,7 @@ infra/                   Compose, Docker support and Supabase gateway
 tests/browser/           Existing Playwright package and tests
 tests/loadtest/          Performance tooling
 docs/engineering/        Application engineering and operating guides
-docs/upstream/mike/      Provenance, attribution and archived workflows
+docs/upstream/original-source/      Provenance, attribution and archived workflows
 scripts/application/     Shared application maintenance tools
 docs/                    Product requirements, decisions and delivery evidence
 .github/workflows/       Active application and container-build CI
@@ -96,7 +96,7 @@ $env:REACT_APP_WEB_APP_URL = 'https://app.northwrit.invalid'
 npm run build:word
 ```
 
-Use real deployment URLs when producing a release. Telemetry configuration and build requirements are documented in [NORTHWRIT.md](docs/upstream/mike/NORTHWRIT.md#build-checks).
+Use real deployment URLs when producing a release. Telemetry configuration and build requirements are documented in [NORTHWRIT.md](docs/upstream/original-source/NORTHWRIT.md#build-checks).
 
 Browser and database suites require additional services. Read the [E2E guide](docs/engineering/e2e-ci.md) before `npm run setup:e2e` and `npm run test:e2e`. They are not part of `npm test`. Do not restart the archived standalone cloud baseline test as part of repository organization.
 
@@ -106,4 +106,4 @@ See the [workspace verification record](docs/07-implementation/NorthWrit-Workspa
 
 The [documentation index](docs/README.md) separates product requirements from implementation evidence. The current implementation plan and accepted [repository decision](docs/decisions/0002-expanded-repository-structure.md) govern the layout; older blueprints are historical proposals.
 
-Preserve the [license](LICENSE), [notice](NOTICE.md), application [credits](docs/upstream/mike/CREDITS.md) and upstream provenance when changing or distributing the application. Do not commit credentials, local environment files, generated outputs or test documents containing real client information.
+Preserve the [license](LICENSE), [notice](NOTICE.md), application [credits](docs/upstream/original-source/CREDITS.md) and upstream provenance when changing or distributing the application. Do not commit credentials, local environment files, generated outputs or test documents containing real client information.

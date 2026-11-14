@@ -42,7 +42,7 @@ function requestAuthCookieName(req: Request): string {
   const primary = authCookieName();
   const cookies = parseCookieHeader(req.headers.cookie ?? "");
   if (cookies.some(({ name }) => belongsToAuthStorage(name, primary))) return primary;
-  const legacy = primary.replace("northwrit-session", "mike-session");
+  const legacy = primary.replace("northwrit-session", "northwrit-session");
   return cookies.some(({ name }) => belongsToAuthStorage(name, legacy)) ? legacy : primary;
 }
 
@@ -85,7 +85,7 @@ export function clearRequestAuthCookies(req: Request, res: Response): void {
   const cookieOptions = requestCookieOptions(req);
   for (const { name } of cookies) {
     if (!belongsToAuthStorage(name, baseName) &&
-        !belongsToAuthStorage(name, baseName.replace("northwrit-session", "mike-session"))) continue;
+        !belongsToAuthStorage(name, baseName.replace("northwrit-session", "northwrit-session"))) continue;
     appendCookie(res, name, "", {
       ...cookieOptions,
       maxAge: 0,

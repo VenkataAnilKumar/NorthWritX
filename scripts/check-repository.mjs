@@ -29,7 +29,7 @@ const documents = [
   "docs/07-implementation/NorthWrit-Migration-Verification.md",
   "README.md",
   "AGENTS.md",
-  "docs/upstream/mike/NORTHWRIT.md",
+  "docs/upstream/original-source/NORTHWRIT.md",
   "docs/README.md",
   "docs/guides/developer.md",
   "docs/decisions/0001-repository-structure.md",
@@ -106,7 +106,7 @@ let links = 0;
 for (const document of documents) {
   check(`links in ${document}`, () => {
     const text = read(document);
-    assert(!/Northwrit_MikeOSS|NorthWrit_MikeOSS/.test(text), "old document prefix remains");
+    assert(!/Northwrit_NorthWritOSS|NorthWrit_NorthWritOSS/.test(text), "old document prefix remains");
     for (const match of text.matchAll(/\]\(([^)]+)\)/g)) {
       const target = match[1];
       if (/^[a-z][a-z0-9+.-]*:/i.test(target) || target.startsWith("#")) continue;
@@ -129,7 +129,7 @@ check("CI inventory and command paths", () => {
   assert(workflow.includes("package-lock.json"), "CI cache must use the root workspace lock");
   assert(workflow.includes("npm run check:repo"), "CI must run repository validation");
   const inventory = read("docs/07-implementation/NorthWrit-CI-Inventory.md");
-  for (const name of readdirSync(path.join(root, "docs/upstream/mike/.github/workflows"))) {
+  for (const name of readdirSync(path.join(root, "docs/upstream/original-source/.github/workflows"))) {
     if (/\.ya?ml$/.test(name)) assert(inventory.includes(`\`${name}\``), `imported workflow ${name} has no disposition`);
   }
   for (const name of readdirSync(path.join(root, ".github/workflows"))) {

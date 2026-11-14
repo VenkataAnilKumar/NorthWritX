@@ -40,7 +40,7 @@ describe("assistant workspace boundaries", () => {
   it("loads only current authorized workflows and their assets, with global built-ins exempt", async () => {
     const fake = scriptedDb([
       { table: "organizations", data: { kind: "team" } },
-      { table: "mike_workflows", data: [{ workflow_key: "global", title: "Built-in", prompt_md: "Global" }] },
+      { table: "northwrit_workflows", data: [{ workflow_key: "global", title: "Built-in", prompt_md: "Global" }] },
       // The catalog itself applies current authorization. The loader only
       // normalizes workspace placement; execution still rechecks below.
       { rpc: "get_workflows_overview", data: [{ id: "allowed", org_id: "firm", title: "Here", prompt_md: "Local" }] },
@@ -57,9 +57,9 @@ describe("assistant workspace boundaries", () => {
 
   it("loads only active catalog versions per turn and resolves a retired one on demand", async () => {
     const fake = scriptedDb([
-      { table: "mike_workflows", data: [] },
+      { table: "northwrit_workflows", data: [] },
       { rpc: "get_workflows_overview", data: [] },
-      { table: "mike_workflows", data: { workflow_key: "retired", type: "assistant", title: "Old", prompt_md: "Old steps" } },
+      { table: "northwrit_workflows", data: { workflow_key: "retired", type: "assistant", title: "Old", prompt_md: "Old steps" } },
     ]);
     const store = await buildWorkflowStore("u", "u@example.com", fake.db);
     // Retired versions are never deleted, so an unfiltered read grows with

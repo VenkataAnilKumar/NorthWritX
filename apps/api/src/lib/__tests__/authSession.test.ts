@@ -108,7 +108,7 @@ describe("backend-managed auth cookies", () => {
   });
 
   // GoTrue rethrows a subscriber's error out of getUser(), so a throwing
-  // write turned a late session change into a 500 (MIKE-BACKEND-10).
+  // write turned a late session change into a 500 (NORTHWRIT-BACKEND-10).
   it("skips, rather than throws, a session write after the response was sent", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const append = vi.fn(() => {
@@ -215,8 +215,8 @@ describe("backend-managed auth cookies", () => {
 
 describe("NorthWrit cookie transition", () => {
   it.each([
-    ["mike-session.0=old", "mike-session"],
-    ["mike-session.0=old; northwrit-session.0=new", "northwrit-session"],
+    ["northwrit-session.0=old", "northwrit-session"],
+    ["northwrit-session.0=old; northwrit-session.0=new", "northwrit-session"],
     ["", "northwrit-session"],
   ])("selects the session namespace without merging credentials: %s", (cookie, expected) => {
     createServerClient.mockClear();
@@ -229,7 +229,7 @@ describe("NorthWrit cookie transition", () => {
   it("clears old and new chunks and PKCE state together at sign-out", () => {
     process.env.NODE_ENV = "development";
     const append = vi.fn();
-    clearRequestAuthCookies({ headers: { cookie: "mike-session.0=a; mike-session-code-verifier=b; northwrit-session.0=c; unrelated=keep" }, get: vi.fn() } as never, { append, setHeader: vi.fn() } as never);
+    clearRequestAuthCookies({ headers: { cookie: "northwrit-session.0=a; northwrit-session-code-verifier=b; northwrit-session.0=c; unrelated=keep" }, get: vi.fn() } as never, { append, setHeader: vi.fn() } as never);
     expect(append).toHaveBeenCalledTimes(3);
     for (const [, value] of append.mock.calls) expect(value).toContain("Max-Age=0");
     expect(append.mock.calls.some(([, value]) => value.includes("unrelated"))).toBe(false);

@@ -64,7 +64,7 @@ export function schemaOutOfDateCode(error: unknown): string | null {
 
 // One Sentry event per process per key: a database behind this build stays
 // behind until an operator migrates it, so every later failure for the same
-// key is the same fact, not news (MIKE-BACKEND-3Z reached 64 occurrences on
+// key is the same fact, not news (NORTHWRIT-BACKEND-3Z reached 64 occurrences on
 // one process, one per stale-work sweep). The log keeps reminding, at most
 // once an hour per key, so an operator who missed the first line still sees
 // that the install is broken without a restart.

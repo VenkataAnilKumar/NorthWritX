@@ -27,9 +27,9 @@ begin
     -- The auth row is already gone during an account-deletion cascade.
     select id into former_user from auth.users where id=old.user_id;
     if active then
-      successor:=coalesce(nullif(current_setting('mike.departure_successor',true),'')::uuid,
+      successor:=coalesce(nullif(current_setting('northwrit.departure_successor',true),'')::uuid,
       public.org_default_departure_successor(old.org_id,array[old.user_id]));
-      actor:=coalesce(nullif(current_setting('mike.departure_actor',true),'')::uuid,successor);
+      actor:=coalesce(nullif(current_setting('northwrit.departure_actor',true),'')::uuid,successor);
     end if;
     -- Sharing writes lock their parent. Lock roots before classifying them.
     perform id from public.projects where org_id=old.org_id order by id for update;

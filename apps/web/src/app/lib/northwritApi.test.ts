@@ -583,7 +583,7 @@ describe("apiRequest plumbing (via thin wrappers)", () => {
         });
     });
 
-    // MIKE-BACKEND-H / MIKE-FRONTEND-F: a missing migration used to reach
+    // NORTHWRIT-BACKEND-H / NORTHWRIT-FRONTEND-F: a missing migration used to reach
     // the screen as "Something went wrong" and be filed twice (backend and
     // browser). An unreachable backend made the gateway answer 502 and the
     // browser file one issue PER ENDPOINT. The server side now answers 503
@@ -650,7 +650,7 @@ describe("apiRequest plumbing (via thin wrappers)", () => {
         });
     });
 
-    // MIKE-FRONTEND-5/8: the browser-side "API 502" event must carry the id
+    // NORTHWRIT-FRONTEND-5/8: the browser-side "API 502" event must carry the id
     // the Next gateway generated for its own api-gateway event, so the two
     // halves of one outage can be joined with `request_id:<id>`.
     it("correlates a gateway 502 with the gateway's own event by request id", async () => {

@@ -102,7 +102,7 @@ describe("createPollFailureGate", () => {
     expect(next).toEqual({ report: true, delayMs: 1_000, consecutive: 1 });
   });
 
-  it("does not re-report a class that flaps back within the repeat window (MIKE-BACKEND-M)", () => {
+  it("does not re-report a class that flaps back within the repeat window (NORTHWRIT-BACKEND-M)", () => {
     const now = { t: 0 };
     const { g, log } = gate(now, 60_000, 15 * 60_000);
     expect(g.failure(coded("40P01")).report).toBe(true);

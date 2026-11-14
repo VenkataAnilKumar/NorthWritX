@@ -35,7 +35,7 @@ describe("runtime authentication configuration", () => {
     ).toThrow(/FRONTEND_URL must use https in production/);
   });
 
-  // MIKE-BACKEND-2: the backend image defaults NODE_ENV=production, so a bare
+  // NORTHWRIT-BACKEND-2: the backend image defaults NODE_ENV=production, so a bare
   // `docker run` with no public URLs dies here. The message must name the
   // variables AND the switch a local run actually needs.
   it("tells a local run of the production image how to proceed", () => {

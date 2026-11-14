@@ -34,7 +34,7 @@ describe("logChatTitleFailure", () => {
 
     // console.error is what the Sentry console bridge files; console.warn is
     // not. When the reply failed the same way, its report already covers the
-    // title, so filing the title too duplicated it (MIKE-BACKEND-D).
+    // title, so filing the title too duplicated it (NORTHWRIT-BACKEND-D).
     it("keeps a title failure the reply shares out of Sentry", () => {
         logChatTitleFailure("[t]", apiCallError(400), replyRejectedKey());
         expect(reportError).not.toHaveBeenCalled();

@@ -20,7 +20,7 @@ begin
   perform public.open_org_private_content(org,actor,'tabular_review',opened);
   insert into public.tabular_reviews(user_id,title) select other_actor,'Unrelated '||n from generate_series(1,1000) n;
   insert into review_scopes values(null),(project::text),(foreign_project::text),('invalid');
-  perform set_config('mike.test_review_actor',actor::text,true);perform set_config('mike.test_review_project',project::text,true);
+  perform set_config('northwrit.test_review_actor',actor::text,true);perform set_config('northwrit.test_review_project',project::text,true);
 end;
 $$;
 do $$
@@ -48,7 +48,7 @@ returns text language plpgsql set search_path=public as $$
 begin perform nextval('pg_temp.review_project_calls');return public.review_parent_oracle(p_project_id,p_project_user_id,p_org_id,p_user_id,p_user_email);end;
 $$;
 do $$
-declare actor text:=current_setting('mike.test_review_actor'); project text:=current_setting('mike.test_review_project');
+declare actor text:=current_setting('northwrit.test_review_actor'); project text:=current_setting('northwrit.test_review_project');
 begin
   assert (select count(*)=100 from public.get_tabular_reviews_overview(actor,actor||'@example.test',project,'all',200,0,null,'created','desc',null,null)), 'all children remain visible';
   assert (select last_value=0 and is_called from pg_temp.review_project_calls), 'one requested project must be checked once, not once per review';

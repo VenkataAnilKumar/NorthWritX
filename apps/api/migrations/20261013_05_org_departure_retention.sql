@@ -204,9 +204,9 @@ begin
   perform 1 from public.organizations where id=old.org_id for update;
   if not found then return old; end if;
   if public.org_is_team(old.org_id) then
-    successor:=coalesce(nullif(current_setting('mike.departure_successor',true),'')::uuid,
+    successor:=coalesce(nullif(current_setting('northwrit.departure_successor',true),'')::uuid,
       public.org_default_departure_successor(old.org_id,array[old.user_id]));
-    actor:=coalesce(nullif(current_setting('mike.departure_actor',true),'')::uuid,successor);
+    actor:=coalesce(nullif(current_setting('northwrit.departure_actor',true),'')::uuid,successor);
     -- Sharing writes lock their parent. Lock roots before classifying them.
     perform id from public.projects where org_id=old.org_id order by id for update;
     perform id from public.workflows where org_id=old.org_id order by id for update;
@@ -283,11 +283,11 @@ begin
   if p_successor_id is not null and (p_successor_id=p_user_id or not exists (
     select 1 from public.org_members where org_id=p_org_id and user_id=p_successor_id
   )) then raise exception 'Choose another current organization member' using errcode='23514'; end if;
-  perform set_config('mike.departure_successor',coalesce(p_successor_id::text,''),true);
-  perform set_config('mike.departure_actor',p_actor_id::text,true);
+  perform set_config('northwrit.departure_successor',coalesce(p_successor_id::text,''),true);
+  perform set_config('northwrit.departure_actor',p_actor_id::text,true);
   delete from public.org_members where org_id=p_org_id and user_id=p_user_id;
-  perform set_config('mike.departure_successor','',true);
-  perform set_config('mike.departure_actor','',true);
+  perform set_config('northwrit.departure_successor','',true);
+  perform set_config('northwrit.departure_actor','',true);
 end;
 $$;
 

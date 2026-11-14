@@ -98,4 +98,4 @@ npm run lint --prefix frontend
 ```
 
 For test commands and contribution expectations, see
-[Contributing](../upstream/mike/CONTRIBUTING.md#testing).
+[Contributing](../upstream/original-source/CONTRIBUTING.md#testing).

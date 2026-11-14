@@ -51,8 +51,7 @@ ARG NEXT_PUBLIC_SENTRY_RELEASE=
 # main build) and the commit, both from the publish workflow. Together they
 # make the release `northwrit@<version>+<sha12>` for the browser bundle (inlined)
 # and the Next server; a local build without them is `northwrit@0.0.0...`.
-ARG MIKE_VERSION=
-ARG NORTHWRIT_VERSION=$MIKE_VERSION
+ARG NORTHWRIT_VERSION=
 ARG GIT_SHA=
 ENV NEXT_PUBLIC_NORTHWRIT_TERMS_URL=$NEXT_PUBLIC_NORTHWRIT_TERMS_URL \
     NEXT_PUBLIC_NORTHWRIT_PRIVACY_URL=$NEXT_PUBLIC_NORTHWRIT_PRIVACY_URL \

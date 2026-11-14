@@ -54,7 +54,7 @@ const NESTED_SEARCH_DEPTH = 2;
  * `(node:<pid>) [<code>] <Name>: <text>` (`node:internal/process/warning`).
  * It arrives through the console bridge from node:* frames only, so the
  * privacy boundary left "Failure in application" with four SDK frames and no
- * tag that said what happened (MIKE-BACKEND-2). The process 'warning'
+ * tag that said what happened (NORTHWRIT-BACKEND-2). The process 'warning'
  * listener reports the warning object instead; this copy is dropped.
  */
 const NODE_WARNING_TEXT = /^\(node:\d+\) (?:\[[\w-]+\] )?[\w$]+: /;
@@ -573,7 +573,7 @@ const CAUSE_CHAIN_DEPTH = 8;
  * with reportError(). Wrapping a reported failure for the caller —
  * `throw new AssistantStreamError(message, …, { cause: err })` — is the
  * same failure, not a new one; without this walk a route logging the
- * wrapper filed the failure a second time (MIKE-BACKEND-B). `cause` is a
+ * wrapper filed the failure a second time (NORTHWRIT-BACKEND-B). `cause` is a
  * non-enumerable own property, so the Object.values() search in
  * findNested() never sees it. Bounded and cycle-safe: `cause` is arbitrary
  * user-settable data.
@@ -645,8 +645,8 @@ export function sentryConfiguration(
   // Reporting requires a configured runtime or image DSN; NorthWrit has no hosted fallback.
   const development = sourceRun && !sourceRunIsInstall(env);
   const resolved = resolveDsn({
-    disabled: env.SENTRY_DISABLED?.trim() || (env.NORTHWRIT_BUILD_SENTRY_DISABLED ?? env.MIKE_BUILD_SENTRY_DISABLED),
-    dsn: env.SENTRY_DSN?.trim() || (env.NORTHWRIT_BUILD_SENTRY_DSN ?? env.MIKE_BUILD_SENTRY_DSN),
+    disabled: env.SENTRY_DISABLED?.trim() || (env.NORTHWRIT_BUILD_SENTRY_DISABLED),
+    dsn: env.SENTRY_DSN?.trim() || (env.NORTHWRIT_BUILD_SENTRY_DSN),
     fallback: NORTHWRIT_SENTRY_DSN.backend,
     development,
   });
@@ -669,7 +669,7 @@ export function sentryConfiguration(
     // An explicit SENTRY_RELEASE wins; otherwise northwrit@<version>+<sha12> from
     // the NORTHWRIT_VERSION and GIT_SHA build arguments — what lets Sentry say
     // "regressed in this release" and resolve an issue until the next.
-    release: releaseName(env.SENTRY_RELEASE, (env.NORTHWRIT_VERSION ?? env.MIKE_VERSION), env.GIT_SHA),
+    release: releaseName(env.SENTRY_RELEASE, (env.NORTHWRIT_VERSION), env.GIT_SHA),
     // Performance tracing is opt-in: error tracking is the goal of this
     // integration and traces cost quota. 0 keeps the OpenTelemetry request
     // instrumentation (needed for request context on errors) without
@@ -826,7 +826,7 @@ export function scrubEvent(
   if (automatic && isReported(original)) {
     return null;
   }
-  // handled:false made these read as unhandled rejections (MIKE-BACKEND-4,
+  // handled:false made these read as unhandled rejections (NORTHWRIT-BACKEND-4,
   // -3Q, -5N, -7D, -1K); see VERCEL_AI_TOOL_ERROR_MECHANISM.
   if (mechanism === VERCEL_AI_TOOL_ERROR_MECHANISM) {
     return null;

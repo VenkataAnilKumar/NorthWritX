@@ -30,8 +30,7 @@ RUN npm run build
 # Release identity: the product version and the commit this image was built
 # from (docs/observability.md); Sentry tags events northwrit@<version>+<sha12>
 # unless SENTRY_RELEASE is set. A build without them is northwrit@0.0.0.
-ARG MIKE_VERSION=
-ARG NORTHWRIT_VERSION=$MIKE_VERSION
+ARG NORTHWRIT_VERSION=
 ARG GIT_SHA=
 # Reporting defaults a fork's published image can bake in (both stay
 # overridable at runtime): SENTRY_DISABLED=true for a fork without its own

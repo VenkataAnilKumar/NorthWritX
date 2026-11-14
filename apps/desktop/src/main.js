@@ -81,7 +81,7 @@ function saveSettings(patch) {
 const serverUrlOverride = () => {
   const argv = process.argv.find((a) => a.startsWith("--server-url="));
   const override =
-    argv?.slice("--server-url=".length) ?? (process.env.NORTHWRIT_SERVER_URL ?? process.env.MIKE_SERVER_URL);
+    argv?.slice("--server-url=".length) ?? (process.env.NORTHWRIT_SERVER_URL);
   return typeof override === "string" && override.trim()
     ? override.trim().replace(/\/+$/, "")
     : null;
@@ -118,7 +118,7 @@ const serverUrl = () => {
 // ---------------------------------------------------------------------------
 
 function openExternalOrCapture(url) {
-  const captureFile = (process.env.NORTHWRIT_E2E_CAPTURE_EXTERNAL ?? process.env.MIKE_E2E_CAPTURE_EXTERNAL);
+  const captureFile = (process.env.NORTHWRIT_E2E_CAPTURE_EXTERNAL);
   if (captureFile) {
     try {
       fs.appendFileSync(captureFile, url + "\n");
@@ -327,7 +327,7 @@ function setupDownloads() {
     // No save dialog on purpose: the flow starts from an in-app "download"
     // affordance, and a native prompt would be a worse experience than the
     // browser it replaces. NORTHWRIT_DOWNLOAD_DIR exists for e2e artifact capture.
-    const dir = (process.env.NORTHWRIT_DOWNLOAD_DIR ?? process.env.MIKE_DOWNLOAD_DIR) || app.getPath("downloads");
+    const dir = (process.env.NORTHWRIT_DOWNLOAD_DIR) || app.getPath("downloads");
     try {
       fs.mkdirSync(dir, { recursive: true });
     } catch {
@@ -341,7 +341,7 @@ function setupDownloads() {
       // behavior, diverting the bytes away from setSavePath — so e2e can't
       // watch the directory. This log records that the handler ran and where
       // it saved (or would have, under automation).
-      const logFile = (process.env.NORTHWRIT_E2E_DOWNLOAD_LOG ?? process.env.MIKE_E2E_DOWNLOAD_LOG);
+      const logFile = (process.env.NORTHWRIT_E2E_DOWNLOAD_LOG);
       if (logFile) {
         try {
           fs.appendFileSync(
@@ -578,7 +578,6 @@ async function startLocalAndLoad() {
     try {
       await startLocalStack(app, (msg) => {
         win?.webContents.send("northwrit:local-status", msg);
-        win?.webContents.send("mike:local-status", msg);
       });
       await win.loadURL(LOCAL_FRONTEND_URL);
     } catch (err) {
@@ -606,10 +605,9 @@ const fromMainFrame = (event) => Boolean(win && event.sender === win.webContents
 const fromShellPage = (event) =>
   fromMainFrame(event) && isShellPage(event.senderFrame?.url ?? "");
 
-// Both namespaces share the same handlers and origin/privilege checks.
+// Register each channel with its origin/privilege checks.
 function handleNorthWritChannel(channel, handler) {
   ipcMain.handle(channel, handler);
-  ipcMain.handle(channel.replace(/^northwrit:/, "mike:"), handler);
 }
 
 handleNorthWritChannel("northwrit:get-server-url", () => serverUrl());
@@ -794,8 +792,8 @@ function buildMenu() {
 // own running NorthWrit.app for the instance lock (and lose, quitting instantly)
 // and would read/write their real window bounds. Must precede requestSingle-
 // InstanceLock — the lock lives in userData.
-if ((process.env.NORTHWRIT_USER_DATA_DIR ?? process.env.MIKE_USER_DATA_DIR)) {
-  app.setPath("userData", (process.env.NORTHWRIT_USER_DATA_DIR ?? process.env.MIKE_USER_DATA_DIR));
+if ((process.env.NORTHWRIT_USER_DATA_DIR)) {
+  app.setPath("userData", (process.env.NORTHWRIT_USER_DATA_DIR));
 }
 
 // One dock icon, one window; a second launch focuses the first instance.

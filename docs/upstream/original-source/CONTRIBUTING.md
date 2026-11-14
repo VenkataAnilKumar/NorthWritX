@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve Mike. Please keep contributions small, focused, and easy to review.
+Thanks for helping improve NorthWrit. Please keep contributions small, focused, and easy to review.
 
 ## Guidelines
 
@@ -16,7 +16,7 @@ Thanks for helping improve Mike. Please keep contributions small, focused, and e
 ## Frontend UI Work
 
 Before writing a new component, check whether one already exists. Look first in
-`frontend/src/app/components/ui/` (and `packages/ui/`, imported as `@mike/ui`,
+`frontend/src/app/components/ui/` (and `packages/ui/`, imported as `@northwrit/ui`,
 for anything the Word add-in also renders), then in the
 [shadcn/ui](https://ui.shadcn.com)
 registry — the project is configured for it in `frontend/components.json`, so
@@ -40,10 +40,10 @@ tokens, the primitive inventory, and the full baseline.
     - why
     - testing
 
-## Mike Workflows
+## NorthWrit Workflows
 
 System workflows live in the sibling
-[`Open-Legal-Products/mike-workflows`](https://github.com/Open-Legal-Products/mike-workflows)
+`Open Legal Products`
 repository under `assistant-workflows/` and `tabular-review-workflows/`. Put
 structured metadata in the YAML frontmatter at the top of `SKILL.md`, put
 workflow instructions in the body of `SKILL.md`, and use `table-columns.yaml`
@@ -54,7 +54,7 @@ How workflows reach users:
 - **Defaults.** Five workflows are marked as defaults by the ingestion policy
   in `backend/src/lib/workflowCatalogSource.ts`. The workflow sync job stores
   that classification and the Quick Action settings in
-  `mike_workflows`; Postgres installs independent, editable copies for each
+  `northwrit_workflows`; Postgres installs independent, editable copies for each
   user on first use.
 - **Add-ons.** Every other workflow in the repository ships in the Add-ons
   catalog. Users import an add-on as an independent, editable copy of the
@@ -63,7 +63,7 @@ How workflows reach users:
   directories into a pack shown together in the catalog. `pack.yaml` must list
   exactly the workflow directories that exist under it — the build fails on
   either a listed-but-missing or an unlisted workflow.
-- The `metadata.mike-availability` frontmatter key is deprecated and ignored:
+- The `metadata.northwrit-availability` frontmatter key is deprecated and ignored:
   the default/add-on split comes from `DEFAULT_WORKFLOWS`, not from the
   workflow files. Existing files may keep the key; the ingestion parser
   accepts it but does not use it for classification.
@@ -77,10 +77,10 @@ npm run build
 npm run sync:workflows
 ```
 
-The job resolves the configured `mike-workflows` ref to an immutable commit,
+The job resolves the configured `northwrit-workflows` ref to an immutable commit,
 downloads and validates its archive, writes a temporary local JSON document,
 uploads reference assets to object storage, and transactionally replaces the
-active rows in `mike_workflows`. Its temporary files are deleted before the job
+active rows in `northwrit_workflows`. Its temporary files are deleted before the job
 exits. The backend only reads the database and does not download or generate a
 catalog during startup. Docker Compose runs the job automatically; managed
 deployments should run `npm run sync:workflows` as a release step.
@@ -90,7 +90,7 @@ it does not produce backend runtime data.
 
 ## Security
 
-Do not open a public issue for security vulnerabilities. Use [GitHub's private vulnerability reporting](https://github.com/Open-Legal-Products/mike/security/advisories/new) instead.
+Do not open a public issue for security vulnerabilities. Use GitHub's private vulnerability reporting instead.
 
 We will aim to respond promptly and coordinate a disclosure timeline with you.
 

@@ -10,7 +10,7 @@ import { useWorkspaceIdentity } from "@/app/hooks/useWorkspaceIdentity";
 import { useDocumentWorkspace } from "@/app/contexts/WorkspaceContext";
 import type { QuickAction } from "@/app/components/shared/types";
 
-const LEGACY_VISIBLE_KEY = "mike.quickActions.visible";
+const LEGACY_VISIBLE_KEY = "northwrit.quickActions.visible";
 const MIGRATED_KEY = "northwrit.quickActions.databaseMigrated";
 
 /** Migrate legacy visibility preferences without losing server actions if storage is blocked. */
@@ -18,7 +18,7 @@ async function migrateLegacyVisibility(
     actions: QuickAction[],
 ): Promise<{ actions: QuickAction[]; complete: boolean }> {
     try {
-        if (window.localStorage.getItem(MIGRATED_KEY) || window.localStorage.getItem("mike.quickActions.databaseMigrated")) {
+        if (window.localStorage.getItem(MIGRATED_KEY) || window.localStorage.getItem("northwrit.quickActions.databaseMigrated")) {
             return { actions, complete: true };
         }
         const legacy = JSON.parse(

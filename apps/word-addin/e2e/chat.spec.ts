@@ -792,7 +792,7 @@ test("uses Web Crypto for document IDs when randomUUID is unavailable", async ({
   expect(body.document_id).toMatch(
     /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
   );
-  expect((await addin.wordDocument()).settings["mike.word.documentId.v1"]).toBe(
+  expect((await addin.wordDocument()).settings["northwrit.word.documentId.v1"]).toBe(
     body.document_id,
   );
 });
@@ -813,7 +813,7 @@ test("a Save As copy of the document mints a fresh chat identity", async ({
   // Simulate "Save As": document settings travel inside the .docx (the mock
   // persists them in sessionStorage), but the copy opens from a new URL. Seed
   // a stale anchor registry to prove the copy does not inherit it either.
-  await addin.setWordDocumentSetting("mike.wordEditAnchors.v1", {
+  await addin.setWordDocumentSetting("northwrit.wordEditAnchors.v1", {
     version: 1,
     anchors: {},
   });
@@ -832,11 +832,11 @@ test("a Save As copy of the document mints a fresh chat identity", async ({
   );
   expect(secondId).not.toBe(firstId);
   const { settings } = await addin.wordDocument();
-  expect(settings["mike.word.documentId.v1"]).toBe(secondId);
-  expect(settings["mike.word.documentUrl.v1"]).toBe(
+  expect(settings["northwrit.word.documentId.v1"]).toBe(secondId);
+  expect(settings["northwrit.word.documentUrl.v1"]).toBe(
     "c:/users/e2e/demo contract (copy).docx",
   );
-  expect(settings["mike.wordEditAnchors.v1"]).toBeUndefined();
+  expect(settings["northwrit.wordEditAnchors.v1"]).toBeUndefined();
 });
 
 test("keeps the existing identity when either document URL is unknown", async ({
@@ -854,7 +854,7 @@ test("keeps the existing identity when either document URL is unknown", async ({
 
   // Pre-URL-tracking upgrade path: an identity exists but no URL was stored.
   // Even at a brand-new URL this must NOT count as a copy.
-  await addin.removeWordDocumentSetting("mike.word.documentUrl.v1");
+  await addin.removeWordDocumentSetting("northwrit.word.documentUrl.v1");
   await addin.gotoTaskpane({
     documentUrl: "C:/Users/e2e/Renamed Contract.docx",
   });
@@ -875,7 +875,7 @@ test("keeps the existing identity when either document URL is unknown", async ({
   await page.getByRole("button", { name: "Send" }).click();
   expect((await thirdRequest).postDataJSON().document_id).toBe(firstId);
   expect(
-    (await addin.wordDocument()).settings["mike.word.documentUrl.v1"],
+    (await addin.wordDocument()).settings["northwrit.word.documentUrl.v1"],
   ).toBe("c:/users/e2e/renamed contract.docx");
 });
 

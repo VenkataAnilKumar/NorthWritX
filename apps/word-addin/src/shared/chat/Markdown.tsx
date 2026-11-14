@@ -34,7 +34,7 @@ const MARKDOWN_COMPONENTS: Components = {
     // Reserved fragment for document citations (see taskpane/lib/citations):
     // rendered as an in-pane chip, activated via click delegation on the
     // prose container — never a navigation.
-    if (href?.startsWith("#mike-cite:")) {
+    if (href?.startsWith("#northwrit-cite:")) {
       const label = Children.toArray(children).join("");
       const numberedCitation = label.match(/^\[(\d+)\]$/);
       if (numberedCitation) {

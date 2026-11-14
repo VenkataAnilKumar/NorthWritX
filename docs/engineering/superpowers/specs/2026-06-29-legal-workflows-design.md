@@ -2,8 +2,8 @@
 
 > Historical design proposal recorded on 2026-06-29. Its file paths and
 > workflow-loading architecture are no longer current. System workflows now
-> come from the `mike-workflows` repository and are generated into NorthWrit as
-> described in [CONTRIBUTING.md](../../../upstream/mike/CONTRIBUTING.md#mike-workflows).
+> come from the `northwrit-workflows` repository and are generated into NorthWrit as
+> described in [CONTRIBUTING.md](../../../upstream/original-source/CONTRIBUTING.md#northwrit-workflows).
 
 Date: 2026-06-29
 

@@ -297,7 +297,7 @@ actual Cloud client, consent configuration and Workspace policy work together.
    Installed, including after page reload and backend restart. No refresh token should appear
    in browser API responses; only the picker-session response carries a short-lived access token. If Google denies consent, close the popup and use
    Cancel in NorthWrit to end its polling attempt; a retry should work.
-3. **Search/read:** create `MIKE434 Consulting Agreement` in Google Docs with
+3. **Search/read:** create `NORTHWRIT434 Consulting Agreement` in Google Docs with
    “Payment is due in 17 days. Liability cap is USD 43,210.” Ask NorthWrit to search
    for it first: it must not be found, and NorthWrit should tell you to add it. Then
    open Manage → **Add files from Google Drive**, pick the document, and expect
@@ -320,7 +320,7 @@ actual Cloud client, consent configuration and Workspace policy work together.
    update public.user_google_drive_tokens
    set expires_at = now() - interval '1 minute'
    where user_id = (
-     select id from auth.users where email = 'YOUR_MIKE_TEST_LOGIN_EMAIL'
+     select id from auth.users where email = 'YOUR_NORTHWRIT_TEST_LOGIN_EMAIL'
    );
    ```
 
@@ -377,7 +377,7 @@ configuration invalidates the corresponding previous test evidence.
 
 ## Gmail and Google Calendar
 
-Drive, Gmail, and Calendar are delivered together in [PR #434](https://github.com/open-legal-products/mike/pull/434). The Gmail/Calendar design is recorded in [#521](https://github.com/open-legal-products/mike/issues/521).
+Drive, Gmail, and Calendar are delivered together in PR #434. The Gmail/Calendar design is recorded in #521.
 
 ### User behavior
 

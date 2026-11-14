@@ -1,5 +1,5 @@
--- Reproduction of MIKE-BACKEND-F (GET /chat 500, PostgreSQL 57014 statement
--- cancelled; MIKE-FRONTEND-C in the browser) and confirmation of the fix.
+-- Reproduction of NORTHWRIT-BACKEND-F (GET /chat 500, PostgreSQL 57014 statement
+-- cancelled; NORTHWRIT-FRONTEND-C in the browser) and confirmation of the fix.
 -- Run with psql -v ON_ERROR_STOP=1 against a migrated LOCAL test database
 -- (CI: .github/workflows/schema-drift.yml). Transactional; everything rolls back.
 --
@@ -139,7 +139,7 @@ begin
   before_elapsed := clock_timestamp()-started;
   perform pg_temp.assert_true(cancelled,
     format('the reproduction did not reproduce: the shipped query returned its page in %s',before_elapsed));
-  perform pg_temp.assert_true(sqlstate_seen='57014','the cancellation is PostgreSQL 57014, as in MIKE-BACKEND-F');
+  perform pg_temp.assert_true(sqlstate_seen='57014','the cancellation is PostgreSQL 57014, as in NORTHWRIT-BACKEND-F');
 
   -- Confirmation: the fixed query returns the right page, within the same budget.
   -- (The timer has fired for this statement; the elapsed time is asserted directly.)
@@ -150,7 +150,7 @@ begin
   perform pg_temp.assert_true(page=r.expected,'the fixed query returns the caller''s newest eleven chats');
   perform pg_temp.assert_true(after_elapsed<interval '2 seconds',
     format('the fixed query must finish within the statement timeout; took %s',after_elapsed));
-  raise notice 'MIKE-BACKEND-F reproduction: shipped query cancelled (57014) after %; fixed query returned the page in %',
+  raise notice 'NORTHWRIT-BACKEND-F reproduction: shipped query cancelled (57014) after %; fixed query returned the page in %',
     date_trunc('milliseconds',before_elapsed), date_trunc('milliseconds',after_elapsed);
 end;
 $$;

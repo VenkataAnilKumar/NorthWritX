@@ -138,7 +138,7 @@ function recordEvents(): Sentry.ErrorEvent[] {
     return events;
 }
 
-// MIK-94 / MIKE-BACKEND-3Z: an install whose database lacks a bundled
+// MIK-94 / NORTHWRIT-BACKEND-3Z: an install whose database lacks a bundled
 // migration failed the same sweep on every run and filed an error each time.
 it("reports a missing database object once per operation, at error, under schema_out_of_date, and keeps sweeping", async () => {
     const events = recordEvents();

@@ -119,12 +119,12 @@ begin
       ('archived-project-review',archived_project_review,org,owner_id,archived_project),('member-project-review',member_project_review,org,owner_id,member_project),
       ('other-org-review',other_review,other_org,owner_id,null)) r(label,id,org_id,user_id,project_id) on r.label=e.label;
   update public.tabular_reviews set archived_at=now() where id=archived_review;
-  perform set_config('mike.test_ref_org',org::text,true);
-  perform set_config('mike.test_ref_member',member_id::text,true);
+  perform set_config('northwrit.test_ref_org',org::text,true);
+  perform set_config('northwrit.test_ref_member',member_id::text,true);
 end;
 $$;
 create temporary table departure_oracle as
-  select item_id,disposition from pg_temp.departure_items_oracle(current_setting('mike.test_ref_org')::uuid,array[current_setting('mike.test_ref_member')::uuid])
+  select item_id,disposition from pg_temp.departure_items_oracle(current_setting('northwrit.test_ref_org')::uuid,array[current_setting('northwrit.test_ref_member')::uuid])
   where kind='document';
 create or replace function public.org_item_document_ids(p_kind text,p_item_id uuid)
 returns table(document_id uuid) language plpgsql stable set search_path=public as $$
@@ -134,7 +134,7 @@ do $$
 declare actual jsonb; expected jsonb;
 begin
   select jsonb_object_agg(item_id,disposition) into actual
-    from public.org_members_departure_items(current_setting('mike.test_ref_org')::uuid,array[current_setting('mike.test_ref_member')::uuid])
+    from public.org_members_departure_items(current_setting('northwrit.test_ref_org')::uuid,array[current_setting('northwrit.test_ref_member')::uuid])
     where kind='document';
   select jsonb_object_agg(item_id,disposition) into expected from departure_oracle;
   assert (select bool_and(o.disposition=e.disposition) from departure_expected e join departure_oracle o on o.item_id=e.id),

@@ -535,7 +535,7 @@ describe("community install minimisation", () => {
     });
 });
 
-// MIKE-FRONTEND-K / MIKE-FRONTEND-M: `next dev` toolchain events from a
+// NORTHWRIT-FRONTEND-K / NORTHWRIT-FRONTEND-M: `next dev` toolchain events from a
 // contributor's local checkout (a Turbopack compile error of their own edits,
 // forwarded to the dev overlay and logged there) reached the shared project.
 describe("next dev toolchain noise", () => {

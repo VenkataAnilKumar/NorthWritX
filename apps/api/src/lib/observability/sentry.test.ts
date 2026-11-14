@@ -400,7 +400,7 @@ describe("scrubEvent", () => {
     ).not.toBeNull();
   });
 
-  it("drops the console bridge's copy of a wrapper whose cause chain holds a reported error (MIKE-BACKEND-B)", () => {
+  it("drops the console bridge's copy of a wrapper whose cause chain holds a reported error (NORTHWRIT-BACKEND-B)", () => {
     // runLLMStream reports the provider failure, then rethrows it wrapped
     // for the route (AssistantStreamError { cause }); the route logs the
     // wrapper. Same failure, so the bridge's copy must go.
@@ -1116,7 +1116,7 @@ describe("community install minimisation", () => {
   });
 });
 
-// MIKE-BACKEND-B, 8, C, 1V, 1M: culprits under backend/src/... are `tsx
+// NORTHWRIT-BACKEND-B, 8, C, 1V, 1M: culprits under backend/src/... are `tsx
 // watch` checkouts reporting to the NorthWrit project as environment=self-hosted.
 describe("development builds", () => {
   it("are the TypeScript source, not the compiled image", () => {

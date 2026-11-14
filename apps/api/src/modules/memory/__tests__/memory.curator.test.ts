@@ -666,7 +666,7 @@ describe("scope-bound memory curator tool", () => {
   });
 
   it("keeps the failure's classification, never its text, so Sentry can say why", async () => {
-    // MIKE-BACKEND-F: the fixed message hid every cause. A rejected provider
+    // NORTHWRIT-BACKEND-F: the fixed message hid every cause. A rejected provider
     // key must show up as provider_error / dependency_status on the event,
     // while the secret-bearing message stays out of the error, its cause and
     // anything console.error would render.

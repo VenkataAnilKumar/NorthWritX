@@ -55,7 +55,7 @@ export async function syncWorkflowCatalog(
       for (const asset of workflow.assets) {
         if (storageEnabled) {
           const storagePath =
-            `mike-workflows/${workflow.workflow_key}/` +
+            `northwrit-workflows/${workflow.workflow_key}/` +
             `${asset.content_hash}/${asset.filename}`;
           const bytes = await readFile(asset.temporary_path);
           await uploadFile(
@@ -81,7 +81,7 @@ export async function syncWorkflowCatalog(
       );
     }
 
-    const { error } = await db.rpc("replace_mike_workflows", {
+    const { error } = await db.rpc("replace_northwrit_workflows", {
       p_source_commit: document.source_commit,
       p_workflows: databaseWorkflows,
     });

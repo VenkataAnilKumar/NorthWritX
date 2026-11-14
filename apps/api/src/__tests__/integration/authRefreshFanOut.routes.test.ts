@@ -2,7 +2,7 @@
 // Real requireAuth and @supabase/ssr against a stand-in GoTrue that behaves
 // like GoTrue v2.189 on refresh: a token whose refresh is still running is
 // refused with 409 "Too many concurrent token refresh requests"
-// (MIKE-BACKEND-8D), a token that has been used is refused with 400
+// (NORTHWRIT-BACKEND-8D), a token that has been used is refused with 400
 // refresh_token_already_used, and some tokens make it fail the way an outage
 // or a GoTrue bug would. The outage and GoTrue-500 cases use a live access
 // token, so the failure comes from /user: on the refresh path auth-js retries

@@ -283,7 +283,7 @@ try {
   const storageDeadline = Date.now() + 30_000;
   let stored = [];
   while (Date.now() < storageDeadline) {
-    stored = existsSync(storageRoot) ? walk(storageRoot).filter((file) => !file.startsWith(path.join(storageRoot, "mike-workflows") + path.sep)) : [];
+    stored = existsSync(storageRoot) ? walk(storageRoot).filter((file) => !file.startsWith(path.join(storageRoot, "northwrit-workflows") + path.sep)) : [];
     if (stored.length > 0) break;
     await sleep(1_000);
   }
@@ -436,7 +436,7 @@ try {
     `returning user must land in the product, got ${page.url()}`);
   await page.goto(`${FRONTEND_URL}/projects`);
   await page.getByText(GUEST_PROJECT, { exact: false }).first().waitFor({ timeout: 20_000 });
-  assert(walk(storageRoot).some((file) => !file.startsWith(path.join(storageRoot, "mike-workflows") + path.sep)),
+  assert(walk(storageRoot).some((file) => !file.startsWith(path.join(storageRoot, "northwrit-workflows") + path.sep)),
     "the first run's upload must still be on disk after quit + relaunch");
   const relaunchLog = readFileSync(path.join(USER_DATA_DIR, "local", "logs", "postgres.log"), "utf8").slice(pgLog.length);
   assert(!/(FATAL|PANIC|database system was not properly shut down)/.test(relaunchLog),

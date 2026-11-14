@@ -521,9 +521,9 @@ begin
   perform 1 from public.organizations where id=old.org_id for update;
   if not found or not public.org_is_active(old.org_id) then return old; end if;
   if public.org_is_team(old.org_id) then
-    successor:=coalesce(nullif(current_setting('mike.departure_successor',true),'')::uuid,
+    successor:=coalesce(nullif(current_setting('northwrit.departure_successor',true),'')::uuid,
       public.org_default_departure_successor(old.org_id,array[old.user_id]));
-    actor:=coalesce(nullif(current_setting('mike.departure_actor',true),'')::uuid,successor);
+    actor:=coalesce(nullif(current_setting('northwrit.departure_actor',true),'')::uuid,successor);
     -- Sharing writes lock their parent. Lock roots before classifying them.
     perform id from public.projects where org_id=old.org_id order by id for update;
     perform id from public.workflows where org_id=old.org_id order by id for update;

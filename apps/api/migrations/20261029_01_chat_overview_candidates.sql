@@ -5,8 +5,8 @@
 -- order, until a page was full. That call is opaque to the planner and runs
 -- several lookups of its own, so a caller whose chats were older than other
 -- tenants' paid one verdict for every newer chat on the installation
--- (MIKE-BACKEND-F: statement_timeout, SQLSTATE 57014; in the browser
--- MIKE-FRONTEND-C), and a member listing a busy organization without a limit
+-- (NORTHWRIT-BACKEND-F: statement_timeout, SQLSTATE 57014; in the browser
+-- NORTHWRIT-FRONTEND-C), and a member listing a busy organization without a limit
 -- paid one for every chat in it.
 --
 -- This version evaluates the same ladder as chat_access_role,

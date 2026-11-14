@@ -8,7 +8,7 @@ const CHAT_ID = "chat-persistent-edit";
 const ASSISTANT_MESSAGE_ID = "assistant-persistent-edit";
 const STABLE_EDIT_ID = `${ASSISTANT_MESSAGE_ID}:edit-0`;
 const PERSISTED_EDIT_ID = "33333333-3333-4333-8333-333333333333";
-const ANCHOR_SETTINGS_KEY = "mike.wordEditAnchors.v1";
+const ANCHOR_SETTINGS_KEY = "northwrit.wordEditAnchors.v1";
 const ORIGINAL = "The Suplier shall deliver the goods.";
 const REPLACEMENT = "The Supplier shall deliver the goods.";
 const REDLINE = wordEdits(
@@ -115,7 +115,7 @@ test("rehydrates View from a hidden Word bookmark after the task pane reloads", 
   const bookmark = await applyPersistedEdit(addin, page);
 
   const beforeReload = await addin.wordDocument();
-  expect(bookmark.name).toMatch(/^_MikeEdit_[A-Za-z0-9_]+$/);
+  expect(bookmark.name).toMatch(/^_NorthWritEdit_[A-Za-z0-9_]+$/);
   expect(bookmark.name.length).toBeLessThanOrEqual(40);
   expect(bookmark.original).toBe(ORIGINAL);
   expect(bookmark.text).toBe(REPLACEMENT);
