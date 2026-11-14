@@ -226,10 +226,10 @@ describe("NorthWrit cookie transition", () => {
     createRequestSupabase({ headers: { cookie }, get: vi.fn() } as never, { append: vi.fn(), setHeader: vi.fn() } as never);
     expect(createServerClient.mock.calls[0]![2].cookieOptions).toMatchObject({ name: expected, httpOnly: true, path: "/" });
   });
-  it("clears old and new chunks and PKCE state together at sign-out", () => {
+  it("clears distinct session chunks and PKCE state together at sign-out", () => {
     process.env.NODE_ENV = "development";
     const append = vi.fn();
-    clearRequestAuthCookies({ headers: { cookie: "northwrit-session.0=a; northwrit-session-code-verifier=b; northwrit-session.0=c; unrelated=keep" }, get: vi.fn() } as never, { append, setHeader: vi.fn() } as never);
+    clearRequestAuthCookies({ headers: { cookie: "northwrit-session.0=a; northwrit-session-code-verifier=b; northwrit-session.1=c; unrelated=keep" }, get: vi.fn() } as never, { append, setHeader: vi.fn() } as never);
     expect(append).toHaveBeenCalledTimes(3);
     for (const [, value] of append.mock.calls) expect(value).toContain("Max-Age=0");
     expect(append.mock.calls.some(([, value]) => value.includes("unrelated"))).toBe(false);

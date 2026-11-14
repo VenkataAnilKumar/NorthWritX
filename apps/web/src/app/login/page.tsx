@@ -77,9 +77,6 @@ declare global {
         northwritDesktop?: {
             guestCredentials?: () => Promise<GuestCredentials | null>;
         };
-        northwritDesktop?: {
-            guestCredentials?: () => Promise<GuestCredentials | null>;
-        };
     }
 }
 
@@ -119,7 +116,7 @@ export default function LoginPage() {
 
     useEffect(() => {
         let cancelled = false;
-        (window.northwritDesktop ?? window.northwritDesktop)
+        (window.northwritDesktop)
             ?.guestCredentials?.()
             .then((creds) => {
                 if (!cancelled && creds?.email && creds?.password) {
