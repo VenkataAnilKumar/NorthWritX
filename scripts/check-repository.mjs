@@ -29,7 +29,11 @@ const documents = [
   "docs/07-implementation/NorthWrit-Migration-Verification.md",
   "README.md",
   "AGENTS.md",
-  "docs/upstream/original-source/NORTHWRIT.md",
+  "docs/06-technical/NorthWrit-Source-Provenance.md",
+  "Credit.md",
+  "CONTRIBUTING.md",
+  "SECURITY.md",
+  "docs/decisions/0004-retire-source-reference-archive.md",
   "docs/README.md",
   "docs/guides/developer.md",
   "docs/decisions/0001-repository-structure.md",
@@ -129,9 +133,6 @@ check("CI inventory and command paths", () => {
   assert(workflow.includes("package-lock.json"), "CI cache must use the root workspace lock");
   assert(workflow.includes("npm run check:repo"), "CI must run repository validation");
   const inventory = read("docs/07-implementation/NorthWrit-CI-Inventory.md");
-  for (const name of readdirSync(path.join(root, "docs/upstream/original-source/.github/workflows"))) {
-    if (/\.ya?ml$/.test(name)) assert(inventory.includes(`\`${name}\``), `imported workflow ${name} has no disposition`);
-  }
   for (const name of readdirSync(path.join(root, ".github/workflows"))) {
     if (/\.ya?ml$/.test(name)) assert(inventory.includes(name), `active workflow ${name} is not documented`);
   }
@@ -144,6 +145,12 @@ check("expanded migration paths", () => {
       assert(json("package-lock.json").packages[path.dirname(destination)], "retired lock must have a root workspace entry");
     } else assert(existsSync(path.join(root, destination)), `missing destination ${destination}`);
     assert(!existsSync(path.join(root, oldPath)), `old path remains ${oldPath}`);
+  }
+  for (const [oldPath, record] of Object.entries(mapping.retired_paths ?? {})) {
+    assert(!existsSync(path.join(root, oldPath)), `retired import path remains ${oldPath}`);
+    assert(!existsSync(path.join(root, record.last_path)), `retired archive remains ${record.last_path}`);
+    assert(/^[0-9a-f]{40}$/.test(record.retained_at_commit), "retired reference must have a Git recovery revision");
+    assert(record.reason, "retired reference must have a disposition");
   }
   for (const app of ["api", "web", "worker", "word-addin", "desktop"]) {
     assert(existsSync(path.join(root, "apps", app, "package.json")), `missing app ${app}`);

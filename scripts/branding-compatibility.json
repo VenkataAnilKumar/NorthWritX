@@ -133,7 +133,7 @@
     },
     {
       "path": "docs/03-market/Northwrit_Open-Source-References.md",
-      "sha256": "bc2b61cd45bb83920de200a210b6a03752a78137fa15bcb246ef159cfa61cbf4",
+      "sha256": "2c350515995dd33bd3e6539ba106f7c3a753dc8c86243c58652d24ae9bb0a078",
       "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
     },
     {
@@ -153,12 +153,12 @@
     },
     {
       "path": "docs/07-implementation/NorthWrit-Migration-Paths.json",
-      "sha256": "24f17b98eba2ae196bad0245651a4ea766f83cfd3cb59bd6a44a3b96e11f23d2",
+      "sha256": "1e9773390c4d7117aa64c21690c998620ecf10b63b3f723b9319f034dad5cff1",
       "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
     },
     {
       "path": "docs/07-implementation/NorthWrit-Migration-Verification.md",
-      "sha256": "52c40c7f46d810545ae93d47d86667089a1fc75eb3f535a6e041a5fc5f0555af",
+      "sha256": "53eb19d1504723a4a1e6d4e2473931597eeeb3f064ebf4660ca4953fda2660a5",
       "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
     },
     {

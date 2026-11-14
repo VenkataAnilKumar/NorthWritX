@@ -13,7 +13,7 @@ export function checkBranding(root, files, manifest) {
   const frozen = new Map(manifest.files.map(entry => [entry.path, entry]));
   let retained = 0;
   for (const relative of new Set(files)) {
-    if (!relative || relative.startsWith('docs/upstream/') || ['scripts/check-branding.mjs', 'scripts/branding-compatibility.json'].includes(relative)) continue;
+    if (!relative || ['scripts/check-branding.mjs', 'scripts/branding-compatibility.json'].includes(relative)) continue;
     const file = path.join(root, relative);
     if (!existsSync(file)) continue;
     const bytes = readFileSync(file);

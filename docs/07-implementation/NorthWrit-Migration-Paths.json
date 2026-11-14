@@ -23,14 +23,32 @@
     "apps/northwrit/AGENTS.md": "apps/AGENTS.md",
     "apps/northwrit/.gitattributes": ".gitattributes",
     "apps/northwrit/.gitignore": "infra/imported.gitignore",
-    "apps/northwrit/.github": "docs/upstream/original-source/.github",
-    "apps/northwrit/.gitleaks.toml": "docs/upstream/original-source/.gitleaks.toml",
-    "apps/northwrit/CLAUDE.md": "docs/upstream/original-source/CLAUDE.md",
-    "apps/northwrit/CONTRIBUTING.md": "docs/upstream/original-source/CONTRIBUTING.md",
-    "apps/northwrit/CREDITS.md": "docs/upstream/original-source/CREDITS.md",
-    "apps/northwrit/LICENSE": "docs/upstream/original-source/LICENSE",
-    "apps/northwrit/NORTHWRIT.md": "docs/upstream/original-source/NORTHWRIT.md",
-    "apps/northwrit/README.md": "docs/upstream/original-source/README.md",
-    "apps/northwrit/SECURITY.md": "docs/upstream/original-source/SECURITY.md"
+    "apps/northwrit/CONTRIBUTING.md": "CONTRIBUTING.md",
+    "apps/northwrit/CREDITS.md": "Credit.md",
+    "apps/northwrit/LICENSE": "LICENSE",
+    "apps/northwrit/NORTHWRIT.md": "docs/06-technical/NorthWrit-Source-Provenance.md",
+    "apps/northwrit/SECURITY.md": "SECURITY.md"
+  },
+  "retired_paths": {
+    "apps/northwrit/.github": {
+      "last_path": "docs/upstream/original-source/.github",
+      "retained_at_commit": "bca9d136480a4cca23c7a7d0fc53516d7233c814",
+      "reason": "Inactive reference retired after migration; see ADR 0004"
+    },
+    "apps/northwrit/.gitleaks.toml": {
+      "last_path": "docs/upstream/original-source/.gitleaks.toml",
+      "retained_at_commit": "bca9d136480a4cca23c7a7d0fc53516d7233c814",
+      "reason": "Inactive reference retired after migration; see ADR 0004"
+    },
+    "apps/northwrit/CLAUDE.md": {
+      "last_path": "docs/upstream/original-source/CLAUDE.md",
+      "retained_at_commit": "bca9d136480a4cca23c7a7d0fc53516d7233c814",
+      "reason": "Inactive reference retired after migration; see ADR 0004"
+    },
+    "apps/northwrit/README.md": {
+      "last_path": "docs/upstream/original-source/README.md",
+      "retained_at_commit": "bca9d136480a4cca23c7a7d0fc53516d7233c814",
+      "reason": "Inactive reference retired after migration; see ADR 0004"
+    }
   }
 }
