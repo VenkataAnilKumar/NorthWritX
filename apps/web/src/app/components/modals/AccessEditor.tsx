@@ -4,8 +4,8 @@ import { UserAvatar } from "@/app/components/ui/user-avatar";
 
 import { useState, type ReactNode } from "react";
 import { Check, ChevronDown, Info, Loader2 } from "lucide-react";
-import type { UserLookupResult } from "@/app/lib/mikeApi";
-import type { AccessAssignmentRole } from "@/app/lib/mikeApi";
+import type { UserLookupResult } from "@/app/lib/northwritApi";
+import type { AccessAssignmentRole } from "@/app/lib/northwritApi";
 import type { ContentVisibility } from "@/app/components/shared/types";
 import {
     PROJECT_ROLE_DESCRIPTIONS,

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Upload } from "lucide-react";
 import { WorkflowSlashCommandUI } from "@northwrit/ui";
 import type { Workflow } from "../../types";
-import { createWorkflow } from "../../api/mikeApi";
+import { createWorkflow } from "../../api/northwritApi";
 import { Modal } from "../primitives/Modal";
 import {
   ModalFieldLabel,

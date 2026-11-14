@@ -29,7 +29,7 @@ import {
   shareWorkflow,
   updateWorkflow,
   type ProjectPeople,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { can, roleFromLoaded } from "@/app/lib/permissions";
 import { reportFault,
   userFacingApiError,

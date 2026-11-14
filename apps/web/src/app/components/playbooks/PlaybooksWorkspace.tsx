@@ -93,7 +93,7 @@ import {
   type PlaybookConfiguration,
   type PlaybookReviewScope,
   type PlaybookRun,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 
 import { useWorkspace } from "@/app/contexts/WorkspaceContext";
 import { showToast } from "@/app/components/ui/toast";

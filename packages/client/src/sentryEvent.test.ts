@@ -10,7 +10,7 @@ import {
     normalizeVersion,
     releaseName,
     redactText,
-    MIKE_SENTRY_DSN,
+    NORTHWRIT_SENTRY_DSN,
     installKind,
     redactFilesystemPaths,
     repoRelativePath,
@@ -313,20 +313,20 @@ describe("query parameter forms", () => {
 });
 
 describe("releaseName", () => {
-    it("prefers an explicit release and otherwise builds mike@<version>+<sha12>", () => {
-        expect(releaseName("mike@1.4.0", "2.1.0", "abcdef1234567890")).toBe("mike@1.4.0");
-        expect(releaseName("  ", "2.1.0", "abcdef1234567890abcd")).toBe("mike@2.1.0+abcdef123456");
+    it("prefers an explicit release and otherwise builds northwrit@<version>+<sha12>", () => {
+        expect(releaseName("northwrit@1.4.0", "2.1.0", "abcdef1234567890")).toBe("northwrit@1.4.0");
+        expect(releaseName("  ", "2.1.0", "abcdef1234567890abcd")).toBe("northwrit@2.1.0+abcdef123456");
         expect(releaseName(undefined, "2.1.0-dev.57", "abcdef1234567890")).toBe(
-            "mike@2.1.0-dev.57+abcdef123456",
+            "northwrit@2.1.0-dev.57+abcdef123456",
         );
     });
 
     it("marks builds that did not come from the release workflow as 0.0.0", () => {
-        expect(releaseName(undefined, undefined, "abcdef1234567890")).toBe("mike@0.0.0+abcdef123456");
-        expect(releaseName(undefined, undefined, undefined)).toBe("mike@0.0.0");
-        expect(releaseName("", "", "")).toBe("mike@0.0.0");
+        expect(releaseName(undefined, undefined, "abcdef1234567890")).toBe("northwrit@0.0.0+abcdef123456");
+        expect(releaseName(undefined, undefined, undefined)).toBe("northwrit@0.0.0");
+        expect(releaseName("", "", "")).toBe("northwrit@0.0.0");
         expect(releaseName(undefined, "not a version", "abcdef1234567890")).toBe(
-            "mike@0.0.0+abcdef123456",
+            "northwrit@0.0.0+abcdef123456",
         );
     });
 
@@ -339,7 +339,7 @@ describe("releaseName", () => {
 
     it("agrees with the CommonJS twin the build configs use", () => {
         const cases: [string | undefined, string | undefined, string | undefined][] = [
-            ["mike@1.4.0", "2.1.0", "abcdef1234567890"],
+            ["northwrit@1.4.0", "2.1.0", "abcdef1234567890"],
             [undefined, "2.1.0", "abcdef1234567890"],
             [undefined, "v2.1.0-dev.3", "abcdef1234567890"],
             [undefined, "garbage", "abc"],
@@ -438,10 +438,10 @@ describe("automatic captures of an already-reported error", () => {
 
 describe("resolveDsn", () => {
     it("is off when disabled, uses an explicit DSN, else the built-in NorthWrit DSN", () => {
-        expect(resolveDsn({ disabled: "true", dsn: "https://x@y/1", fallback: MIKE_SENTRY_DSN.frontend })).toEqual({ dsn: "", source: "disabled" });
+        expect(resolveDsn({ disabled: "true", dsn: "https://x@y/1", fallback: NORTHWRIT_SENTRY_DSN.frontend })).toEqual({ dsn: "", source: "disabled" });
         expect(resolveDsn({ disabled: "TRUE ", fallback: "f" })).toEqual({ dsn: "", source: "disabled" });
         expect(resolveDsn({ disabled: "false", dsn: " https://x@y/1 ", fallback: "f" })).toEqual({ dsn: "https://x@y/1", source: "env" });
-        expect(resolveDsn({ dsn: "", fallback: MIKE_SENTRY_DSN.wordAddin })).toEqual({ dsn: MIKE_SENTRY_DSN.wordAddin, source: "default" });
+        expect(resolveDsn({ dsn: "", fallback: NORTHWRIT_SENTRY_DSN.wordAddin })).toEqual({ dsn: NORTHWRIT_SENTRY_DSN.wordAddin, source: "default" });
     });
 
     it("only an explicit 'official' marks the official deployment", () => {
@@ -459,7 +459,7 @@ describe("community install minimisation", () => {
         const out = createEventScrubber().scrubEvent({
             message: `Failed to fetch ${url}`,
             exception: { values: [{ value: `Failed to fetch ${url}` }] },
-            tags: { http_route: url, component: "mike-api" },
+            tags: { http_route: url, component: "northwrit-api" },
             extra: { url, path: url, error_stack: `fetch ${url}` },
             fingerprint: ["api-network", "GET", url],
         })!;
@@ -490,12 +490,12 @@ describe("community install minimisation", () => {
         expect(out.extra.documentId).toBe("d1");
     });
     it("relativises code locations and redacts filesystem paths in text", () => {
-        expect(repoRelativePath("/Users/jane/work/mike/backend/src/lib/x.ts")).toBe("backend/src/lib/x.ts");
+        expect(repoRelativePath("/Users/jane/work/northwrit/backend/src/lib/x.ts")).toBe("backend/src/lib/x.ts");
         expect(repoRelativePath("/app/frontend/src/app/page.tsx")).toBe("frontend/src/app/page.tsx");
-        expect(repoRelativePath("/srv/mike/node_modules/react/index.js")).toBe("node_modules/react/index.js");
+        expect(repoRelativePath("/srv/northwrit/node_modules/react/index.js")).toBe("node_modules/react/index.js");
         expect(repoRelativePath("https://firm.example/_next/static/chunks/main.js")).toBe("/_next/static/chunks/main.js");
         expect(repoRelativePath("/opt/other/tool.js")).toBe("[external]");
-        expect(redactFilesystemPaths("read /home/u/mike/backend/src/a.ts then /var/lib/x")).toBe("read backend/src/a.ts then [path]");
+        expect(redactFilesystemPaths("read /home/u/northwrit/backend/src/a.ts then /var/lib/x")).toBe("read backend/src/a.ts then [path]");
         expect(redactFilesystemPaths("C:\\Users\\bob\\file.txt failed")).toBe("[path] failed");
     });
 
@@ -505,7 +505,7 @@ describe("community install minimisation", () => {
             server_name: "janes-macbook.local",
             user: { id: "user-1" },
             breadcrumbs: [{ message: "user clicked" }],
-            tags: { component: "mike-api", server_name: "janes-macbook.local" },
+            tags: { component: "northwrit-api", server_name: "janes-macbook.local" },
             request: { url: "https://firm.example/api/projects/1", method: "POST", headers: { host: "firm.example" } },
             contexts: {
                 browser: { name: "Chrome", version: "128" },
@@ -513,13 +513,13 @@ describe("community install minimisation", () => {
                 culture: { timezone: "Europe/Berlin" },
             },
             exception: {
-                values: [{ value: "boom", stacktrace: { frames: [{ filename: "/Users/jane/mike/frontend/src/app/x.tsx", in_app: true }] } }],
+                values: [{ value: "boom", stacktrace: { frames: [{ filename: "/Users/jane/northwrit/frontend/src/app/x.tsx", in_app: true }] } }],
             },
         })!;
         expect(out.server_name).toBeUndefined();
         expect(out.user).toBeUndefined();
         expect(out.breadcrumbs).toBeUndefined();
-        expect(out.tags).toEqual({ component: "mike-api", capture_source: "exception" });
+        expect(out.tags).toEqual({ component: "northwrit-api", capture_source: "exception" });
         expect(out.request).toEqual({ method: "POST", url: "/api/projects/1" });
         expect(out.contexts).toEqual({ browser: { name: "Chrome", version: "128" } });
         expect(out.exception?.values?.[0]?.stacktrace?.frames?.[0]?.filename).toBe("frontend/src/app/x.tsx");
@@ -544,7 +544,7 @@ describe("next dev toolchain noise", () => {
 
     it("drops an unhandled dev-server compile error whose stack is all Next internals (M)", () => {
         const { scrubEvent } = createEventScrubber();
-        const next = "/Users/dev/mike/frontend/node_modules/next/dist/server";
+        const next = "/Users/dev/northwrit/frontend/node_modules/next/dist/server";
         const event: ScrubbableEvent = {
             tags: { ...devTags },
             exception: { values: [{
@@ -590,7 +590,7 @@ describe("next dev toolchain noise", () => {
         expect(scrubEvent(thrown)).not.toBeNull();
 
         // Logged through Next's console interceptor, but the nested Error
-        // was thrown in Mike's code: its stack keeps the event.
+        // was thrown in NorthWrit's code: its stack keeps the event.
         const nested = new Error("render failed");
         nested.stack = `Error: render failed\n    at ChatView (${origin}/_next/static/chunks/src_app_chat_page_tsx_9f8e7d._.js:12:5)`;
         const logged: ScrubbableEvent = {
@@ -615,7 +615,7 @@ describe("next dev toolchain noise", () => {
             ];
         };
         // A parenthesised location with trailing whitespace, and a bare one,
-        // both in Mike's code: the event is kept.
+        // both in NorthWrit's code: the event is kept.
         expect(scrubEvent(...loggedWithStack(
             `Error: x\n    at ChatView (${origin}/_next/static/chunks/src_app_page_tsx_1a._.js:12:5)  \t`,
         ))).not.toBeNull();

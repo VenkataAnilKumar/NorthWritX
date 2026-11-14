@@ -75,7 +75,7 @@ export type UserMessageOptions = DescribeErrorOptions;
  * A server or unclassifiable failure shown to the user is a fault worth an
  * event, under the same rules as the web app's notice layer: a 4xx, a
  * cancellation and a transport failure are not (the transport was already
- * reported under component mike-api), and an error the API client or
+ * reported under component northwrit-api), and an error the API client or
  * `reportWordFailure` already sent — or a wrapper around one, such as the
  * "outcome unknown" sentence a failed turn is rephrased into — is not sent
  * again. The server's own code and request id let the event be matched to

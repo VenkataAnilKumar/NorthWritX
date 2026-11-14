@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { EditCardsSectionUI, PillButtonUI } from "@northwrit/ui";
 import { RESPONSE_GLASS_SURFACE } from "./messageStyles";
-import { resolveDocumentEdit } from "@/app/lib/mikeApi";
+import { resolveDocumentEdit } from "@/app/lib/northwritApi";
 import type { EditAnnotation } from "../../shared/types";
 import { applyOptimisticResolution } from "../EditCard";
 

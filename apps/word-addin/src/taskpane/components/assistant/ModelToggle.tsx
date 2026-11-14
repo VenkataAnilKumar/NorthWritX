@@ -5,7 +5,7 @@ import {
   reasoningLevelsForModel,
   type ReasoningLevel,
 } from "@northwrit/ui";
-import { getOllamaModels, type ApiKeyStatus } from "../../api/mikeApi";
+import { getOllamaModels, type ApiKeyStatus } from "../../api/northwritApi";
 import {
   MODELS,
   allRouterModelOptions,

@@ -8,7 +8,7 @@ import {
   listProjectSummaries,
   type LibraryKind,
   type LibraryScope,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { useDocumentWorkspace } from "@/app/contexts/WorkspaceContext";
 import { notifyError } from "@/app/lib/userFacingError";
 import { useAssignLatest } from "@/app/hooks/useLatestRef";

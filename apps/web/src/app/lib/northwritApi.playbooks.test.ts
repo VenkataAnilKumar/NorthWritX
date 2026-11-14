@@ -26,7 +26,7 @@ import {
   reviewDocumentWithPlaybook,
   updatePlaybook,
   type PlaybookContent,
-} from "./mikeApi";
+} from "./northwritApi";
 
 const fetchMock = vi.fn();
 const id = "guide/one?view";

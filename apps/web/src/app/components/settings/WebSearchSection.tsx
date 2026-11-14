@@ -22,7 +22,7 @@ import {
   WEB_SEARCH_BACKENDS,
   type WebSearchBackend,
   type WebSearchSettings,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { notifyError } from "@/app/lib/userFacingError";
 
 const SEARCH_SERVICES: Record<

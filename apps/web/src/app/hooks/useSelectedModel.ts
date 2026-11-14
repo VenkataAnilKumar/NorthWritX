@@ -9,7 +9,7 @@ import {
     type RouterSelections,
 } from "@northwrit/client";
 import { isModelAvailable } from "../lib/modelAvailability";
-import type { ApiKeyState } from "../lib/mikeApi";
+import type { ApiKeyState } from "../lib/northwritApi";
 
 export interface SelectedModelSources {
     selectionKey?: string | null;

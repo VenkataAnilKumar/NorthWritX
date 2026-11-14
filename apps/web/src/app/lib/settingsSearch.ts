@@ -116,7 +116,7 @@ export const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
         tab: "Memory",
         title: "Memory file",
         description: "Read and edit what NorthWrit has remembered about you.",
-        keywords: ["edit memory", "memory notes", "what mike knows", "saved facts", "clear memory", "memory contents"],
+        keywords: ["edit memory", "memory notes", "what NorthWrit knows", "saved facts", "clear memory", "memory contents"],
         href: "/settings/memory#app-memory-file-heading",
     },
 

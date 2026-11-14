@@ -9,7 +9,7 @@ import {
     getDocument,
     renameLibraryDocument,
     renameProjectDocument,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { panelDocumentAtVersion } from "@/app/lib/panelDocumentAtVersion";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import { cn } from "@/app/lib/utils";

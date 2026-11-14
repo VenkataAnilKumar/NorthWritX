@@ -1,5 +1,5 @@
 // The product version lives in one place, /VERSION, and everything that names
-// a release derives from it: the publish workflow (mike@<version>+<sha12>
+// a release derives from it: the publish workflow (northwrit@<version>+<sha12>
 // releases and image tags) and the compose stack's default image tag, so a
 // fresh `docker compose pull` runs the images that match the checked-out
 // migrations. This keeps the copies in step. See docs/observability.md.
@@ -23,7 +23,7 @@ const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 function runIdentity(overrides: Record<string, string> = {}) {
     const workflow = parseYaml(read("docs/upstream/mike/.github/workflows/publish-images.yml"));
     const script = workflow.jobs.identity.steps.find((step: { id?: string }) => step.id === "identity").run;
-    const dir = mkdtempSync(path.join(tmpdir(), "mike-publish-identity-"));
+    const dir = mkdtempSync(path.join(tmpdir(), "northwrit-publish-identity-"));
     const output = path.join(dir, "output");
     try {
         const result = spawnSync("bash", ["-c", script], {
@@ -57,8 +57,8 @@ describe("product version", () => {
 
     it("is the default image tag for every published image in docker-compose.yml", () => {
         const compose = read("infra/docker-compose.yml");
-        const tags = [...compose.matchAll(/mike-(backend|frontend):\$\{MIKE_IMAGE_TAG:-([^}]+)\}/g)];
-        expect(tags.map((m) => m[1]).sort()).toEqual(["backend", "frontend"]);
+        const tags = [...compose.matchAll(/northwrit-(api|web):\$\{NORTHWRIT_IMAGE_TAG:-([^}]+)\}/g)];
+        expect(tags.map((m) => m[1]).sort()).toEqual(["api", "web"]);
         for (const [, image, tag] of tags) {
             expect(tag, `default tag of the ${image} image`).toBe(version);
         }
@@ -66,13 +66,13 @@ describe("product version", () => {
 
     it("is what the deployment docs tell operators to pin", () => {
         const deployment = read("docs/engineering/deployment.md");
-        expect(deployment).toContain(`MIKE_IMAGE_TAG=${version}`);
+        expect(deployment).toContain(`NORTHWRIT_IMAGE_TAG=${version}`);
     });
 
     it("preserves published image release identity when the sample env_file is applied", () => {
-        const imageEnv = { MIKE_VERSION: version, GIT_SHA: "0123456789abcdef" };
+        const imageEnv = { NORTHWRIT_VERSION: version, GIT_SHA: "0123456789abcdef" };
         const runtimeEnv = { ...imageEnv, ...parse(read("infra/.env.example")) };
-        expect(runtimeEnv.MIKE_VERSION).toBe(version);
+        expect(runtimeEnv.NORTHWRIT_VERSION).toBe(version);
         expect(runtimeEnv.GIT_SHA).toBe(imageEnv.GIT_SHA);
     });
 

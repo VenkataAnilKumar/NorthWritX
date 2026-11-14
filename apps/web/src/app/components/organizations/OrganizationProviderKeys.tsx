@@ -15,7 +15,7 @@ import {
 import { useWorkspace } from "@/app/contexts/WorkspaceContext";
 import { routerSelectionsFromLists } from "@/app/hooks/useModelRouterSelections";
 import {
-  MikeApiError,
+  NorthWritApiError,
   getOrgApiKeys,
   isMfaRequiredError,
   saveOrgApiKey,
@@ -24,7 +24,7 @@ import {
   type ApiKeyProvider,
   type ApiKeySettings,
   type OrgApiKeySettings,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import type { RouterSlug } from "@northwrit/client";
 import { PillButtonUI, ToggleSwitchUI } from "@northwrit/ui";
@@ -121,7 +121,7 @@ export function OrganizationProviderKeys({
       return true;
     } catch (error) {
       if (isMfaRequiredError(error)) throw error;
-      if (error instanceof MikeApiError && error.status === 400) throw error;
+      if (error instanceof NorthWritApiError && error.status === 400) throw error;
       return false;
     }
   }

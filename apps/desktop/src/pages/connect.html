@@ -166,22 +166,22 @@
     <script>
       const input = document.getElementById("url");
       const status = document.getElementById("status");
-      window.mikeDesktop.getServerUrl().then((url) => (input.value = url));
+      window.northwritDesktop.getServerUrl().then((url) => (input.value = url));
       const bootError = new URLSearchParams(location.search).get("error");
       if (bootError) status.textContent = bootError;
-      if (window.mikeDesktop.localAvailable) {
-        window.mikeDesktop.localAvailable().then((ok) => {
+      if (window.northwritDesktop.localAvailable) {
+        window.northwritDesktop.localAvailable().then((ok) => {
           if (ok) document.getElementById("local").style.display = "block";
         });
         document.getElementById("run-local").addEventListener("click", () => {
           status.textContent = "Starting local mode…";
-          window.mikeDesktop.startLocal();
+          window.northwritDesktop.startLocal();
         });
       }
       const connect = async (save) => {
         status.textContent = "Connecting…";
-        if (save) await window.mikeDesktop.setServerUrl(input.value);
-        await window.mikeDesktop.retry();
+        if (save) await window.northwritDesktop.setServerUrl(input.value);
+        await window.northwritDesktop.retry();
         // Still here after a beat → the server is still unreachable.
         setTimeout(() => (status.textContent = "Still unreachable."), 3500);
       };

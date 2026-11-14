@@ -42,7 +42,7 @@ const json = (value: unknown, status = 200) =>
 async function begin(store: ReturnType<typeof driveDb>, user = "u1") {
     const result = await startGoogleDriveOAuth(
         personalConnectorOwner(user),
-        "https://mike.test/api/callback",
+        "https://northwrit.test/api/callback",
         store.db,
     );
     return new URL(result.authorizationUrl).searchParams.get("state")!;
@@ -89,7 +89,7 @@ describe("Google Drive OAuth lifecycle", () => {
             const body = init?.body as URLSearchParams;
             expect(body.get("code_verifier")).toBe(config.codeVerifier);
             expect(body.get("redirect_uri")).toBe(
-                "https://mike.test/api/callback",
+                "https://northwrit.test/api/callback",
             );
             expect(body.get("client_secret")).toBe("test-secret");
             return json(tokens);
@@ -127,7 +127,7 @@ describe("Google Drive OAuth lifecycle", () => {
         const firm = { userId: "u1", orgId: "org-1" };
         const { authorizationUrl } = await startGoogleDriveOAuth(
             firm,
-            "https://mike.test/api/callback",
+            "https://northwrit.test/api/callback",
             store.db,
         );
         expect(store.states[0]).toMatchObject({ user_id: "u1", org_id: "org-1" });

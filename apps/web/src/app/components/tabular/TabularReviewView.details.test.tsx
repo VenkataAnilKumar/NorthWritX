@@ -5,7 +5,7 @@ import {
     getTabularReview,
     streamTabularGeneration,
     updateTabularReview,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type { TabularReview } from "@/app/components/shared/types";
 import { TRView } from "./TabularReviewView";
 import { ToastViewportUI } from "@northwrit/ui";
@@ -29,8 +29,8 @@ vi.mock("next/navigation", () => ({
     useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
     useSearchParams: () => new URLSearchParams(),
 }));
-vi.mock("@/app/lib/mikeApi", () => ({
-    MikeApiError: class MikeApiError extends Error {},
+vi.mock("@/app/lib/northwritApi", () => ({
+    NorthWritApiError: class NorthWritApiError extends Error {},
     clearTabularCells: vi.fn(),
     deleteTabularReview: vi.fn(),
     getTabularReview: vi.fn(),

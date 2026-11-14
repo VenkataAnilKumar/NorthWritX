@@ -5,7 +5,7 @@ import type { Db } from "../supabase";
 // What belongs to a team organization is shared inside it only. A chat or
 // review started on its own in an organization's workspace can be given to
 // other members of that organization, and to nobody else; a personal one can
-// still be given to any Mike user.
+// still be given to any NorthWrit user.
 
 type Row = Record<string, unknown>;
 

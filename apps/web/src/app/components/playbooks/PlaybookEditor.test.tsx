@@ -8,7 +8,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import type { PlaybookContent, PlaybookRule } from "@/app/lib/mikeApi";
+import type { PlaybookContent, PlaybookRule } from "@/app/lib/northwritApi";
 import { PlaybookEditor } from "./PlaybookEditor";
 
 const rule = (id: string): PlaybookRule => ({
@@ -463,7 +463,7 @@ describe("playbook rules sidebar", () => {
     await userEvent.keyboard("{Escape}");
     rerender(<Harness changed={changed} />);
     const dataTransfer = transfer();
-    dataTransfer.setData("application/x-mike-playbook-rule", "Alpha");
+    dataTransfer.setData("application/x-northwrit-playbook-rule", "Alpha");
     fireEvent.drop(screen.getByRole("region", { name: "Topics and rules" }), {
       dataTransfer,
     });

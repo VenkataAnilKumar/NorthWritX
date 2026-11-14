@@ -7,7 +7,7 @@ const { createChat, listChats } = vi.hoisted(() => ({
     listChats: vi.fn(),
 }));
 
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
     createChat: (...args: unknown[]) => createChat(...args),
     listChats: (...args: unknown[]) => listChats(...args),
     renameChat: vi.fn(async () => undefined),

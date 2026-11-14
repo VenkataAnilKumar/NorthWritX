@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+
+# Temporary environment aliases for existing installations; NorthWrit values win.
+while IFS= read -r _northwrit_legacy_name; do
+  [[ $_northwrit_legacy_name == MIKE_* ]] || continue
+  _northwrit_name="NORTHWRIT_${_northwrit_legacy_name#MIKE_}"
+  if [[ ! -v $_northwrit_name ]]; then
+    printf -v "$_northwrit_name" '%s' "${!_northwrit_legacy_name}"
+    export "$_northwrit_name"
+  fi
+done < <(compgen -e)
+unset _northwrit_legacy_name _northwrit_name
 # Fetch the native service binaries the self-contained local stack runs:
 #   Postgres 17 (zonky embedded-postgres build, via npm — same artifact the
 #   packaged app bundles), PostgREST, and GoTrue (supabase/auth) — all pinned
@@ -12,11 +23,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# MIKE_LOCAL_FETCH_ONLY=postgres fetches just the Postgres build. That is all
+# NORTHWRIT_LOCAL_FETCH_ONLY=postgres fetches just the Postgres build. That is all
 # `npm test` needs (src/local/upgrade.test.js boots a throwaway cluster from
 # it), and it spares CI's unit job the Go toolchain and the GoTrue source
 # build that only the packaged app requires.
-ONLY="${MIKE_LOCAL_FETCH_ONLY:-}"
+ONLY="${NORTHWRIT_LOCAL_FETCH_ONLY:-}"
 
 # Pins. PG tracks supabase/postgres:17.x from docker-compose.yml (zonky has no
 # 17.6 darwin build; any 17.x is wire- and dump-compatible). The other two
@@ -60,7 +71,7 @@ else
 fi
 
 if [ "$ONLY" = "postgres" ]; then
-  echo "==> Done (MIKE_LOCAL_FETCH_ONLY=postgres):"
+  echo "==> Done (NORTHWRIT_LOCAL_FETCH_ONLY=postgres):"
   "$DEST/pg/bin/postgres" --version
   exit 0
 fi

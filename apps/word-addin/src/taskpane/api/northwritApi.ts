@@ -2,14 +2,14 @@
 /**
  * Configured API barrel for the Word add-in — the single place the typed client
  * is wired to the add-in's backend-managed cookie session. Mirrors
- * frontend/src/app/lib/mikeApi.ts, with auth state synchronized by
+ * frontend/src/app/lib/northwritApi.ts, with auth state synchronized by
  * ../auth/session.
  *
  * Components import API functions FROM THIS MODULE (not from the base client
  * directly) so that importing any of them runs the side-effecting
- * configureMikeApiClient() below before the first request leaves.
+ * configureNorthWritApiClient() below before the first request leaves.
  */
-import { configureMikeApiClient, responseError } from "./client";
+import { configureNorthWritApiClient, responseError } from "./client";
 import {
   notifySessionCheckFailed,
   notifySessionExpired,
@@ -86,7 +86,7 @@ const fetchWithRefresh = createRefreshingFetch({
   onUnreachable: () => notifySessionCheckFailed(recheckSession),
 });
 
-configureMikeApiClient({
+configureNorthWritApiClient({
   baseUrl: BASE_URL,
   getAuthHeaders,
   fetchImpl: fetchWithRefresh,

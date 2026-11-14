@@ -7,7 +7,7 @@ import { authInputUIClassName, InputUI, PillButtonUI } from "@northwrit/ui";
 import { FullScreenLoader } from "@/app/components/shared/FullScreenLoader";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { useUserProfile } from "@/app/contexts/UserProfileContext";
-import { updateUserProfile } from "@/app/lib/mikeApi";
+import { updateUserProfile } from "@/app/lib/northwritApi";
 import { FieldLabel } from "@/app/components/ui/form-field";
 import { describeError } from "@/app/lib/userFacingError";
 

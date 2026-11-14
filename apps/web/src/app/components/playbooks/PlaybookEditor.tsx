@@ -54,12 +54,12 @@ import {
 import { setRowDragPreview } from "@/app/lib/rowDragPreview";
 import { movePlaybookRule, type RuleDropTarget } from "./playbookRuleMoves";
 import { createPlaybookRule } from "./playbookRules";
-import type { PlaybookContent, PlaybookRule } from "@/app/lib/mikeApi";
+import type { PlaybookContent, PlaybookRule } from "@/app/lib/northwritApi";
 
 const RULE_BUTTON_CLASS =
   "grid w-full min-w-0 cursor-pointer grid-cols-[12px_minmax(0,1fr)] items-center gap-2 rounded-lg py-1.5 text-left text-xs transition-colors";
 
-const RULE_DRAG_TYPE = "application/x-mike-playbook-rule";
+const RULE_DRAG_TYPE = "application/x-northwrit-playbook-rule";
 type ContextTarget = { topicId: string | null; ruleId?: string };
 
 function ruleDisplayName(rule: PlaybookRule) {

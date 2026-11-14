@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthApiError, login, signup } from "@/app/lib/authApi";
-import { completeUserOnboarding, getUserProfile } from "@/app/lib/mikeApi";
+import { completeUserOnboarding, getUserProfile } from "@/app/lib/northwritApi";
 import {
     InputUI,
     PillButtonUI,
@@ -77,6 +77,9 @@ declare global {
         mikeDesktop?: {
             guestCredentials?: () => Promise<GuestCredentials | null>;
         };
+        northwritDesktop?: {
+            guestCredentials?: () => Promise<GuestCredentials | null>;
+        };
     }
 }
 
@@ -116,7 +119,7 @@ export default function LoginPage() {
 
     useEffect(() => {
         let cancelled = false;
-        window.mikeDesktop
+        (window.northwritDesktop ?? window.mikeDesktop)
             ?.guestCredentials?.()
             .then((creds) => {
                 if (!cancelled && creds?.email && creds?.password) {

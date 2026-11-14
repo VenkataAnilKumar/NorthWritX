@@ -14,6 +14,7 @@ const INDEX_TYPES = [
 ];
 const ACCEPT = [...IMAGE_TYPES, ...INDEX_TYPES].join(', ');
 const IMAGES = ['backend', 'frontend'];
+const IMAGE_NAMES = { backend: 'northwrit-api', frontend: 'northwrit-web' };
 const hash = bytes => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
 
 export class Registry {
@@ -139,7 +140,7 @@ async function main() {
   if (!/^[a-z0-9][a-z0-9-]*$/.test(owner ?? '') ||
       !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version ?? '') ||
       !/^[a-f0-9]{40}$/.test(sha ?? '') || !actor || !password) throw new Error('Missing or invalid publication identity/credentials');
-  const registries = Object.fromEntries(IMAGES.map(image => [image, new Registry(`${owner}/mike-${image}`, { actor, password })]));
+  const registries = Object.fromEntries(IMAGES.map(image => [image, new Registry(`${owner}/${IMAGE_NAMES[image]}`, { actor, password })]));
   const identity = { version, sha };
   const command = process.argv[2];
   if (command === 'prepare') {

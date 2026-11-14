@@ -14,7 +14,7 @@ import {
 import { SettingsPersonalisationFields } from "@/app/components/settings/SettingsPersonalisationFields";
 import { SettingsRow } from "@/app/components/settings/SettingsRow";
 import { useUserProfile } from "@/app/contexts/UserProfileContext";
-import type { PersonalisationDetails } from "@/app/lib/mikeApi";
+import type { PersonalisationDetails } from "@/app/lib/northwritApi";
 
 function fieldStatus(
   field: PersonalisationField,

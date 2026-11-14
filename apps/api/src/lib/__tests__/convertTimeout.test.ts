@@ -16,7 +16,7 @@ let directory: string;
 let officeFileToPdf: typeof import("../convert.js").officeFileToPdf;
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), "mike-convert-test-"));
+  directory = await mkdtemp(join(tmpdir(), "northwrit-convert-test-"));
   // Stand in for a soffice process that never exits.
   const binary = join(directory, "soffice");
   // Replace the shell with the sleeper so SIGKILL targets the process holding

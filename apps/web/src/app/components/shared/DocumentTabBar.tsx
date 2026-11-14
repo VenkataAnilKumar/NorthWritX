@@ -62,7 +62,7 @@ export function DocumentTabBar({
     addLabel = "Add",
     onReorder,
 }: Props) {
-    const dragType = `application/mike-${idPrefix}-tab`;
+    const dragType = `application/northwrit-${idPrefix}-tab`;
     const listRef = useRef<HTMLDivElement>(null);
     const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const draggedIdRef = useRef<string | null>(null);

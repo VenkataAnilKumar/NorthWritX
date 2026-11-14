@@ -1,8 +1,8 @@
 "use client";
 
 import { useOrganizationLogo } from "@/app/hooks/useOrganizationLogo";
-import type { Org } from "@/app/lib/mikeApi";
-import { MikeIcon } from "@northwrit/ui";
+import type { Org } from "@/app/lib/northwritApi";
+import { NorthWritIcon } from "@northwrit/ui";
 
 /**
  * The mark at the top of the sidebar: the active organization's own logo
@@ -21,7 +21,7 @@ export function SidebarLogo({
     size?: number;
 }) {
     const logo = useOrganizationLogo(organization);
-    if (logo === null) return <MikeIcon size={size} />;
+    if (logo === null) return <NorthWritIcon size={size} />;
     const box = { width: size, height: size };
     if (logo === undefined)
         return (

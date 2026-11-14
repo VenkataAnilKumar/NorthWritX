@@ -1,3 +1,5 @@
+> Historical imported upstream evidence. This record is not a NorthWrit acceptance result.
+
 # Sentry open-issue review — 2026-09-23 UTC
 
 Snapshot: `mike-xp`, `is:unresolved`, 90-day window, all projects, limit 100.

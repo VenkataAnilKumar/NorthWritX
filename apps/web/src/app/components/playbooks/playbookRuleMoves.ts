@@ -1,4 +1,4 @@
-import type { PlaybookContent } from "@/app/lib/mikeApi";
+import type { PlaybookContent } from "@/app/lib/northwritApi";
 
 export type RuleDropTarget = {
   topicId: string | null;

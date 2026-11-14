@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import MikeLayout from "./layout";
+import NorthWritLayout from "./layout";
 
 const navigation = vi.hoisted(() => ({
     pathname: "/assistant/chat/chat-1",
@@ -45,9 +45,9 @@ beforeEach(() => {
 describe("mobile page header", () => {
     it("floats transparently over chat pages", () => {
         render(
-            <MikeLayout>
+            <NorthWritLayout>
                 <div>Chat</div>
-            </MikeLayout>,
+            </NorthWritLayout>,
         );
 
         const header = document.querySelector('[data-slot="mobile-header"]');
@@ -62,9 +62,9 @@ describe("mobile page header", () => {
     it("floats transparently over project chat workspaces", () => {
         navigation.pathname = "/projects/project-1/assistant/chat/chat-1";
         render(
-            <MikeLayout>
+            <NorthWritLayout>
                 <div>Project chat</div>
-            </MikeLayout>,
+            </NorthWritLayout>,
         );
 
         const header = document.querySelector('[data-slot="mobile-header"]');
@@ -78,9 +78,9 @@ describe("mobile page header", () => {
 
     it("uses the header-button styling for the sidebar toggle", () => {
         render(
-            <MikeLayout>
+            <NorthWritLayout>
                 <div>Page</div>
-            </MikeLayout>,
+            </NorthWritLayout>,
         );
 
         const toggle = screen.getByRole("button", { name: "Open sidebar" });
@@ -94,9 +94,9 @@ describe("mobile page header", () => {
     it("keeps the mobile header in normal flow on non-chat pages", () => {
         navigation.pathname = "/projects";
         render(
-            <MikeLayout>
+            <NorthWritLayout>
                 <div>Projects</div>
-            </MikeLayout>,
+            </NorthWritLayout>,
         );
 
         const header = document.querySelector('[data-slot="mobile-header"]');
@@ -119,9 +119,9 @@ describe("desktop sidebar persistence", () => {
         localStorage.setItem("sidebarOpen", "false");
 
         render(
-            <MikeLayout>
+            <NorthWritLayout>
                 <div>Page</div>
-            </MikeLayout>,
+            </NorthWritLayout>,
         );
 
         expect(sidebarState.isOpen).toBe(true);
@@ -131,17 +131,17 @@ describe("desktop sidebar persistence", () => {
     it("collapses on the first toggle click after a remount", async () => {
         localStorage.setItem("sidebarOpen", "false");
         const first = render(
-            <MikeLayout>
+            <NorthWritLayout>
                 <div>Page</div>
-            </MikeLayout>,
+            </NorthWritLayout>,
         );
         first.unmount();
 
         // A reload re-reads the key written by the previous session.
         render(
-            <MikeLayout>
+            <NorthWritLayout>
                 <div>Page</div>
-            </MikeLayout>,
+            </NorthWritLayout>,
         );
         expect(sidebarState.isOpen).toBe(true);
 

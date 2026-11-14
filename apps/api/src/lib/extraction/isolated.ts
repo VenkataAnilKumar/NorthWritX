@@ -83,7 +83,7 @@ function reference(p: Parser, active: boolean): void {
 async function startParser(): Promise<Parser> {
   const entry = path.join(__dirname, __filename.endsWith(".ts") ? "process.ts" : "process.js");
   const { command, args } = extractionCommand(entry);
-  const scratch = await mkdtemp(path.join(tmpdir(), "mike-extraction-"));
+  const scratch = await mkdtemp(path.join(tmpdir(), "northwrit-extraction-"));
   // No application credentials or inherited NODE_OPTIONS in the parser.
   const env: NodeJS.ProcessEnv = {};
   for (const name of ["PATH", "SystemRoot", "HOME", "LANG", "SOFFICE_BINARY_PATH", "LIBREOFFICE_BINARY_PATH", "LIBRE_OFFICE_EXE"]) {

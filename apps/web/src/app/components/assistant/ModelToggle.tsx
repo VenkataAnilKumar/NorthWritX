@@ -17,7 +17,7 @@ import {
   type NoModelsReason,
   type RouterSelections,
 } from "@northwrit/client";
-import type { ApiKeyState } from "@/app/lib/mikeApi";
+import type { ApiKeyState } from "@/app/lib/northwritApi";
 import {
   PERSONAL_WORKSPACE,
   useWorkspace,

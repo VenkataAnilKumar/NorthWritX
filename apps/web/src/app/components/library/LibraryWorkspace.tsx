@@ -49,7 +49,7 @@ import {
     uploadLibraryDocuments,
     type LibraryKind,
     type LibraryScope,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { useWorkspaceParam } from "@/app/contexts/WorkspaceContext";
 import type { Document } from "@/app/components/shared/types";
 import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";

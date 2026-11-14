@@ -93,7 +93,7 @@ test('out-of-scope projects retain records but schedule no operations', () => {
   assert.deepEqual(p.containers, []);
   assert.deepEqual(p.state, old);
 });
-test('anonymous orphans get an observation grace period and respect MIKE_GC_ONLY', () => {
+test('anonymous orphans get an observation grace period and respect NORTHWRIT_GC_ONLY', () => {
   const v = volume('anon', { 'com.docker.compose.project': null, 'com.docker.volume.anonymous': '' });
   const first = plan({ cs: [], vs: [v], only: '' });
   assert.deepEqual(first.remove, []);

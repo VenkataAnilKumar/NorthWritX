@@ -6,15 +6,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DocTable, type DocTableFolder } from "./DocTable";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 import type { Document } from "@/app/components/shared/types";
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 
 const api = vi.hoisted(() => ({
     uploadDocumentVersion: vi.fn(),
     listDocumentVersions: vi.fn(),
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     uploadDocumentVersion: api.uploadDocumentVersion,
     listDocumentVersions: api.listDocumentVersions,
 }));
@@ -84,7 +84,7 @@ function dropFilesOnRow(docId: string, files: File[]) {
 }
 
 const serverDown = () =>
-    new MikeApiError({ message: "API error: 503", status: 503 });
+    new NorthWritApiError({ message: "API error: 503", status: 503 });
 
 /**
  * Each version upload is a new row on the server, so a Retry that re-sends

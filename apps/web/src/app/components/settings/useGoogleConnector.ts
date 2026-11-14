@@ -18,7 +18,7 @@ import {
   startGoogleWorkspaceOAuth,
   updateGoogleDriveSettings,
   updateGoogleWorkspaceSettings,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { reportFault, type Operation } from "@/app/lib/userFacingError";
 
 export type GoogleConnectorProvider = "google-drive" | GoogleWorkspaceProvider;

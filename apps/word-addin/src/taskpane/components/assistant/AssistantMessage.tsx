@@ -100,7 +100,7 @@ function persistedEditStatus(
   if (edit.applyStatus === "applied") return "restoring";
   if (edit.applyStatus === "unmanaged") return "unmanaged";
   // Checked before the generic "error" fallback below: a reopened pane must
-  // not turn "Mike couldn't confirm this" into "couldn't apply this".
+  // not turn "NorthWrit couldn't confirm this" into "couldn't apply this".
   if (edit.errorCode === "unverified") return "unverified";
   if (edit.errorCode === "ambiguous") return "ambiguous";
   if (edit.errorCode === "unsearchable") return "unsearchable";
@@ -127,7 +127,7 @@ function AssistantMessageImpl({
   const handleCitationClick = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const target = event.target as HTMLElement;
-      const citationControl = target.closest?.("[data-mike-citation]");
+      const citationControl = target.closest?.("[data-northwrit-citation]");
       const href =
         citationControl?.getAttribute("data-citation-href") ??
         citationControl?.getAttribute("href");

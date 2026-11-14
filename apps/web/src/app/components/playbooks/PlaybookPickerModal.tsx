@@ -11,7 +11,7 @@ import {
 } from "@/app/components/ui/liquid-surface";
 import { useDocumentWorkspace } from "@/app/contexts/WorkspaceContext";
 import { useWorkspaceIdentity } from "@/app/hooks/useWorkspaceIdentity";
-import { listPlaybooks, type Playbook } from "@/app/lib/mikeApi";
+import { listPlaybooks, type Playbook } from "@/app/lib/northwritApi";
 import { LIQUID_GLASS_SUBTLE_CLASS } from "@northwrit/ui";
 
 type Props = {

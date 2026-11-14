@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+
+# Temporary environment aliases for existing installations; NorthWrit values win.
+while IFS= read -r _northwrit_legacy_name; do
+  [[ $_northwrit_legacy_name == MIKE_* ]] || continue
+  _northwrit_name="NORTHWRIT_${_northwrit_legacy_name#MIKE_}"
+  if [[ ! -v $_northwrit_name ]]; then
+    printf -v "$_northwrit_name" '%s' "${!_northwrit_legacy_name}"
+    export "$_northwrit_name"
+  fi
+done < <(compgen -e)
+unset _northwrit_legacy_name _northwrit_name
 # Boot the full local e2e stack and run the Playwright suite.
 #
 # Local-machine mirror of .github/workflows/e2e.yml: starts the Supabase CLI
@@ -36,8 +47,8 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 # Sweep stacks left behind by earlier runs, worktrees, and reviews before
-# adding another one (see scripts/stack.sh; MIKE_GC=0 skips it).
-if [ "${MIKE_GC:-1}" != 0 ]; then
+# adding another one (see scripts/stack.sh; NORTHWRIT_GC=0 skips it).
+if [ "${NORTHWRIT_GC:-1}" != 0 ]; then
     bash "$ROOT/scripts/application/stack.sh" gc
 fi
 

@@ -16,7 +16,7 @@ import { WarningPopup } from "@/app/components/popups/WarningPopup";
 import { SettingsHeading } from "@/app/components/settings/SettingsHeading";
 import { SettingsDescription } from "@/app/components/settings/SettingsText";
 import { useUserProfile } from "@/app/contexts/UserProfileContext";
-import { isMfaRequiredError, type ApiKeyProvider } from "@/app/lib/mikeApi";
+import { isMfaRequiredError, type ApiKeyProvider } from "@/app/lib/northwritApi";
 import { reportFault } from "@/app/lib/userFacingError";
 
 /**

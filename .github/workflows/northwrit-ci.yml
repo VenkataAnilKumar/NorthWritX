@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: 22
       - run: npm run check:repo
+      - run: npm run check:branding
+      - run: node --test scripts/check-branding.test.mjs
       - name: Verify workspace audit boundaries
         run: node --test scripts/application/audit-workspace-lock.test.mjs
       - name: Check changed-commit whitespace

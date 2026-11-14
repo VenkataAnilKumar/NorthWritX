@@ -34,11 +34,11 @@ describe("same-origin API gateway", () => {
         });
         upstreamHeaders.append(
             "set-cookie",
-            "__Host-mike-session=one; Path=/; Secure; HttpOnly",
+            "__Host-northwrit-session=one; Path=/; Secure; HttpOnly",
         );
         upstreamHeaders.append(
             "set-cookie",
-            "__Host-mike-session.1=two; Path=/; Secure; HttpOnly",
+            "__Host-northwrit-session.1=two; Path=/; Secure; HttpOnly",
         );
         fetchMock.mockResolvedValue(
             new Response(JSON.stringify({ ok: true }), {
@@ -50,7 +50,7 @@ describe("same-origin API gateway", () => {
             "https://app.example.test/api/projects/a%2Fb?view=full",
             {
                 headers: {
-                    cookie: "__Host-mike-session=incoming",
+                    cookie: "__Host-northwrit-session=incoming",
                     origin: "https://app.example.test",
                 },
             },
@@ -67,7 +67,7 @@ describe("same-origin API gateway", () => {
         );
         const forwardedHeaders = new Headers(init.headers);
         expect(forwardedHeaders.get("cookie")).toBe(
-            "__Host-mike-session=incoming",
+            "__Host-northwrit-session=incoming",
         );
         expect(forwardedHeaders.get("origin")).toBe("https://app.example.test");
         expect(forwardedHeaders.get("host")).toBeNull();
@@ -75,10 +75,10 @@ describe("same-origin API gateway", () => {
             "app.example.test",
         );
         expect(response.headers.get("set-cookie")).toContain(
-            "__Host-mike-session=one",
+            "__Host-northwrit-session=one",
         );
         expect(response.headers.get("set-cookie")).toContain(
-            "__Host-mike-session.1=two",
+            "__Host-northwrit-session.1=two",
         );
     });
 

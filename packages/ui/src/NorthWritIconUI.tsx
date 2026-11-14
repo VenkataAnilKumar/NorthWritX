@@ -74,10 +74,10 @@ const TINT_PALETTES = {
     indigo: tintPalette(["#e0e7ff", "#c7d2fe", "#a5b4fc", "#818cf8", "#6366f1", "#4f46e5"]),
 } satisfies Record<string, IconPalette>;
 
-export type MikeIconTint = keyof typeof TINT_PALETTES;
+export type NorthWritIconTint = keyof typeof TINT_PALETTES;
 
 /** The tints in the order a list of marks should take them. */
-export const MIKE_ICON_TINTS = Object.keys(TINT_PALETTES) as MikeIconTint[];
+export const NORTHWRIT_ICON_TINTS = Object.keys(TINT_PALETTES) as NorthWritIconTint[];
 
 // The dark mark, inverted for dark surfaces: white glass blades, with the
 // depth cues (inner shading, hairline border) darkened instead of lightened
@@ -176,11 +176,11 @@ function Blades({ ids, inverse }: { ids: Record<string, string>; inverse: boolea
     );
 }
 
-export function MikeIcon({
+export function NorthWritIcon({
     spin = false,
     done = false,
     error = false,
-    mike = false,
+    northwrit = false,
     tint,
     size = 24,
     style,
@@ -188,13 +188,13 @@ export function MikeIcon({
     spin?: boolean;
     done?: boolean;
     error?: boolean;
-    mike?: boolean;
+    northwrit?: boolean;
     /** A colour for the mark; the status palettes take precedence. */
-    tint?: MikeIconTint;
+    tint?: NorthWritIconTint;
     size?: number;
     style?: React.CSSProperties;
 }) {
-    void mike;
+    void northwrit;
     const id = useId().replace(/:/g, "");
     const darkTheme = useDarkTheme();
     const palette = error

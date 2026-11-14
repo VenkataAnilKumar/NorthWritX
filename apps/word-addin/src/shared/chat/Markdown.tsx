@@ -40,7 +40,7 @@ const MARKDOWN_COMPONENTS: Components = {
       if (numberedCitation) {
         return (
           <CitationPillUI
-            data-mike-citation=""
+            data-northwrit-citation=""
             data-citation-href={href}
             title="Show in the document"
             aria-label={`Citation ${numberedCitation[1]}`}
@@ -53,7 +53,7 @@ const MARKDOWN_COMPONENTS: Components = {
       return (
         <a
           href={href}
-          data-mike-citation=""
+          data-northwrit-citation=""
           title="Show in the document"
           className="mx-0.5 inline-flex max-w-full cursor-pointer items-baseline rounded-md border border-gray-200 bg-gray-50 px-1.5 py-0.5 align-baseline font-sans text-[0.85em] not-italic text-gray-600 no-underline transition-colors hover:border-gray-300 hover:bg-gray-100 hover:text-gray-900"
         >

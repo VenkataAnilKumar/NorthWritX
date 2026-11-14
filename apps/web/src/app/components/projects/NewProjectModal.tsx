@@ -11,7 +11,7 @@ import {
     setProjectMemoryEnabled,
     updateProject,
     uploadProjectDocuments,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { FileDirectory } from "../shared/FileDirectory";
 import type { ContentVisibility, Document, Project } from "../shared/types";
 import { useAuth } from "@/app/contexts/AuthContext";

@@ -27,7 +27,7 @@ import {
     TABLE_SURFACE_CLASS,
 } from "@/app/components/ui/liquid-surface";
 
-export const CLOSE_ROW_ACTIONS_EVENT = "mike:close-row-actions";
+export const CLOSE_ROW_ACTIONS_EVENT = "northwrit:close-row-actions";
 
 export function closeRowActionMenus() {
     document.dispatchEvent(new Event(CLOSE_ROW_ACTIONS_EVENT));

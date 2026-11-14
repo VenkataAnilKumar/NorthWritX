@@ -305,7 +305,7 @@ export type McpToolEvent = {
 export type WebSource = { url: string; title?: string };
 
 export type WebToolErrorCode =
-  /** Mike's search has no key for the chosen search service. */
+  /** NorthWrit's search has no key for the chosen search service. */
   | "not_configured"
   /** The search API refused the key: invalid, or its plan does not cover the request. */
   | "rejected"
@@ -317,7 +317,7 @@ export type WebToolErrorCode =
 
 /**
  * Web activity in a turn. A search done by the model provider and one done
- * by Mike's own search look the same.
+ * by NorthWrit's own search look the same.
  */
 export type WebToolEvent =
   | {
@@ -555,7 +555,7 @@ export interface WordDocumentEdit {
 
 export type WordEditResolutionStatus = "accepted" | "rejected";
 
-/** Explicit Google service connections are independent of Mike sign-in. */
+/** Explicit Google service connections are independent of NorthWrit sign-in. */
 export type GoogleWorkspaceProvider = 'gmail' | 'google-calendar';
 export interface GoogleDriveStatus {
     configured: boolean;

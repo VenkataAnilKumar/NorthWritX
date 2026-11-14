@@ -12,7 +12,7 @@ import { singleFlightRefreshFetch } from "./authRefresh";
 import { AppError } from "./appError";
 import { requestRoutePattern } from "./observability/sentry";
 
-const AUTH_COOKIE_BASE_NAME = "mike-session";
+const AUTH_COOKIE_BASE_NAME = "northwrit-session";
 const refreshFetch = singleFlightRefreshFetch();
 
 function authConfiguration() {
@@ -34,6 +34,16 @@ export function authCookiesAreSecure(
 
 export function authCookieName(env: NodeJS.ProcessEnv = process.env): string {
   return `${authCookiesAreSecure(env) ? "__Host-" : ""}${AUTH_COOKIE_BASE_NAME}`;
+}
+
+// Prefer a new session when both exist; retain the namespace of an existing
+// session until sign-out so an upgrade does not interrupt refresh or PKCE.
+function requestAuthCookieName(req: Request): string {
+  const primary = authCookieName();
+  const cookies = parseCookieHeader(req.headers.cookie ?? "");
+  if (cookies.some(({ name }) => belongsToAuthStorage(name, primary))) return primary;
+  const legacy = primary.replace("northwrit-session", "mike-session");
+  return cookies.some(({ name }) => belongsToAuthStorage(name, legacy)) ? legacy : primary;
 }
 
 function appendCookie(
@@ -74,7 +84,8 @@ export function clearRequestAuthCookies(req: Request, res: Response): void {
   const cookies = parseCookieHeader(req.headers.cookie ?? "");
   const cookieOptions = requestCookieOptions(req);
   for (const { name } of cookies) {
-    if (!belongsToAuthStorage(name, baseName)) continue;
+    if (!belongsToAuthStorage(name, baseName) &&
+        !belongsToAuthStorage(name, baseName.replace("northwrit-session", "mike-session"))) continue;
     appendCookie(res, name, "", {
       ...cookieOptions,
       maxAge: 0,
@@ -100,7 +111,7 @@ export function createRequestSupabase(
   const cookieOptions = requestCookieOptions(req);
   return createServerClient(url, key, {
     cookieOptions: {
-      name: authCookieName(),
+      name: requestAuthCookieName(req),
       ...cookieOptions,
     },
     cookies: {

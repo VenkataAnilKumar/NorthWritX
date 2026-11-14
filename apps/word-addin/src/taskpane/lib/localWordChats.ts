@@ -7,7 +7,7 @@ import { UserVisibleError } from "./notify";
 export const OUTDATED_ADDIN_MESSAGE =
   "A newer version of NorthWrit updated this device's chats. Close and reopen the add-in to load them.";
 
-const DATABASE_NAME = "mike-word-addin";
+const DATABASE_NAME = "northwrit-word-addin";
 // Keep the released version: an existing pane opens version 4 explicitly,
 // so upgrading it would prevent that pane from saving an in-flight answer.
 // Fresh databases can have the optional recency index without a version bump.

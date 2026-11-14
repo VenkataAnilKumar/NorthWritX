@@ -15,11 +15,11 @@ const clearTextSelection = vi.hoisted(() => vi.fn());
 const replaceVersion = vi.hoisted(() => vi.fn());
 
 vi.mock("@/app/lib/authEvents", () => ({ authenticatedFetch: vi.fn() }));
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
     getDocumentFileUrl: (id: string) => "/api/document/" + id,
     replaceDocumentVersionFile: replaceVersion,
     listDocumentVersions: vi.fn().mockResolvedValue({ current_version_id: "v1", versions: [] }),
-    MikeApiError: class extends Error {},
+    NorthWritApiError: class extends Error {},
 }));
 vi.mock("./EigenpalDocxRenderer", () => ({
     default: (props: DocxRendererProps) => <MockRenderer {...props} />,

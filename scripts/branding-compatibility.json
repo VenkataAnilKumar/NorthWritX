@@ -1,0 +1,2112 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": "NOTICE.md",
+      "sha256": "2025f60ddcc6a145bc2f36a2494b86310020597763c01ed1c4dcba41dae49841",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "apps/api/migrations/20260823_01_unified_workflow_catalog.sql",
+      "sha256": "40c8e3bd66de3ee31eb9aeaddd3b46fa7309696b328200234b96c9466f1694c7",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20260901_03_workflow_assets_as_documents.sql",
+      "sha256": "4bc4f706ba537fa533c6b1ee6e662ea6acbfd8b0e07c60fdf152c191a62a450c",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261013_05_org_departure_retention.sql",
+      "sha256": "a6b0368c968fa8e31d0c3d2501189a7ba737130da1c351777c9881587d261acc",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261014_03_organization_audit_lifecycle.sql",
+      "sha256": "d888cd6f3b690333466e67d99e8fc56ecaaa811362ea6c4d0d120fe7c94eefbc",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261014_07_org_lifecycle_review_fixes.sql",
+      "sha256": "217c49a5eebdd12c112b328549f60cf244935031e490aaeed319e6f9b89d5a59",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261017_08_user_web_search.sql",
+      "sha256": "435bc1341e879b212f62820cef6c0ee753bd11c81f5ebdc7a88b26dc2d6b33aa",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261020_02_web_search_api_keys.sql",
+      "sha256": "567847a57f1195920a36f20871af9d0c5213a56c951a0bdfa059db7697b121ad",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261029_01_chat_overview_candidates.sql",
+      "sha256": "67782b0169601f676d16112bd4fb9a0bb5e1da9c287eb579ca40d6aa0cf8e27e",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261030_11_departure_affected_root_locks.sql",
+      "sha256": "fcbb8eff7e24858d9f05a1db9b24522053274b184473b9b448c13a2301f9edd7",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/migrations/20261101_09_departure_fence_standalone_documents.sql",
+      "sha256": "3bb2c597cf26941ebf69a4e46d5a6365fda11b4e2cd2d3f174df94d00613fc03",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/schema.sql",
+      "sha256": "b522260dc73b4df51f99b959c378b2ce074135c4cc4ee1d35bb047716e4549b4",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.audit.sql",
+      "sha256": "c84a16ee80be04a8bf2c83276e5fde0e9366b04ee26805538ca69d93cd4a4449",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.overview-counts.sql",
+      "sha256": "4762797ffbf7674c9fb140a7690cdf80db18c440da33eb14216aada9dccfc936",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.ownerless.sql",
+      "sha256": "651a49f3e820ec389a66d670463402396d295eed331c399af530e9fc99bd7789",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.private.sql",
+      "sha256": "73c8c6bf8799b597a1f25f14bef14b76ef76598b27e4ea8eb22e741415494809",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.projects.sql",
+      "sha256": "6d5c4cca83ac262f644c52069f57aba744085b551f087831d7708fe07f87e37e",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.references.sql",
+      "sha256": "fef436a229abfab064ff5299ac8d46e609618004d4e320ed15484c37c4e2e0ba",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.reviews.sql",
+      "sha256": "9a30517bc0c7be505aabdff233cc1a1b0e34495f386e6350d1090e133d12e09c",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.text-backfill.sql",
+      "sha256": "2aba650c5d990fba8f00589eafb9702d492e9da614a43ed6809825f7b3a738e3",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.text-search.sql",
+      "sha256": "5988adc40a39f1eb4c342158751a6c9d2904db204d5993ca1a48977e25ac169c",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/sql/performance.workflows.sql",
+      "sha256": "0c0c1bd3e20646a912b79b9a42e7831d31802e6e3766fa4e24427a6d61dadafb",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/modules/chat/__tests__/chat.overview.repro.sql",
+      "sha256": "59bbfeed0a43dfbf544a55b264cf518b20107ae2d4fd129f04e7b22e770dd6aa",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/modules/chat/__tests__/chat.overview.sql",
+      "sha256": "ae4356553ec7b3ab995791d7902485ec1e7e19a64f57c7e89a521d960be99606",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/modules/documents/__tests__/documents.textSearch.sql",
+      "sha256": "a7897affd4fae565b2607848ec7f91b4c3ea6dbb2c6a40c732f25e4980c37d83",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "apps/api/src/modules/orgs/__tests__/orgs.auditPagination.sql",
+      "sha256": "4bb6593c8937efb18d90a35caf8a7eb8afce9cc63032a2141eb87a50fce08bb4",
+      "reason": "Frozen SQL/schema/fixture contract"
+    },
+    {
+      "path": "docs/03-market/Northwrit_Open-Source-References.md",
+      "sha256": "40ca203fbd5e224491796280ff28f835e35cfd93a8f3f58839bda6f9fcf59908",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/06-technical/Northwrit_Architecture-Stack.md",
+      "sha256": "ac63f33a1dc52e38a72145f7cef207344cc77de0d208019fb033f56256f7ad11",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Cloud-Runbook.md",
+      "sha256": "06b91498d9030e1f1193e2f368ba5c803074d5b8c099dd67b8db5c354b895952",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Feature-Disposition.md",
+      "sha256": "498b777e96c8b9aede922ecca3b57c67c59555c2e81b6c3146a96cd161cc1e72",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Migration-Paths.json",
+      "sha256": "84ea47250f31a4113e1dac218bfaafde45d3f5cb6cd5fc97ab5989c0993134d9",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Migration-Verification.md",
+      "sha256": "ee1453208b9d3e48a24d8e7b0bc96c22ea6eefb20ecda491a92c124f8dd9812d",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Source-Audit.md",
+      "sha256": "5dd0a94d296b4bfc8335b483ad25fbeac913ac3cc8c58794535f155a8ce03142",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Workspace-Verification.md",
+      "sha256": "3d2f4c1f2a3452562631e683bfb22ed26aacc30a39f22a49225e59bfd4ccabfe",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/decisions/0001-repository-structure.md",
+      "sha256": "2363d2215447d5720c7c562cba632522b6f3a659f9ff2df56cb25851632e4566",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/engineering/sentry-data-audit.md",
+      "sha256": "18605d896c7269584773abda3158d4c750ac8b6be1b6a774f5b4bbfb83c2276b",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/engineering/sentry-issue-review-2026-09-23.md",
+      "sha256": "d244d5c74493fdb69e78b788aee78079626e9f2809a68d518090b17c04f7d59b",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/engineering/test-evidence/google-discover-2026-09-24.md",
+      "sha256": "e8632df43e4601e81ba9dac5c3fc7cd4746834a9cd2cc48830eb223c25da463e",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/engineering/test-evidence/google-integrations-2026-09-23.md",
+      "sha256": "8247b61ba41c4ee70678598fcc983f1c45e08be232a288a21f10b66e869df687",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/engineering/test-evidence/google-integrations-screenshot-walkthrough.md",
+      "sha256": "c00268e1bc2b09c73bc37181b84cf1931e8537d8104d2d343754d5e9254dd31b",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "docs/engineering/test-evidence/google-workspace-live-2026-09-22.md",
+      "sha256": "8372ebf16a4f5ebb4dc8d2780891b0f89f4b61c85e656196237e948629500b57",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "d0179a1f0a360bc97ad4783411086c74280c0e7da263126f08c50ad0fcc515e8",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    },
+    {
+      "path": "scripts/rebrand_northwrit.py",
+      "sha256": "60cd282084eb6cd6f98821cfff855070fec6c44e75f2ab1c4e1d80db4d240f33",
+      "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
+    }
+  ],
+  "lines": [
+    {
+      "path": ".gitignore",
+      "sha256": "d616dc242f1f4e0da528d0b576d33e13c3db8880fa841fa45a209b048026ee7e",
+      "reason": "Ignore the legacy upstream import checkout"
+    },
+    {
+      "path": "README.md",
+      "sha256": "c9654e7cb0037b8a557fc7c2afc5e3d1559c10e622062c657e4b0d7ee8563940",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "README.md",
+      "sha256": "e50e0d814b2d67be73334b70b74a0b96d8e09176878473e79ece6090783cb9b8",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "README.md",
+      "sha256": "d48264925affa1aae78c5993695ee1003203e8b298e8a0a90ca0d7bfd8206f21",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b40890c43fea785d9dd640dc2510108542799870946d5ad6b347f7f1ab560935",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "README.md",
+      "sha256": "844ee94a69338adfefb9fd5e10cac37f0f540346a482a307506aac1280f1b9e5",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/AGENTS.md",
+      "sha256": "33eccdfb9533623afff8d83a9d8ec701973291ac5429f76ad63266e5b7c4d5f6",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/AGENTS.md",
+      "sha256": "b46ee83a23a90dbedda987e47afba675ec96200a70e95af7d6dcb527d8de3c2d",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/AGENTS.md",
+      "sha256": "4f75077fa0f7b61d6423a5028397950b66facde5062ebefcc3127ad6568aaad9",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/api/.env.example",
+      "sha256": "8d6e3ebeda9f15006f548f09433e466458915cedc79f0f4e39c4a292d97adfe5",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/Dockerfile",
+      "sha256": "1d6e2b24cd9e8f095b75ea3a1078ef5e83f31709c5de1827d478b1d33e1f423a",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/Dockerfile",
+      "sha256": "dbda44def0b9ef0a0405c563f51a95cc35c540717a90fec03d6f25f00568c2f1",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/scripts/test-org-departure-locks.mjs",
+      "sha256": "8ac12c23c5a21e808739f3fb39c7e30c0f2ca84c2903874d205aa944155d7c67",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/scripts/test-org-departure-locks.mjs",
+      "sha256": "bdd143304a688551d6c04ff20939aed71012a71dccedc7c454593955af8411ef",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/scripts/test-org-departure-locks.mjs",
+      "sha256": "c46d5ae4643794f688891efa6746e1441310c20adfbc4e7026476b7068e231c7",
+      "reason": "Existing disposable-database safety fence; changing it can admit an unrelated database"
+    },
+    {
+      "path": "apps/api/scripts/test-org-departure-locks.mjs",
+      "sha256": "533fb382c9ab0bf7994a31118d6f5ea2f9e8f075a4c4e7dbe8267c6d6c460d5a",
+      "reason": "Existing disposable-database safety fence; changing it can admit an unrelated database"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/authRefreshFanOut.routes.test.ts",
+      "sha256": "2eac1f9463a2d0071cae4671d07521af6bd2db6cd8d0b5afd6afcba33b47e33d",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/projects.routes.test.ts",
+      "sha256": "7ef42636c4def6a9b77eb56e94458435b54a09c25a20e75b8bd14c86e63dbbf4",
+      "reason": "Signed export version/context is immutable for existing verification keys"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/serviceFailureReporting.routes.test.ts",
+      "sha256": "6b7cb07acca454daf1f33271e8111f31ec298aabb8b17cfebbbcef43d8b1e633",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/serviceFailureReporting.routes.test.ts",
+      "sha256": "63acf487584f91efa61fc397e21b58f101bb43fe735001613ff9fad448f2ae6c",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/serviceFailureReporting.routes.test.ts",
+      "sha256": "59b55246d7b9f1e29fa7b5aa089513f9cd2d1d3a58d3b0e247d71b8be15c62c9",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/stack.supabase.test.ts",
+      "sha256": "858b6ea78ff989a0e8b7b65c1c3329c99a0cf8f9002e221387b040e5ccc8622b",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/stack.supabase.test.ts",
+      "sha256": "666b2f58a07648577c8c57354e6bf31be26d3ac3833d5fb4a23e165f1288fae4",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/uploadSessions.complete.routes.test.ts",
+      "sha256": "0b847b6357e2801dc91dfa168906161427cd9a8904f4da657827d0517d3785d3",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "a2eda6e8bab063fa1922955c33158b432a2911078441367ff08d97cbe8d8358f",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "c7925701cb8ba96adb5103ad0bfdf2ad3244cf123cc87a2fd5a50b1897c13630",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "e5bb6a3c41c91e27817c3da7c0ca52d955cb242b91f7d886b7203ebde7c2fcc9",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "7c0c17af160fcea574326f30faa0ddbfe038bb94e1e6217691173880a38dd2f5",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "8bf313dcfce6bb294036c8be6623677e707834ba458d991882c448c4a4dca668",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "07abbfdd37eacc753252a9b5865576ae9aa5a1e393c32b983a2b86d75f84753e",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "90c05e78af902648425a9970cfbd64dd5ee737557da4c0104fa97a6740db2027",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflowAddons.routes.test.ts",
+      "sha256": "9e0d9ea4c767fbc890942981de04e0e0db27c2bd0b30f233a73a66465c8151bc",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/__tests__/integration/workflows.routes.test.ts",
+      "sha256": "aefb35f617466401b79b00277dffbe4342c56cfb9282ede51b8539d184bed458",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/jobs/__tests__/maintenance.test.ts",
+      "sha256": "b9d22e13db95b760499be98d9063ddb9cd75814177a5f98560fa3ab1285d7462",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/authSession.test.ts",
+      "sha256": "e9d8e65429510ed8d5b8096a8c93c4cd622dd5faaa6ec95665388437cd1901e5",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/authSession.test.ts",
+      "sha256": "d54bd62b90d213f365216aa44b546903df9935c3dc2c1f2c3993522a61de436c",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/authSession.test.ts",
+      "sha256": "47e1e4af7ad54eab5b41ef4fed61efa3cca40513a771d0d5d8c33d4ee722cf8b",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/authSession.test.ts",
+      "sha256": "66a718ac49fe70b665cd7e41b7880fe2351abcdd4fe60978e5600504a7030f52",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/convertAvailability.test.ts",
+      "sha256": "67a1c23b9639d5890b2fd275ddc27d3284e1c9b4c661c59beff8fd0f4591640d",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/convertTimeout.test.ts",
+      "sha256": "db990ea6a88eea9f60d665204be0a1fed048542dd6a3f0e642f65bba655ac27e",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/manifestSigning.test.ts",
+      "sha256": "1c066e0a100bb1dd0420c262a6c5a0c4d50d191e18fc0d6ab9b1f19af16d2f65",
+      "reason": "Signed export version/context is immutable for existing verification keys"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/processLifecycle.test.ts",
+      "sha256": "250f7c753d0241ca9c43f2351ba95ca73cabfeb26a2fb88e474e1ae740d84dea",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/processLifecycle.test.ts",
+      "sha256": "c55e33c1b486427e31f7a306ff4e93357c9322cb247e9e92d48b46d98c3ab343",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/processLifecycle.test.ts",
+      "sha256": "ce2983ca2cee1b354d18eda7c9f01613fcb80f088058e5aabf14408d880c072e",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/processLifecycle.test.ts",
+      "sha256": "7f8c8f489c825036ff4b34a2a65bce190e1ebccbc96ed2e62f746177fb2b08ff",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/runtimeConfig.test.ts",
+      "sha256": "0b682b4b5ec2fcbd013b1ddf25daad62632efc2c194a7117c4b197cad4e961fa",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/storageBestEffortDelete.test.ts",
+      "sha256": "979aa479139ebb4ee7d63af827fcf18c8ec5f11b56349d8bab88e23ec57a68be",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/storageSignedUpload.test.ts",
+      "sha256": "357c975785739f6c038a74623ef1b86e840cabf99ee844cfbcb5ff8d9b21bf89",
+      "reason": "Retain existing storage bucket for configurations that omit its name"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/workflowCatalogSource.test.ts",
+      "sha256": "6089b6bc38598ba76bf6069ce31cb04e01fe485a1615c6394dbafd9fb983f0b8",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/workflowCatalogSource.test.ts",
+      "sha256": "17b5a54e4bfaf99afe8dfd5124a1cc0edd30d31d4f1c0050bd2a0338cb31e040",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/workflowCatalogSync.test.ts",
+      "sha256": "b44a20b1e499f923ef116f45caa82da3e35c95f3d28a2b8c3e4c9edb64bf3a54",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/workflowCatalogSync.test.ts",
+      "sha256": "d6eec0b2bfc6694ea53f0d0a97dee5e39b8f4ad43fcd8d53870d5183e0fc00bd",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/workflowCatalogSync.test.ts",
+      "sha256": "a6ca65111673da8d58af30f4a40eebbc098e4479c868f605cd5420956116cac4",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/workflowCatalogSync.test.ts",
+      "sha256": "455255e75233ca37270853d47d286e53d492845be37b4d2640fdd705f884a531",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/lib/__tests__/workflowCatalogSync.test.ts",
+      "sha256": "9ef0bd970be5e632ab52ff0919a2a06e79ed15c3960fb2d48a828cdf410bc9de",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/authSession.ts",
+      "sha256": "1300a2e24f421fa9e95bfd1a17fa9f249bec27e0322e62f8cca8c1ddd3f4ec33",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/api/src/lib/authSession.ts",
+      "sha256": "d04a3ace34dfd915b7fac0dae7747fa92db0907b52f4fbe58de086120f95910c",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/api/src/lib/dbq/__tests__/runner.reporting.test.ts",
+      "sha256": "7811d5322ccc6b58f86991a0466be6b3ef6e6c937626f0824eacfe3b357b629f",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/dbq/__tests__/runner.reporting.test.ts",
+      "sha256": "b95342dfb564beb5f1252c17ade3a481103e7f4afd0b6bf8eb2f04bc0f3cee08",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/dbq/__tests__/runner.reporting.test.ts",
+      "sha256": "e0c46a26a178b6311a346c158ca512266941c06b1a88a40c8ae30091689eded9",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/dbq/runner.ts",
+      "sha256": "16b66c2ac95ee81507cfc668ffec9e396857989e52c3d1ffdd3521b0e8df8c71",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/dbq/runner.ts",
+      "sha256": "16704fb67b228bb9e47aacf0b97f79f2cf8c2f25ac6e0321a0f01078f71e30b4",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/httpError.test.ts",
+      "sha256": "2c7d777bea6fa6e32fb382d46e4e9154b24d4dc096d51adc1189b3f0e56aad63",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/integrations/__tests__/googleDriveExtract.test.ts",
+      "sha256": "fb8502e1ebb2a08f879c77affe07f4e94a606a565f3af350e7513efc26bd783a",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/integrations/__tests__/googleDriveExtract.test.ts",
+      "sha256": "b080d068d6572127b97ebca42c7f5474d550853b48038326cdeeb5f663a93164",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/llm/aiSdk.ts",
+      "sha256": "647561476f0f78a78a2271a770b3ea50376502951f61c946ad9713c768b3bb28",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/llm/registry.ts",
+      "sha256": "9eb16fa5a9190b9d164001afcc08da9f9b8ac8e5ad81ab767608aef0bd982b32",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/src/lib/manifestSigning.ts",
+      "sha256": "1d940bf158790904c7e7ee80b209ed992bb009f96e95df7b84e14875f20e310a",
+      "reason": "Signed export version/context is immutable for existing verification keys"
+    },
+    {
+      "path": "apps/api/src/lib/observability/pollFailureGate.test.ts",
+      "sha256": "d1bc4b7ea4db29b56e1d3990e3bb67d3a0cd87aa7503cb6cdd865ca06297239d",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/pollFailureGate.ts",
+      "sha256": "92952a4e86fd1389535d15d3b7518dd5c9bca0d79647fb88cc0b50b134cd50b6",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/pollFailureGate.ts",
+      "sha256": "ab5a7cb664b68569abb93298c4666d773cf0faa65604eef417a8d7f38ea5368c",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/pollFailureGate.ts",
+      "sha256": "b50b5a3ccbcd6ba9e99008c6d098fbfef5c36758b99dd8feab95be0f112a8b1e",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.test.ts",
+      "sha256": "88a5cb91c78b3381805f17937e0e00b29bf7d3421af58550896123ac32015ddf",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.test.ts",
+      "sha256": "2f6ff8e830899267ddafaa3b34969cf11ee8c3cd05fe78fdef41bc830e615f14",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.ts",
+      "sha256": "6f4a9f63b2ae334ab27674443986adf94fc24f1687a439f0caf3a4dddfb6bcf9",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.ts",
+      "sha256": "bcb3221371d249565d4c4b4777aca04b4be0b30c5ae1cb7818f1f12b7dbdd5ff",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.ts",
+      "sha256": "3a2bc5763bd49a68e21ac2f99417a6f40e19bc08ea74d904bfe569147201d9a3",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.ts",
+      "sha256": "cb17bb11e0172266e67aa3dd2cc2a0536c9094db17ce07c93479b2ee01873c81",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.ts",
+      "sha256": "1dd64cc94b27f9be534def3f65703eb7a35cd50876690483002b9652a38482c4",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentry.ts",
+      "sha256": "d040653a5b1fa039f817f59312ad0e7a1ca15b273c20c3a8e72a04d0ea53e90b",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentryPrivacy.test.ts",
+      "sha256": "47aa32c766ecbc11ca9e89c7d35d8196515f80af9196d10a57a0b4f8ec160a67",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/observability/sentryPrivacy.test.ts",
+      "sha256": "eb54635eb3ae23b7d75b0dfba65da3703a0b100df9dbeaba5a3bd8e0cefcfdd0",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/schemaOutOfDate.ts",
+      "sha256": "a70348da117ad4fb7ad9d9518d2e95b6294886f8082472d8339063a90c23609e",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/serviceResult.ts",
+      "sha256": "bf3e23f725caee07608dce73121db780ec91699540f848a30d4815a45ecd82d8",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/storage.ts",
+      "sha256": "9486b6b3d01740a0bf73156839f9cce35929c9522848a7d1b4d366c90c87f23c",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/lib/storage/s3.ts",
+      "sha256": "48fa4a6b897feb830f1d5d672db9b496ea77504dcf2be51b2259ae07cf0c1612",
+      "reason": "Retain existing storage bucket for configurations that omit its name"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalog.ts",
+      "sha256": "0e43a25412c8d4337c437e7d060804ce400bf98c412ff50b54fc5cb605c7fac3",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalog.ts",
+      "sha256": "de2fd9aaecdabe30cb10549156aa7543da1c56a0985f75bcdb282e11357d75ba",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "c8eb6744a22ae81eb980095183a4423e392cdcce5082fbc730c7b298221f4ecc",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "347c0ea3787a8f20575cc59f7fe6e07e67c17c66b1f78f304f1e19767828d348",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "61cf910d37dcb8df2bcea9352305ad668bd1df19f6f2a542fa613344cea24eb8",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "d52bf24eb4eecc80cb8981f19bd022c80dc9f433ef6543cf94c132cfcb79bc32",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "7e791584b97003b38b8a0562d968d0743173e7e1440ff89ead8b4ea10a13adb9",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "aaba4ce1e2d470386fc1326aaff50ae48b38bdc137e3b2ab74bc9d31f8b2a21c",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "e27b0ce4957f8ae73cf0b5efe8bd83cade22076e6a7531f6053db0a0e181e8c8",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSource.ts",
+      "sha256": "feaf7907a13f71b07891e29cd2b1e6804f3bbb8b76e23d2adb54852024ea0bbb",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSync.ts",
+      "sha256": "895e2d40d3cc7e276428d15c62a33985a72091f5df722397f5b871460fd63a45",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/lib/workflowCatalogSync.ts",
+      "sha256": "da1c877e4ac4b9c88bfb285796e34a3255e30d13eb251b941f727ccef7c26c4a",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/__tests__/chat.title.test.ts",
+      "sha256": "2e557c81237dc163f39bc91051f7690fcef61a39f1d139f41aa34df5bd1027cd",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/chat/__tests__/chatTurnSentryEvents.test.ts",
+      "sha256": "53c9ba177f81b4c8d0a28a5c9b18b0ed5a87476b1462a078edf07af0f7753287",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/chat/chat.title.ts",
+      "sha256": "0f9e3870f36839bc08f78e7b66adc66cf934ab1020e49e68d613f9d772a54b6b",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/__tests__/contextBuilders.failures.test.ts",
+      "sha256": "731536ea59557faa1f2af379abaa889ab2e448b7e2f61ffc9e7d8fe5b4cd353d",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/__tests__/contextBuilders.failures.test.ts",
+      "sha256": "8da17859931d069461c87d8d8094f811972d61687c4d7de2406367d843382147",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/__tests__/workspaceBoundaries.test.ts",
+      "sha256": "60a870a1d944fc8523541d6884c332169e158fc93ce092b9492a543071c8eb9c",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/__tests__/workspaceBoundaries.test.ts",
+      "sha256": "731536ea59557faa1f2af379abaa889ab2e448b7e2f61ffc9e7d8fe5b4cd353d",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/__tests__/workspaceBoundaries.test.ts",
+      "sha256": "33fca78a22643cc82c23c10ff796d0b65eed18445be60cd5770756824f000d1b",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/contextBuilders.ts",
+      "sha256": "66a57b46c92f7240db257b982615ef1a61d7d3dfe9df936623bc7f7f4a8f6ea7",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/contextBuilders.ts",
+      "sha256": "0e43a25412c8d4337c437e7d060804ce400bf98c412ff50b54fc5cb605c7fac3",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/chat/engine/streaming.ts",
+      "sha256": "aca7b3ae2a8b49b10f0c60d519d448ed1f9228e18e34ae77f7bc26d259a8454d",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/memory/__tests__/memory.curator.test.ts",
+      "sha256": "fcd7385227598f6da84878d0eb59cdc881bb6457d2e957ef2249836982ff2c40",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/memory/memory.curator.ts",
+      "sha256": "4c0a620df42fabdf1156f5ab171fd41fd888f7f6e30ceb22aff3ddd0d5e00ecc",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/memory/memory.curator.ts",
+      "sha256": "31b418af58c553ad4f2fb64951cf99d41c931fff72f7ca041cf5278bee4beca5",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/uploads/__tests__/uploads.processing.test.ts",
+      "sha256": "c8c2d187517cf26983c57472272203c257e3bcecc78c4a3b90c1ed1803e18261",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/uploads/__tests__/uploads.processing.test.ts",
+      "sha256": "a68f9a9bd5739db9f8f2a3dce7933daa175f1b2a5b63b019949bd7e8c442a1fd",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/uploads/__tests__/uploads.processing.test.ts",
+      "sha256": "96eb955303971017a1ea399afcb22a75cf7314de00a745ec8f4d71dac92bab3e",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/uploads/uploads.processing.ts",
+      "sha256": "d2cdf3384ba19ee253c50022103d9ea0570828cfe2a256db93f2e5b98d4321ec",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/uploads/uploads.processing.ts",
+      "sha256": "2261696e4b72cbd9bf13d3200995f527bdbb3b45cc5b88bb19ca79c3eb868486",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/uploads/uploads.sessions.ts",
+      "sha256": "fff74269da6384b1075e1c7429287cf2f2eaeb8fb7babff69489a59cb644cea3",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "2208da44510f524c5d554583706bb97b9094721b6f8f89c4498e72305bb788cf",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "80580ecdd630d68fc77a169350ce159fa4815ec4edd1c6f5037db579ca4a96ea",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "27de6454adbc469f41915eb3149ed343a6046b799196c0d7100108a0d6e7ce89",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "061fff1064b88984880795306f62ee841b90c7680f6041724a120436177be242",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "66ab16e3dd138f78b9c51d9defd4712b6b0321afb9a0fb246889ece2eee2a465",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "517f7b90371feccba65aba46ee6dc81c1379a39b4a2b55b602056b6d2b68c436",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "968df353a4bf3c069bd0edfbe10111d7ff83892a836276246f00a26a738db59e",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "4a0b93ffdf2dc9d55aefb4a28fca2877df7f95a100ccf169e11c66932b1bec7b",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "03798fe378a3e354396a61acab2a76c518186816d77fd25f01786ec543815b9f",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "fea934ac7c38f619f0e62a8ee44b63124f5f61b7c61e611cce983de0118b3934",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "feb28ded8fd3b94f78e7ccd1718986f88de71a3545efbd11ae2b13b4a10843ba",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "6dd79e8ce8d941c0f0b90b648be8631472df8348337e6a0083747c57260f7122",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "a09c95f727cd44c9a08ca7508a9410e747afdfdedbfaeeea61d87fd0b87bb91e",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "c82decfb461fab6e649d719c4dde0723d6c20d2814383f23c49a6b4a8db7999e",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "b37cffdd1b2be1971b3786851674551e527a170073eacc6c23f37413a044c715",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "3937b436c22138786305b95b7145b2dc875d098e9891ed219d44f24a05bb8748",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "fd8632d72ec27a0fcb274320c5bfb6c260393676caa1c9102316000a624b73e7",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "2c9fea68e40c34f279017107ddf311221f870ab8812296c2e23977de62dabcae",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "b352a81ef4eb4b8a36791da023d677644e7707867a19f5bd44cf282f163fa0dc",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "04e74a9a4e170409996db35673e29799c19f22cfdf44d8ad8e833ba18ebffe36",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "99ec9d30d34542d90125a00ff77ada6a9755f25ed0830d4c461ca1c74999d3f4",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "da98be31b9b56d1d15eabbe33937daf56bb2059f7123a11ae2881fb27ddd004b",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "78985e2b119d5722659958c310b64a08cee7a0f92fdf0dbcfbdff25df6b52bb2",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "27064b86ae409534be93af24ce76de7b86d950d31895f2ac937daa9ad7b2b50c",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "247a41a85d1b79f50860b10b75aad5590cf51745e3be9d5484f49e174af468c3",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "54595797b7a6bef3352fc65c58611471f31befbb3ed4981a0107988f0cd6cd9d",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "9ef475e93393ab96f47ba39ba080e99e1ac857a6818d34832585aa2a2d682164",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/__tests__/workflows.addons.test.ts",
+      "sha256": "bf89f56fb25021cee6bb141e363f882c2265c070f3a91b5a862f4d53a3baec45",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "ac3add62577caafb774eb6ae2f409b954c45d40bae72c96aaf19e5855e5c1e39",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "9e66837001d6f9b51208dd465ef03029d327c94aedc116384977f19777613031",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "0e43a25412c8d4337c437e7d060804ce400bf98c412ff50b54fc5cb605c7fac3",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "773bf0d7d4f41acf0e01684d275ad9384f9b36415996e54d45cd05c76c28fcf2",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "8f158b2d97122e76d447ea37cd256c1609683ac75305f5f86ba6cc1a587f975a",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "d35782ed819e90153cbf9a7a8d41983a6db820a3e7d56ff8213e376bc39d0f60",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "535767540aef89dff89fa71b1f0d8539705b22b783e4c0e10419ebb21a07bfeb",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "b930927f4c8d7a210453990fe40ad6664ff872e0f34db517c1ead159358fd1d9",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "b00139a39e0864e2e8bf35e1897a9f89a644ed1494eea01081ad083664ba0abf",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "51a9f886cdf7005e36069e6599722489ee6a8752e06ce1c6026b881219c28660",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.addons.ts",
+      "sha256": "4654237b0266240ac1e76a925989d957cf866a7ab0ad9a92db4005a25c25ac09",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/api/src/modules/workflows/workflows.catalog.ts",
+      "sha256": "2e6f27cba8f62810ba512c501c5becb725720b729f72918042e6370a7c5560da",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/e2e/flows.e2e.mjs",
+      "sha256": "192280438e9fd8008436ca884d737d7582d6923329a316a95840afdfb40100ee",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/desktop/e2e/flows.e2e.mjs",
+      "sha256": "3dc20736f5c472efef74efaf51999d4dc2b00669f5598fb5b6e107f155e9c4f7",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/desktop/e2e/flows.e2e.mjs",
+      "sha256": "eb9e0cbda04280c6373e43f5145f4650325968c27590c10c36aea4a091544783",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/desktop/e2e/local.e2e.mjs",
+      "sha256": "6b12ebfafbc18bc6d8e902aad21bc28581b0043f5b4afb3348e9eb48f92031b8",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/desktop/e2e/local.e2e.mjs",
+      "sha256": "df5d4b7c9170a452890783b25f78533c51006493e3a57227c9af338b397aeeac",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/desktop/scripts/fetch-local-stack.sh",
+      "sha256": "25cd977352c96dc3129ef0dc1be8c950e0882b5f7848016ba31249a2f858fe89",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/scripts/fetch-local-stack.sh",
+      "sha256": "1fde664b51bb09ea066d30956619ad64c65e3fff0b354551b7c79b8588862b84",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/scripts/stage-source-notices.mjs",
+      "sha256": "4e5817466e52a124718ce02374bd29ae341291c2b65860961cb3813dfb05f50f",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/desktop/src/local/brandBridge.test.js",
+      "sha256": "4ad22f3295b85ff5ad0313c733d0a36af78fcfadae86991473c564573913caba",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/desktop/src/local/schema.js",
+      "sha256": "d4cf99f31d8a6cf394c5f61dd7af15cdea1eb7a439e643843e638b9db069af89",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/schema.js",
+      "sha256": "9a423b931c8e534211a70e14f177a9781a1ec4dde79aa912c2734b0054f286d0",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/schema.js",
+      "sha256": "f6ee1fa304754c64da1ff1019363aeadfef72deda2472ed719edb04e9b8b0b6c",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/schema.js",
+      "sha256": "cb31aead80243947e84e040bf430d96e6c713887e228f2ff1305adbddfa920d5",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/schema.js",
+      "sha256": "da960466a4e40cd8faa65a7eb6a284a25a1c57916c94725be61327c59fc4b4f8",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/schema.js",
+      "sha256": "350b96a68f75f37a8324074abe3254d5449c023032c76d7c315898ab0ab28bae",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/schema.js",
+      "sha256": "a5cccf65d35a7a0966f7e78f11a5434f5ac8c7b40a01c905b1f0faa108d04b3c",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/secrets.test.js",
+      "sha256": "762d399100e09f2cce825ba318ac36553f24ea6d2b9fc0678591a22c01cb0c3f",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/desktop/src/local/upgrade.test.js",
+      "sha256": "d4cf99f31d8a6cf394c5f61dd7af15cdea1eb7a439e643843e638b9db069af89",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/upgrade.test.js",
+      "sha256": "138f2b219113daa602e7261ff44e61f714c9a9842f68759afd41ee9595b4b5b4",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/upgrade.test.js",
+      "sha256": "5455d5810abcf27e3eadb872c14e4244664f8b6c1519949685b56d51dc7aa020",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/upgrade.test.js",
+      "sha256": "21ab9187102222841ddbb9d37d548d8bf13a9f83fd4199f21e8bec5adb417f66",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/workflows.js",
+      "sha256": "90d4fdfb18eb04af2859de1bd1be36299c6c5b23900d6b9c951266853111394c",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/workflows.js",
+      "sha256": "e98b795f3a9d3a0b3a0ca71928005c05d511dd06bc4438915b329fd15ebb3bf9",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/desktop/src/local/workflows.js",
+      "sha256": "49006a4188ef60e33c865c7ebb05dc4d1447a63b3f3b1149893831ad104cf6f3",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/local/workflows.test.js",
+      "sha256": "3480c896339f60ee7ff9c3d99dd9f9096365666c8e5617d1d61860ac578ec2e3",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/desktop/src/local/workflows.test.js",
+      "sha256": "2fff48c52be25934b88016ee994c3d7c1abd49384d3651a52c38669709bde2fa",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "40ce6b48e1f3619eb090af4db1a5bd6e22baa111412fdfa1186c14c0392c39b1",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "f92ae06331393d8109057b921ed76d8f1660c18cd7a7a31c719bcb0230039975",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "1a841860281f986269a41e5195a1c0df39359bc7029fe735f1e16262669b1b80",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "5fed95c77e432cbb3ade43181df7d5856297795b511c1ceccc087bc1834857aa",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "c54f9ed067ed892251e1cd4910bd0b4b2f70f555b2e64de6f4a266aafc74533f",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "a098d37b7afd4f4723d3398ac63949cdc7f39cc9a033a08945244079d9fed186",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "82d7a385aa74ffc5ccfdf09ba1a62b937c46e7cc4b509b0bd70378ddb184e681",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/src/main.js",
+      "sha256": "eef9ce26bf7146976fa6401ff2599e943a533b2e0f1b1ef37194c8cf5c97dd49",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/desktop/src/preload.js",
+      "sha256": "806b5c9c66bd2e85c22bc50c06c23354a6c88194bc383a8d719e8e5dd1d1ad6d",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/Dockerfile",
+      "sha256": "1d6e2b24cd9e8f095b75ea3a1078ef5e83f31709c5de1827d478b1d33e1f423a",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/web/Dockerfile",
+      "sha256": "dbda44def0b9ef0a0405c563f51a95cc35c540717a90fec03d6f25f00568c2f1",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/web/next.config.ts",
+      "sha256": "ffeeded3affbbd6d7f8cafee00a6409c6fbb1c77e8f9be15d54dc4cb407b284b",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/web/src/app/(pages)/settings/connectors/page.tsx",
+      "sha256": "ff7556ba9e2b4e1fbfdec122edc964797c61e9574708cbaeb91011d2d4ea8ee8",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/web/src/app/(pages)/settings/connectors/page.tsx",
+      "sha256": "2e23e13247e95ed7e9125da03c59e78e4c8e7e01c21f2f21ccf2d269bf3e7d52",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/web/src/app/(pages)/settings/connectors/page.tsx",
+      "sha256": "3dc20736f5c472efef74efaf51999d4dc2b00669f5598fb5b6e107f155e9c4f7",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/web/src/app/api/[...path]/route.test.ts",
+      "sha256": "8cddb1ec3e3e89067c46fb86623e63b1de39653fc59fefa450c99d570d3d0229",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/api/[...path]/route.test.ts",
+      "sha256": "4010bd8c744bd78b6c58d0e347cd839a6ae4d2eb78409c891051a90f37dc2188",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/api/[...path]/route.ts",
+      "sha256": "f1312a4c8d0aff5924171e8d9f002f20b09d82f6b0d8a2f4d0b3fdbeea71e534",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/components/settings/useGoogleConnector.ts",
+      "sha256": "48390430e013e6e426226585cd4b7618bf23c777a2d6c8ee772c897d2276d354",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/web/src/app/components/workflows/OpenSourceWorkflowModal.tsx",
+      "sha256": "9a77bcc5adc3b1073faf9b24d2ee2aab52648747c165909d3e7e639695e5746b",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/web/src/app/components/workflows/OpenSourceWorkflowModal.tsx",
+      "sha256": "6ee58c24ab2477f6f8100ffd20f17dd990a9f15d0f41df3b42853737507a74f3",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "apps/web/src/app/contexts/UserProfileContext.configuredModels.test.tsx",
+      "sha256": "f661298d3bf23f16d1b36575ea52501b3feb77f53a1b4d836a925de6b428b404",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/contexts/WorkspaceContext.tsx",
+      "sha256": "94516257d9d5f5a2773a1b90f6b03e71783c7461d2611fcd40857014038fcb0b",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/src/app/hooks/useConfiguredModels.ts",
+      "sha256": "03fc59cf2cd883e20a05426d9691a3952be7b11d95096787faf5c5277db8b030",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/hooks/useQuickActions.test.ts",
+      "sha256": "e313c7b6c8c920ad4e7fc5bfc62f13f246efb6fe324157e13face4e3ea92ffdd",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/src/app/hooks/useQuickActions.ts",
+      "sha256": "f0ec62d969608a62d65276262c5f97eb6f6d541bcb8d051fbc469521fc506e1a",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/src/app/hooks/useQuickActions.ts",
+      "sha256": "1a03414929481974dea1bcc5e37e31088cb9de003a98655352deef6477dbf85c",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/src/app/lib/errorReporting.test.ts",
+      "sha256": "80f0c397670f19323117edb5419b9fbe1b51a2e5b7a8a26cd018a8baf7ff00ae",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/lib/errorReporting.test.ts",
+      "sha256": "cf448ce15ea5839042726ef531ec9cc7859d2998e5fc3b4e8d4c52accebc284e",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/lib/errorReporting.test.ts",
+      "sha256": "1b026272978bd9c1485b83afc080c4ab8eb401ed9a7563c2fb34bb1b26cb00b9",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/lib/errorReporting.ts",
+      "sha256": "9d22de5836ee2237b569698a584682fa7672520eb37e19b991ce3a1b801cacf2",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/lib/errorReporting.ts",
+      "sha256": "1dd64cc94b27f9be534def3f65703eb7a35cd50876690483002b9652a38482c4",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/web/src/app/lib/northwritApi.test.ts",
+      "sha256": "62845d43866a17a5112fc13b1ac41ae76edc4e24af3ca1f429adfb114bdd695e",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/lib/northwritApi.test.ts",
+      "sha256": "73e69a8b52241a00cd0363b2bbb2d77fb76c51de0b7d813dd9955455ab7f1264",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "apps/web/src/app/login/page.tsx",
+      "sha256": "3ee1d893b4b9c02aa9b26b54e3adca27db83e3d2c676a3c39ba562b627585abd",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/src/app/login/page.tsx",
+      "sha256": "6d5c8296e109ea5550bde61439e47f6814171f92bc93c0c58165ad347875b612",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/src/app/onboarding/models/page.test.tsx",
+      "sha256": "7cf5989b3067fea0a29dcd1220b73115e7f70ea8f982fcc1c6b4d61b0502f79c",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/web/src/instrumentation-client.ts",
+      "sha256": "92934ebb120575f7de0ab11b25504bca92c6dd1a727d6d3b627094d44a27b954",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/web/src/wordAddin/preferencesMigration.test.ts",
+      "sha256": "d20792078e880053850ec6fe9e86194769ff8e946c316d175d63bf9525e540e7",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/web/src/wordAddin/wordEditBatching.test.ts",
+      "sha256": "44d52f4e4543ed8552dbe3b2a3bae0b11669f9dad1df9f9119d82415f12f7344",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/Dockerfile",
+      "sha256": "1d6e2b24cd9e8f095b75ea3a1078ef5e83f31709c5de1827d478b1d33e1f423a",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/word-addin/Dockerfile",
+      "sha256": "dbda44def0b9ef0a0405c563f51a95cc35c540717a90fec03d6f25f00568c2f1",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/word-addin/e2e/auth.spec.ts",
+      "sha256": "92290f1623d75bf51b76303bea38880b237292823d4c083285a22f978830033e",
+      "reason": "Cross-window OAuth protocol retained for in-flight handoffs"
+    },
+    {
+      "path": "apps/word-addin/e2e/chat.spec.ts",
+      "sha256": "691e8e8f93c86efd8dea1eebc91f7acab5b70c2675a868d1caf2051b1e66f547",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/chat.spec.ts",
+      "sha256": "9a793b5dc33f10142b11195c9cbc527855dc46548406abd60fbcd39dd0390aa7",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/chat.spec.ts",
+      "sha256": "d75e474cdd1b9b60235697907b0dc1365406811565bd705aa206c14e2b38a28a",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/chat.spec.ts",
+      "sha256": "a70f2425b30769ce192942013468effe8ee1b44f00dc3d8f002af4ba6e76e79b",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/chat.spec.ts",
+      "sha256": "4829a71dc130a76357c77684f36057e9bd243be61e602b1cc8db61f78b981695",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/chat.spec.ts",
+      "sha256": "00cabd7bd4d73ab13fef7a2a599cfec34812b46c89f0f8c5e1a976c94c9173b1",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/chat.spec.ts",
+      "sha256": "6199b7185cad1fa89d6d94f9045947bbb43aff329e91337de2d84333ccf83542",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/client-tool-edits.spec.ts",
+      "sha256": "8b50c5666da0338374a572261d6cfb54d353cfec82bc2a2c9ae68186c4e2d498",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/fixtures.ts",
+      "sha256": "cb331ff8f91288ef29bbfdacb81f626f9e2e00e01143bd5ab39c0d617006155f",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/fixtures.ts",
+      "sha256": "347d3ae2a5c6698143fa5516209d25a41be9a6200e7039282c7490ef5ff9e0b1",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/fixtures.ts",
+      "sha256": "44ae8d342c672822b618cf0433c8e9723c31e2b1de3b160b35f60bda7c6d2c5e",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/office-mock.ts",
+      "sha256": "9b6b90e5290233d101563676506095ef17f51036a5dfc4466c842eb56bc74299",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/office-mock.ts",
+      "sha256": "28d8b50a087236d420231d3bda782edf28340f3e91fd2384a733033613112259",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/office-mock.ts",
+      "sha256": "14982e58cae86565a6579b3a559ade7645b13eaec2d5c0a052a00b097c9359d7",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/office-mock.ts",
+      "sha256": "7c7db88f59b2506e8e9ef84a2c7163c51b78426e0644f8d6668ef2fd276309a4",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/office-mock.ts",
+      "sha256": "11b151574705e37ab6b47d41547523e104963624230d74ee8c0f61966a740703",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/office-mock.ts",
+      "sha256": "2d720834a5321876a5a9ce29adbaa2f4874f1b8111efe6cb42607803ff46446b",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/support/office-mock.ts",
+      "sha256": "5e729b8118daa7de587e8eced471aadacb474df1cfe32c19ec4a9a48ff702201",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/tracked-edit-persistence.spec.ts",
+      "sha256": "8b50c5666da0338374a572261d6cfb54d353cfec82bc2a2c9ae68186c4e2d498",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/e2e/tracked-edit-persistence.spec.ts",
+      "sha256": "9bbdf7fe6955fdf0f003c0ad625cae2301d5b6917ab1eb1dd9f698cc90250801",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/env.d.ts",
+      "sha256": "ed8aa91b12bad8bb438a243d0fc9bad6c891dce12cabc52adf9fe7b4032c5726",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/word-addin/src/oauth-dialog/index.ts",
+      "sha256": "402ae3f0654fd5946a204ecb0479e8f4142f8516da1614c32b1c139261222d6a",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/oauth-dialog/index.ts",
+      "sha256": "f2ce3a6be636a36f84f46e19c67a2aeecb38d9055b0ceeec9bbba93139fc6e50",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/oauth-dialog/index.ts",
+      "sha256": "0effdbbf1024041ca74e62e2f6db5fa6f22520f9efe174b0dbc784fa5a8db837",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/shared/chat/Markdown.tsx",
+      "sha256": "d43011485a3d8fada0e8f59d102339c6912d40f0fc9beabf627401e64e27dc28",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/auth/oauthProtocol.ts",
+      "sha256": "58005e613550fb84e419691b2e8f0434a18e582784017aa775087f510b5bc4be",
+      "reason": "Cross-window OAuth protocol retained for in-flight handoffs"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/auth/session.ts",
+      "sha256": "416ac5275c53dd84308b5d3cb062f042f8fb88130c0e335092b59271144be1bd",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/auth/session.ts",
+      "sha256": "5c0762a88a16e3628873c2cd33e01b4d357a896791429bdd3d939f2887b4994b",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/hooks/useWordDoc.ts",
+      "sha256": "a94b5fd5a9bea0325b0f596f7bbcc8d362c630d8de8499f1b68df811edcb85f7",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/citations.ts",
+      "sha256": "f02b61397dee826606b645122ba355193bd5fe68c8bf3f08d6a91b4a2dd89669",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/errorReporting.ts",
+      "sha256": "e953bc8e00bc68a48af1c3fd1716b0e0989b595cbe461752a9da5cabb73ab59d",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/wordDocumentIdentity.ts",
+      "sha256": "68c3ad681a6203a66bb441ea0e9fd81339f8928ffe5945d7fa2246dbd333bf4e",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/wordDocumentIdentity.ts",
+      "sha256": "f9632545981e6f65db804725c9e75f407301d24ab7f58678da6efc55fd298c1d",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/wordEditAnchors.ts",
+      "sha256": "4982dad2ed80987230a942c68e4a582033091d3523da116b76e31dc030a7a97d",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/wordEditAnchors.ts",
+      "sha256": "52f7bba061bd06d6167c2760d31e564c21e28d9e082672e1dbc97ea7696913b3",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/wordEditAnchors.ts",
+      "sha256": "d15bc2613110ae43e2d1fa0d43fca606e3d0c0d223a01f8ac917f4327a746f68",
+      "reason": "Stored document, citation, OAuth or legacy preference format compatibility"
+    },
+    {
+      "path": "apps/word-addin/src/taskpane/lib/wordPreferenceStorage.ts",
+      "sha256": "4d9a98030ffe95331e9b63586541b1d7d4561c1ae2629062a3001c3479b65fc3",
+      "reason": "Read old session/client/preferences without losing user state; compatibility regression coverage"
+    },
+    {
+      "path": "apps/word-addin/webpack.config.js",
+      "sha256": "3354853d097df1bd4e16f61ed781e0bb00ebcc6e244449ac833a2d6500562102",
+      "reason": "Retain existing storage bucket for configurations that omit its name"
+    },
+    {
+      "path": "apps/word-addin/webpack.config.js",
+      "sha256": "d149354eb335ed3e568170cbcff066edf1b7599e765f6406d1a2c75e1315c294",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/word-addin/webpack.config.js",
+      "sha256": "bb6ebba84e8214fa6aa6ee7f3965e6b5c105515d8f737555aacf38a1f4d3a3c5",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "apps/word-addin/webpack.config.js",
+      "sha256": "e162ce814723510c07af7606a60c68cdace61ee0b7ff4588db32583efe584a69",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "docs/06-technical/NorthWrit-Repository-Ownership.md",
+      "sha256": "0be347322021e1fd36b186d65fd37d88ebd12508e0c644ef9e7bbf4b7456f658",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/06-technical/NorthWrit-Repository-Ownership.md",
+      "sha256": "790f324f19588abe749b67c1b95e69c5e321c3f9c156ebfe1e7802c99eb92518",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-CI-Inventory.md",
+      "sha256": "f473250f05fd3d8161d77852ce6614fbdc706aefb618dd729a56d2cba2160c91",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "d5d5d534eac5752eee026435509fc2155ad7f1f63b1c06ee4ad7b70ff0c5abe5",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "7c9b07ad76606d6fdb76fb250cbae19cf0783b45fe335f49448b743f20159baf",
+      "reason": "Factual source foundation and historical roadmap comparison"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "47fac94212ef3a605d21bae774deab9f300d46c2c4ccf8b1b72ddaa5102b9110",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "a195a2380dacdc5866177b2467961dfe1560d16cba47e6000a05da65a3dd9190",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "a7ba8863dbe653e4a27ceb271c1f2846f5c7f7c46d76d014baea7983b8b311f4",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "32a3b67102908c9f5472ffd091c0d99ca89ff26e38dcbed19db811ea5738d8b6",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "a4d6afef3462d3e91d7ad500ae97fb917b1e5c69c9149075bbe6cf39f5cc331a",
+      "reason": "Factual source foundation and historical roadmap comparison"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "96042147a81f9c42b65e6123ede11801165f02d87b06cfff8e32f511d3583aec",
+      "reason": "Factual source foundation and historical roadmap comparison"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "15cb92a21c680c1b8d7ed5bcc9fc4d614311c755171b0254789241435d2b9ee6",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "2eef8a79b1edb99ba2c05fc1699d9b87378da9cdb96d6a5d13582865789f44a0",
+      "reason": "Factual source foundation and historical roadmap comparison"
+    },
+    {
+      "path": "docs/07-implementation/NorthWrit-Implementation-Plan.md",
+      "sha256": "ef42f1e073568b3d5dc727aa936ae6c67a809558fe47a9912a3f0ff4d73af7e9",
+      "reason": "Factual source foundation and historical roadmap comparison"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "d8d0bf4ee1d9219bb9ece23f69bc21db6cd71d580adb1a2e4b4ddc85291e3bf9",
+      "reason": "Factual source foundation and historical roadmap comparison"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "34e69997ffe79a040cd1565be104ae05acf1bbe62a1b8cc3e52cf0cfa2b9aab7",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "fe4a8bc18bb6b04d52c515f40642c10fca862e89c75004068c50f7f21a233758",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/README.md",
+      "sha256": "5771795894556bca9a639f3bb1f161e08dc210c100d296d818868759fa63b989",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/README.md",
+      "sha256": "b7805cc6d5e52c20fe3a89977c74bca2a01f3c9ca3941d71ea34c3ae6b003aa9",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/README.md",
+      "sha256": "cb8e400bd149593a994c1e07a9a2186a3370236f2760d74065ae25d4b5879c04",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/deployment.md",
+      "sha256": "a9aff02574f5037d9a93f6b805c33dae3ce3569021c3a5e81fbfce4d29afe8d4",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "docs/engineering/deployment.md",
+      "sha256": "9a566a0c7d4a963ddc827b0c54969d6e66ffd3e5293f943f27419a5fcffb1806",
+      "reason": "Persisted database/workflow identifier; no schema migration in this change"
+    },
+    {
+      "path": "docs/engineering/deployment.md",
+      "sha256": "612f64d4504b8143f7b0bbdf4606a45a7050a27ddcfc14c8348c18cdd02f8fa7",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/google-workspace.md",
+      "sha256": "209b6e2fcacdaa73e5f85ee901ff38e14e2a033dee41fd1eb3923e27b35c8301",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "docs/engineering/google-workspace.md",
+      "sha256": "1dbd0df0a4ec0d991ffffa554c3c4d695414adb30084cc33af196fe45d5658ea",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "docs/engineering/google-workspace.md",
+      "sha256": "3e1a69d00bde71c911efc0b826d05a5d7f1c04921fb1ce6b3d860e1abe4eb8f0",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/incidents/2026-09-29-assistant-update-depth.md",
+      "sha256": "ecf10321657ae24c74de549cab85d0b3c3f99ed542ebe6f14c4c464f03a749c6",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/incidents/2026-09-29-assistant-update-depth.md",
+      "sha256": "3ca5e60b2bbeee3ba9db7c88bfec78f1cfef88fc962c1747d1e8e585c777b82a",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/incidents/2026-09-29-assistant-update-depth.md",
+      "sha256": "e2f8159c792828e3f082cebfd7e0531751d9d072fb514f998497a0b103fa7ef2",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/incidents/2026-09-29-assistant-update-depth.md",
+      "sha256": "bc9b12db9f2afab10f351063b2b5638552beeb15ced717b00f382ebb7854c6fb",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/incidents/2026-09-29-assistant-update-depth.md",
+      "sha256": "c553fe5070f25efd7c4290e1074ca57195664d6531cac71095d00fc3aef558dd",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "docs/engineering/incidents/2026-09-29-streaming-effects-audit.md",
+      "sha256": "489eb782235191b48801440935e92599d95067795d5f044322e10a7e8158039f",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/local-development.md",
+      "sha256": "fcdcfa5526e0dbae4d318210c42ac1b5ab6d66df20d00690f50ca613c69a9412",
+      "reason": "Existing resource cleanup ownership ledger; operations not invoked"
+    },
+    {
+      "path": "docs/engineering/local-development.md",
+      "sha256": "457ec97756634db27a45beff6d060b5d7c0220c406316c18a57d57de1494465d",
+      "reason": "Existing resource cleanup ownership ledger; operations not invoked"
+    },
+    {
+      "path": "docs/engineering/local-development.md",
+      "sha256": "dd52a75cb0d094f3679289ea74256526ef2475cb546e4a22ebd6b5b631a1d3e6",
+      "reason": "Existing resource cleanup ownership ledger; operations not invoked"
+    },
+    {
+      "path": "docs/engineering/observability.md",
+      "sha256": "1ebc3fdaa3506c108245af7b3e9a2456f8955648beb9413b8efa30dd5f0eda4b",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/observability.md",
+      "sha256": "bdf9f3f31ec3ec5a4a8c6e6e54338cc445300b76c3440852330c1ed8853516f9",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/preset-templates.md",
+      "sha256": "175f3aed7595ac35e816dc79923d75bfaa781923ddf120ae34f9da7e24736d75",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/slack-mcp-app-manifest.example.json",
+      "sha256": "b27db45a1b0baa61d52b424220cec04e10bd4b4966c7937310306d148f95349c",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "docs/engineering/superpowers/specs/2026-06-29-legal-workflows-design.md",
+      "sha256": "118211224f239f747b42c1f01c76cbe6e0a490c06d88437b8de51ffdb45cc2aa",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "docs/engineering/superpowers/specs/2026-06-29-legal-workflows-design.md",
+      "sha256": "2fb4671c82c19b4c7fcbdb160415033d6363817bb191c14f492ae483eaa7afed",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "docs/engineering/tamper-evident-exports.md",
+      "sha256": "b0cf642bd83b3b7e840d19bb7f951c6a6548a3915632c4d66b22fbaf7520e2f6",
+      "reason": "Signed export version/context is immutable for existing verification keys"
+    },
+    {
+      "path": "docs/engineering/tamper-evident-exports.md",
+      "sha256": "e157e9d456bd274f034efd3f6de38ea8f3a2db5e270f991a1f79f3ad10ff924c",
+      "reason": "Signed export version/context is immutable for existing verification keys"
+    },
+    {
+      "path": "docs/engineering/troubleshooting.md",
+      "sha256": "5fe70db4c7e76f6d239f7a7c6f76537baa0a666e96ebccdab5a2603c31467924",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/engineering/word-addin-development.md",
+      "sha256": "d7e2ee0dddb21f4a65c53542ff8bfb99666645becfc46dd97b9a6dcc7e72ea8e",
+      "reason": "Retain existing storage bucket for configurations that omit its name"
+    },
+    {
+      "path": "docs/guides/developer.md",
+      "sha256": "70f696e4da4998d592e8d94371e71fe525625d76e82e8ff7077fbcdc8caabe40",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "docs/guides/developer.md",
+      "sha256": "d34ce47c6bd8ed9ed8aa3bc196ebadd15826ccdced8c457bf99763a465cd2bfd",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "infra/docker-compose.yml",
+      "sha256": "1f7170ef0ea139a425f29a31caeea08edb0f294d1ff07fd56a0d5aee27ef3820",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "infra/docker-compose.yml",
+      "sha256": "67b9b8fb6ca1a8edb6a430f791381386aa6c17abc7fb2340f5018d575ae8c201",
+      "reason": "Retain existing storage bucket for configurations that omit its name"
+    },
+    {
+      "path": "infra/docker-compose.yml",
+      "sha256": "54ca742b24f8f03e4316bff9ca69a2ca74d3beb5b09bdd2bb86f0e712b4712fa",
+      "reason": "Retain existing storage bucket for configurations that omit its name"
+    },
+    {
+      "path": "infra/docker-compose.yml",
+      "sha256": "0546787ff00024d35757a9477119100d8f498f42e653ac5873528c7ac3af1f05",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "infra/docker-compose.yml",
+      "sha256": "f5caba00f1f26e40bfe6c1d5cd9b0b4678e7d159dd47016d54b1ca93b81c2957",
+      "reason": "Retain existing storage bucket for configurations that omit its name"
+    },
+    {
+      "path": "packages/client/src/sentryEvent.test.ts",
+      "sha256": "4f28b8b9ac478e9604d56d3ccba64b543536b24ef6e18d4ef2140e2a3d1cd384",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "packages/client/src/sentryEvent.ts",
+      "sha256": "4def5a12d3f775075a50d46e3c4a0bf3f2b5d4c473dcd6f4823becdc23083260",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "packages/client/src/sentryEvent.ts",
+      "sha256": "fb575509926c59b789f8c1312f86185936f7243a9bf30074196762673d04e267",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "packages/client/src/sentryPrivacy.test.ts",
+      "sha256": "47aa32c766ecbc11ca9e89c7d35d8196515f80af9196d10a57a0b4f8ec160a67",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "packages/client/src/sentryPrivacy.test.ts",
+      "sha256": "eb54635eb3ae23b7d75b0dfba65da3703a0b100df9dbeaba5a3bd8e0cefcfdd0",
+      "reason": "Historical upstream diagnostic issue identifier"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "4962d7f8082876ff91dd74bea7870df0fa8b953eade8414ed3573be0fe7905c7",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "9411405f26154128f5ca476193c65d0313d0586d27a62bb37807722683eab2f6",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "f954db7510cc755c6fb7d37e654ad18461d5a6d73fcce8b2b4db52c8de474137",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "04879522e6e2f4a5a8e5e9594765b34748cc6e6be8dd8415b0d948645c0373ee",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "fff601a7e4de97c3e44036f0259d458cadb11cd846882c4f9856426ee01e012d",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "ffa13471678a1baca7b70a0583e228b2d586ebb97ecd6aadf9b6a74aeeb0b5ee",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "7b8d7fc8a50304b47c7830928baa4ad29198c34b0318f2a15bd0783a93cb09d2",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "fc2685e61f5307656e592a87db7c99c1ae6eeb20d78256d2f7e119feaf784e54",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "edc470effcbe5075b1f1557d975cab422219b6fc0e64758007304ed0ebdc3a9e",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "b5864e4cf147e188d7c464bf3c991a2879c6d6e4c1357f34fd0b5aa674e9b96f",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "32500354f74682c6f71213674330fb20e001eb4b1137eb89f2f86a9d3f6492ed",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "e44a72dd47502f88aca2ccbc4d0b21ae01add26c7645fe92b0e7fe4403d8bc8e",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "5a690f2353ebe144efb09d566ba66e47f126b734f67fa34e0181270130feb41b",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "867b6174cd04fa12b0934d54375d5226998214fc59e2e4e2609815c98de5c46f",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/build-workflows.js",
+      "sha256": "488c486208c77e2d1e5b4836c90d4d816dbd7503d5cf7fb1e3f321073efd6c5f",
+      "reason": "External workflow metadata or existing object-storage contract"
+    },
+    {
+      "path": "scripts/application/e2e-local-stack.sh",
+      "sha256": "25cd977352c96dc3129ef0dc1be8c950e0882b5f7848016ba31249a2f858fe89",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/e2e-local-stack.sh",
+      "sha256": "1fde664b51bb09ea066d30956619ad64c65e3fff0b354551b7c79b8588862b84",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/stack-plan.test.mjs",
+      "sha256": "512178e08012628968c4bfd556b3b474ec5aaf9aac9d5c51ad5c8d1e1e334f3f",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack-plan.test.mjs",
+      "sha256": "d6a820ae94950be081f36c5f0f3a6e29f218a83c2bfd6b2bfd1b803701b99754",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack-plan.test.mjs",
+      "sha256": "bd8873931732558ad3eb75b06d399ba42fa669936b0a23eb7e0bef3f46d9eadf",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack-plan.test.mjs",
+      "sha256": "e0a50ce97cc7195110ba4a8dcc5c3ae2e209858c67c4977ea15bd0d4e87bfc52",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack-volumes.jq",
+      "sha256": "760dfba5f046375a405e6fa7b048e105cd62484216c60c262aa31fe94b946997",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack-volumes.jq",
+      "sha256": "b0ebdd3ef114b665b1085f1343fe78be5b990556249cd0510fce873bf4bc0066",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "25cd977352c96dc3129ef0dc1be8c950e0882b5f7848016ba31249a2f858fe89",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "1fde664b51bb09ea066d30956619ad64c65e3fff0b354551b7c79b8588862b84",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "2400cbdd91786de10a64714efcf7d9c49bec0782934cda5dcf1b2dc5c5962ca1",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "e817618e8890d076967609c80a2f7daab44f2392892dea16d6a96d131c68020e",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "f9eed9b17e233265be6f5cf715b27f104c0e99da55fad1081acc161f81b8a992",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "bfe21ca5d526085c21c8e4be23bf653153c81dd04db7d8dcaa0f2710c73a1875",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "78efc881347a4a2e92de4683f648ef24ac0ab01ed46931911d2fe538cdd70386",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "1e771fc4b070e37d0c42b4467ee636bdb96cf73503a9e7b61dcebc0616bb3d17",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "6002ffbbc9dbb5ded1700338186a9bbbcd42876ff8707ff676a2d98ef8047745",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.sh",
+      "sha256": "848bf436e8983f6cfaa4bbcd23d8e4c315c080646ab4c613c523848a4086dc4b",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "25cd977352c96dc3129ef0dc1be8c950e0882b5f7848016ba31249a2f858fe89",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "1fde664b51bb09ea066d30956619ad64c65e3fff0b354551b7c79b8588862b84",
+      "reason": "Temporary old environment-variable or build-argument alias"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "6a35219ac2182cd9ec2076952500df3e94e69fcc55b2341e2b41044cf67890da",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "02c49e9cc2305284de51eb6e3d3be7ce0aced9dfcf67b290afddbebef813d866",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "65cca3c67103429c3bf236b3df27e61ad0be5106ddf97b3d1350564f71c2262d",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "c50aa045f407e43f606971af3ba83ae63a9034945760911fd7c39bc799bef120",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "457f750a34dd6081f74d466aa5833d56a475cf125737f028a303dc9041be54c6",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "7117bf130a9b98a843fd3271fee10c05efce6e39c423790b1690237718cd72ff",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "ac571de67b8b26b0ee64ff89418e6fe34212ab7b218420a9c686e5f7dca44239",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "4c0aa67c06526d02474dc58cd2bcf3df83a0a5740095dc7ecb74d0ba99976bac",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "ca65c4f06571b903e3f217f03aea69313f7d4763738a155668de4660b2774c9d",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "fed12e0aa464af1a7adfd8366ac77d51a75e9de15c1a3dc970ea7a8f7448711f",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "499e2a342d207a7b7ca19bbec55269cc7bbb794f5410e8227bdf09d75ab129ca",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/application/stack.test.sh",
+      "sha256": "c8c574646d2b1605ee43bec7f34307e93745fd8f5b16c74b9afd0ae4fe0f4397",
+      "reason": "Existing Docker resource ownership/cleanup ledger compatibility and its isolated tests; no cleanup invoked"
+    },
+    {
+      "path": "scripts/check-repository.mjs",
+      "sha256": "663a9b5dc10ada5b26e6c2a93e8bc19732e6149c06936fa9cd39ca32a15680cc",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "scripts/check-repository.mjs",
+      "sha256": "7438b9cb5d5b141fdf85e952754dfc075d862bb3ab4b3dc9ad9ac9d4a9c68970",
+      "reason": "Guard rejects obsolete document-name prefixes"
+    },
+    {
+      "path": "scripts/check-repository.mjs",
+      "sha256": "0dcca60cf25d1156d1765d26af43fda787fdc9697fb78e73c2cb709e0e52b594",
+      "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/api/src/__tests__/releaseVersion.test.ts",
+      "sha256": "c4f3d3d4019e50d2c6efb586efeae07e510c8d9f6e38627efe8925cabc73c0c8",
+      "reason": "Archived upstream workflow keeps its original provenance path"
+    },
+    {
+      "path": "apps/api/src/__tests__/releaseVersion.test.ts",
+      "sha256": "b847a7579aab024592ac2da4d24afbf782d841ce88044d9ff51f374d704c8f69",
+      "reason": "Archived upstream workflow keeps its original provenance path"
+    },
+    {
+      "path": "apps/web/src/app/(pages)/settings/connectors/page.test.tsx",
+      "sha256": "a04a87a2c417e4d87e4cd996eff2e489d95a978b8727d9ffe1bbc493bcc9cef1",
+      "reason": "Preserved upstream connector setup documentation URL"
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import {
   type WordTurnHandlers,
 } from "../api/stream";
 import { reportError } from "../lib/errorReporting";
-import { postWordChatToolResult, stopWordChatTurn } from "../api/mikeApi";
+import { postWordChatToolResult, stopWordChatTurn } from "../api/northwritApi";
 import { useWordDoc } from "./useWordDoc";
 import type {
   DocumentReadActivity,

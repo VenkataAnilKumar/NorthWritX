@@ -15,7 +15,7 @@ import {
 import { OptionPill } from "@/app/components/ui/option-pill";
 import { FieldLabel } from "@/app/components/ui/form-field";
 import { cn } from "@/app/lib/utils";
-import type { PersonalisationDetails } from "@/app/lib/mikeApi";
+import type { PersonalisationDetails } from "@/app/lib/northwritApi";
 import {
   COUNTRY_OPTIONS,
   OTHER_JURISDICTION_OPTION,

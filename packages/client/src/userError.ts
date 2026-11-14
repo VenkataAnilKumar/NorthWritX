@@ -105,7 +105,7 @@ const KIND_TITLES: Record<UserErrorKind, string> = {
 /**
  * The one sentence shown when a request never reached the server.
  *
- * Both clients say this. The add-in passes the origin because Mike is
+ * Both clients say this. The add-in passes the origin because NorthWrit is
  * self-hostable and "check your connection" is useless advice to someone
  * whose own API container is down; the web app omits it because the API is
  * same-origin there and naming it would add noise, not information.

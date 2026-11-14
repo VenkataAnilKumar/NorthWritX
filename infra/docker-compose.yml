@@ -74,7 +74,7 @@ services:
       GOTRUE_SMTP_PORT: "1025"
       # No SMTP_USER/PASS: Mailpit needs no auth, and GoTrue refuses to send
       # credentials over a plaintext (non-TLS) connection ("unencrypted connection").
-      GOTRUE_SMTP_ADMIN_EMAIL: admin@mike.local
+      GOTRUE_SMTP_ADMIN_EMAIL: admin@northwrit.local
       GOTRUE_SMTP_SENDER_NAME: NorthWrit
       # Confirmation/recovery links resolve to the gateway, which strips /auth/v1.
       GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/v1/verify
@@ -141,9 +141,9 @@ services:
       args:
         # Release identity for Sentry (docs/observability.md): build args, not
         # runtime variables, because the Dockerfile bakes them into the image.
-        MIKE_VERSION: ${MIKE_VERSION:-}
+        NORTHWRIT_VERSION: ${NORTHWRIT_VERSION:-${MIKE_VERSION:-}}
         GIT_SHA: ${GIT_SHA:-}
-    image: &backend-image ${MIKE_IMAGE_REPO:-ghcr.io/open-legal-products}/mike-backend:${MIKE_IMAGE_TAG:-2.1.0}
+    image: &backend-image ${NORTHWRIT_IMAGE_REPO:-northwrit}/northwrit-api:${NORTHWRIT_IMAGE_TAG:-2.1.0}
     depends_on:
       db:
         condition: service_healthy
@@ -220,8 +220,8 @@ services:
     entrypoint: /bin/sh
     command: >
       -c "until aws --endpoint-url http://storage:9000 s3 ls; do echo 'waiting for storage'; sleep 2; done;
-          aws --endpoint-url http://storage:9000 s3 mb s3://mike || true;
-          aws --endpoint-url http://storage:9000 s3api put-bucket-cors --bucket mike --cors-configuration file:///storage-cors.json"
+          aws --endpoint-url http://storage:9000 s3 mb s3://${R2_BUCKET_NAME:-mike} || true;
+          aws --endpoint-url http://storage:9000 s3api put-bucket-cors --bucket ${R2_BUCKET_NAME:-mike} --cors-configuration file:///storage-cors.json"
     restart: "no"
 
   # --- Redis: backs the BullMQ job queues (conversion, extraction, fast
@@ -261,7 +261,7 @@ services:
       - R2_ENDPOINT_URL=http://storage:9000
       - R2_ACCESS_KEY_ID=rustfsadmin
       - R2_SECRET_ACCESS_KEY=rustfsadmin
-      - R2_BUCKET_NAME=mike
+      - R2_BUCKET_NAME=${R2_BUCKET_NAME:-mike}
     command: ["npm", "run", "sync:workflows"]
     depends_on:
       db-init:
@@ -300,7 +300,7 @@ services:
       - R2_PUBLIC_ENDPOINT_URL=${R2_PUBLIC_ENDPOINT_URL:-http://localhost:9000}
       - R2_ACCESS_KEY_ID=rustfsadmin
       - R2_SECRET_ACCESS_KEY=rustfsadmin
-      - R2_BUCKET_NAME=mike
+      - R2_BUCKET_NAME=${R2_BUCKET_NAME:-mike}
       # Local Ollama running on the host. Override OLLAMA_MODEL to change the tag.
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434/v1}
       # Durable job queues: fresh compose installs run BullMQ-on-Redis for
@@ -356,9 +356,11 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+        NEXT_PUBLIC_NORTHWRIT_TERMS_URL: ${NEXT_PUBLIC_NORTHWRIT_TERMS_URL:-http://northwrit.local/terms}
+        NEXT_PUBLIC_NORTHWRIT_PRIVACY_URL: ${NEXT_PUBLIC_NORTHWRIT_PRIVACY_URL:-http://northwrit.local/privacy}
         NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL: ${NEXT_PUBLIC_NORTHWRIT_SUPPORT_EMAIL:-}
         # Release identity (docs/observability.md), as for the backend image.
-        MIKE_VERSION: ${MIKE_VERSION:-}
+        NORTHWRIT_VERSION: ${NORTHWRIT_VERSION:-${MIKE_VERSION:-}}
         # The browser-side Sentry DSN is inlined by `next build`, so it is a
         # build argument, not a runtime variable (docs/observability.md).
         NEXT_PUBLIC_SENTRY_DSN: ${FRONTEND_SENTRY_DSN:-}
@@ -376,7 +378,7 @@ services:
       secrets:
         - SENTRY_AUTH_TOKEN
     # Same default tag as the backend image; pull both or build both.
-    image: ${MIKE_IMAGE_REPO:-ghcr.io/open-legal-products}/mike-frontend:${MIKE_IMAGE_TAG:-2.1.0}
+    image: ${NORTHWRIT_IMAGE_REPO:-northwrit}/northwrit-web:${NORTHWRIT_IMAGE_TAG:-2.1.0}
     environment:
       - API_BASE_URL=${API_BASE_URL:-http://backend:3001}
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}

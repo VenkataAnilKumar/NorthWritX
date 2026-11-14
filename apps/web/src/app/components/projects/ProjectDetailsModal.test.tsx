@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { MikeApiError, listOrgs } from "@/app/lib/mikeApi";
+import { NorthWritApiError, listOrgs } from "@/app/lib/northwritApi";
 import type { Project } from "@/app/components/shared/types";
 import { ProjectDetailsModal } from "./ProjectDetailsModal";
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     listOrgs: vi.fn(),
 }));
 
@@ -95,7 +95,7 @@ describe("ProjectDetailsModal", () => {
                 onSave={vi
                     .fn()
                     .mockRejectedValue(
-                        new MikeApiError({
+                        new NorthWritApiError({
                             status: 409,
                             message: "A project with that CM number exists.",
                         }),

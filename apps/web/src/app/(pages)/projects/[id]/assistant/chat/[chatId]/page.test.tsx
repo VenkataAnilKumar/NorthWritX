@@ -15,7 +15,7 @@ import type {
     Message,
 } from "@/app/components/shared/types";
 import ProjectAssistantChatPage from "./page";
-import { getProject } from "@/app/lib/mikeApi";
+import { getProject } from "@/app/lib/northwritApi";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 import type { DocxCloseGuard } from "@/app/components/shared/views/DocxRenderer.types";
 
@@ -52,8 +52,8 @@ vi.mock("next/navigation", () => ({
     useRouter: () => ({ replace: state.replace, push: state.push }),
     usePathname: () => window.location.pathname,
 }));
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     getProject: vi.fn().mockResolvedValue({
         id: "p1",
         name: "Matter",
@@ -375,7 +375,7 @@ describe("closing document tabs", () => {
             screen.getByRole("region", { name: "Document viewer" }),
             {
                 dataTransfer: {
-                    types: ["application/mike-doc"],
+                    types: ["application/northwrit-doc"],
                     getData: () => "notes",
                 },
             },
@@ -424,9 +424,9 @@ describe("document viewer drops", () => {
         await renderWorkspace();
         const viewer = screen.getByRole("region", { name: "Document viewer" });
         const dataTransfer = {
-            types: ["application/mike-doc"],
+            types: ["application/northwrit-doc"],
             getData: vi.fn((type) =>
-                type === "application/mike-doc" ? "doc1" : "",
+                type === "application/northwrit-doc" ? "doc1" : "",
             ),
         };
         fireEvent.dragOver(viewer, { dataTransfer });
@@ -455,9 +455,9 @@ describe("document viewer drops", () => {
             screen.getByRole("region", { name: "Document viewer" }),
             {
                 dataTransfer: {
-                    types: ["application/mike-docs"],
+                    types: ["application/northwrit-docs"],
                     getData: (type: string) =>
-                        type === "application/mike-docs"
+                        type === "application/northwrit-docs"
                             ? JSON.stringify(["doc1", "excel"])
                             : "",
                 },
@@ -547,9 +547,9 @@ describe("document viewer drops", () => {
             screen.getByRole("region", { name: "Document viewer" }),
             {
                 dataTransfer: {
-                    types: ["application/mike-doc"],
+                    types: ["application/northwrit-doc"],
                     getData: (type: string) =>
-                        type === "application/mike-doc" ? "missing" : "",
+                        type === "application/northwrit-doc" ? "missing" : "",
                 },
             },
         );
@@ -565,8 +565,8 @@ describe("document viewer drops", () => {
         await renderWorkspace();
         const viewer = screen.getByRole("region", { name: "Document viewer" });
         for (const type of [
-            "application/mike-folder",
-            "application/mike-project-tab",
+            "application/northwrit-folder",
+            "application/northwrit-project-tab",
         ]) {
             const dataTransfer = { types: [type], getData: vi.fn() };
             expect(fireEvent.dragOver(viewer, { dataTransfer })).toBe(true);
@@ -1383,9 +1383,9 @@ describe("project explorer root drop", () => {
             fireEvent.drop(explorer.parentElement!, {
                 dataTransfer: {
                     getData: (type: string) =>
-                        type === "application/mike-doc" ? "doc1" : "",
+                        type === "application/northwrit-doc" ? "doc1" : "",
                     files: [],
-                    types: ["application/mike-doc"],
+                    types: ["application/northwrit-doc"],
                 },
             });
         });

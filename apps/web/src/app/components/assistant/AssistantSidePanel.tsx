@@ -10,7 +10,7 @@ import {
 import { useDocumentViewers } from "@/app/hooks/useDocumentViewers";
 import { useDocumentPermissions } from "@/app/hooks/useDocumentPermissions";
 import { type DocumentActions } from "../shared/DocumentTabActions";
-import type { DocumentVersion } from "@/app/lib/mikeApi";
+import type { DocumentVersion } from "@/app/lib/northwritApi";
 import { SvgAssetIcon } from "@/app/components/ui/svg-asset-icon";
 import caseLaw from "../../../../public/icons/legal-sources/case-law.svg";
 import legislation from "../../../../public/icons/legal-sources/legislation.svg";

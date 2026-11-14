@@ -253,7 +253,7 @@ def changes(social_source):
 
     # Use the shared theme-aware component so the web and Word surfaces retain
     # upstream animation, size and run-status colours.
-    shared_path = "packages/ui/src/MikeIconUI.tsx"
+    shared_path = "packages/ui/src/NorthWritIconUI.tsx"
     shared = (ROOT / shared_path).read_text(encoding="utf-8")
     start = shared.index("function Blades(")
     end = shared.index("export function MikeIcon(", start)
@@ -278,7 +278,7 @@ def changes(social_source):
     ).replace(
         "const DEGREES = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];\n", ""
     ).encode()
-    test_path = "packages/ui/src/MikeIconUI.test.tsx"
+    test_path = "packages/ui/src/NorthWritIconUI.test.tsx"
     outputs[test_path] = replace(test_path, [("rgb(10,10,10)", "rgb(31,58,95)")])
 
     outputs["apps/web/src/app/icon.svg"] = svg(MARK, "0 0 64 64")

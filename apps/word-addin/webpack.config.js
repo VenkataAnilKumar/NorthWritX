@@ -94,7 +94,7 @@ module.exports = async (_env, options) => {
     }
 
     // Word loads the task pane over HTTPS, and its WebView blocks "mixed content"
-    // (HTTP requests from an HTTPS page). Proxy the local Mike API through this
+    // (HTTP requests from an HTTPS page). Proxy the local NorthWrit API through this
     // HTTPS dev server so authentication and API calls stay same-origin and the
     // HttpOnly session cookie works consistently across Word hosts.
     const apiTarget = process.env.API_PROXY_TARGET || "http://localhost:3001";
@@ -145,7 +145,7 @@ module.exports = async (_env, options) => {
           release: {
             name: releaseName(
               process.env.REACT_APP_SENTRY_RELEASE,
-              process.env.REACT_APP_MIKE_VERSION,
+              (process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION),
               process.env.REACT_APP_GIT_SHA,
             ),
           },
@@ -246,7 +246,7 @@ module.exports = async (_env, options) => {
         // Development defaults stay on the HTTPS dev-server origin, whose
         // proxies reach the HTTP backends without mixed-content failures.
         // Production hosting must reverse-proxy this same-origin path to the
-        // Mike backend so HttpOnly auth cookies are never third-party cookies.
+        // NorthWrit backend so HttpOnly auth cookies are never third-party cookies.
         REACT_APP_API_BASE_URL:
           process.env.REACT_APP_API_BASE_URL || "/api",
         // Deployment override only. Leaving it empty makes DEFAULT_MODEL_ID in
@@ -254,7 +254,7 @@ module.exports = async (_env, options) => {
         // model — this config file cannot import that TypeScript constant, so
         // repeating its value here would be a second copy that silently drifts.
         REACT_APP_DEFAULT_MODEL: process.env.REACT_APP_DEFAULT_MODEL || "",
-        // The Mike web app origin — the task pane links here (e.g. the
+        // The NorthWrit web app origin — the task pane links here (e.g. the
         // account/api-keys page); it never fetches from it.
         REACT_APP_WEB_APP_URL: isDev
           ? process.env.REACT_APP_WEB_APP_URL || "http://localhost:3000"
@@ -269,7 +269,8 @@ module.exports = async (_env, options) => {
           process.env.REACT_APP_SENTRY_ENVIRONMENT || "",
         REACT_APP_SENTRY_RELEASE: process.env.REACT_APP_SENTRY_RELEASE || "",
         REACT_APP_GIT_SHA: process.env.REACT_APP_GIT_SHA || "",
-        REACT_APP_MIKE_VERSION: process.env.REACT_APP_MIKE_VERSION || "",
+        REACT_APP_MIKE_VERSION: process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION ?? "",
+        REACT_APP_NORTHWRIT_VERSION: (process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION) || "",
         REACT_APP_SENTRY_TRACES_SAMPLE_RATE:
           process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE || "",
       }),

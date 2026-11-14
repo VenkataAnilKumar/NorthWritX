@@ -5,7 +5,7 @@ import {
     deleteWorkflow,
     getWorkflow,
     updateWorkflow,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type { Workflow } from "@/app/components/shared/types";
 import { WorkflowDetailPage } from "./WorkflowDetailPage";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
@@ -16,8 +16,8 @@ vi.mock("next/navigation", () => ({
     usePathname: () => "/workflows/wf-1",
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     getWorkflow: vi.fn(),
     updateWorkflow: vi.fn(),
     deleteWorkflow: vi.fn(),

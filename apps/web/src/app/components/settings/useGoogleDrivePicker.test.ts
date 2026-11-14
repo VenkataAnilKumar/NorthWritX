@@ -6,15 +6,15 @@ const mocks = vi.hoisted(() => ({
   open: vi.fn(),
 }));
 
-vi.mock("@/app/lib/mikeApi", async (original) => ({
-  ...(await original<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (original) => ({
+  ...(await original<typeof import("@/app/lib/northwritApi")>()),
   createGoogleDrivePickerSession: mocks.session,
 }));
 vi.mock("@/app/lib/googlePicker", () => ({
   openGoogleDrivePicker: mocks.open,
 }));
 
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 import { useGoogleDrivePicker } from "./useGoogleDrivePicker";
 
 const session = {
@@ -61,7 +61,7 @@ describe("useGoogleDrivePicker", () => {
 
   it("shows intentional 4xx text but never a raw failure", async () => {
     mocks.session.mockRejectedValueOnce(
-      new MikeApiError({
+      new NorthWritApiError({
         status: 409,
         message: "Google Drive is not connected for this account.",
       }),
@@ -76,7 +76,7 @@ describe("useGoogleDrivePicker", () => {
   });
 
   it("leaves an MFA challenge to the page's step-up flow", async () => {
-    const mfa = new MikeApiError({
+    const mfa = new NorthWritApiError({
       status: 403,
       code: "mfa_verification_required",
       message: "Verify",

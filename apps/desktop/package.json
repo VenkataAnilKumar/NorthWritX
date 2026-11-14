@@ -7,7 +7,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "MIKE_DESKTOP_DEV=1 electron .",
+    "dev": "NORTHWRIT_DESKTOP_DEV=1 electron .",
     "start:local": "electron . --local",
     "local:fetch": "bash scripts/fetch-local-stack.sh",
     "local:build": "bash scripts/build-local-stack.sh",

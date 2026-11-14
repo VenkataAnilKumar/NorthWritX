@@ -192,7 +192,7 @@ function parseSkill(source: string, label: string) {
 function githubHeaders(token?: string): Record<string, string> {
   return {
     Accept: "application/vnd.github+json",
-    "User-Agent": "mike-workflow-sync",
+    "User-Agent": "northwrit-workflow-sync",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
@@ -200,18 +200,18 @@ function githubHeaders(token?: string): Record<string, string> {
 function sourceConfiguration(options: WorkflowCatalogSourceOptions) {
   const repository =
     options.repository ??
-    process.env.MIKE_WORKFLOWS_REPOSITORY ??
+    (process.env.NORTHWRIT_WORKFLOWS_REPOSITORY ?? process.env.MIKE_WORKFLOWS_REPOSITORY) ??
     DEFAULT_REPOSITORY;
-  const ref = options.ref ?? process.env.MIKE_WORKFLOWS_REF ?? DEFAULT_REF;
+  const ref = options.ref ?? (process.env.NORTHWRIT_WORKFLOWS_REF ?? process.env.MIKE_WORKFLOWS_REF) ?? DEFAULT_REF;
   const githubToken =
-    options.githubToken ?? process.env.MIKE_WORKFLOWS_GITHUB_TOKEN;
+    options.githubToken ?? (process.env.NORTHWRIT_WORKFLOWS_GITHUB_TOKEN ?? process.env.MIKE_WORKFLOWS_GITHUB_TOKEN);
   if (!REPOSITORY_PATTERN.test(repository)) {
     throw new Error(
-      "MIKE_WORKFLOWS_REPOSITORY must use the owner/repository form",
+      "NORTHWRIT_WORKFLOWS_REPOSITORY must use the owner/repository form",
     );
   }
   if (!ref.trim() || ref.length > 200) {
-    throw new Error("MIKE_WORKFLOWS_REF must be between 1 and 200 characters");
+    throw new Error("NORTHWRIT_WORKFLOWS_REF must be between 1 and 200 characters");
   }
   return { repository, ref, githubToken };
 }
@@ -492,20 +492,20 @@ async function parseArchive(
       throw new Error(`${skillPath}.metadata.mike-type must be '${type}'`);
     }
     const availability = optionalString(
-      metadata["mike-availability"],
-      `${skillPath}.metadata.mike-availability`,
+      metadata["northwrit-availability"],
+      `${skillPath}.metadata.northwrit-availability`,
     );
     if (
       availability &&
       availability !== "system" &&
       availability !== "add-on"
     ) {
-      throw new Error(`${skillPath}.metadata.mike-availability is invalid`);
+      throw new Error(`${skillPath}.metadata.northwrit-availability is invalid`);
     }
 
     const title = requiredString(
-      metadata["mike-display-name"],
-      `${skillPath}.metadata.mike-display-name`,
+      metadata["northwrit-display-name"],
+      `${skillPath}.metadata.northwrit-display-name`,
     );
     let prompt = body.trimStart();
     if (!prompt) throw new Error(`${skillPath} has no workflow instructions`);

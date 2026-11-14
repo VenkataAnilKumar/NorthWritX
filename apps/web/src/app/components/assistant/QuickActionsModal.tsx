@@ -12,7 +12,7 @@ import { ModalTextarea } from "../modals/ModalTextarea";
 import { FieldLabel, FormTextInput } from "../ui/form-field";
 import { ToggleSwitchUI } from "@northwrit/ui";
 import { SearchBar } from "../ui/search-bar";
-import { listWorkflows } from "@/app/lib/mikeApi";
+import { listWorkflows } from "@/app/lib/northwritApi";
 import { reportFault, userFacingApiError } from "@/app/lib/userFacingError";
 import { LIQUID_GLASS_MODAL_ROW_HOVER_CLASS } from "@/app/components/ui/liquid-surface";
 

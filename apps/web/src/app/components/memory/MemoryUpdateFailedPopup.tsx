@@ -2,10 +2,10 @@
 
 import { useCallback, useState, useSyncExternalStore } from "react";
 import { WarningPopup } from "@/app/components/popups/WarningPopup";
-import type { MemoryCurrent } from "@/app/lib/mikeApi";
+import type { MemoryCurrent } from "@/app/lib/northwritApi";
 
-const DISMISSAL_PREFIX = "mike:memory-update-failure-dismissed:";
-const DISMISSAL_EVENT = "mike:memory-update-failure-dismissed";
+const DISMISSAL_PREFIX = "northwrit:memory-update-failure-dismissed:";
+const DISMISSAL_EVENT = "northwrit:memory-update-failure-dismissed";
 
 function failureId(memory: MemoryCurrent | null): string | null {
   if (memory?.status !== "failed") return null;

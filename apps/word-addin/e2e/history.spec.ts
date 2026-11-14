@@ -164,7 +164,7 @@ test("history reports a failed request and retries it", async ({
   const dropdown = page.getByRole("menu");
   // The 503 body is not echoed; the classified outage sentence is shown.
   await expect(dropdown.getByRole("alert")).toContainText(
-    "Mike is temporarily unavailable",
+    "NorthWrit is temporarily unavailable",
   );
   await dropdown.getByRole("button", { name: "Retry" }).click();
   await expect(dropdown.getByRole("menuitem", { name: /Chat 1/ })).toBeVisible();
@@ -264,7 +264,7 @@ test("persisted cloud failures and cancellations both refresh history", async ({
       __WORD_HISTORY_EVENT_COUNT__?: number;
     };
     testWindow.__WORD_HISTORY_EVENT_COUNT__ = 0;
-    window.addEventListener("mike-word-chat-history-changed", () => {
+    window.addEventListener("northwrit-word-chat-history-changed", () => {
       testWindow.__WORD_HISTORY_EVENT_COUNT__ =
         (testWindow.__WORD_HISTORY_EVENT_COUNT__ ?? 0) + 1;
     });

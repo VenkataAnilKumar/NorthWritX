@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getCloudWordChat } from "../api/mikeApi";
+import { getCloudWordChat } from "../api/northwritApi";
 import { getLocalWordChat } from "../lib/localWordChats";
 import { reportFault } from "../lib/notify";
 import type { WordChatStorageMode } from "../lib/wordChatSettings";

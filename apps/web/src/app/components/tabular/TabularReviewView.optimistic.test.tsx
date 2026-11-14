@@ -25,7 +25,7 @@ import {
     streamTabularGeneration,
     updateTabularReview,
     uploadReviewDocument,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import type {
     ColumnConfig,
     TabularCell,
@@ -48,8 +48,8 @@ const { tableProps } = vi.hoisted(() => ({
     },
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     clearTabularCells: vi.fn(),
     getTabularReview: vi.fn(),
     listProjects: vi.fn(),

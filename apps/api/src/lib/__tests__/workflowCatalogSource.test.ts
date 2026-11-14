@@ -24,9 +24,9 @@ metadata:
   version: "1.0.0"
   author: "Open Legal Products"
   language: "English"
-  mike-display-name: "${options.title}"
+  northwrit-display-name: "${options.title}"
   mike-type: "${options.type}"
-  mike-availability: "system"
+  northwrit-availability: "system"
   practice: "General Transactions"
   jurisdictions: "General"
 ---

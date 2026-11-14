@@ -10,9 +10,9 @@ import {
 } from "./DocTable";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 import { SelectionActionsMenu } from "@/app/components/shared/SelectionActionsMenu";
-import { deleteDocument, downloadDocumentsZip } from "@/app/lib/mikeApi";
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-  ...await importOriginal<typeof import("@/app/lib/mikeApi")>(),
+import { deleteDocument, downloadDocumentsZip } from "@/app/lib/northwritApi";
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/app/lib/northwritApi")>(),
   downloadDocumentsZip: vi.fn().mockRejectedValue(new Error("download failed")),
   deleteDocument: vi.fn(),
 }));
@@ -274,7 +274,7 @@ describe("DocTable failure reporting", () => {
         );
         expect(folderRow).not.toBeNull();
         const payload: Record<string, string> = {
-            "application/mike-docs": JSON.stringify(["doc-1", "doc-2"]),
+            "application/northwrit-docs": JSON.stringify(["doc-1", "doc-2"]),
         };
         fireEvent.drop(folderRow!, {
             dataTransfer: {

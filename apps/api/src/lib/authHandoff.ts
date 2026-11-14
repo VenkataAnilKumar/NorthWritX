@@ -30,7 +30,7 @@ export interface ConsumedAuthHandoff {
 function encryptionKey(): Buffer {
   return crypto.scryptSync(
     authHandoffEncryptionSecret(),
-    "mike-auth-handoff-v1",
+    "northwrit-auth-handoff-v1",
     32,
   );
 }
@@ -40,7 +40,7 @@ function associatedData(
 ) {
   return Buffer.from(
     [
-      "mike-auth-handoff-v1",
+      "northwrit-auth-handoff-v1",
       row.user_id,
       row.ticket_hash,
       row.request_id,

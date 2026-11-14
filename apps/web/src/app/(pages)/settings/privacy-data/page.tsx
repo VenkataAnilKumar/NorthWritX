@@ -33,7 +33,7 @@ import {
   isMfaRequiredError,
   startUserExport,
   type UserExportType,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { UserVisibleError, notifyError } from "@/app/lib/userFacingError";
 
 type DeleteDataAction = "chats" | "tabular-reviews" | "projects" | "memory";
@@ -211,7 +211,7 @@ function PrivacyData({
         setPendingMfaAction("export-account");
         return;
       }
-      await runAsyncExport("account", "mike-account-export.json");
+      await runAsyncExport("account", "northwrit-account-export.json");
     } catch (error) {
       devLog("[privacy-data/mfa] export account failed", {
         isMfaRequired: isMfaRequiredError(error),
@@ -238,7 +238,7 @@ function PrivacyData({
         setPendingMfaAction("export-chats");
         return;
       }
-      await runAsyncExport("chats", "mike-chat-export.json");
+      await runAsyncExport("chats", "northwrit-chat-export.json");
     } catch (error) {
       devLog("[privacy-data/mfa] export chats failed", {
         isMfaRequired: isMfaRequiredError(error),
@@ -267,7 +267,7 @@ function PrivacyData({
       }
       await runAsyncExport(
         "tabular-reviews",
-        "mike-tabular-reviews-export.json",
+        "northwrit-tabular-reviews-export.json",
       );
     } catch (error) {
       devLog("[privacy-data/mfa] export tabular reviews failed", {
@@ -295,7 +295,7 @@ function PrivacyData({
         setPendingMfaAction("export-memory");
         return;
       }
-      await runAsyncExport("memory-zip", "mike-memory-export.zip");
+      await runAsyncExport("memory-zip", "northwrit-memory-export.zip");
     } catch (error) {
       devLog("[privacy-data/mfa] export memory failed", {
         isMfaRequired: isMfaRequiredError(error),

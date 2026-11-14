@@ -3,7 +3,7 @@ import type { ModelOption } from "@northwrit/client";
 import type {
     ApiKeyState,
     PlaybookConfiguration,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { buildPlaybookModelOptions } from "./playbookModelOptions";
 
 const catalog: ModelOption[] = [

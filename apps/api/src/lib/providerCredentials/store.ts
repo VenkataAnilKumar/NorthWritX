@@ -155,7 +155,7 @@ function envApiKey(provider: ApiKeyProvider): string | null {
         case "xai":
             return process.env.XAI_API_KEY?.trim() || null;
         // A custom endpoint is always the user's own; deployments declare
-        // shared endpoints in MIKE_MODEL_CONFIG_JSON.
+        // shared endpoints in NORTHWRIT_MODEL_CONFIG_JSON.
         case "custom":
             return null;
         // CourtListener is a connector: each user (or their organization)
@@ -177,7 +177,7 @@ export function hasEnvApiKey(provider: ApiKeyProvider): boolean {
     return !!envApiKey(provider);
 }
 
-const KEY_SALT = "mike-user-api-keys-v1";
+const KEY_SALT = "northwrit-user-api-keys-v1";
 // scryptSync is deliberately slow (~40ms); deriving it on every encrypt and
 // decrypt made key reads dominate request latency. The secret and salt are
 // fixed for the process lifetime, so cache the derived key per pair.

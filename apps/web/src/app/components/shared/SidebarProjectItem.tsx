@@ -13,7 +13,7 @@ import type {
     Project,
     TabularReview,
 } from "@/app/components/shared/types";
-import { listProjectChats, listTabularReviews } from "@/app/lib/mikeApi";
+import { listProjectChats, listTabularReviews } from "@/app/lib/northwritApi";
 import { cn } from "@/app/lib/utils";
 import {
     LIQUID_GLASS_HOVER_CLASS,

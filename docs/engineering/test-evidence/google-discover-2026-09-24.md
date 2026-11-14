@@ -1,3 +1,5 @@
+> Historical imported upstream evidence. This record is not a NorthWrit acceptance result.
+
 # Google connectors in Discover
 
 Drive, Gmail, and Calendar now appear alongside the other services in Discover.

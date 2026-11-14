@@ -18,8 +18,8 @@ vi.mock("@/app/contexts/AuthContext", () => ({
 vi.mock("@/app/contexts/UserProfileContext", () => ({
     useUserProfile: () => ({ profile: { onboardingComplete: false }, loading: false, completeOnboarding: mocks.completeOnboarding }),
 }));
-vi.mock("@/app/lib/mikeApi", async (original) => ({
-    ...await original<typeof import("@/app/lib/mikeApi")>(),
+vi.mock("@/app/lib/northwritApi", async (original) => ({
+    ...await original<typeof import("@/app/lib/northwritApi")>(),
     listMyOrgInvitations: mocks.list,
     acceptOrgInvitation: mocks.accept,
 }));
@@ -52,7 +52,7 @@ describe("OnboardingInvitationsPage", () => {
         expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
         expect(screen.getByRole("button", { name: "Back" })).toBeDisabled();
         await act(async () => finishAccepting({ org_id: "org", role: "member" }));
-        expect(window.localStorage.getItem("mike.activeWorkspace.user-1")).toBe("org");
+        expect(window.localStorage.getItem("northwrit.activeWorkspace.user-1")).toBe("org");
         await user.click(screen.getByRole("button", { name: "Continue" }));
         expect(mocks.push).toHaveBeenCalledWith("/onboarding/models");
         // Setup is completed on the last step, not here.

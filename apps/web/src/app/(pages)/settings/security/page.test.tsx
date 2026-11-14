@@ -38,7 +38,7 @@ vi.mock("@/app/contexts/UserProfileContext", () => ({
     }),
 }));
 
-vi.mock("@/app/lib/mikeApi", () => ({ isMfaRequiredError: () => false }));
+vi.mock("@/app/lib/northwritApi", () => ({ isMfaRequiredError: () => false }));
 
 vi.mock("@/app/components/popups/MfaVerificationPopup", () => ({
     MfaVerificationPopup: () => null,

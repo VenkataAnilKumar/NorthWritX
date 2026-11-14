@@ -34,7 +34,7 @@ import {
 } from "@/app/components/shared/TablePrimitive";
 import { EmptyState } from "@/app/components/ui/empty-state";
 import type { ResourceAccessScope } from "@/app/components/shared/types";
-import type { Playbook, PlaybookImport } from "@/app/lib/mikeApi";
+import type { Playbook, PlaybookImport } from "@/app/lib/northwritApi";
 
 const NAME_COLUMN = "flex min-w-64 flex-1 items-center pl-3 pr-4";
 const CREATOR_COLUMN = "w-36 shrink-0 pr-4";

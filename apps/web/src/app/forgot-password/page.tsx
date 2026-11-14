@@ -20,7 +20,7 @@ import {
 } from "@/app/lib/userFacingError";
 
 /**
- * Failures that mean the request never reached Mike. Telling the user to
+ * Failures that mean the request never reached NorthWrit. Telling the user to
  * check their email after one of these would be a lie, and none of them
  * depends on whether the address exists, so saying so leaks nothing.
  */
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
             }
             // Every other outcome gets the same response for existing and
             // unknown addresses, so this screen cannot be used to enumerate
-            // Mike accounts.
+            // NorthWrit accounts.
             setSubmitted(true);
         } finally {
             setLoading(false);

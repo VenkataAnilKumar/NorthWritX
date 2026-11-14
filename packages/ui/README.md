@@ -1,6 +1,6 @@
 # @northwrit/ui
 
-React primitives rendered by both the Mike web app (`frontend/`) and the Word
+React primitives rendered by both the NorthWrit web app (`frontend/`) and the Word
 add-in (`word-addin/`): liquid-glass surfaces, pills and buttons, the dropdown,
 the model picker, toasts, modals, and the assistant message blocks.
 

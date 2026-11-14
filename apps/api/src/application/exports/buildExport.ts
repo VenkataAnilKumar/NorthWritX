@@ -160,8 +160,8 @@ async function buildMemoryZipExport(
     return {
         body: await buildMemoryArchive(db, userId, userEmail, orgId),
         filename: orgId
-            ? `mike-memory-export-${orgId.slice(0, 8)}.zip`
-            : "mike-memory-export.zip",
+            ? `northwrit-memory-export-${orgId.slice(0, 8)}.zip`
+            : "northwrit-memory-export.zip",
         contentType: "application/zip",
     };
 }

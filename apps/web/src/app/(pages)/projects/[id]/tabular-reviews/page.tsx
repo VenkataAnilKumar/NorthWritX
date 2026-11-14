@@ -6,7 +6,7 @@ import {
     deleteTabularReview,
     listProjectReviewCreators,
     updateTabularReview,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import {
     distinctPeople,
     localPeople,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SETTINGS_MODELS } from "@northwrit/client";
-import type { ApiKeyState } from "./mikeApi";
+import type { ApiKeyState } from "./northwritApi";
 import {
     getModelProvider,
     isModelAvailable,

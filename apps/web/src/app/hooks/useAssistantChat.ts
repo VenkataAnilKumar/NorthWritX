@@ -11,7 +11,7 @@ import {
   type SetStateAction,
 } from "react";
 import { useRouter } from "next/navigation";
-import { stopChatTurn, streamChat, streamProjectChat } from "@/app/lib/mikeApi";
+import { stopChatTurn, streamChat, streamProjectChat } from "@/app/lib/northwritApi";
 import {
   createTurnCursor,
   createTurnEventSink,

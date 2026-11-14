@@ -44,7 +44,8 @@
     "stack:status": "npm --workspace tests/browser run stack:status --",
     "test:desktop": "npm --workspace apps/desktop test --",
     "setup:desktop": "npm ci --workspace apps/desktop",
-    "infra:prepare": "node scripts/prepare-local-infra.mjs"
+    "infra:prepare": "node scripts/prepare-local-infra.mjs",
+    "check:branding": "node scripts/check-branding.mjs"
   },
   "license": "AGPL-3.0-only",
   "workspaces": [

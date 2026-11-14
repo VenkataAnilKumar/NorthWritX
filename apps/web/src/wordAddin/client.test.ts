@@ -10,7 +10,7 @@ vi.mock("../../../word-addin/src/taskpane/lib/errorReporting", () => ({
 }));
 
 import {
-    configureMikeApiClient,
+    configureNorthWritApiClient,
     listProjects,
     getLibrary,
     getLibraryFolderChildren,
@@ -32,7 +32,7 @@ const payload = {
 beforeEach(() => {
     vi.clearAllMocks();
     fetchMock.mockReset();
-    configureMikeApiClient({
+    configureNorthWritApiClient({
         baseUrl: "https://api.example.test",
         getAuthHeaders: async () => ({}),
         fetchImpl: fetchMock,

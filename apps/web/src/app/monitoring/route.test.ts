@@ -142,6 +142,7 @@ describe("POST /monitoring", () => {
     });
 
     it.each([undefined, "1"])("cancels an oversized stream before reading it all (Content-Length: %s)", async (declared) => {
+        process.env.SENTRY_DSN = OWN_DSN;
         let reads = 0;
         const cancel = vi.fn();
         const body = new ReadableStream<Uint8Array>({
@@ -164,6 +165,7 @@ describe("POST /monitoring", () => {
     });
 
     it("rejects oversized, empty and unparseable envelopes without forwarding", async () => {
+        process.env.SENTRY_DSN = OWN_DSN;
         expect((await post("", { "content-length": String(MAX_ENVELOPE_BYTES + 1) })).status).toBe(413);
         expect((await post("x".repeat(MAX_ENVELOPE_BYTES + 1))).status).toBe(413);
         expect((await post("")).status).toBe(400);
@@ -172,6 +174,7 @@ describe("POST /monitoring", () => {
     });
 
     it("answers 502 when Sentry is unreachable", async () => {
+        process.env.SENTRY_DSN = OWN_DSN;
         fetchMock.mockRejectedValue(new Error("ECONNREFUSED"));
         const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
         const response = await post(envelope([{ dsn: "x" }, { type: "event" }, {}]));
@@ -195,6 +198,7 @@ describe("POST /monitoring", () => {
     });
 
     it("answers 413 for an oversized stream even when cancelling it fails", async () => {
+        process.env.SENTRY_DSN = OWN_DSN;
         const body = new ReadableStream<Uint8Array>({
             pull(controller) {
                 controller.enqueue(new Uint8Array(MAX_ENVELOPE_BYTES + 1));

@@ -30,7 +30,7 @@ export function isDiagnosticLabel(value: unknown): value is string {
 const APPLICATION_TAGS = new Set(['operation', 'error_kind', 'component', 'stage', 'job_kind']);
 // Only our error constructor may supply a free-form kind. A dependency's
 // arbitrary `kind` property must not become telemetry just because it fits.
-const APPLICATION_KIND = Symbol.for('mike.diagnostic.errorKind');
+const APPLICATION_KIND = Symbol.for('northwrit.diagnostic.errorKind');
 
 /** Called by AppError, not with an upstream payload. No per-kind registry. */
 export function identifyApplicationError(error: object, kind: ErrorKind): void {
@@ -39,7 +39,7 @@ export function identifyApplicationError(error: object, kind: ErrorKind): void {
 
 /** Fixed external protocol vocabulary; application labels use the source contract above. */
 export const DIAGNOSTIC_VOCABULARY: Record<string, ReadonlySet<string>> = Object.fromEntries(Object.entries({
-  service: 'mike-backend mike-frontend mike-word-addin',
+  service: 'northwrit-api northwrit-web northwrit-word-addin',
   role: 'api worker worker-thread job',
   runtime: 'browser server edge',
   surface: 'taskpane commands dialog',
@@ -311,8 +311,8 @@ export function diagnosticEvent(value: unknown): RecordValue {
   const crumbs = Array.isArray(event.breadcrumbs) ? event.breadcrumbs : [];
   const trail = crumbs.flatMap(raw => {
     const crumb = record(raw);
-    if (crumb.category !== 'mike.stage' || !isDiagnosticLabel(crumb.message)) return [];
-    const out: RecordValue = { category: 'mike.stage', message: crumb.message };
+    if (crumb.category !== 'northwrit.stage' || !isDiagnosticLabel(crumb.message)) return [];
+    const out: RecordValue = { category: 'northwrit.stage', message: crumb.message };
     if (typeof crumb.timestamp === 'number' && Number.isFinite(crumb.timestamp)) out.timestamp = crumb.timestamp;
     return [out];
   }).slice(-20);
@@ -404,7 +404,7 @@ export function eventBudget(): (event: RecordValue) => boolean {
 /** Applies to browser, server, workers and add-in, in both install modes. */
 export function privacyBoundaryIntegration() {
   return {
-    name: 'MikePrivacyBoundary',
+    name: 'NorthWritPrivacyBoundary',
     setup(client: {
       getTransport(): Transport | undefined;
       getDsn?(): { protocol: string; publicKey?: string; host: string; port?: string; path?: string; projectId: string } | undefined;

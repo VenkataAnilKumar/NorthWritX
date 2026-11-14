@@ -6,7 +6,7 @@ const { resolveDocumentEdit } = vi.hoisted(() => ({
     resolveDocumentEdit: vi.fn(),
 }));
 
-vi.mock("@/app/lib/mikeApi", () => ({ resolveDocumentEdit }));
+vi.mock("@/app/lib/northwritApi", () => ({ resolveDocumentEdit }));
 
 const annotation = {
     edit_id: "edit-1",

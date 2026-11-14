@@ -310,8 +310,8 @@ describe("AssistantMessage timeline", () => {
             expect(pill("Review the lease")).toHaveAttribute("aria-pressed", "false");
             expect(pill("Check the guarantee")).toBeVisible();
             expect(screen.getByText("2 subagents finished")).toBeVisible();
-            // Mike's line runs through "Started", beside the card, and on from
-            // "finished" to Mike's next step.
+            // NorthWrit's line runs through "Started", beside the card, and on from
+            // "finished" to NorthWrit's next step.
             expect(hasConnector("brief.pdf")).toBe(true);
             expect(hasConnector("Started 2 subagents")).toBe(true);
             expect(hasConnector("2 subagents finished")).toBe(true);

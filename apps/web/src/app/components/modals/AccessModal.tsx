@@ -6,8 +6,8 @@ import type {
     OrgMember,
     ProjectPeople,
     UserLookupResult,
-} from "@/app/lib/mikeApi";
-import { getOrg, listOrgMembers } from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
+import { getOrg, listOrgMembers } from "@/app/lib/northwritApi";
 import type { ContentVisibility } from "@/app/components/shared/types";
 import { isOrgOwner, type ProjectRole } from "@/app/lib/permissions";
 import { userFacingApiError } from "@/app/lib/userFacingError";

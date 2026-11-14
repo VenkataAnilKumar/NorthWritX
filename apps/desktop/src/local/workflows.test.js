@@ -7,7 +7,7 @@ const { createHash } = require("node:crypto");
 const { writeBundledWorkflows, installBundledWorkflows } = require("./workflows");
 
 async function fixture(t) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "mike-workflow-test-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "northwrit-workflow-test-"));
   t.after(() => fs.rm(root, { recursive: true, force: true }));
   const bytes = Buffer.from("Example reference document");
   const temporaryPath = path.join(root, "source.txt");

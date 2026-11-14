@@ -1,6 +1,6 @@
 # @northwrit/client
 
-Client behavior shared by the Mike web app (`frontend/`) and the Word add-in
+Client behavior shared by the NorthWrit web app (`frontend/`) and the Word add-in
 (`word-addin/`) that has nothing to do with rendering:
 
 - `userError.ts`, `toastStore.ts`, `errorNotifier.ts`: one classification of a

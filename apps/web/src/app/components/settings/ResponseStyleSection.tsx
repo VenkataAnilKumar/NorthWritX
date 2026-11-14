@@ -15,7 +15,7 @@ import {
   updateResponseStyle,
   type ResponseStyle,
   type ResponseStyleField,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 
 type OptionCopy = Omit<SettingsSelectOption, "value">;

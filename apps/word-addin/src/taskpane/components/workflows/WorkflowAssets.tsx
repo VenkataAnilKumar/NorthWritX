@@ -6,7 +6,7 @@ import {
   listWorkflowAssets,
   uploadWorkflowAssets,
   uploadWorkflowAssetVersion,
-} from "../../api/mikeApi";
+} from "../../api/northwritApi";
 import { reportFault } from "../../lib/notify";
 import { openExternalUrl } from "../../lib/openExternalUrl";
 

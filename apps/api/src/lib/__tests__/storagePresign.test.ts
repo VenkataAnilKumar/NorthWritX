@@ -15,7 +15,7 @@ async function loadStorage(publicEndpoint?: string) {
   process.env.R2_ENDPOINT_URL = "http://storage:9000";
   process.env.R2_ACCESS_KEY_ID = "test-access-key";
   process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
-  process.env.R2_BUCKET_NAME = "mike";
+  process.env.R2_BUCKET_NAME = "northwrit";
   if (publicEndpoint === undefined) {
     delete process.env.R2_PUBLIC_ENDPOINT_URL;
   } else {
@@ -40,7 +40,7 @@ describe("getSignedUrl presign endpoint split", () => {
     expect(parsed.host).toBe("localhost:9100");
     expect(parsed.host).not.toBe("storage:9000");
     // Still a real path-style presigned GET for the requested object.
-    expect(parsed.pathname).toBe("/mike/some/key");
+    expect(parsed.pathname).toBe("/northwrit/some/key");
     expect(parsed.searchParams.get("X-Amz-Signature")).toBeTruthy();
   });
 

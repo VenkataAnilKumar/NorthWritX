@@ -12,7 +12,7 @@
 import * as Sentry from "@sentry/react";
 import {
   privacyBoundaryIntegration,
-  MIKE_SENTRY_DSN,
+  NORTHWRIT_SENTRY_DSN,
   createEventScrubber,
   installKind,
   normalizeApiPath,
@@ -63,15 +63,14 @@ export function addinSentryOptions(
     nodeEnv?: string;
   },
 ): Sentry.BrowserOptions {
-  // ON BY DEFAULT: the Mike project's own DSN unless REACT_APP_SENTRY_DISABLED
-  // or a DSN of your own is baked in at build time (README, "Telemetry").
+  // Reporting requires an explicitly configured build-time DSN.
   // webpack sets NODE_ENV from --mode: the dev server is "development",
   // `npm run build` (every image) is "production".
   const development = env.nodeEnv === "development";
   const { dsn } = resolveDsn({
     disabled: env.disabled,
     dsn: env.dsn,
-    fallback: MIKE_SENTRY_DSN.wordAddin,
+    fallback: NORTHWRIT_SENTRY_DSN.wordAddin,
     development,
   });
   const dataCollection = {
@@ -99,7 +98,7 @@ export function addinSentryOptions(
     integrations: [privacyBoundaryIntegration(), Sentry.captureConsoleIntegration({ levels: ["error"] })],
     initialScope: {
       tags: {
-        service: "mike-word-addin",
+        service: "northwrit-word-addin",
         surface,
         build_mode: env.nodeEnv,
         diagnostics_version: "2",
@@ -118,7 +117,7 @@ export function initAddinErrorReporting(surface: AddinSurface): boolean {
     install: process.env.REACT_APP_SENTRY_INSTALL,
     environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
     release: process.env.REACT_APP_SENTRY_RELEASE,
-    version: process.env.REACT_APP_MIKE_VERSION,
+    version: (process.env.REACT_APP_NORTHWRIT_VERSION ?? process.env.REACT_APP_MIKE_VERSION),
     gitSha: process.env.REACT_APP_GIT_SHA,
     tracesSampleRate: process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE,
     nodeEnv: process.env.NODE_ENV,
@@ -250,7 +249,7 @@ export function reportApiFailure(failure: {
         applyContext(scope, {
             level: "error",
             tags: {
-                component: "mike-api",
+                component: "northwrit-api",
                 operation: failure.operation,
                 http_status: failure.status,
                 http_method: method,
@@ -281,7 +280,7 @@ export function reportNetworkFailure(
     applyContext(scope, {
       level: "warning",
       tags: {
-        component: "mike-api",
+        component: "northwrit-api",
         operation: request.operation,
         network: true,
         http_method: request.method,

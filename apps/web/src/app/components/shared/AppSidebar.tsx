@@ -54,7 +54,7 @@ import {
     SettingsSkeuoIcon,
     SignOutSkeuoIcon,
 } from "@/app/components/shared/AppSidebarSkeuoIcons";
-import { listProjectsPage } from "@/app/lib/mikeApi";
+import { listProjectsPage } from "@/app/lib/northwritApi";
 import { notifyError } from "@/app/lib/userFacingError";
 import { useAssignLatest } from "@/app/hooks/useLatestRef";
 import type { Project } from "@/app/components/shared/types";
@@ -263,8 +263,8 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
               ]
             : null;
     // The sidebar is headed by whose work it is showing: the organization's
-    // name in its workspace, and plain "Mike" for personal work. `null` while
-    // a remembered organization's name is still loading — saying "Mike" for
+    // name in its workspace, and plain "NorthWrit" for personal work. `null` while
+    // a remembered organization's name is still loading — saying "NorthWrit" for
     // that moment would be naming the wrong workspace.
     const sidebarHeading = activeOrganization
         ? activeOrganization.name

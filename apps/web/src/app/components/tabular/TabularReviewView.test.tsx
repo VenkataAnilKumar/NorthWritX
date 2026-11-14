@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import { getTabularReview, listProjects } from "@/app/lib/mikeApi";
+import { getTabularReview, listProjects } from "@/app/lib/northwritApi";
 import { TRView } from "./TabularReviewView";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     getTabularReview: vi.fn(),
     listProjects: vi.fn(),
 }));

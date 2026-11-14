@@ -42,8 +42,8 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const AUTH_SYNC_CHANNEL = "mike-auth-state";
-const AUTH_SYNC_STORAGE_KEY = "mike-auth-state-change";
+const AUTH_SYNC_CHANNEL = "northwrit-auth-state";
+const AUTH_SYNC_STORAGE_KEY = "northwrit-auth-state-change";
 const SESSION_ERROR_MESSAGE =
     "We could not check your session. Please try again.";
 /** One toast for the session, however many background checks fail. */

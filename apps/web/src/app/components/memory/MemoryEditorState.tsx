@@ -2,7 +2,7 @@
 
 import { PillButtonUI } from "@northwrit/ui";
 import type { MemoryAutosaveStatus } from "./useMemoryAutosave";
-import type { MemoryCurrent } from "@/app/lib/mikeApi";
+import type { MemoryCurrent } from "@/app/lib/northwritApi";
 
 export function memoryActivityLabel(memory: MemoryCurrent) {
   if (memory.status === "scheduled") return "Memory review scheduled";

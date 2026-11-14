@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AssistantEvent, Message } from "@/app/components/shared/types";
 import type { ConnectorApprovalItem } from "@northwrit/contracts";
-import { streamChatTurn } from "./mikeApi";
+import { streamChatTurn } from "./northwritApi";
 import { beginAssistantTurn } from "./assistantTurns";
 import {
   consumeAssistantTurnStream,
@@ -10,7 +10,7 @@ import {
   readAssistantTurn,
 } from "./assistantTurnStream";
 
-vi.mock("./mikeApi", () => ({ streamChatTurn: vi.fn(), stopChatTurn: vi.fn() }));
+vi.mock("./northwritApi", () => ({ streamChatTurn: vi.fn(), stopChatTurn: vi.fn() }));
 const streamChatTurnMock = vi.mocked(streamChatTurn);
 
 /** An SSE body that emits the given chunks; `fail` makes it error out after them. */

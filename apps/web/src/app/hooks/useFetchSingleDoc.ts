@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { API_BASE } from "@/app/lib/mikeApi";
+import { API_BASE } from "@/app/lib/northwritApi";
 import { authenticatedFetch } from "@/app/lib/authEvents";
 import { reportNetworkFailure } from "@/app/lib/errorReporting";
 import { isNetworkError, reportFlowFailure } from "@/app/lib/userFacingError";

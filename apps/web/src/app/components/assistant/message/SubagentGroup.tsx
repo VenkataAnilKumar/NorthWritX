@@ -1,5 +1,5 @@
 import { useId, useState, type ReactNode } from "react";
-import { MIKE_ICON_TINTS, MikeIcon, type MikeIconTint, TabPillButtonUI } from "@northwrit/ui";
+import { NORTHWRIT_ICON_TINTS, NorthWritIcon, type NorthWritIconTint, TabPillButtonUI } from "@northwrit/ui";
 import type { AssistantEvent } from "../../shared/types";
 import { EventBlock, ReasoningContent } from "./EventBlocks";
 import { EventChevron, EventDisclosureButton, EventLabel } from "./EventDisclosure";
@@ -14,7 +14,7 @@ const subagents = (count: number) => (count === 1 ? "subagent" : "subagents");
 
 /**
  * "Started 2 subagents", "Resumed a subagent", "Started 1 and resumed 1
- * subagents": what Mike did, on its own line above the subagents' pills.
+ * subagents": what NorthWrit did, on its own line above the subagents' pills.
  */
 function startedLabel(delegations: DelegationEvent[]): string {
     const resumed = delegations.filter((d) => d.continued_from).length;
@@ -89,16 +89,16 @@ function DetailDisclosureRow({
 
 /**
  * A colour per subagent in a message, in the order they first appear. A
- * subagent Mike resumes in the same message keeps the colour it started with.
+ * subagent NorthWrit resumes in the same message keeps the colour it started with.
  */
-export function subagentTints(events: AssistantEvent[]): Map<string, MikeIconTint> {
-    const tints = new Map<string, MikeIconTint>();
+export function subagentTints(events: AssistantEvent[]): Map<string, NorthWritIconTint> {
+    const tints = new Map<string, NorthWritIconTint>();
     for (const event of events) {
         if (event.type !== "delegation" || tints.has(event.delegation_id)) continue;
         const earlier = event.continued_from && tints.get(event.continued_from);
         tints.set(
             event.delegation_id,
-            earlier || MIKE_ICON_TINTS[tints.size % MIKE_ICON_TINTS.length],
+            earlier || NORTHWRIT_ICON_TINTS[tints.size % NORTHWRIT_ICON_TINTS.length],
         );
     }
     return tints;
@@ -113,7 +113,7 @@ function SubagentPill({
     onSelect,
 }: {
     event: DelegationEvent;
-    tint: MikeIconTint;
+    tint: NorthWritIconTint;
     selected: boolean;
     detailsId: string;
     onSelect: () => void;
@@ -139,7 +139,7 @@ function SubagentPill({
                     data-tint={tint}
                     className="flex h-4 shrink-0 items-center"
                 >
-                    <MikeIcon size={14} tint={tint} spin={!!event.isStreaming} error={status.failed} />
+                    <NorthWritIcon size={14} tint={tint} spin={!!event.isStreaming} error={status.failed} />
                 </span>
                 <span className="min-w-0 [overflow-wrap:anywhere]">
                     {event.title || "Subagent"}
@@ -246,10 +246,10 @@ function SubagentDetails({
 }
 
 /**
- * Subagents Mike ran in parallel: "Started …" and "… finished" are steps on
- * Mike's line, and between them, set in from that line, a row of pills holds
+ * Subagents NorthWrit ran in parallel: "Started …" and "… finished" are steps on
+ * NorthWrit's line, and between them, set in from that line, a row of pills holds
  * one per subagent. Selecting a pill shows that subagent's own steps below
- * the row, so a subagent's work never reads as Mike's.
+ * the row, so a subagent's work never reads as NorthWrit's.
  */
 export function SubagentGroup({
     delegations,
@@ -260,10 +260,10 @@ export function SubagentGroup({
 }: {
     delegations: DelegationEvent[];
     /** Each subagent's colour, from `subagentTints` over the whole message. */
-    tints: Map<string, MikeIconTint>;
+    tints: Map<string, NorthWritIconTint>;
     /** Show each subagent's model, effort and tokens (Settings > Features). */
     showDetails?: boolean;
-    /** Whether one of Mike's steps follows the group. */
+    /** Whether one of NorthWrit's steps follows the group. */
     showConnectorAfter: boolean;
     renderSteps: RenderSteps;
 }) {
@@ -275,7 +275,7 @@ export function SubagentGroup({
     const count = delegations.length;
     return (
         <>
-            {/* The pills sit in this step's content column, so Mike's line
+            {/* The pills sit in this step's content column, so NorthWrit's line
                 runs beside them to "finished" once every subagent is done. */}
             <EventBlock dotColor="green" showConnector={!running}>
                 <EventLabel>{startedLabel(delegations)}</EventLabel>
@@ -284,7 +284,7 @@ export function SubagentGroup({
                         <SubagentPill
                             key={event.delegation_id}
                             event={event}
-                            tint={tints.get(event.delegation_id) ?? MIKE_ICON_TINTS[0]}
+                            tint={tints.get(event.delegation_id) ?? NORTHWRIT_ICON_TINTS[0]}
                             selected={event.delegation_id === selectedId}
                             detailsId={detailsId}
                             onSelect={() =>
@@ -319,7 +319,7 @@ export function SubagentGroup({
     );
 }
 
-/** Mike's steps in a run of events, counting each subagent group as one. */
+/** NorthWrit's steps in a run of events, counting each subagent group as one. */
 export function timelineStepCount(events: AssistantEvent[]): number {
     return events.filter(
         (event, i) => event.type !== "delegation" || events[i - 1]?.type !== "delegation",

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Message } from "@/app/components/shared/types";
-import { getChat, stopChatTurn, streamChatTurn } from "./mikeApi";
+import { getChat, stopChatTurn, streamChatTurn } from "./northwritApi";
 import {
   beginAssistantTurn,
   cancelAssistantTurn,
@@ -10,7 +10,7 @@ import {
   resumeAssistantTurn,
   withLiveTurn,
 } from "./assistantTurns";
-vi.mock("./mikeApi", () => ({ getChat: vi.fn(), streamChatTurn: vi.fn(), stopChatTurn: vi.fn() }));
+vi.mock("./northwritApi", () => ({ getChat: vi.fn(), streamChatTurn: vi.fn(), stopChatTurn: vi.fn() }));
 const getChatMock = vi.mocked(getChat);
 const streamChatTurnMock = vi.mocked(streamChatTurn);
 const stopChatTurnMock = vi.mocked(stopChatTurn);

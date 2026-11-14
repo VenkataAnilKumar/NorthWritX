@@ -6,9 +6,9 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
-import { MIKE_SENTRY_DSN, describeError } from "@northwrit/client";
+import { describeError } from "@northwrit/client";
 import {
-    MikeApiError,
+    NorthWritApiError,
     parseApiErrorBody,
 } from "../../../word-addin/src/taskpane/api/client";
 import {
@@ -58,7 +58,7 @@ describe("parseApiErrorBody", () => {
         const parsed = parseApiErrorBody({ status: 404, body: "not json" });
         expect(parsed.message).toBe("API error: 404");
         const described = describeError(
-            new MikeApiError({ status: 404, message: parsed.message }),
+            new NorthWritApiError({ status: 404, message: parsed.message }),
         );
         expect(described.kind).toBe("not_found");
         expect(described.message).not.toContain("API error");
@@ -131,7 +131,7 @@ describe("add-in notify", () => {
         const onRetry = vi.fn();
         act(() => {
             notifyError(
-                new MikeApiError({ status: 500, message: "x", requestId: "req-7" }),
+                new NorthWritApiError({ status: 500, message: "x", requestId: "req-7" }),
                 { action: "apply the edit", onRetry, page: "Chat" },
             );
         });
@@ -177,7 +177,7 @@ describe("add-in notify", () => {
     it("userMessage returns the sentence without showing anything", () => {
         render(<ToastViewportUI />);
         expect(
-            userMessage(new MikeApiError({ status: 429, message: "API error: 429" })),
+            userMessage(new NorthWritApiError({ status: 429, message: "API error: 429" })),
         ).toMatch(/Too many requests/);
         expect(screen.queryByRole("alert")).toBeNull();
     });
@@ -221,18 +221,17 @@ describe("an unreachable session check", () => {
 });
 
 // The add-in's webpack dev server (`npm start`, NODE_ENV=development) is a
-// contributor's machine, not an install: it must not report to the Mike
-// project, and when a developer points it at a DSN of their own the events
-// say "development".
+// contributor's machine. Reporting requires an explicit operator DSN;
+// development events use the development environment.
 describe("addinSentryOptions for development builds", () => {
     it("is off by default, even with the example's REACT_APP_SENTRY_DISABLED=false", () => {
         expect(addinSentryOptions("taskpane", { nodeEnv: "development", disabled: "false" }).enabled).toBe(false);
         const production = addinSentryOptions("taskpane", { nodeEnv: "production" });
-        expect(production).toMatchObject({ enabled: true, dsn: MIKE_SENTRY_DSN.wordAddin, environment: "self-hosted" });
+        expect(production).toMatchObject({ enabled: false, dsn: undefined, environment: "self-hosted" });
     });
 
     it("reports as development to a DSN set on purpose, unless an environment is set", () => {
-        const dsn = "http://mike@localhost:9999/1";
+        const dsn = "http://northwrit@localhost:9999/1";
         expect(addinSentryOptions("taskpane", { nodeEnv: "development", dsn })).toMatchObject({
             enabled: true,
             dsn,

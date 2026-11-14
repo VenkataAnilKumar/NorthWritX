@@ -20,14 +20,14 @@ const mocks = vi.hoisted(() => ({
 vi.mock("@/app/contexts/AuthContext", () => ({
     useAuth: () => ({ user: mocks.userId ? { id: mocks.userId } : null }),
 }));
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
     listOrgs: mocks.listOrgs,
     getOrgApiKeys: mocks.getOrgApiKeys,
 }));
 
 const ACME = { id: "org-acme", name: "Acme LLP", role: "member" };
 const BETA = { id: "org-beta", name: "Beta Chambers", role: "owner" };
-const STORAGE_KEY = "mike.activeWorkspace.u1";
+const STORAGE_KEY = "northwrit.activeWorkspace.u1";
 
 // The context value as of the last commit, so a test can call its actions.
 // Published from an effect: render must not write to module state.
@@ -236,7 +236,7 @@ describe("WorkspaceProvider", () => {
     });
 
     it("keeps each account's remembered workspace separate", async () => {
-        window.localStorage.setItem("mike.activeWorkspace.u2", BETA.id);
+        window.localStorage.setItem("northwrit.activeWorkspace.u2", BETA.id);
         mocks.userId = "u2";
         renderProvider();
         await screen.findByText(`${BETA.id}|${BETA.id}|loaded|Beta Chambers`);

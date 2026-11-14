@@ -86,7 +86,7 @@ import { can, roleFrom } from "@/app/lib/permissions";
 import { AssistantChatHistoryMenu } from "./AssistantChatHistoryMenu";
 import { cn } from "@/app/lib/utils";
 import { notifyError, userFacingApiError } from "@/app/lib/userFacingError";
-import { getPlaybook } from "@/app/lib/mikeApi";
+import { getPlaybook } from "@/app/lib/northwritApi";
 import { LINKED_PLAYBOOK_PARAM } from "@/app/lib/assistantPlaybookLink";
 
 interface Props {

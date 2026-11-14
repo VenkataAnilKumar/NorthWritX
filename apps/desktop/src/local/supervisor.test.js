@@ -38,7 +38,7 @@ test("hasExited is true for a child killed by a signal, not only for a clean exi
 // must see a booting stack as active, and a stop must end the boot without
 // it spawning anything more.
 test("a stop during boot ends the boot and leaves nothing running", async (t) => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "mike-supervisor-"));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "northwrit-supervisor-"));
   const pgBin = path.join(tmp, "resources", "local-stack", "bin", "pg", "bin");
   fs.mkdirSync(pgBin, { recursive: true });
   // A "postgres" that never becomes reachable, so the boot stays in waitFor.

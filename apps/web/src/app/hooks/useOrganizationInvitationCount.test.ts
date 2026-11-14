@@ -1,12 +1,12 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { listMyOrgInvitations, type OrgInvitation } from "@/app/lib/mikeApi";
+import { listMyOrgInvitations, type OrgInvitation } from "@/app/lib/northwritApi";
 import {
     notifyOrganizationInvitationsChanged,
     useOrganizationInvitationCount,
 } from "./useOrganizationInvitationCount";
 
-vi.mock("@/app/lib/mikeApi", () => ({ listMyOrgInvitations: vi.fn() }));
+vi.mock("@/app/lib/northwritApi", () => ({ listMyOrgInvitations: vi.fn() }));
 const pending = [{ id: "invite-1" }] as OrgInvitation[];
 
 beforeEach(() => {

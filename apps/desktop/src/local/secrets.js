@@ -35,13 +35,13 @@ function signJwt(payload, secret) {
 }
 
 // The local guest account: a real GoTrue user, but one the shell owns the
-// credentials for, so "use Mike without signing up" is one click on the
+// credentials for, so "use NorthWrit without signing up" is one click on the
 // login page. Random per install — a guest session on one Mac says nothing
 // about any other. Lives beside the other secrets (same trust boundary:
 // whoever can read this file can read pgdata anyway).
 function mintGuestCredentials() {
   return {
-    guestEmail: "guest@mike.local",
+    guestEmail: "guest@northwrit.local",
     guestPassword: crypto.randomBytes(18).toString("base64url"),
   };
 }
@@ -52,7 +52,7 @@ function mintSecrets() {
   // 10 years: these are role keys (like Supabase's anon/service keys), not
   // session tokens — sessions come from GoTrue with a normal short expiry.
   const exp = now + 10 * 365 * 24 * 3600;
-  const claims = (role) => ({ iss: "mike-local", role, iat: now, exp });
+  const claims = (role) => ({ iss: "northwrit-local", role, iat: now, exp });
   return {
     version: 1,
     jwtSecret,

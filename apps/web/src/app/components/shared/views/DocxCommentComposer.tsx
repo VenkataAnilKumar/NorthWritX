@@ -17,7 +17,7 @@ import {
 } from "@/app/components/ui/popover";
 import { openReviewPane } from "./docxReviewPane";
 
-/** Mike-owned comment UI, using only the public open-source Editor contract. */
+/** NorthWrit-owned comment UI, using only the public open-source Editor contract. */
 export function DocxCommentComposer({
   editor,
   author,

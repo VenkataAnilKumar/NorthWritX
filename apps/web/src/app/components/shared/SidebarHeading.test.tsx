@@ -63,10 +63,10 @@ describe("SidebarHeading", () => {
 
     it("gives an organization's name exactly the styling NorthWrit has when it fits", () => {
         const { unmount } = render(<SidebarHeading name="NorthWrit" />);
-        const mike = heading().className;
+        const personal = heading().className;
         unmount();
         render(<SidebarHeading name="Acme LLP" />);
-        expect(heading().className).toBe(mike);
+        expect(heading().className).toBe(personal);
     });
 
     it("drops to the smaller two-line setting only when the name does not fit", () => {

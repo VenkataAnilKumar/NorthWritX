@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { listMyOrgInvitations } from "@/app/lib/mikeApi";
+import { listMyOrgInvitations } from "@/app/lib/northwritApi";
 
-const INVITATIONS_CHANGED_EVENT = "mike:organization-invitations-changed";
+const INVITATIONS_CHANGED_EVENT = "northwrit:organization-invitations-changed";
 
 export function notifyOrganizationInvitationsChanged() {
     window.dispatchEvent(new Event(INVITATIONS_CHANGED_EVENT));

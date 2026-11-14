@@ -2,16 +2,16 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  MikeApiError,
+  NorthWritApiError,
   getUserMemory,
   setUserMemoryEnabled,
   updateUserMemory,
   type MemoryCurrent,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { UserMemoryPage } from "./UserMemoryPage";
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
   getUserMemory: vi.fn(),
   setUserMemoryEnabled: vi.fn(),
   updateUserMemory: vi.fn(),
@@ -223,7 +223,7 @@ describe("UserMemoryPage", () => {
 
   it("explains a save refused because memory was turned off meanwhile", async () => {
     vi.mocked(updateUserMemory).mockRejectedValueOnce(
-      new MikeApiError({
+      new NorthWritApiError({
         status: 409,
         code: "memory_disabled",
         message: "Enable memory before editing it.",
@@ -260,7 +260,7 @@ describe("UserMemoryPage", () => {
     // changes were not saved" line survived the re-enable and sat next to a
     // fresh, empty file, reading as if the new file were already failing.
     vi.mocked(updateUserMemory).mockRejectedValueOnce(
-      new MikeApiError({
+      new NorthWritApiError({
         status: 409,
         code: "memory_disabled",
         message: "Enable memory before editing it.",
@@ -302,7 +302,7 @@ describe("UserMemoryPage", () => {
     // same stale draft with the old revision and failed where nobody could
     // see it. Only an ordinary pending edit may flush.
     vi.mocked(updateUserMemory).mockRejectedValueOnce(
-      new MikeApiError({
+      new NorthWritApiError({
         status: 409,
         code: "memory_disabled",
         message: "Enable memory before editing it.",
@@ -418,7 +418,7 @@ describe("UserMemoryPage", () => {
       .mockResolvedValueOnce(latest);
     vi.mocked(updateUserMemory)
       .mockRejectedValueOnce(
-        new MikeApiError({
+        new NorthWritApiError({
           status: 409,
           code: "memory_revision_conflict",
           message: "Memory changed",

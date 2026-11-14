@@ -28,7 +28,7 @@ import { buildGoogleDriveTools } from "../../../lib/integrations/googleDrive";
 import { COURTLISTENER_TOOLS } from "./tools/courtlistenerTools";
 import { createProviderWebSearchTracker } from "./tools/providerWebSearch";
 import {
-  MIKE_WEB_SEARCH_SYSTEM_PROMPT,
+  NORTHWRIT_WEB_SEARCH_SYSTEM_PROMPT,
   PROVIDER_WEB_READ_SYSTEM_PROMPT,
   WEB_SEARCH_SYSTEM_PROMPT,
   WEB_TOOL_NAMES,
@@ -470,7 +470,7 @@ export async function runLLMStream(params: {
           WEB_SEARCH_SYSTEM_PROMPT,
           webSearch === "provider"
             ? PROVIDER_WEB_READ_SYSTEM_PROMPT
-            : MIKE_WEB_SEARCH_SYSTEM_PROMPT,
+            : NORTHWRIT_WEB_SEARCH_SYSTEM_PROMPT,
         ]
       : []),
     ...(subagentRuns ? [delegateSystemPrompt(subagentDefaults)] : []),

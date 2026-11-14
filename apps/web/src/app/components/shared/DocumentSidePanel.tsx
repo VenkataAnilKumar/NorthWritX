@@ -22,7 +22,7 @@ import { DocxView } from "@/app/components/shared/views/DocxView";
 import { SpreadsheetView } from "@/app/components/shared/views/SpreadsheetView";
 import { CloseButton, PillButtonUI } from "@northwrit/ui";
 import type { Document } from "@/app/components/shared/types";
-import type { DocumentVersion } from "@/app/lib/mikeApi";
+import type { DocumentVersion } from "@/app/lib/northwritApi";
 import { cn } from "@/app/lib/utils";
 import { reportFault,
     UserVisibleError,

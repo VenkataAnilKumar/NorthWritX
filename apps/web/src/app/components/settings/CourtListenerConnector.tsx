@@ -9,7 +9,7 @@ import {
   getCourtListenerConnector,
   saveCourtListenerConnectorToken,
   setCourtListenerConnectorEnabled,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { ApiKeyField } from "./ApiKeyField";
 
 export const COURTLISTENER_NAME = "CourtListener";

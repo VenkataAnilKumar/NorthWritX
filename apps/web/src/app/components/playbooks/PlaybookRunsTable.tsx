@@ -24,7 +24,7 @@ import {
   type TableFilterOption,
 } from "@/app/components/shared/TablePrimitive";
 import { EmptyState } from "@/app/components/ui/empty-state";
-import type { PlaybookRunListItem } from "@/app/lib/mikeApi";
+import type { PlaybookRunListItem } from "@/app/lib/northwritApi";
 import { DropdownItem, PillButtonUI } from "@northwrit/ui";
 import { formatDateTime, runOutcome, runTitle } from "./PlaybookRuns";
 

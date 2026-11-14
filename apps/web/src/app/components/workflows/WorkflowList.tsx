@@ -18,7 +18,7 @@ import {
   getWorkflowAddon,
   importWorkflowAddon,
   listWorkflowAddons,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
 import { useQueryParamTab } from "@/app/hooks/useQueryParamTab";
 import { usePaginatedWorkflows } from "@/app/hooks/usePaginatedWorkflows";

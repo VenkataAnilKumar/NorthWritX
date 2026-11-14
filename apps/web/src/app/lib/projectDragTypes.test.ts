@@ -9,10 +9,10 @@ import {
 describe("project drag types", () => {
     it.each([
         [["Files"], true],
-        [["application/mike-doc"], true],
-        [["application/mike-docs"], true],
-        [["application/mike-folder"], false],
-        [["application/mike-project-tab"], false],
+        [["application/northwrit-doc"], true],
+        [["application/northwrit-docs"], true],
+        [["application/northwrit-folder"], false],
+        [["application/northwrit-project-tab"], false],
         [["text/plain"], false],
     ])("recognizes viewer drops %j", (types, accepted) => {
         expect(isDocumentViewerDrag({ types: types as string[] })).toBe(
@@ -23,9 +23,9 @@ describe("project drag types", () => {
         [[], false, false, false],
         [["text/plain"], false, false, false],
         [["Files"], true, true, false],
-        [["application/mike-doc"], true, false, true],
-        [["application/mike-folder"], false, false, true],
-        [["application/mike-doc", "Files"], true, true, true],
+        [["application/northwrit-doc"], true, false, true],
+        [["application/northwrit-folder"], false, false, true],
+        [["application/northwrit-doc", "Files"], true, true, true],
     ])("recognizes %j", (types, attachment, files, projectItem) => {
         const transfer = { types: types as string[] };
         expect(isChatAttachmentDrag(transfer)).toBe(attachment);

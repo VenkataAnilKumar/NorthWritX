@@ -1,11 +1,11 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getPanelDocument } from "@/app/lib/mikeApi";
+import { getPanelDocument } from "@/app/lib/northwritApi";
 import type { ReactNode } from "react";
 import { DocumentWorkspaceScope } from "@/app/contexts/WorkspaceContext";
 import { useResolvedPanelDocument } from "./useResolvedPanelDocument";
 
-vi.mock("@/app/lib/mikeApi", () => ({
+vi.mock("@/app/lib/northwritApi", () => ({
     getPanelDocument: vi.fn(),
 }));
 

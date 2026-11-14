@@ -1,12 +1,12 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
-import { MikeApiError } from "@/app/lib/mikeApi";
+import { NorthWritApiError } from "@/app/lib/northwritApi";
 import { OnboardingInvitations } from "./OnboardingInvitations";
 
 const mocks = vi.hoisted(() => ({ list: vi.fn(), accept: vi.fn(), changed: vi.fn() }));
-vi.mock("@/app/lib/mikeApi", async (original) => ({
-    ...await original<typeof import("@/app/lib/mikeApi")>(),
+vi.mock("@/app/lib/northwritApi", async (original) => ({
+    ...await original<typeof import("@/app/lib/northwritApi")>(),
     listMyOrgInvitations: mocks.list, acceptOrgInvitation: mocks.accept,
 }));
 vi.mock("@/app/hooks/useOrganizationInvitationCount", () => ({ notifyOrganizationInvitationsChanged: mocks.changed }));
@@ -29,7 +29,7 @@ it("shows the organization, offered role and inviter before acceptance", async (
     await user.click(accept);
     expect(await screen.findByText("Joined as Admin")).toBeVisible();
     expect(mocks.accept).toHaveBeenCalledExactlyOnceWith("invite");
-    expect(window.localStorage.getItem("mike.activeWorkspace.new-user")).toBe("org");
+    expect(window.localStorage.getItem("northwrit.activeWorkspace.new-user")).toBe("org");
     expect(mocks.changed).toHaveBeenCalledOnce();
     expect(busy).toHaveBeenLastCalledWith(false);
 });
@@ -50,11 +50,11 @@ it("allows a failed lookup to be retried and never presents it as an empty list"
 });
 
 it("keeps failed or expired invitations from selecting a workspace and supports refreshing", async () => {
-    mocks.accept.mockRejectedValueOnce(new MikeApiError({ status: 410, message: "That invitation has expired." }));
+    mocks.accept.mockRejectedValueOnce(new NorthWritApiError({ status: 410, message: "That invitation has expired." }));
     const user = userEvent.setup(); renderInvitations();
     await user.click(await screen.findByRole("button", { name: "Accept Example LLP" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("That invitation has expired.");
-    expect(window.localStorage.getItem("mike.activeWorkspace.new-user")).toBeNull();
+    expect(window.localStorage.getItem("northwrit.activeWorkspace.new-user")).toBeNull();
     expect(mocks.changed).not.toHaveBeenCalled();
     expect(screen.queryByText("Joined")).not.toBeInTheDocument();
     mocks.list.mockResolvedValue([]);
@@ -69,7 +69,7 @@ it("does not persist a late acceptance after the user leaves onboarding", async 
     await user.click(await screen.findByRole("button", { name: "Accept Example LLP" }));
     unmount();
     await act(async () => resolve({ org_id: "org", role: "admin" }));
-    expect(window.localStorage.getItem("mike.activeWorkspace.new-user")).toBeNull();
+    expect(window.localStorage.getItem("northwrit.activeWorkspace.new-user")).toBeNull();
     expect(mocks.changed).not.toHaveBeenCalled();
 });
 

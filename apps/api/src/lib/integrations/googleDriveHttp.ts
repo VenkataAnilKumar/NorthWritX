@@ -181,7 +181,7 @@ export async function downloadGoogleDriveFile(
     token: string,
 ): Promise<{ filename: string; cleanup: () => Promise<void> }> {
     const limits = googleDriveLimits();
-    const directory = await mkdtemp(path.join(os.tmpdir(), "mike-drive-"));
+    const directory = await mkdtemp(path.join(os.tmpdir(), "northwrit-drive-"));
     const filename = path.join(directory, "content");
     const cleanup = () => rm(directory, { recursive: true, force: true });
     try {

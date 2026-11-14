@@ -1,4 +1,4 @@
-# Mike for Mac
+# NorthWrit for Mac
 
 ## Current local entry experience
 
@@ -29,7 +29,7 @@ notarization credentials; an unsigned build is not a finished consumer release.
 LibreOffice-dependent document conversions still require LibreOffice; chat,
 PDF/text reading and basic workspace operations do not require it.
 
-A native macOS shell around the Mike web app — the same pattern as the Word
+A native macOS shell around the NorthWrit web app — the same pattern as the Word
 add-in: clients don't re-implement the product, they give the web app a
 first-class home. The shell contributes the parts a browser tab can't:
 
@@ -47,11 +47,11 @@ frontend's main frame has one additional read-only bridge: it can obtain this
 installation's generated guest credentials for **Continue on this Mac**. A
 normal browser or a remote deployment receives no local guest credentials.
 
-The self-contained build first offers **Start on this Mac** or **Use Mike Cloud**,
+The self-contained build first offers **Start on this Mac** or **Use NorthWrit Cloud**,
 with a link to a firm server. The shell-only build (`npm run dist`) defaults to
-the hosted service at `https://app.mikeoss.com` and requires sign-in there.
+the hosted service at `http://localhost:3000` and requires sign-in there.
 Self-hosters can change the connection through ⌘⇧, or the overrides below.
-Local mode supervises the bundled Mike stack on loopback, without Docker or a
+Local mode supervises the bundled NorthWrit stack on loopback, without Docker or a
 separately installed server; it creates an authenticated account only inside
 the installation's own database.
 
@@ -108,25 +108,25 @@ npm start -- --server-url=http://localhost:3000
 
 ### Overrides (automation / e2e)
 
-An explicit `--server-url=<url>` CLI flag, or then `MIKE_SERVER_URL`, overrides
+An explicit `--server-url=<url>` CLI flag, or then `NORTHWRIT_SERVER_URL`, overrides
 local mode and saved settings. Otherwise `--local` or a saved local choice uses
 the bundled frontend; remote mode uses the saved server URL or
-`https://app.mikeoss.com`. A fresh self-contained installation shows the welcome
-chooser. Settings live in `~/Library/Application Support/Mike/settings.json`;
-tests use an isolated `MIKE_USER_DATA_DIR`.
+`http://localhost:3000`. A fresh self-contained installation shows the welcome
+chooser. Settings live in `~/Library/Application Support/NorthWrit/settings.json`;
+tests use an isolated `NORTHWRIT_USER_DATA_DIR`.
 
 | Variable                    | Effect                                          |
 | --------------------------- | ----------------------------------------------- |
-| `MIKE_SERVER_URL`           | server URL (overridden only by `--server-url=`) |
-| `MIKE_DOWNLOAD_DIR`         | download folder instead of `~/Downloads`        |
-| `MIKE_E2E_CAPTURE_EXTERNAL` | file path; would-be "open in browser" URLs are appended here instead of opening tabs |
-| `MIKE_E2E_DOWNLOAD_LOG`     | file path; each finished download appends a JSONL line (`state`, `savePath`, `url`) — needed because an attached CDP automation client diverts downloads away from `setSavePath` |
+| `NORTHWRIT_SERVER_URL`           | server URL (overridden only by `--server-url=`) |
+| `NORTHWRIT_DOWNLOAD_DIR`         | download folder instead of `~/Downloads`        |
+| `NORTHWRIT_E2E_CAPTURE_EXTERNAL` | file path; would-be "open in browser" URLs are appended here instead of opening tabs |
+| `NORTHWRIT_E2E_DOWNLOAD_LOG`     | file path; each finished download appends a JSONL line (`state`, `savePath`, `url`) — needed because an attached CDP automation client diverts downloads away from `setSavePath` |
 
 ## Package & test locally (no Apple account needed)
 
 ```bash
-npm run dist   # → dist/mac-arm64/Mike.app (unsigned)
-open dist/mac-arm64/Mike.app   # loads https://app.mikeoss.com
+npm run dist   # → dist/mac-arm64/NorthWrit.app (unsigned)
+open dist/mac-arm64/NorthWrit.app   # loads http://localhost:3000
 ```
 
 **A locally-built app runs without any Gatekeeper prompt** — the "damaged / can't
@@ -139,7 +139,7 @@ docker-compose stack), use the connect screen (⌘⇧,) or launch with an
 override:
 
 ```bash
-open dist/mac-arm64/Mike.app --args --server-url=http://localhost:3100
+open dist/mac-arm64/NorthWrit.app --args --server-url=http://localhost:3100
 # or, without packaging:
 npm start -- --server-url=http://localhost:3100
 ```
@@ -169,15 +169,15 @@ in `userData/local/pgdata`; each service logs to `userData/local/logs/`.
 npm run local:fetch    # once: postgres + postgrest binaries, gotrue built from source (needs go)
 npm run local:build    # backend tsc + offline workflow bundle + frontend standalone
 npm run start:local    # dev-mode launch straight into local mode
-MIKE_E2E_DEV=1 npm run e2e:local   # fresh-userData first-run e2e, dev mode
+NORTHWRIT_E2E_DEV=1 npm run e2e:local   # fresh-userData first-run e2e, dev mode
 
 npm run local:stage    # stage built app into local-stack/app for packaging
-npm run dist:local     # package Mike.app WITH the whole stack inside (unsigned)
+npm run dist:local     # package NorthWrit.app WITH the whole stack inside (unsigned)
 npm run e2e:local      # same first-run e2e against the PACKAGED app
 ```
 
 On a first launch with no saved choice, a build that carries the stack shows
-a welcome chooser — **Start on this Mac / Use Mike Cloud / connect
+a welcome chooser — **Start on this Mac / Use NorthWrit Cloud / connect
 to your own server** — so local-first needs zero knowledge of shortcuts.
 Any explicit signal (`--server-url=`, `--local`, or a previously saved
 choice) skips the chooser, so automation and returning users never see it.
@@ -192,7 +192,7 @@ product falls back to client-side docx preview, as designed.
 `local:fetch` also downloads the upstream license/copyright files for the exact
 PostgreSQL, native packager, PostgREST and GoTrue versions, even when their binaries
 are already cached. `local:stage` verifies and includes those notices alongside
-Mike's root `LICENSE` and `SOURCE.json` with source URLs and the build commit.
+NorthWrit's root `LICENSE` and `SOURCE.json` with source URLs and the build commit.
 The staged files live in `local-stack/app/` and travel with the application.
 
 ## Signing & notarization (for a distributable release)
@@ -243,16 +243,16 @@ export APPLE_APP_SPECIFIC_PASSWORD="xxxx-xxxx-xxxx-xxxx"
 export APPLE_TEAM_ID="ABCDE12345"
 
 npm run dist:signed
-# → dist/Mike-<version>-arm64.dmg  and  .zip  (signed, notarized, stapled)
+# → dist/NorthWrit-<version>-arm64.dmg  and  .zip  (signed, notarized, stapled)
 ```
 
 Notarization typically takes a few minutes; electron-builder blocks until Apple
 returns the ticket. Verify the result:
 
 ```bash
-codesign --verify --deep --strict --verbose=2 "dist/mac-arm64/Mike.app"
-xcrun stapler validate                          "dist/mac-arm64/Mike.app"
-spctl -a -vvv -t install                        "dist/mac-arm64/Mike.app"
+codesign --verify --deep --strict --verbose=2 "dist/mac-arm64/NorthWrit.app"
+xcrun stapler validate                          "dist/mac-arm64/NorthWrit.app"
+spctl -a -vvv -t install                        "dist/mac-arm64/NorthWrit.app"
 # the spctl line should print: source=Notarized Developer ID
 ```
 
@@ -308,10 +308,10 @@ Verify the result the same way as the shell build, plus spot-check a nested
 binary and run the packaged first-run e2e against the signed app:
 
 ```bash
-codesign --verify --deep --strict --verbose=2 dist/mac-arm64/Mike.app
-codesign -dv dist/mac-arm64/Mike.app/Contents/Resources/local-stack/bin/pg/bin/postgres
-xcrun stapler validate dist/mac-arm64/Mike.app
-spctl -a -vvv -t install dist/mac-arm64/Mike.app   # → Notarized Developer ID
+codesign --verify --deep --strict --verbose=2 dist/mac-arm64/NorthWrit.app
+codesign -dv dist/mac-arm64/NorthWrit.app/Contents/Resources/local-stack/bin/pg/bin/postgres
+xcrun stapler validate dist/mac-arm64/NorthWrit.app
+spctl -a -vvv -t install dist/mac-arm64/NorthWrit.app   # → Notarized Developer ID
 npm run e2e:local                                   # full boot inside the signed app
 ```
 
@@ -333,7 +333,7 @@ Two constraints worth knowing before touching anything here:
 Distributing the unsigned `.dmg` still works, it's just rougher for the
 downloader: the app opens as **System Settings → Privacy & Security → "Open
 Anyway"**, or from Terminal with
-`xattr -dr com.apple.quarantine /Applications/Mike.app`. (macOS 15 Sequoia
+`xattr -dr com.apple.quarantine /Applications/NorthWrit.app`. (macOS 15 Sequoia
 removed the old Control-click → Open shortcut, so it's the Settings pane or the
 `xattr` command now.) Nothing about the app is degraded — signing is purely the
 download-trust gate.
@@ -341,7 +341,7 @@ download-trust gate.
 ## Icon
 
 The dock icon is the product's own 12-blade glass asterisk
-(`frontend/src/app/components/chat/mike-icon.tsx`) on a macOS Big-Sur-style
+(`frontend/src/app/components/chat/northwrit-icon.tsx`) on a macOS Big-Sur-style
 plate. `assets/icon.html` is the source of truth; regenerate with:
 
 ```bash
@@ -356,7 +356,7 @@ start, with one deliberate exception:
 - `src/local/upgrade.test.js` is the desktop counterpart of the repo's
   `schema-drift.yml` job, run through the app's **own** migration runner
   (`src/local/schema.js`) instead of psql. It boots a throwaway cluster from
-  the fetched Postgres (`MIKE_LOCAL_FETCH_ONLY=postgres npm run local:fetch`
+  the fetched Postgres (`NORTHWRIT_LOCAL_FETCH_ONLY=postgres npm run local:fetch`
   gets just that, no Go needed), builds an installation from the pinned
   schema baseline plus the ledger such an install carries, upgrades it with
   `applySchema`, and requires the result to fingerprint identically to a
@@ -364,10 +364,10 @@ start, with one deliberate exception:
   every existing workspace down once: a migration Postgres refuses inside a
   transaction block (`CREATE INDEX CONCURRENTLY`, #505) must fail under a
   one-transaction-per-file runner and succeed under `sql.js`. Without the
-  binaries it skips; CI sets `MIKE_REQUIRE_LOCAL_STACK=1` so a missing fetch
+  binaries it skips; CI sets `NORTHWRIT_REQUIRE_LOCAL_STACK=1` so a missing fetch
   fails instead of skipping.
 
-`npm run e2e:local` drives the **packaged** app (or `MIKE_E2E_DEV=1` for
+`npm run e2e:local` drives the **packaged** app (or `NORTHWRIT_E2E_DEV=1` for
 `electron .`) through the cold first run — initdb, signup, onboarding,
 project, upload, blob-token download, background text extraction, guest
 sign-in twice — then quits it for real (postgres fast shutdown) and relaunches
@@ -382,7 +382,7 @@ The extraction step polls the local postgres (port 42810, password from
 Only the isolated parser child writes that row; the versions API's page counts
 are measured in-process at upload and stay correct even when every extraction
 fails. Before #799 the child's environment allowlist dropped
-`ELECTRON_RUN_AS_NODE`, so in the packaged app the child relaunched Mike
+`ELECTRON_RUN_AS_NODE`, so in the packaged app the child relaunched NorthWrit
 instead of parsing, while this suite passed. A failure here names the document,
 the text row and job status, and points at that cause; the screenshot is
 `local-04b-extracted.png`. DOCX extraction through LibreOffice is not covered.
@@ -400,7 +400,7 @@ With the docker-compose stack running and the app packaged:
 npm run e2e
 ```
 
-Launches the **packaged** `Mike.app` (not `electron .`, so packaging
+Launches the **packaged** `NorthWrit.app` (not `electron .`, so packaging
 regressions fail too) with a CDP port, drives it with Playwright: asserts the
 shell connects and routes an anonymous user to `/login`, signs up a fresh
 user through the real UI (local stack autoconfirms), creates a project via
@@ -416,6 +416,6 @@ can't be driven over CDP — menu coverage is manual.
   needs the org certificate (see above) and is still to be added.
 - **Auto-update** (electron-updater) — the `zip` target is already emitted for
   it; wiring it up is a follow-up decision.
-- **`mike://` deep links** — the email-change confirmation link still opens in
+- **`northwrit://` deep links** — the email-change confirmation link still opens in
   the browser; a protocol handler would keep it in-app.
 - Native drag-out of documents, dock badge for running reviews — nice follow-ups.

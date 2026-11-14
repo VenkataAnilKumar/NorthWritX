@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MikeIcon } from "@northwrit/ui";
+import { NorthWritIcon } from "@northwrit/ui";
 
 interface SiteLogoProps {
     size?: "sm" | "md" | "lg" | "xl";
@@ -40,7 +40,7 @@ export function SiteLogo({
             <span
                 className={`inline-flex shrink-0 items-center leading-none ${iconClassName}`}
             >
-                <MikeIcon size={iconSizes[size]} />
+                <NorthWritIcon size={iconSizes[size]} />
             </span>
             <span>NorthWrit</span>
         </h1>

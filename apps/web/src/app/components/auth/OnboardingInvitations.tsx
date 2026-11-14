@@ -10,7 +10,7 @@ import {
     acceptOrgInvitation,
     listMyOrgInvitations,
     type OrgInvitation,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { ORG_ROLE_LABELS, type OrgRole } from "@/app/lib/permissions";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import { GlassCardUI, PillButtonUI } from "@northwrit/ui";

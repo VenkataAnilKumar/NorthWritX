@@ -6,7 +6,7 @@ import {
   restoreOrganization,
   isMfaRequiredError,
   type DeletedOrganization,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import { useWorkspace } from "@/app/contexts/WorkspaceContext";
 import {

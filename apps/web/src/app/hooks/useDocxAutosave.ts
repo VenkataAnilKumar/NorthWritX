@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { listDocumentVersions, replaceDocumentVersionFile } from "@/app/lib/mikeApi";
+import { listDocumentVersions, replaceDocumentVersionFile } from "@/app/lib/northwritApi";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import { UploadBatchError } from "@northwrit/client";
 import { invalidateDocxBytes } from "./useFetchDocxBytes";

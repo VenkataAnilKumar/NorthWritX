@@ -17,7 +17,7 @@ import {
   listOrgs,
   type Org,
   type OrgInvitation,
-} from "@/app/lib/mikeApi";
+} from "@/app/lib/northwritApi";
 import { ORG_ROLE_LABELS } from "@/app/lib/permissions";
 import { userFacingApiError } from "@/app/lib/userFacingError";
 import { GlassCardUI, LIQUID_GLASS_SUBTLE_CLASS, PillButtonUI } from "@northwrit/ui";

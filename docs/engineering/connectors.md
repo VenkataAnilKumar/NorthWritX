@@ -1,6 +1,6 @@
 # MCP connectors
 
-Mike connects to remote [Model Context Protocol](https://modelcontextprotocol.io)
+NorthWrit connects to remote [Model Context Protocol](https://modelcontextprotocol.io)
 servers from **Settings > Connectors**. Installed connectors appear under
 **Installed**. Hosted providers appear under **Discover**, and an arbitrary
 remote server can be added with **+ Custom**. Google Drive, Gmail, Google
@@ -50,7 +50,7 @@ organization can supply a CourtListener token for its members; see
 
 Most hosted MCP servers support OAuth Dynamic Client Registration (DCR). A
 user clicks **Add** in Discover and completes the provider's consent screen;
-the Mike deployment does not need provider-specific credentials. Airtable,
+the NorthWrit deployment does not need provider-specific credentials. Airtable,
 Lawve, Linear, and Notion use this pathway.
 
 Servers that use a bearer token or custom headers can be added through
@@ -59,14 +59,14 @@ leave an incomplete connector installed.
 
 ### Pre-configured OAuth clients
 
-Some providers do not support DCR. The person operating Mike must create one
+Some providers do not support DCR. The person operating NorthWrit must create one
 OAuth client with the provider and configure its credentials in
-`backend/.env`. Each Mike user can then authorize their own provider account.
+`backend/.env`. Each NorthWrit user can then authorize their own provider account.
 
 - [Slack](#slack)
 - [Google-hosted MCP servers](#google-hosted-mcp-servers)
 
-If the deployment is not configured, Mike rejects the connector before saving
+If the deployment is not configured, NorthWrit rejects the connector before saving
 it. The warning links to this guide rather than assuming a callback URI for the
 deployment.
 
@@ -80,7 +80,7 @@ must not appear in a provider configuration.
 | Deployment | `API_PUBLIC_URL` | Provider redirect URI |
 | --- | --- | --- |
 | Local development | `http://localhost:3000/api` | `http://localhost:3000/api/user/mcp-connectors/oauth/callback` |
-| Production | `https://<your-mike-host>/api` | `https://<your-mike-host>/api/user/mcp-connectors/oauth/callback` |
+| Production | `https://<your-northwrit-host>/api` | `https://<your-northwrit-host>/api/user/mcp-connectors/oauth/callback` |
 
 The provider redirect URI must match byte-for-byte. Some providers impose
 additional requirements; Slack requires HTTPS.
@@ -100,7 +100,7 @@ rights in the workspace.
    **OAuth & Permissions**, enable PKCE. These settings are not represented in
    the app manifest and must be enabled manually.
 3. Register
-   `https://<your-mike-host>/api/user/mcp-connectors/oauth/callback` as a
+   `https://<your-northwrit-host>/api/user/mcp-connectors/oauth/callback` as a
    redirect URI. Slack requires HTTPS. For local development, run an HTTPS
    tunnel against the frontend on port 3000, set
    `API_PUBLIC_URL=https://<tunnel-host>/api`, and register the matching tunnel
@@ -108,7 +108,7 @@ rights in the workspace.
    values together.
 4. Set `SLACK_MCP_OAUTH_CLIENT_ID` and
    `SLACK_MCP_OAUTH_CLIENT_SECRET` in `backend/.env`, then restart the backend.
-5. In Mike, go to **Settings > Connectors > Discover**, click **Add** on Slack,
+5. In NorthWrit, go to **Settings > Connectors > Discover**, click **Add** on Slack,
    and approve the consent screen. A workspace owner or administrator may
    need to approve the app first.
 
@@ -138,7 +138,7 @@ for example, the Drive endpoint is
 
 - Connector bearer tokens, custom headers, and OAuth tokens are encrypted at
   rest using `MCP_CONNECTORS_ENCRYPTION_SECRET`.
-- Remote URLs are subject to Mike's outbound SSRF protections.
+- Remote URLs are subject to NorthWrit's outbound SSRF protections.
 - Connector tools are cached after successful registration and can be enabled
   or disabled from the connector's Manage dialog.
 
@@ -173,7 +173,7 @@ turned off, deleted, or replaced in the meantime. Changing the server URL,
 credentials, or authorized account invalidates a pending approval. Routine
 OAuth token refresh does not.
 
-Approvals are available in the Mike assistant and project chats. The Word
+Approvals are available in the NorthWrit assistant and project chats. The Word
 add-in and tabular review cannot show them, so a write that needs approval is
 refused there with an explanation.
 

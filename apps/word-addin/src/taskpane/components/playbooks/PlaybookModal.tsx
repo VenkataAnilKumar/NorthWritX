@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { Playbook } from "../../types";
-import { listPlaybooks } from "../../api/mikeApi";
+import { listPlaybooks } from "../../api/northwritApi";
 import { Modal } from "../primitives/Modal";
 import { PickerList } from "../primitives/PickerList";
 import { reportFault } from "../../lib/notify";

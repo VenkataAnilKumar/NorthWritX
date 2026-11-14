@@ -39,8 +39,8 @@ vi.mock("@/app/lib/authApi", async (importOriginal) => ({
     startGoogleOAuth,
 }));
 
-vi.mock("@/app/lib/mikeApi", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@/app/lib/mikeApi")>()),
+vi.mock("@/app/lib/northwritApi", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/app/lib/northwritApi")>()),
     getUserProfile,
     completeUserOnboarding,
 }));
@@ -66,7 +66,7 @@ describe("LoginPage", () => {
         login.mockReset();
         signup.mockReset();
         startGoogleOAuth.mockReset();
-        delete (window as { mikeDesktop?: unknown }).mikeDesktop;
+        delete (window as { northwritDesktop?: unknown }).northwritDesktop;
         refreshSession.mockReset();
         refreshSession.mockResolvedValue(null);
         replace.mockReset();
@@ -172,9 +172,9 @@ describe("LoginPage", () => {
         ).toBeTruthy();
     });
     it("hides the guest button outside the Mac desktop shell", async () => {
-        // window.mikeDesktop only exists inside the Electron shell, and only
+        // window.northwritDesktop only exists inside the Electron shell, and only
         // its local ("everything on this Mac") mode answers with credentials.
-        // In a browser and against Mike Cloud this page must be unchanged.
+        // In a browser and against NorthWrit Cloud this page must be unchanged.
         render(<LoginPage />);
         expect(
             screen.queryByRole("button", { name: "Continue on this Mac" }),
@@ -182,10 +182,10 @@ describe("LoginPage", () => {
     });
 
     it("signs a returning guest in with the shell's credentials", async () => {
-        (window as unknown as Record<string, unknown>).mikeDesktop = {
+        (window as unknown as Record<string, unknown>).northwritDesktop = {
             guestCredentials: () =>
                 Promise.resolve({
-                    email: "guest@mike.local",
+                    email: "guest@northwrit.local",
                     password: "per-install-secret",
                 }),
         };
@@ -199,7 +199,7 @@ describe("LoginPage", () => {
         await user.click(button);
 
         expect(login).toHaveBeenCalledWith(
-            "guest@mike.local",
+            "guest@northwrit.local",
             "per-install-secret",
         );
         expect(signup).not.toHaveBeenCalled();
@@ -211,10 +211,10 @@ describe("LoginPage", () => {
     });
 
     it("falls back to signup the first time a guest ever clicks", async () => {
-        (window as unknown as Record<string, unknown>).mikeDesktop = {
+        (window as unknown as Record<string, unknown>).northwritDesktop = {
             guestCredentials: () =>
                 Promise.resolve({
-                    email: "guest@mike.local",
+                    email: "guest@northwrit.local",
                     password: "per-install-secret",
                 }),
         };
@@ -236,7 +236,7 @@ describe("LoginPage", () => {
         );
 
         expect(signup).toHaveBeenCalledWith(
-            "guest@mike.local",
+            "guest@northwrit.local",
             "per-install-secret",
             "/onboarding/profile",
         );
@@ -245,9 +245,9 @@ describe("LoginPage", () => {
     });
 
     it("does not register an account after a network failure", async () => {
-        window.mikeDesktop = {
+        window.northwritDesktop = {
             guestCredentials: async () => ({
-                email: "guest@mike.local",
+                email: "guest@northwrit.local",
                 password: "secret",
             }),
         };
@@ -263,7 +263,7 @@ describe("LoginPage", () => {
         );
         login.mockResolvedValueOnce({ user: { id: "guest-1" } });
         await userEvent.click(screen.getByRole("button", { name: "Retry" }));
-        expect(login).toHaveBeenLastCalledWith("guest@mike.local", "secret");
+        expect(login).toHaveBeenLastCalledWith("guest@northwrit.local", "secret");
         expect(signup).not.toHaveBeenCalled();
         expect(push).toHaveBeenCalledWith("/assistant");
     });

@@ -4,8 +4,8 @@ import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, it } from "vitest";
 
 // Uses the same disposable-database convention as organization lifecycle tests.
-const container = process.env.MIKE_TEST_POSTGRES_CONTAINER;
-const database = `mike_test_document_text_${process.pid}_${Date.now()}`;
+const container = process.env.NORTHWRIT_TEST_POSTGRES_CONTAINER;
+const database = `northwrit_test_document_text_${process.pid}_${Date.now()}`;
 function sql(query: string) {
   execFileSync("docker", ["exec", "-i", container!, "psql", "-U", "postgres", "-d", database, "-v", "ON_ERROR_STOP=1", "-Xq"], {
     input: query, encoding: "utf8", timeout: 60_000, stdio: ["pipe", "pipe", "pipe"],

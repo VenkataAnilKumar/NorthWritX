@@ -74,7 +74,7 @@ export type ApplyFailureOutcome =
 /**
  * What to report when the Word batch for one edit threw.
  *
- * - The verification read found the expected revisions: it landed, Mike just
+ * - The verification read found the expected revisions: it landed, NorthWrit just
  *   lost its review controls.
  * - A mutation was queued but nothing could prove it landed: unknown. No
  *   automatic retry, because retrying an edit that DID land duplicates it.

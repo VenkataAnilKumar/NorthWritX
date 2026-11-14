@@ -39,7 +39,7 @@ function fakeChildThatCannotStart(binary: string) {
 
 let workDirectory: string;
 beforeAll(async () => {
-  workDirectory = await mkdtemp(join(osTmpdir(), "mike-convert-avail-"));
+  workDirectory = await mkdtemp(join(osTmpdir(), "northwrit-convert-avail-"));
 });
 afterAll(async () => {
   await rm(workDirectory, { recursive: true, force: true });
