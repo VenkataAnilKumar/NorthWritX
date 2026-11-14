@@ -454,11 +454,6 @@
       "reason": "Historical upstream diagnostic issue identifier"
     },
     {
-      "path": "apps/api/src/lib/__tests__/storagePresign.test.ts",
-      "sha256": "357c975785739f6c038a74623ef1b86e840cabf99ee844cfbcb5ff8d9b21bf89",
-      "reason": "Retain existing storage bucket for configurations that omit its name"
-    },
-    {
       "path": "apps/api/src/lib/__tests__/storageSignedUpload.test.ts",
       "sha256": "357c975785739f6c038a74623ef1b86e840cabf99ee844cfbcb5ff8d9b21bf89",
       "reason": "Retain existing storage bucket for configurations that omit its name"
@@ -2097,6 +2092,21 @@
       "path": "scripts/check-repository.mjs",
       "sha256": "0dcca60cf25d1156d1765d26af43fda787fdc9697fb78e73c2cb709e0e52b594",
       "reason": "Accurate upstream source/license attribution or historical resource reference"
+    },
+    {
+      "path": "apps/api/src/__tests__/releaseVersion.test.ts",
+      "sha256": "c4f3d3d4019e50d2c6efb586efeae07e510c8d9f6e38627efe8925cabc73c0c8",
+      "reason": "Archived upstream workflow keeps its original provenance path"
+    },
+    {
+      "path": "apps/api/src/__tests__/releaseVersion.test.ts",
+      "sha256": "b847a7579aab024592ac2da4d24afbf782d841ce88044d9ff51f374d704c8f69",
+      "reason": "Archived upstream workflow keeps its original provenance path"
+    },
+    {
+      "path": "apps/web/src/app/(pages)/settings/connectors/page.test.tsx",
+      "sha256": "a04a87a2c417e4d87e4cd996eff2e489d95a978b8727d9ffe1bbc493bcc9cef1",
+      "reason": "Preserved upstream connector setup documentation URL"
     }
   ]
 }

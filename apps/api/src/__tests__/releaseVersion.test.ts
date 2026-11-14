@@ -21,7 +21,7 @@ const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 // Execute the workflow's actual shell script with synthetic configuration;
 // never inherit credentials or release settings from the test process.
 function runIdentity(overrides: Record<string, string> = {}) {
-    const workflow = parseYaml(read("docs/upstream/northwrit/.github/workflows/publish-images.yml"));
+    const workflow = parseYaml(read("docs/upstream/mike/.github/workflows/publish-images.yml"));
     const script = workflow.jobs.identity.steps.find((step: { id?: string }) => step.id === "identity").run;
     const dir = mkdtempSync(path.join(tmpdir(), "northwrit-publish-identity-"));
     const output = path.join(dir, "output");
@@ -77,7 +77,7 @@ describe("product version", () => {
     });
 
     it("serializes publication across refs and rechecks saved builds in failed-job retries", () => {
-        const workflow = parseYaml(read("docs/upstream/northwrit/.github/workflows/publish-images.yml"));
+        const workflow = parseYaml(read("docs/upstream/mike/.github/workflows/publish-images.yml"));
         expect(workflow.concurrency.group).toBe("publish-images");
         expect(workflow.concurrency["cancel-in-progress"]).toBe(false);
         expect(workflow.concurrency.queue).toBe("max");
@@ -86,11 +86,11 @@ describe("product version", () => {
             .toBe("node scripts/publish-images.mjs prepare");
         expect(steps.find((step: { id?: string }) => step.id === "build").if)
             .toBe("steps.saved.outputs[format('{0}_digest', matrix.image)] == ''");
-        expect(read("docs/upstream/northwrit/.github/workflows/publish-images.yml")).not.toContain("actions/download-artifact");
+        expect(read("docs/upstream/mike/.github/workflows/publish-images.yml")).not.toContain("actions/download-artifact");
     });
 
     it("does not persist Git credentials in any publication job", () => {
-        const workflow = parseYaml(read("docs/upstream/northwrit/.github/workflows/publish-images.yml"));
+        const workflow = parseYaml(read("docs/upstream/mike/.github/workflows/publish-images.yml"));
         for (const name of ["identity", "build", "publish"]) {
             const checkout = workflow.jobs[name].steps.find((step: { uses?: string }) => step.uses?.startsWith("actions/checkout@"));
             expect(checkout.with["persist-credentials"], name).toBe(false);

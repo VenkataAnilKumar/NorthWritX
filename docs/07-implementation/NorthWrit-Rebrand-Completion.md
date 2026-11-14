@@ -44,7 +44,7 @@ Local verification completed:
 
 | Check | Result |
 |---|---|
-| Branding guard | Passed; only reviewed compatibility/provenance occurrences remain, with 43 frozen historical snapshots and 376 exact line exceptions |
+| Branding guard | Passed; only reviewed compatibility/provenance occurrences remain, with 43 frozen historical snapshots and 378 exact line exceptions |
 | Repository/whitespace | Passed: nine workspace lock entries, 130 local links and CI inventory |
 | Types | API production/test/contracts, web and Word app/E2E checks passed |
 | Lint | Passed with zero errors and the existing 29 warnings |
@@ -63,3 +63,9 @@ Local verification completed:
 | Shell/Compose | Changed shell scripts passed syntax checks; Compose configuration parsed without resolving application env files |
 
 The full API/web suites were not repeated locally in this pass; focused regressions, types, lint and affected images provide local evidence. GitHub CI remains a gate for any subsequent PR/merge. Existing raster-icon files were not regenerated. The archived standalone cloud baseline and real cleanup sweeps are not run. Signed macOS packaging, Office-host acceptance and production policy/URL validation remain separate release checks.
+
+## PR CI follow-up
+
+The first PR run exposed two test-fixture mistakes in the bulk rename: references to an unchanged upstream archive path and an explicit bucket name inconsistent with the expected presigned URL. The archive references were restored and the bucket fixture now explicitly uses NorthWrit. Both affected files passed all 29 tests locally, followed by branding, repository and whitespace checks. No runtime compatibility behavior or assertions were weakened.
+
+Frontend CI also exposed three stale expectations: the preserved upstream connector documentation URL and telemetry defaults. The URL assertion was restored; telemetry tests now verify reporting stays off without an operator DSN and still forwards with an explicitly configured synthetic DSN. All 74 tests across the three affected frontend files passed locally.

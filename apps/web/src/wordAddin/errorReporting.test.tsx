@@ -6,7 +6,7 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ToastViewportUI, clearToasts } from "@northwrit/ui";
-import { NORTHWRIT_SENTRY_DSN, describeError } from "@northwrit/client";
+import { describeError } from "@northwrit/client";
 import {
     NorthWritApiError,
     parseApiErrorBody,
@@ -221,14 +221,13 @@ describe("an unreachable session check", () => {
 });
 
 // The add-in's webpack dev server (`npm start`, NODE_ENV=development) is a
-// contributor's machine, not an install: it must not report to the NorthWrit
-// project, and when a developer points it at a DSN of their own the events
-// say "development".
+// contributor's machine. Reporting requires an explicit operator DSN;
+// development events use the development environment.
 describe("addinSentryOptions for development builds", () => {
     it("is off by default, even with the example's REACT_APP_SENTRY_DISABLED=false", () => {
         expect(addinSentryOptions("taskpane", { nodeEnv: "development", disabled: "false" }).enabled).toBe(false);
         const production = addinSentryOptions("taskpane", { nodeEnv: "production" });
-        expect(production).toMatchObject({ enabled: true, dsn: NORTHWRIT_SENTRY_DSN.wordAddin, environment: "self-hosted" });
+        expect(production).toMatchObject({ enabled: false, dsn: undefined, environment: "self-hosted" });
     });
 
     it("reports as development to a DSN set on purpose, unless an environment is set", () => {
