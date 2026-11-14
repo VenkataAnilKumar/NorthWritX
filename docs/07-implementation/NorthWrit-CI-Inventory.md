@@ -19,7 +19,7 @@ The application jobs run root npm aliases, preserving their exit status. Telemet
 
 ## Imported workflow disposition
 
-All files below remain under `docs/upstream/original-source/.github/workflows/` for upstream comparison. They are inactive in this repository and retain assumptions about upstream paths, credentials, branches and release infrastructure. Do not copy them to root unchanged.
+The inactive workflow examples below were retired from the working tree under [ADR 0004](../decisions/0004-retire-source-reference-archive.md). They remain recoverable from Git revision `bca9d136480a4cca23c7a7d0fc53516d7233c814`. The table records adoption decisions and outstanding gates, not active automation.
 
 | Imported file | Disposition and prerequisite |
 |---|---|

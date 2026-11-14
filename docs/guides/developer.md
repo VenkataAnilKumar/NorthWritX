@@ -1,6 +1,6 @@
 # NorthWrit developer guide
 
-The application spans `apps/` and root `packages/`, with [upstream provenance](../upstream/original-source/NORTHWRIT.md) and is based on a pinned original source source snapshot. Use the [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) for delivery status and the [source audit](../07-implementation/NorthWrit-Source-Audit.md) for the current architecture. Older architecture proposals describe requirements for future phases.
+The application spans `apps/` and root `packages/`, with [upstream provenance](../06-technical/NorthWrit-Source-Provenance.md) and is based on a pinned original source source snapshot. Use the [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) for delivery status and the [source audit](../07-implementation/NorthWrit-Source-Audit.md) for the current architecture. Older architecture proposals describe requirements for future phases.
 
 ## Source layout
 
@@ -20,7 +20,7 @@ Use Node.js 22 or later. The [root README](../../README.md#install-and-run) docu
 
 Run `npm run dev:api` and `npm run dev:web` in separate terminals after configuring the documented infrastructure. Follow the [application local-development procedure](../../docs/engineering/local-development.md) for auth, storage and local email. Shell commands in the local-development guide start at the repository root unless a step explicitly changes directories.
 
-Use `test:api`, `test:web`, `test:word`, `typecheck`, `lint` and `build` from the repository root as appropriate. Targeted test arguments are forwarded, for example `npm run test:api -- src/__tests__/architecture.test.ts --maxWorkers=2`. The [application build instructions](../../docs/upstream/original-source/NORTHWRIT.md#build-checks) and root README describe required Word build URLs. A localhost cloud service needs a working Desktop or forwarding route for interactive use on another computer.
+Use `test:api`, `test:web`, `test:word`, `typecheck`, `lint` and `build` from the repository root as appropriate. Targeted test arguments are forwarded, for example `npm run test:api -- src/__tests__/architecture.test.ts --maxWorkers=2`. The [application build instructions](../../README.md#verify-changes) and root README describe required Word build URLs. A localhost cloud service needs a working Desktop or forwarding route for interactive use on another computer.
 
 The [repository workflow](../../.github/workflows/northwrit-ci.yml) validates these aliases and runs package builds and checks. The [CI inventory](../07-implementation/NorthWrit-CI-Inventory.md) distinguishes those active checks from imported, inactive workflows. Do not restart the archived standalone cloud baseline test as part of repository organization. A passing unit suite does not establish database, browser or model acceptance.
 

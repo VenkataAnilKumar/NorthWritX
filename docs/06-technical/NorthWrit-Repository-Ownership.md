@@ -20,7 +20,7 @@ This is the current layout of the NorthWrit application. The [repository decisio
 | `tests/browser/` and `tests/loadtest/` | Workflow and performance verification | Real browser journeys and measured load; distinguish mocks, live model execution and skipped tests |
 | `infra/` and app Dockerfiles | Operations with domain maintainers | Runtime configuration, auth/storage boundaries and migration ordering |
 | `scripts/application/` and `docs/engineering/` | Relevant application maintainers | Engineering automation and implemented operating procedures |
-| `NORTHWRIT.md`, license, credits and notices | Repository maintenance with release reviewers | Imported source identity, local changes and upstream update compatibility |
+| Source provenance, license, credits and notices | Repository maintenance with release reviewers | Imported source identity, local changes and upstream update compatibility |
 
 ## Dependency rules
 
@@ -36,7 +36,7 @@ The web/Word shared UI and client rules live in the [application instructions](.
 2. Accepted records in `docs/decisions/` govern structural decisions. Historical architecture proposals do not override them.
 3. Product specifications and workflow contracts define target behaviour. If the implementation differs, record the gap rather than claiming the target is delivered.
 4. Application source, tests and application engineering guides describe existing interfaces and operating procedures. Verify an operating command in the documented working directory.
-5. `docs/upstream/original-source/NORTHWRIT.md` records import provenance and upgrade constraints. Retain upstream attribution when adapting technical material.
+5. `docs/06-technical/NorthWrit-Source-Provenance.md` records import provenance and upgrade constraints. Retain upstream attribution when adapting technical material.
 
 Review documentation links and command examples when changing paths. Keep the numbered product sections intact. Do not introduce another competing setup guide when a root entry point can link to the application procedure.
 

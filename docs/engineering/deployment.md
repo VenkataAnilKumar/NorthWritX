@@ -882,5 +882,5 @@ of on the next fresh install.
 - Review storage, logging, retention, and deletion behavior before processing
   confidential documents.
 
-See [Safe local testing](safe-local-testing.md), the [security policy](../upstream/original-source/SECURITY.md),
+See [Safe local testing](safe-local-testing.md), the [security policy](../../SECURITY.md),
 and [Troubleshooting](troubleshooting.md) for related guidance.

@@ -8,7 +8,7 @@ Paths in this document are relative to the repository root unless a package work
 
 These instructions apply to the entire repository. Keep changes focused,
 preserve unrelated work in the tree, and follow the more detailed guidance in
-`docs/upstream/original-source/CONTRIBUTING.md` and `docs/engineering/` when working in a documented subsystem.
+`CONTRIBUTING.md` and `docs/engineering/` when working in a documented subsystem.
 
 The repository requires Node.js 22 or newer and contains three applications:
 
@@ -221,8 +221,7 @@ would not run the new version. Do not assume every historical migration is
 safely replayable,
 and do not apply migrations to a remote or production database unless the user
 explicitly requests it and the target has been confirmed. See
-`docs/engineering/deployment.md` for deployment procedure and `../docs/engineering/upstream/original-source/.github/workflows/schema-drift.yml`
-for the fresh-versus-upgraded schema check.
+`docs/engineering/deployment.md` for deployment procedure. The fresh-versus-upgraded schema gate remains deferred in `docs/07-implementation/NorthWrit-CI-Inventory.md`.
 
 ## Diagnostic identity
 
@@ -268,7 +267,7 @@ crosses an application boundary must be verified by building the affected
 image from the repository root, for example
 `docker build -f apps/web/Dockerfile .`. The host-side build cannot catch a
 missing build-context file because every sibling directory exists on the
-host; `../docs/engineering/upstream/original-source/.github/workflows/docker-images.yml` builds all three images on every
+host; `.github/workflows/container-builds.yml` builds all three images on every
 pull request for the same reason.
 
 Use targeted Vitest files while iterating, for example:

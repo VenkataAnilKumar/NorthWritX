@@ -8,7 +8,7 @@ infrastructure, and development workflow, including optional local integrations.
 
 ## Source attribution
 
-NorthWrit incorporates and modifies application source version 2.1.0 from Open Legal Products, imported at commit `a5c147d6587ca465f301e8479f6c50fbc5731c45`. The original [license](docs/upstream/original-source/LICENSE), [credits](docs/upstream/original-source/CREDITS.md), and [source and modification record](docs/upstream/original-source/NORTHWRIT.md) are retained.
+NorthWrit incorporates and modifies application source version 2.1.0 from Open Legal Products, imported at commit `a5c147d6587ca465f301e8479f6c50fbc5731c45`. The [license](LICENSE) and [source and modification record](docs/06-technical/NorthWrit-Source-Provenance.md) are retained. Third-party acknowledgments appear below.
 
 NorthWrit application code and project modifications are licensed under AGPL-3.0-only. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md). Third-party components retain their respective licenses and notices.
 

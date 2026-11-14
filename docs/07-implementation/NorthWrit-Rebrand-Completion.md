@@ -30,7 +30,7 @@ Word preference reads prefer the new keys, copy old stored values and preserve p
 
 Database schemas, shipped migrations, workflow source identifiers, signed-manifest formats, legacy object metadata and storage paths are not renamed blindly. Existing stacks without an explicit bucket setting retain their old bucket; new example configuration sets `northwrit` explicitly. No stored objects, running services or volumes are moved or removed. Unused validation images and identified cache created for this repository were reclaimed to provide build space.
 
-Upstream licenses, credits, source origins, historical decisions and verification records retain accurate attribution. The desktop distribution source notice identifies this fork's source revision and the pinned upstream origin separately. Unused upstream artwork and dated telemetry-account guidance are archived under `docs/upstream/`.
+Upstream licenses, credits, source origins, historical decisions and verification records retain accurate attribution. The desktop distribution source notice identifies this fork's source revision and the pinned upstream origin separately. Unused source artwork and dated telemetry-account guidance were retired to Git history under ADR 0004.
 
 `npm run check:branding` rejects unexpected old-brand text or filenames. `scripts/branding-compatibility.json` records exact reviewed line hashes with reasons and frozen historical snapshots. Removing a legacy reference also requires removing its stale exception; the guard never regenerates exceptions automatically.
 

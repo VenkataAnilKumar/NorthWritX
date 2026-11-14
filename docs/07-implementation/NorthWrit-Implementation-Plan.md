@@ -10,7 +10,7 @@ Build NorthWrit as a Harvey-style legal AI workspace for Canadian law firms usin
 
 This is the current implementation roadmap. It replaces the older implementation phases, sprint plan, implementation checklist, reuse execution plan, agent prompts, and v3 roadmap. Existing product specifications remain requirements inputs; their release labels and architecture proposals must be reconciled with the NorthWrit audit rather than treated as verified implementation.
 
-The active application spans root `apps/` and `packages/`, with [recorded provenance](../upstream/original-source/NORTHWRIT.md), imported from the upstream revision `a5c147d6587ca465f301e8479f6c50fbc5731c45`. Upstream source
+The active application spans root `apps/` and `packages/`, with [recorded provenance](../06-technical/NorthWrit-Source-Provenance.md), imported from the upstream revision `a5c147d6587ca465f301e8479f6c50fbc5731c45`. Upstream source
 
 ## Delivery sequence
 
@@ -74,7 +74,7 @@ Completed work:
 1. Add the root README, repository instructions and command wrappers. Point setup, development, formatting, type checks, tests and builds to the active application. Keep existing package manifests and lockfiles; wrappers do not introduce a new workspace or package manager.
 2. Document ownership and dependency rules. Backend domains use the existing service facades; authorization stays in shared access helpers. Shared contracts, client behaviour and UI retain their existing package boundaries. Document how API and worker entry points invoke the same domain services.
 3. Clarify documentation authority. Root `docs/` holds NorthWrit requirements, decisions and delivery evidence. Application `docs/` describes implemented engineering and operating behaviour. Identify historical proposals and reconcile conflicting setup guidance without deleting provenance or applicable notices.
-4. Review imported workflows under `docs/upstream/original-source/.github/`. Record which checks NorthWrit runs from root `.github/workflows/`; nested workflow files do not execute automatically. Update active CI paths, build contexts and command documentation together when required.
+4. Review the imported workflow disposition in the CI inventory. Inactive references are retired to Git history under ADR 0004. Record the checks NorthWrit runs from root `.github/workflows/`. Update active CI paths, build contexts and command documentation together when required.
 5. Record the Phase 4 extension map: the existing Projects implementation provides the Matter compatibility layer; document access, source versions, review, drafting and export remain in their existing domains where they fit. Identify shared policy seams and test ownership before adding parallel implementations.
 6. Verify root commands from their documented working directory, internal documentation links, CI paths and affected builds/type checks/regressions. Record failures and inherited limitations. Do not restart the archived standalone cloud baseline test; use the checks required for the repository changes.
 
