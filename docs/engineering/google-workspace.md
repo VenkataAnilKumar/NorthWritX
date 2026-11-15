@@ -3,9 +3,11 @@
 NorthWrit connects to Google Drive, Gmail, and Google Calendar as separate,
 optional connectors in **Settings → Connectors**. Google SSO never connects
 them automatically. Each user chooses any permitted Google account for each
-service, including a different account from their NorthWrit login. Read access is
-the default; write permissions require a separate consent flow, and every
-send/edit/delete proposal requires explicit approval of its exact contents.
+service, including a different account from their NorthWrit login. Google scopes and consent determine available read/write access: Drive uses
+`drive.file` for selected or created files, while Gmail and Calendar require
+additional consent for write access. Permitted writes can execute directly.
+Enable **Ask for permission for write actions** in each connector's Manage dialog
+to require approval of the proposed contents before execution.
 
 The three connectors can share one Google Cloud project and Web application
 OAuth client, but each registers its own callback URL.

@@ -1,4 +1,6 @@
-# Northwrit Glassy Multi-Surface Platform Architecture Specification
+# NorthWrit Glassy Multi-Surface Platform Architecture Specification
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 ## Unified 2026 Liquid Glass Architecture across Web, Desktop, and Mobile
@@ -19,7 +21,7 @@ Modern legal AI benchmarks (such as Harvey AI and CoCounsel) demonstrate that le
 - **In Courthouse Corridors & Client Transit (Mobile App):** Litigators do not author 50-page briefs on a phone. Instead, they require hands-free **Courtroom Voice Dictation** that automatically extracts McGill Guide legal citations, a **Mobile Optical CiteCheck Scanner** to photograph opposing counsel's paper submissions and inspect passage support with licensed authority treatment gated by RS10, and a **1-Tap Partner Sign-Off Feed** powered by biometric FaceID / TouchID authorization.
 
 ### 1.2 The 2026 "Liquid Glass" Visual Aesthetic
-Research into 2026 spatial design trends indicates that early glassmorphism suffered from washed-out opacity and unreadable text. Northwrit implements **Liquid Obsidian & Sapphire Glass**:
+Research into 2026 spatial design trends indicates that early glassmorphism suffered from washed-out opacity and unreadable text. NorthWrit implements **Liquid Obsidian & Sapphire Glass**:
 1. **Dark Glassmorphic Substrate:** Base background in deep Obsidian (`#070B14`), overlaid with frosted elevated panels (`rgba(15, 23, 42, 0.65)` + `backdrop-filter: blur(24px) saturate(180%)`).
 2. **Selective Glass Application Rule:** Translucent glass is strictly used for **contextual framing and navigation** (floating headers, HUD search bars, sliding evidence drawers, modals, status pills). Dense primary legal reading surfaces (Folios, briefs, affidavits) are rendered on solid, high-contrast, eye-protective cards (`#0B1220` or Paper Warm `#FAF9F5`) to prevent visual fatigue and comply with WCAG AAA accessibility.
 3. **Specular Crystal Highlights:** Subtle 1px borders (`rgba(255, 255, 255, 0.08)` resting, `rgba(255, 255, 255, 0.20)` hover) mimicking polished optical crystal.
@@ -142,12 +144,12 @@ Engineered with **Tauri 2.0 Mobile (iOS & Android)**, the Litigator Mobile App p
 
 ## 6. Open-Source Code Reuse Mapping (70% Reuse / 30% Custom Legal Layer)
 
-In strict adherence to Northwrit engineering rules, the multi-surface platform copies, rebrands, and extends existing battle-tested code from `V:\AI Engineer\Agent Platforms\Open Sources`:
+In strict adherence to NorthWrit engineering rules, the multi-surface platform adapts and extends existing battle-tested code from `V:\AI Engineer\Agent Platforms\Open Sources`:
 
-| Target Northwrit Module | Physical Source to Copy (`Copy-Item`) | Upstream Project | Rebranding & Extension Protocol |
+| Target NorthWrit Module | Physical Source to Copy (`Copy-Item`) | Upstream Project | Configuration & Extension Protocol |
 |---|---|---|---|
-| **`packages/ui` (Glass Primitives)** | `V:\AI Engineer\Agent Platforms\Open Sources\sim\packages\emcn\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\sim\apps\sim\components\*` | `sim` (EMCN) | Rebrand `@sim/emcn` → `@northwrit/ui`; implement 2026 Liquid Obsidian glass tokens (`backdrop-blur-2xl`), `<GlassCard />`, `<GlassHeader />`, `<GlassDrawer />`, and `<GlassModal />`. |
-| **`packages/desktop-bridge`** | `V:\AI Engineer\Agent Platforms\Open Sources\sim\packages\desktop-bridge\*` | `sim` (desktop-bridge) | Rebrand `@sim/desktop-bridge` → `@northwrit/desktop-bridge`; maintain `title-bar.ts`, `local-files.ts`, and `local-filesystem-limits.ts`; add Tauri 2.0 IPC bindings. |
+| **`packages/ui` (Glass Primitives)** | `V:\AI Engineer\Agent Platforms\Open Sources\sim\packages\emcn\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\sim\apps\sim\components\*` | `sim` (EMCN) | Configure `@sim/emcn` → `@northwrit/ui`; implement 2026 Liquid Obsidian glass tokens (`backdrop-blur-2xl`), `<GlassCard />`, `<GlassHeader />`, `<GlassDrawer />`, and `<GlassModal />`. |
+| **`packages/desktop-bridge`** | `V:\AI Engineer\Agent Platforms\Open Sources\sim\packages\desktop-bridge\*` | `sim` (desktop-bridge) | Configure `@sim/desktop-bridge` → `@northwrit/desktop-bridge`; maintain `title-bar.ts`, `local-files.ts`, and `local-filesystem-limits.ts`; add Tauri 2.0 IPC bindings. |
 | **`apps/companion` (Desktop App)** | `V:\AI Engineer\Agent Platforms\Open Sources\sim\apps\sim\*`<br>Architecture: `janhq/jan` (Tauri 2.0) | `sim` + `Jan.ai` | Configure Tauri 2.0 Mica/Vibrancy window translucency; wire loopback proxy (`127.0.0.1:1337`); implement global `Cmd+Shift+N` HUD search dock. |
 | **`apps/mobile/src/voice`** | `V:\AI Engineer\Agent Platforms\Open Sources\openagents\apps\openagents-ios\OpenAgents\Voice\*` (`VoiceBar.swift`, `VoiceSession.swift`, `VoiceLevelView.swift`) | `openagents` (iOS Voice) | Adapt voice streaming, level metering, and audio session management into mobile voice dictation; add McGill citation extraction logic. |
 | **`apps/companion/src/hud`** | `V:\AI Engineer\Agent Platforms\Open Sources\openagents\apps\openagents-desktop\*` (`dictation-face`, `Shaders.metal`) | `openagents` (Desktop HUD) | Adapt floating HUD overlay and keyboard shortcut state management for the global `Cmd+Shift+N` research dock. |

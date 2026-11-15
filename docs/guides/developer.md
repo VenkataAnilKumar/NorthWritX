@@ -1,6 +1,6 @@
 # NorthWrit developer guide
 
-The application spans `apps/` and root `packages/`, with [upstream provenance](../06-technical/NorthWrit-Source-Provenance.md) and is based on a pinned original source source snapshot. Use the [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) for delivery status and the [source audit](../07-implementation/NorthWrit-Source-Audit.md) for the current architecture. Older architecture proposals describe requirements for future phases.
+The application spans `apps/` and root `packages/`, and its pinned source is recorded in the [provenance record](../06-technical/NorthWrit-Source-Provenance.md). Use the [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) for delivery status and the [source audit](../07-implementation/NorthWrit-Source-Audit.md) for the pinned-source findings. Use the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) for the working stack. Older architecture proposals describe requirements for future phases.
 
 ## Source layout
 
@@ -24,12 +24,20 @@ Use `test:api`, `test:web`, `test:word`, `typecheck`, `lint` and `build` from th
 
 The [repository workflow](../../.github/workflows/northwrit-ci.yml) validates these aliases and runs package builds and checks. The [CI inventory](../07-implementation/NorthWrit-CI-Inventory.md) distinguishes those active checks from imported, inactive workflows. Do not restart the archived standalone cloud baseline test as part of repository organization. A passing unit suite does not establish database, browser or model acceptance.
 
-Run the [Python branding script](../../scripts/rebrand_northwrit.py) with `--check` after applying an upstream update. Preserve license notices, review all changes to build and migration inputs, and verify that authentication and deployment settings point to the intended NorthWrit environment.
+Run `npm run check:branding` after documentation/source changes and upstream updates. Its [compatibility manifest](../../scripts/branding-compatibility.json) protects reviewed identifiers and historical snapshots. The [Python import script](../../scripts/configure_northwrit.py) is a historical transformation tool, not the current acceptance check; do not mechanically rename stored formats or protected identifiers. Preserve license notices, review all changes to build and migration inputs, and verify that authentication and deployment settings point to the intended NorthWrit environment.
 
 ## Ownership and Phase 4
 
-Read the [ownership map](../06-technical/NorthWrit-Repository-Ownership.md), [accepted repository decision](../decisions/0001-repository-structure.md) and [Phase 4 extension map](../07-implementation/NorthWrit-Phase-4-Extension-Map.md) before adding new modules. Preserve shared package boundaries and compatibility-sensitive Projects data. The expanded directory migration is now required before Phase 4 under [ADR 0002](../decisions/0002-expanded-repository-structure.md). It remains separate from the completed entry-point work; the new paths and commands are reflected in the root README. See the migration verification record for layout validation and the [workspace record](../07-implementation/NorthWrit-Workspace-Verification.md) for dependency consolidation.
+Read the [ownership map](../06-technical/NorthWrit-Repository-Ownership.md), [expanded layout decision](../decisions/0002-expanded-repository-structure.md) and [Phase 4 extension map](../07-implementation/NorthWrit-Phase-4-Extension-Map.md) before adding new modules. Preserve shared package boundaries and compatibility-sensitive Projects data. The expanded directory migration is merged under [ADR 0002](../decisions/0002-expanded-repository-structure.md). The root npm workspace are also merged; the new paths and commands are reflected in the root README. See the migration verification record for layout validation and the [workspace record](../07-implementation/NorthWrit-Workspace-Verification.md) for dependency consolidation.
 
 ## Product requirements
 
 Track requirements by ID in the [feature specification](../04-specs/Northwrit_Feature-Spec.md). Use the [workflow contracts](../04-specs/Northwrit_Workflow-Contracts.md) for authorization, evidence links, data handling and version-bound approvals. These requirements need executable tests before pilot release.
+
+## Documentation changes
+
+Use `npm run check:repo`, `npm run check:branding` and `npm run check:whitespace` for a documentation pass. Check new or edited relative links against their destination files. Update the [documentation index](../README.md) when adding a guide, and the implementation plan when a milestone's evidence changes. Preserve historical verification results; append later evidence or link to the milestone that supersedes them. Documentation-only changes do not require starting application services.
+
+## Product and architecture orientation
+
+Read the [product catalogue](../02-product/NorthWrit-Product-Catalogue.md), [runtime architecture](../06-technical/NorthWrit-Current-Implementation.md), [system flows](../06-technical/NorthWrit-System-Flows.md) and [administrator guide](administrator.md) before changing a cross-surface capability. The [documentation coverage map](../07-implementation/NorthWrit-Documentation-Coverage.md) connects source, tests and engineering guides. The [105-feature matrix](../04-specs/NorthWrit-Capability-Matrix.md) distinguishes current building blocks from target acceptance.

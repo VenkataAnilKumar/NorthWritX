@@ -2,18 +2,29 @@
 
 NorthWrit is a legal workspace being developed for Canadian law firms. The active application spans `apps/` and `packages/`; the [provenance record](docs/06-technical/NorthWrit-Source-Provenance.md) identifies its original application source snapshot. See the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for delivery status. Matter workflows and the later Canadian research and governance capabilities are planned work, not release guarantees.
 
+## Current status
+
+The application baseline, expanded repository layout, root npm workspace are merged. [PR #4](https://github.com/VenkataAnilKumar/NorthWritX/pull/4) passed all seven PR checks and merged as `d7e899526a389cbbe684b18618b32df98ccea237`. Subsequent [PR #5](https://github.com/VenkataAnilKumar/NorthWritX/pull/5) aligned configuration and [PR #6](https://github.com/VenkataAnilKumar/NorthWritX/pull/6) retired the duplicate reference archive. Phase 4, the legal workspace, is next and has not started. This is a development baseline; pilot and production acceptance remain separate work.
+
+The working stack is TypeScript, Next.js/React, an Express API, Supabase PostgreSQL/Auth, S3-compatible storage, Office.js and Electron. Existing Projects, Assistant, document processing, review and integration services provide the foundation. See the [current implementation](docs/06-technical/NorthWrit-Current-Implementation.md) for source references and the boundary between existing building blocks and planned NorthWrit capabilities.
+
 ## Start here
+
+- [Product catalogue](docs/02-product/NorthWrit-Product-Catalogue.md): current capabilities, configuration and limitations.
+- [Architecture and system flows](docs/06-technical/NorthWrit-Current-Implementation.md): runtime, state and trust boundaries.
+- [User guide](docs/guides/user-guide.md) and [administrator guide](docs/guides/administrator.md): everyday tasks and operating controls.
+- [Capability matrix](docs/04-specs/NorthWrit-Capability-Matrix.md): all 105 requirements and remaining delivery work.
 
 - [Developer guide](docs/guides/developer.md): setup and verification.
 - [Repository ownership](docs/06-technical/NorthWrit-Repository-Ownership.md): where code and documentation belong.
-- [Rebrand completion](docs/07-implementation/NorthWrit-Rebrand-Completion.md): current names, local defaults and compatibility policy.
+- [Configuration verification](docs/07-implementation/NorthWrit-Configuration-Verification.md): current names, local defaults and compatibility policy.
 - [CI inventory](docs/07-implementation/NorthWrit-CI-Inventory.md): active checks and gaps.
 - [Phase 4 extension map](docs/07-implementation/NorthWrit-Phase-4-Extension-Map.md): existing matter workflow building blocks.
 - [Application provenance](docs/06-technical/NorthWrit-Source-Provenance.md): source revision, attribution and upstream updates.
 
 ## Repository layout
 
-The application has moved to the expanded layout. Migration checks and remaining limits are recorded in the [migration verification](docs/07-implementation/NorthWrit-Migration-Verification.md).
+The expanded layout is merged. Migration checks and remaining limits are recorded in the [migration verification](docs/07-implementation/NorthWrit-Migration-Verification.md).
 
 ```text
 package.json             Nine private npm workspaces and root commands
@@ -25,7 +36,12 @@ apps/
   worker/                Standalone launcher using the API worker runtime
   word-addin/            Microsoft Word integration
   desktop/               Electron shell
-packages/                Contracts, client, UI and shared fixtures
+packages/
+  contracts/             Shared serialized API contracts
+  client/                Framework-free client behaviour
+  ui/                    Shared interface components
+  byok-validation/       Shared test fixtures; not an npm workspace
+  pdf-text-order/        Shared test fixtures; not an npm workspace
 infra/                   Compose, Docker support and Supabase gateway
   docker-compose.yml
 tests/browser/           Existing Playwright package and tests
@@ -53,7 +69,7 @@ When switching an existing checkout from independent installs, delete the genera
 
 Follow [application local development](docs/engineering/local-development.md) to configure the database, auth, storage, local email and separate signing/encryption secrets. Keep email confirmation enabled. Use synthetic documents and disposable accounts for validation. The [safe testing guide](docs/engineering/safe-local-testing.md) describes these boundaries.
 
-For the local stack, copy `infra/.env.example` to `infra/.env` and `apps/api/.env.example` to `apps/api/.env`, then follow the local development guide. Run `npm run infra:prepare` to make the three public bind-mounted configuration files readable, then start Compose from `infra/` with `docker compose up --build`, or use `npm run stack:up` from the root. These commands do not publish images.
+For a fresh local stack, copy `infra/.env.example` to `infra/.env` and `apps/api/.env.example` to `apps/api/.env`, then follow the local development guide. Preserve existing `.env` files when updating a checkout. Run `npm run infra:prepare` to make the three public bind-mounted configuration files readable, then start it from the repository root with `docker compose -f infra/docker-compose.yml up --build`. The `stack:up` helper performs an automatic cleanup sweep by default; read the [lifecycle and cleanup behaviour](docs/engineering/local-development.md#stop-and-clean-up) before using it. Starting Compose does not publish images.
 
 With the required infrastructure configured, start each process in its own terminal:
 
@@ -71,6 +87,7 @@ The commands above are separate terminal commands. They do not start the full Co
 | Command | Scope |
 |---|---|
 | `npm run check:repo` | Repository entry points, package commands, local links and CI paths; no dependencies or services required |
+| `npm run check:branding` | Active naming, exact reviewed compatibility references and frozen historical snapshots |
 | `npm run check:whitespace` | Git whitespace validation for tracked changes; does not format source |
 | `npm run test:api -- --maxWorkers=2` | Backend unit and route integration tests |
 | `npm run test:web -- --maxWorkers=2` | Web/shared component and hook tests |
@@ -95,11 +112,24 @@ $env:REACT_APP_WEB_APP_URL = 'https://app.northwrit.invalid'
 npm run build:word
 ```
 
-Use real deployment URLs when producing a release. Telemetry configuration and build requirements are documented in [build instructions](#verify-changes).
+Use real deployment URLs when producing a release. Use the [observability guide](docs/engineering/observability.md) for current telemetry configuration. Reporting requires an explicitly configured destination; the [configuration record](docs/07-implementation/NorthWrit-Configuration-Verification.md) explains namespace and compatibility rules.
 
 Browser and database suites require additional services. Read the [E2E guide](docs/engineering/e2e-ci.md) before `npm run setup:e2e` and `npm run test:e2e`. They are not part of `npm test`. Do not restart the archived standalone cloud baseline test as part of repository organization.
 
 See the [workspace verification record](docs/07-implementation/NorthWrit-Workspace-Verification.md) for workspace checks and limits; earlier repository and layout records remain historical.
+
+## Delivery phases
+
+| Phase | Status |
+|---|---|
+| 1 — Source audit | Complete |
+| 3 — Application integration | Complete; repository layout and npm workspace also merged |
+| 4 — Legal workspace | Next; not started |
+| 5 — Canadian legal capabilities and governance | Planned |
+| 6 — Governed integrations | Planned |
+| 7 — Validation and pilot release | Planned |
+
+Phase 2 was removed. P0/P1/P2 in the product specifications are priority tiers, not these implementation phases. Read the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for scope and acceptance gates.
 
 ## Documentation and licensing
 

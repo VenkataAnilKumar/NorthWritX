@@ -1,4 +1,6 @@
-# Northwrit workflow contracts
+# NorthWrit workflow contracts
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 Status: Proposed requirements reconciliation. Updated November 9, 2026.
 

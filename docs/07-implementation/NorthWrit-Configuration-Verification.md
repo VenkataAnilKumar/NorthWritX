@@ -1,6 +1,6 @@
-# NorthWrit rebrand completion
+# NorthWrit configuration verification
 
-Updated November 14, 2026. Branch: `chore/complete-northwrit-rebrand`. Local implementation and verification; no deployment or publication is part of this change.
+Updated November 14, 2026. Local implementation and verification; no deployment or publication is part of this change.
 
 ## Current names and defaults
 
@@ -71,3 +71,7 @@ The first PR run exposed two test-fixture mistakes in the bulk rename: reference
 Frontend CI also exposed three stale expectations: the preserved upstream connector documentation URL and telemetry defaults. The URL assertion was restored; telemetry tests now verify reporting stays off without an operator DSN and still forwards with an explicitly configured synthetic DSN. All 74 tests across the three affected frontend files passed locally.
 
 The next CI run passed the full API and web test suites and web lint. Its frontend type check caught a missing required `NODE_ENV` field in the newly added telemetry test fixture. The fixture now supplies a production environment directly; the web type check and all 15 tunnel tests passed locally before the follow-up push.
+
+## Merged verification
+
+[PR #4](https://github.com/VenkataAnilKumar/NorthWritX/pull/4) merged on November 14, 2026 as `d7e899526a389cbbe684b18618b32df98ccea237`, verified on remote `main`. All seven PR checks passed: repository entry points, backend, frontend, Word add-in, and API/web/Word images. The API image job also builds the worker. This supersedes the pending CI status at the time of the local checks above; it does not establish deployment, Office-host acceptance or signed desktop packaging.

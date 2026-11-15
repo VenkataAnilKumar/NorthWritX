@@ -1,4 +1,6 @@
-# Northwrit UI Specification
+# NorthWrit UI Specification
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 **Status:** Proposed | **Version:** 1.0 | **Date:** November 3, 2026
 
@@ -6,7 +8,7 @@
 
 ## 1. Global Shell & Layout Structure
 
-The Northwrit UI follows a structured three-column flexible architecture that keeps the matter, jurisdiction, processing mode, source scope, and review status visible without navigating to administrative screens (MT03):
+The NorthWrit UI follows a structured three-column flexible architecture that keeps the matter, jurisdiction, processing mode, source scope, and review status visible without navigating to administrative screens (MT03):
 
 ```
 ┌──────┬───────────────────────────────┬──────────────────────────────┐

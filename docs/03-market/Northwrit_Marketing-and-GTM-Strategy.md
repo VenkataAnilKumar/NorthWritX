@@ -1,4 +1,4 @@
-# Northwrit Marketing Site & Go-To-Market (GTM) Strategy
+# NorthWrit Marketing Site & Go-To-Market (GTM) Strategy
 ## Commercialization, Pricing, and Sovereign Distribution for Canadian Legal Practice
 
 **Status:** Approved Commercial Specification | **Version:** 2.0 | **Date:** November 5, 2026  
@@ -16,8 +16,8 @@ flowchart LR
         CN["<b>Cohere North</b><br>• Horizontal Enterprise<br>• Private VPC / On-Prem<br>• Lacks Legal Domain / Citations<br>• IT Department Buyer"]
     end
 
-    subgraph Northwrit["Northwrit Sovereign Positioning"]
-        NW["<b>Northwrit (NorthWritX)</b><br>★ <b>Private Deployment + Legal AI</b><br>★ Canadian Law First (McGill Guide 10th Ed.)<br>★ Ontario Mid-Market Wedge (10–300 Lawyers)<br>★ Client Disbursement Billing Model<br>★ LSO Rule 3.3, PIPEDA & Quebec Law 25 Native"]
+    subgraph NorthWrit["NorthWrit Sovereign Positioning"]
+        NW["<b>NorthWrit (NorthWritX)</b><br>★ <b>Private Deployment + Legal AI</b><br>★ Canadian Law First (McGill Guide 10th Ed.)<br>★ Ontario Mid-Market Wedge (10–300 Lawyers)<br>★ Client Disbursement Billing Model<br>★ LSO Rule 3.3, PIPEDA & Quebec Law 25 Native"]
     end
 
     H -.->|Too costly & US cloud-bound| NW
@@ -27,7 +27,7 @@ flowchart LR
 ### The Canadian Legal Market Opportunity
 * **Total Addressable Market (TAM):** ~3,500 Canadian law firms and corporate legal departments, representing over 45,000 practising lawyers (predominantly in Ontario, Quebec, British Columbia, and Alberta).
 * **Serviceable Addressable Market (SAM):** ~850 mid-sized law firms (10–300 lawyers) and enterprise in-house counsel whose clients forbid public/unredacted cloud AI due to strict solicitor-client privilege, Law Society of Ontario (LSO) Rule 3.3, PIPEDA, and Quebec Law 25.
-* **The Strategic Wedge:** Harvey AI is too expensive and cloud-captive for Canadian mid-market firms; Thomson Reuters CoCounsel is expensive and locked into the Westlaw walled garden; generic LLMs violate client confidentiality rules. Northwrit wins by offering **private, sovereign deployment with native Canadian legal domain intelligence**.
+* **The Strategic Wedge:** Harvey AI is too expensive and cloud-captive for Canadian mid-market firms; Thomson Reuters CoCounsel is expensive and locked into the Westlaw walled garden; generic LLMs violate client confidentiality rules. NorthWrit wins by offering **private, sovereign deployment with native Canadian legal domain intelligence**.
 
 ---
 
@@ -95,7 +95,7 @@ The public marketing site establishes institutional trust, provides interactive 
 4. **In-Word Legal Assistant:**
    * Video walkthrough of the native Office.js task-pane add-in suggesting clause redlines and inserting McGill Guide footnotes directly inside Microsoft Word.
 
-#### Screen 3: The Northwrit Shield Deep Dive
+#### Screen 3: The NorthWrit Shield Deep Dive
 * Interactive schematic illustrating:
   1. Lawyer prompt entered $\to$
   2. Presidio Canadian PII engine detects and masks client names, SINs, and court file numbers $\to$
@@ -111,7 +111,7 @@ The public marketing site establishes institutional trust, provides interactive 
   - Weekly Hours Spent on Research, Drafting & Contract Review (Default: 12 hrs/week).
 * **Calculated Outputs:**
   - **Annual Lawyer Time Saved:** E.g., 4,800 hours/year for a 20-lawyer firm.
-  - **Recoverable Client Disbursements:** Estimated monthly AI compute costs that can be allocated directly to matters using Northwrit's Control Centre disbursement reports.
+  - **Recoverable Client Disbursements:** Estimated monthly AI compute costs that can be allocated directly to matters using NorthWrit's Control Centre disbursement reports.
   - **Net Annual Productivity Gain:** E.g., \$420,000+ CAD in recovered capacity.
 
 ---
@@ -121,13 +121,13 @@ The public marketing site establishes institutional trust, provides interactive 
 ### A. The "Disbursement Recovery" Commercial Model (The Sales Hook)
 The biggest hurdle in selling enterprise software to law firms is partner capital calls: software licenses are classified as non-billable overhead expenses that diminish partner profit pools.
 
-**Northwrit's Breakthrough:**
+**NorthWrit's Breakthrough:**
 Under Law Society guidelines and standard Canadian legal accounting practices, third-party legal research and specialized litigation technology compute can be billed to the client file as a **disbursement** (similar to Westlaw/Lexis transactional research charges or specialized e-discovery processing fees).
 
-Northwrit's **Control Centre** outputs itemized **Matter Disbursement Statements**:
+NorthWrit's **Control Centre** outputs itemized **Matter Disbursement Statements**:
 * Tracks exact token usage, model compute, and Court Book compilation per matter number.
 * Provides one-click export into Clio, iManage, or standard legal billing formats (LEDES).
-* **Result for the Firm:** Northwrit transitions from an IT overhead expense into a recoverable disbursement, achieving rapid partner approval.
+* **Result for the Firm:** NorthWrit transitions from an IT overhead expense into a recoverable disbursement, achieving rapid partner approval.
 
 ---
 
@@ -144,7 +144,7 @@ Northwrit's **Control Centre** outputs itemized **Matter Disbursement Statements
 │ • Full Canadian Cloud Hosting │   year + $125 CAD / user / mo │ • Complete Air-Gapped  │
 │ • CanLII Primary Law Access   │ • Deployed in firm VPC/server │   local model serving  │
 │ • Folio Editor & Review Grid  │ • Zero external network egress│ • Custom Practice Packs│
-│ • Northwrit Shield PII Engine │ • Local vLLM/Ollama GPU mode  │ • Dedicated SLA & BYOK │
+│ • NorthWrit Shield PII Engine │ • Local vLLM/Ollama GPU mode  │ • Dedicated SLA & BYOK │
 │ • Word Task-Pane Add-in       │ • Unlimited internal queries  │ • Bespoke DMS Connector│
 │ • Standard Support (Email/Web)│ • Priority Engineer Support   │ • 24/7 Dedicated Team  │
 └───────────────────────────────┴───────────────────────────────┴────────────────────────┘
@@ -154,20 +154,20 @@ Northwrit's **Control Centre** outputs itemized **Matter Disbursement Statements
 
 ### C. The 4-Week Sovereign Pilot-to-Production Playbook
 
-To eliminate pilot stagnation and guarantee high conversion, Northwrit deploys a structured 4-week engagement program:
+To eliminate pilot stagnation and guarantee high conversion, NorthWrit deploys a structured 4-week engagement program:
 
 | Timeline | Milestone | Key Deliverables & Activities |
 |---|---|---|
 | **Week 1** | **Tenant & Ethical Boundary Setup** | • Deploy firm instance (Sovereign Cloud or Turnkey Firm-Server).<br>• Configure Single Sign-On (Azure AD / Okta) and 6-role RBAC.<br>• Establish matter ethical walls and Shield PII policies. |
 | **Week 2** | **Practice Group Champion Onboarding** | • Onboard 5–10 litigation associates and 2 corporate partners.<br>• Install Microsoft Word task-pane add-in on lawyer workstations.<br>• Ingest sample closed matters and firm precedent templates. |
-| **Week 3** | **Live Matter Shadow Testing** | • Run Northwrit in parallel with traditional research on active matters.<br>• Test 4-state CiteCheck against known precedents.<br>• Execute Review Grid batch analysis on a 25-document contract suite. |
+| **Week 3** | **Live Matter Shadow Testing** | • Run NorthWrit in parallel with traditional research on active matters.<br>• Test 4-state CiteCheck against known precedents.<br>• Execute Review Grid batch analysis on a 25-document contract suite. |
 | **Week 4** | **Partner Audit & Commercial Conversion** | • Review firm analytics dashboard: hours saved, CiteCheck accuracy.<br>• Generate sample Matter Disbursement Statement for billing partner.<br>• Finalize annual subscription and roll out firm-wide. |
 
 ---
 
 ### D. Practice-Area Packs (Vertical Differentiation)
 
-Unlike generic horizontal platforms, Northwrit sells specialized Canadian legal packs:
+Unlike generic horizontal platforms, NorthWrit sells specialized Canadian legal packs:
 
 1. **Ontario Civil Litigation Pack:**
    * Automated Ontario Court Forms (Form 14A Statement of Claim, Form 18A Statement of Defence).

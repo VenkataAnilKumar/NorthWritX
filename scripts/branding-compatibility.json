@@ -173,7 +173,7 @@
     },
     {
       "path": "docs/decisions/0001-repository-structure.md",
-      "sha256": "ce0cb4e8dd3df2a1e08cfe1f3f9bc5b379a9300f98c840fd80e2221b5be2c84a",
+      "sha256": "fec59305ddf087270caffb0eaafd6ff84b835c08ec828419337c278f115868bc",
       "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
     },
     {
@@ -212,8 +212,8 @@
       "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
     },
     {
-      "path": "scripts/rebrand_northwrit.py",
-      "sha256": "a9db05804d3902c4fba135f1d99187709d34bbd874c96a53115c3acf413cc9f5",
+      "path": "scripts/configure_northwrit.py",
+      "sha256": "2b2e566d03480275da59e47d629deaaaa9edba70f12715219e5e4ce3d4a403c3",
       "reason": "Historical provenance, upstream identity, or original-to-NorthWrit transformation inputs"
     }
   ],

@@ -1,15 +1,19 @@
 # Feature Specification
 
-> Requirements reconciliation — November 9, 2026. The [Workflow Contracts](Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
-## Northwrit: privacy-first legal AI workspace for Canadian law firms and in-house teams
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
-**Version:** 2.0 | **Date:** November 3, 2026 | **Status:** Proposed (nothing is built yet)
+> Requirements reconciliation — November 9, 2026. The [Workflow Contracts](Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
+## NorthWrit: privacy-first legal AI workspace for Canadian law firms and in-house teams
+
+**Version:** 2.0 | **Date:** November 3, 2026 | **Status:** Proposed requirements; delivery tracked in the implementation plan
 
 ---
 
+Use the [capability matrix](NorthWrit-Capability-Matrix.md) for all 105 requirement IDs and their current coverage assessment. The [product catalogue](../02-product/NorthWrit-Product-Catalogue.md) describes existing surfaces; acceptance still requires requirement-specific evidence.
+
 ## Overview
 
-This document lists every Northwrit feature module with its ID, requirement, priority and origin. It is the engineering handoff for the [Product Definition](../02-product/Northwrit_Product-Definition.md). The release plan is in [NorthWrit Implementation Plan](../07-implementation/NorthWrit-Implementation-Plan.md). It consolidates the Northwrit PRD, the feature-names workbook and the Legal SI specification (see [Source reconciliation](#source-reconciliation)).
+This document lists every NorthWrit feature module with its ID, requirement, priority and origin. It is the engineering handoff for the [Product Definition](../02-product/Northwrit_Product-Definition.md). The release plan is in [NorthWrit Implementation Plan](../07-implementation/NorthWrit-Implementation-Plan.md). It consolidates the NorthWrit PRD, the feature-names workbook and the Legal SI specification (see [Source reconciliation](#source-reconciliation)).
 
 **Priority:** P0 = required for the first pilot · P1 = extends the validated workflow · P2 = later platform expansion.
 **Origin:** B = in both source documents · P = PRD only · S = Legal SI only.
@@ -103,8 +107,8 @@ Nothing calls a provider directly.
 | DR02 | Playbooks | The firm’s standard positions and fallback wording, with owners and versions. | P1 | B |
 | DR03 | Playbook Check and Redline | Flags clauses that depart from the playbook and proposes tracked changes for lawyer review. | P1 | B |
 | DR04 | Redline Report | Compares two versions and produces an issue list. | P1 | P |
-| DR05 | Northwrit for Word | Word add-in for Assist, Draft and Playbook Check. | P1 | B |
-| DR06 | Northwrit for Outlook | Outlook add-in for summaries, replies and filing to matters. | P2 | B |
+| DR05 | NorthWrit for Word | Word add-in for Assist, Draft and Playbook Check. | P1 | B |
+| DR06 | NorthWrit for Outlook | Outlook add-in for summaries, replies and filing to matters. | P2 | B |
 | DR07 | Translate | Document translation, English and French first. | P2 | P |
 
 ---
@@ -132,7 +136,7 @@ Nothing calls a provider directly.
 
 | ID | Feature | Requirement | Priority | Origin |
 |---|---|---|---|---|
-| SO01 | Northwrit Search | One box across matters, documents, threads, outputs and agents; hybrid keyword and semantic; respects permissions and ethical walls. | P0 | B |
+| SO01 | NorthWrit Search | One box across matters, documents, threads, outputs and agents; hybrid keyword and semantic; respects permissions and ethical walls. | P0 | B |
 | SO02 | Folios | Editable work products (memos, tables, drafts) open beside the chat; edit directly or by asking. | P0 | B |
 | SO03 | Review States | Draft, In review, Changes requested, Approved. Approval belongs to one version; substantive edits or changed evidence invalidate it. | P0 | S |
 | SO04 | Folio History | Versions with compare and restore; citations stay linked; reviewer identity and edits preserved. | P0 | B |
@@ -182,7 +186,7 @@ Nothing calls a provider directly.
 | CN04 | Connector Directory and Permission Sync | Browse connectors; mirror file permissions from source systems. | P2 | B |
 | CN05 | MCP and Enterprise APIs | Permission-scoped MCP connections, APIs and external workflow triggers. | P2 | B |
 | CN06 | Pack Governance | Signing, sandboxing, admin install approval, upload scanning, versioning with rollback. | P2 | P |
-| CN07 | Northwrit SDK | Connector and Pack SDKs, command-line tool, OpenAPI import. | P2 | P |
+| CN07 | NorthWrit SDK | Connector and Pack SDKs, command-line tool, OpenAPI import. | P2 | P |
 | CN08 | Pack Exchange | Public marketplace; evaluate after Firm Packs prove demand. | P2 | P |
 
 ---
@@ -236,9 +240,9 @@ Nothing calls a provider directly.
 |---|---|---|---|---|
 | CU01 | Preferences | Default jurisdiction, citation style (McGill Guide or Bluebook), English or French interface, theme, personal instructions. | P0 | P |
 | CU02 | House Style | Firm branding, letterhead, terminology, formatting and disclaimers. | P1 | P |
-| CU03 | Memory Controls | View, edit or delete what Northwrit remembers; switch memory off. Memory is separated into personal, matter and approved firm knowledge. | P1 | B |
+| CU03 | Memory Controls | View, edit or delete what NorthWrit remembers; switch memory off. Memory is separated into personal, matter and approved firm knowledge. | P1 | B |
 | CU04 | Personal Library | Saved prompts and favourite agents. | P1 | P |
-| CU05 | Northwrit Mobile | iOS and Android apps. | P2 | P |
+| CU05 | NorthWrit Mobile | iOS and Android apps. | P2 | P |
 | CU06 | Clip to Matter | Browser extension that saves web pages to a matter. | P2 | P |
 | CU07 | White-label | Sell under a partner’s name and domain. | P2 | P |
 
@@ -250,7 +254,7 @@ Nothing calls a provider directly.
 
 | ID | Feature | Requirement | Priority | Origin |
 |---|---|---|---|---|
-| QA01 | Northwrit Bench | Versioned set of 50–100 lawyer-reviewed tasks plus a held-out set; rerun on every change to models, retrieval, prompts, tools or policy; release gate. | P0 | B |
+| QA01 | NorthWrit Bench | Versioned set of 50–100 lawyer-reviewed tasks plus a held-out set; rerun on every change to models, retrieval, prompts, tools or policy; release gate. | P0 | B |
 
 ---
 

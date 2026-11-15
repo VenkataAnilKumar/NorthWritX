@@ -1,4 +1,6 @@
-# Northwrit UI Wireframes (ASCII)
+# NorthWrit UI Wireframes (ASCII)
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 **Status:** Proposed | **Version:** 1.0 | **Date:** November 3, 2026
 
@@ -15,7 +17,7 @@
 | > Active  | User: What notice period applies to a | 1. ISSUE                                             |
 |   Lion    | 5-year VP terminated without cause?   | Whether executive employees in Ontario with 5 years  |
 | * Northern|                                       | service are bound by contractual ESA minimums...     |
-|   Apex    | Northwrit: Under Ontario law, where a |                                                      |
+|   Apex    | NorthWrit: Under Ontario law, where a |                                                      |
 |           | termination clause is unenforceable,  | 2. RULE & ANALYSIS                                   |
 | REPOSIT.  | common law reasonable notice applies  | In Ontario, common law notice principles govern when |
 | Files (8) | [1: Verified]. In Waksdale [2], the   | contractual provisions violate ESA standards [1].    |

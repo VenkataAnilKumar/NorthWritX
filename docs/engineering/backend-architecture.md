@@ -1,11 +1,11 @@
 # Backend architecture
 
-The Express backend in `backend/` is organized as **domain modules over a
+The Express backend in `apps/api/` is organized as **domain modules over a
 shared kernel, with application services for cross-domain workflows**. This page is the reference for that layout: what goes where,
 the rules that keep the layers honest, and the test that enforces them.
 
 ```
-backend/src/
+apps/api/src/
 ├── app.ts                 Express app: middleware, rate limits, mounts one router per module
 ├── index.ts               HTTP entrypoint
 ├── workerRuntime.ts       queue workers entrypoint (imports modules through facades)
@@ -234,7 +234,7 @@ new code uses the shared one.
 
 ## Enforcement
 
-`backend/src/__tests__/architecture.test.ts` walks every file under `src/`,
+`apps/api/src/__tests__/architecture.test.ts` walks every file under `src/`,
 reads its imports, and fails on a violation of any rule above. It runs with the
 normal unit suite (`npm test --prefix backend`), so a layering regression fails
 CI the same way a broken assertion does. It needs no lint plugin: a directory

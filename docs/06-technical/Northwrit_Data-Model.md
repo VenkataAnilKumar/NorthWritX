@@ -1,9 +1,11 @@
 # Data Model
 
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
+
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 ## Entities, relationships, isolation and retention
 
-**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed (nothing is built yet)
+**Version:** 1.0 | **Date:** November 3, 2026 | **Status:** Proposed requirements; delivery tracked in the implementation plan
 
 ---
 
@@ -236,7 +238,7 @@ Append-only: no update or delete permissions for the application role. Export at
 | `agent_definition`, `agent_version` | Agents and Packs | AG04, AG05, CN03 |
 | `connector`, `connector_grant` | Connector config and credentials reference (secret store) | CN02 |
 | `usage_record` | Rates, budgets and cost per user, matter and run | SA06 |
-| `eval_run`, `eval_task` | Northwrit Bench results (internal; no customer data) | QA01 |
+| `eval_run`, `eval_task` | NorthWrit Bench results (internal; no customer data) | QA01 |
 
 ## 4. Isolation rules
 

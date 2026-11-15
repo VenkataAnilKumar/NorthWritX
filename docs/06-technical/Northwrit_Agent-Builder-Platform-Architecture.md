@@ -1,4 +1,6 @@
-# Northwrit Agent Builder Platform: Technical Architecture Specification
+# NorthWrit Agent Builder Platform: Technical Architecture Specification
+
+> Delivery status — November 14, 2026: This document describes target behaviour. The [implementation plan](../07-implementation/NorthWrit-Implementation-Plan.md) tracks delivered work; the [current implementation](../06-technical/NorthWrit-Current-Implementation.md) records the working stack and existing surfaces. P0/P1/P2 are product priorities, not implementation phase numbers.
 
 > Requirements reconciliation — November 9, 2026. The [Workflow Contracts](../04-specs/Northwrit_Workflow-Contracts.md) govern review invalidation, export eligibility, lifecycle handoffs, and baseline release scope. Architectural approval does not establish implementation status.
 ## Autonomous Legal Reasoning, Sovereign Discovery & Document Evidence Architecture
@@ -10,11 +12,11 @@
 
 ## 1. Executive Overview & System Purpose
 
-The **Northwrit Agent Builder Platform** (**Agent Studio**) expands Northwrit from deterministic linear and DAG pipelines (**Flow Builder**, `@northwrit/flow-*`) into **autonomous, goal-directed multi-agent orchestration**. 
+The **NorthWrit Agent Builder Platform** (**Agent Studio**) expands NorthWrit from deterministic linear and DAG pipelines (**Flow Builder**, `@northwrit/flow-*`) into **autonomous, goal-directed multi-agent orchestration**.
 
 While Flow Builder executes fixed sequences (e.g., *Document Ingest $\rightarrow$ Shield Redaction $\rightarrow$ Review Grid Triage $\rightarrow$ Folio Generation*), the Agent Builder Platform enables legal practitioners and firm IT engineers to configure, evaluate, and deploy autonomous agents capable of non-linear reasoning, dynamic tool selection, iterative self-correction, and multi-source evidence synthesis.
 
-All agent reasoning, tool dispatch, and generation cycles operate under the non-negotiable governance of **Northwrit Shield** (`SH01`–`SH07`), **PostgreSQL Row-Level Security Isolation** (`SA01`), **4-State CiteCheck Verification** (`RS05`), and **Canadian Data Sovereignty** (`ca-central-1`).
+All agent reasoning, tool dispatch, and generation cycles operate under the non-negotiable governance of **NorthWrit Shield** (`SH01`–`SH07`), **PostgreSQL Row-Level Security Isolation** (`SA01`), **4-State CiteCheck Verification** (`RS05`), and **Canadian Data Sovereignty** (`ca-central-1`).
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -140,18 +142,18 @@ NorthWritX/
 
 ---
 
-## 4. Open-Source Adaptation & Copy-and-Rebrand Protocol
+## 4. Open-Source Adaptation & Component Integration Protocol
 
-In accordance with `AGENTS.md` Rule 2, upstream components are copied recursively, rebranded, and augmented with Northwrit's Canadian legal domain layer:
+In accordance with `AGENTS.md` Rule 2, upstream components are integrated and augmented with NorthWrit's Canadian legal domain layer:
 
-| Target Northwrit Module | Physical Source to Copy (`Copy-Item -Recurse`) | Upstream Lineage | Rebranding & Legal Extension Required |
+| Target NorthWrit Module | Physical Source to Copy (`Copy-Item -Recurse`) | Upstream Lineage | Configuration & Legal Extension Required |
 |---|---|---|---|
-| **`services/agent-service/app/research/`** | `V:\AI Engineer\Agent Platforms\Open Sources\agno\libs\agno\agno\agent\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\agno\libs\agno\agno\reasoning\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\deep_research\*` | `Agno Agent Engine` + `Onyx Deep Research` | Rebrand namespace `agno.*` and `onyx.deep_research.*` $\rightarrow$ `northwrit_agent.research.*`. Preserve full recursive planning, step reflection, and loop management. Extend with CanLII Citator Graph traversal and McGill Guide 10th Ed memorandum drafting. |
-| **`services/agent-service/app/tools/`** | `V:\AI Engineer\Agent Platforms\Open Sources\agno\libs\agno\agno\tools\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\tools\*` | `Agno Tool Registry` + `Onyx Connector Tools` | Rebrand to `northwrit_agent.tools.*`. Integrate with Northwrit MCP server (`search_matter_passages`, `verify_citation`, `redact_pii`). Enforce cryptographic `ShieldDecision` token verification on all tool executions. |
-| **`packages/agent-runtime/`** | `V:\AI Engineer\Agent Platforms\Open Sources\kortix\apps\kortix-sandbox-agent-server\src\*` | `Kortix Sandbox Agent Server` | Rebrand `@kortix/*` $\rightarrow$ `@northwrit/agent-runtime`. Preserve memory budgeting, token ceiling protection, and streaming trace collectors. Embed mandatory `ca-central-1` sovereignty check and HMAC verification. |
-| **`services/agent-service/app/document/`** | `V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\chat\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\document_index\*` | `Onyx Grounded Document Index` | Rebrand to `northwrit_agent.document.*`. Wire to Northwrit Bates locator (`RV01`) and SHA-256 version lineage (`RV02`). Guarantee zero cloud egress on document queries. |
-| **`apps/web/src/app/agent-builder/`** | `V:\AI Engineer\Agent Platforms\Open Sources\sim\packages\workflow-renderer\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\sim\apps\sim\components\*` | `Sim Workflow Studio & UI` | Rebrand `@sim/*` $\rightarrow$ `@northwrit/agent-builder-ui`. Standardize with Northwrit Authority Blue (`#1D4ED8`), Deep Slate (`#0F172A`), and Paper Warm (`#FAF9F5`). Implement Agent Tool Binding Matrix, Run Trail visualizer, and live Sandbox prompt tester. (Prohibited terms strictly excluded). |
-| **`packs/agents/`** | `V:\AI Engineer\Agent Platforms\Open Sources\minimax-skills\skills\*` | `Minimax Specialized Skills Engine` | Adapt modular skill and persona schemas into Northwrit's 6 turnkey sovereign legal agents (`legal-researcher`, `contract-analyzer`, etc.). |
+| **`services/agent-service/app/research/`** | `V:\AI Engineer\Agent Platforms\Open Sources\agno\libs\agno\agno\agent\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\agno\libs\agno\agno\reasoning\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\deep_research\*` | `Agno Agent Engine` + `Onyx Deep Research` | Configure namespace `agno.*` and `onyx.deep_research.*` $\rightarrow$ `northwrit_agent.research.*`. Preserve full recursive planning, step reflection, and loop management. Extend with CanLII Citator Graph traversal and McGill Guide 10th Ed memorandum drafting. |
+| **`services/agent-service/app/tools/`** | `V:\AI Engineer\Agent Platforms\Open Sources\agno\libs\agno\agno\tools\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\tools\*` | `Agno Tool Registry` + `Onyx Connector Tools` | Configure to `northwrit_agent.tools.*`. Integrate with NorthWrit MCP server (`search_matter_passages`, `verify_citation`, `redact_pii`). Enforce cryptographic `ShieldDecision` token verification on all tool executions. |
+| **`packages/agent-runtime/`** | `V:\AI Engineer\Agent Platforms\Open Sources\kortix\apps\kortix-sandbox-agent-server\src\*` | `Kortix Sandbox Agent Server` | Configure `@kortix/*` $\rightarrow$ `@northwrit/agent-runtime`. Preserve memory budgeting, token ceiling protection, and streaming trace collectors. Embed mandatory `ca-central-1` sovereignty check and HMAC verification. |
+| **`services/agent-service/app/document/`** | `V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\chat\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\onyx\backend\onyx\document_index\*` | `Onyx Grounded Document Index` | Configure to `northwrit_agent.document.*`. Wire to NorthWrit Bates locator (`RV01`) and SHA-256 version lineage (`RV02`). Guarantee zero cloud egress on document queries. |
+| **`apps/web/src/app/agent-builder/`** | `V:\AI Engineer\Agent Platforms\Open Sources\sim\packages\workflow-renderer\*`<br>`V:\AI Engineer\Agent Platforms\Open Sources\sim\apps\sim\components\*` | `Sim Workflow Studio & UI` | Configure `@sim/*` $\rightarrow$ `@northwrit/agent-builder-ui`. Standardize with NorthWrit Authority Blue (`#1D4ED8`), Deep Slate (`#0F172A`), and Paper Warm (`#FAF9F5`). Implement Agent Tool Binding Matrix, Run Trail visualizer, and live Sandbox prompt tester. (Prohibited terms strictly excluded). |
+| **`packs/agents/`** | `V:\AI Engineer\Agent Platforms\Open Sources\minimax-skills\skills\*` | `Minimax Specialized Skills Engine` | Adapt modular skill and persona schemas into NorthWrit's 6 turnkey sovereign legal agents (`legal-researcher`, `contract-analyzer`, etc.). |
 
 ---
 

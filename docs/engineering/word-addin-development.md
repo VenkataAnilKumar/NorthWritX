@@ -27,23 +27,17 @@ and rejection.
 
 ## Manual local setup
 
-The recommended path is `bash word-addin/scripts/dev.sh`. To perform the same
-steps manually:
+Commands in this guide run from the repository root unless stated otherwise. Use Node.js 22 or later and the shared root npm lockfile.
 
-1. Install dependencies:
-
-   ```bash
-   cd word-addin
-   npm install
-   ```
-
-2. Copy and edit the environment file:
+1. Install the API and Word workspaces together if both processes will run locally:
 
    ```bash
-   cp .env.example .env
+   npm ci --workspace apps/api --workspace apps/word-addin
    ```
 
-   Local development uses these values:
+   Use `npm run setup` for all workspaces, or `npm run setup:word` when only the Word client is needed. A targeted frozen install replaces the current installation tree.
+
+2. For a fresh checkout, copy `apps/word-addin/.env.example` to `apps/word-addin/.env`. Preserve existing settings when updating. Configure:
 
    ```env
    REACT_APP_API_BASE_URL=https://localhost:3200/api
@@ -53,48 +47,39 @@ steps manually:
    OBJECT_STORAGE_BUCKET_NAME=northwrit
    ```
 
-   The browser-facing API URL remains on the HTTPS dev server; the proxy target
-   points to the backend, whose `.env` contains the Supabase configuration.
-   Shell variables override `.env` for CI and deployment.
+   The API URL stays on the HTTPS development origin. The proxy targets the API configured in `apps/api/.env`. Match the storage bucket to your existing instance. Shell variables override the add-in environment file.
 
-   When the backend uses local object storage, also set
-   `R2_PUBLIC_ENDPOINT_URL=https://localhost:3200` in `backend/.env`. Signed
-   upload and download URLs then stay HTTPS in the Word task pane and webpack
-   forwards the configured bucket path to `OBJECT_STORAGE_PROXY_TARGET` without changing
-   the signed host header.
+   For local object storage, set `R2_PUBLIC_ENDPOINT_URL=https://localhost:3200` in `apps/api/.env`. Signed transfer URLs then use HTTPS and webpack forwards the configured bucket path to `OBJECT_STORAGE_PROXY_TARGET`, preserving the signed host header.
 
-3. Install the trusted development certificate:
+3. Install the development certificate using the installed workspace tool:
 
    ```bash
-   npx office-addin-dev-certs install
+   npm exec --workspace apps/word-addin -- office-addin-dev-certs install
    ```
 
-   Fully quit and reopen Word after installing it.
+   The operating system may request trust approval. Fully quit and reopen Word afterwards.
 
-4. Start the NorthWrit backend:
+4. With database/auth/storage configured, start the API in its own terminal:
 
    ```bash
-   (cd ../backend && npm run dev)
+   npm run dev:api
    ```
 
-5. Start and sideload the add-in:
+5. Start webpack without automatic sideloading:
 
    ```bash
-   npm start
+   npm run dev:word
    ```
 
-   To start only webpack in the foreground without opening or sideloading Word:
+   Alternatively, explicitly start the Office sideload flow:
 
    ```bash
-   bun dev
-   # or
-   npm run dev
+   npm --workspace apps/word-addin start
    ```
 
-   `WORD_ADDIN_SIDELOAD` applies only to `npm start` and the setup helper.
+   `WORD_ADDIN_SIDELOAD` applies to the start helper, not `dev:word`. The optional `apps/word-addin/scripts/dev.sh` helper overwrites the add-in `.env` and runs `npm install`; review those effects before using it on an existing checkout. The frozen install and explicit commands above are the default procedure.
 
-The task pane appears under **Home → NorthWrit Legal AI → NorthWrit**. `npm run
-dev:server` is retained as an internal alias for the direct webpack command.
+The task pane appears under **Home → NorthWrit Legal AI → NorthWrit**.
 
 ## Manual sideloading
 
@@ -102,22 +87,22 @@ dev:server` is retained as an internal alias for the direct webpack command.
 
 ```bash
 mkdir -p ~/Library/Containers/com.microsoft.Word/Data/Documents/wef
-cp manifest.xml ~/Library/Containers/com.microsoft.Word/Data/Documents/wef/
+cp apps/word-addin/manifest.xml ~/Library/Containers/com.microsoft.Word/Data/Documents/wef/
 ```
 
 Restart Word, then choose **Insert → Add-ins → My Add-ins → NorthWrit**.
 
 ### Word on the web
 
-Choose **Insert → Add-ins → Upload My Add-in**, then select `manifest.xml`.
+Choose **Insert → Add-ins → Upload My Add-in**, then select `apps/word-addin/manifest.xml`.
 
 Chrome's Local Network Access checks can silently block a public Word page from
 embedding the localhost task pane. For local Word-on-the-web testing, use the
 included persistent browser session:
 
 ```bash
-npm run live:login
-npm run live:word
+npm --workspace apps/word-addin run live:login
+npm --workspace apps/word-addin run live:word
 ```
 
 The first command captures a Microsoft login; the second opens Word online and
@@ -128,15 +113,14 @@ sideloads the current manifest.
 Production builds require explicit service endpoints and a public add-in URL:
 
 ```bash
-cd word-addin
 REACT_APP_API_BASE_URL=/api \
 REACT_APP_WEB_APP_URL=https://app.example.com \
 WORD_ADDIN_PUBLIC_URL=https://word.example.com \
-npm run build
+npm --workspace apps/word-addin run build
 ```
 
-The build writes task-pane assets and a URL-rewritten manifest to `dist/`.
-The checked-in `manifest.xml` remains configured for localhost.
+The build writes task-pane assets and a URL-rewritten manifest to `apps/word-addin/dist/`.
+The checked-in `apps/word-addin/manifest.xml` remains configured for localhost.
 
 The add-in host must reverse-proxy `https://word.example.com/api/*` to the NorthWrit
 backend while preserving `Cookie`, `Origin`, response `Set-Cookie` headers, and
@@ -146,8 +130,8 @@ cookie restrictions across Word desktop and Word on the web.
 The included production host implements this contract:
 
 ```bash
-npm run build
-WORD_ADDIN_BACKEND_ORIGIN=http://localhost:3001 npm run start:production
+# After the configured production build above:
+WORD_ADDIN_BACKEND_ORIGIN=http://localhost:3001 npm --workspace apps/word-addin run start:production
 ```
 
 The Dockerfile packages the same host. It expects TLS to terminate at the
@@ -159,7 +143,7 @@ sufficient: the explicit Word setting also selects the partitioned cookie
 policy and enables the OAuth handoff. Without it, the backend rejects the
 handoff and Word on the web cannot retain its embedded session.
 Set `AUTH_HANDOFF_ENCRYPTION_SECRET` and apply
-`backend/migrations/20260825_01_auth_handoff_tickets.sql` before enabling Google
+`apps/api/migrations/20260825_01_auth_handoff_tickets.sql` before enabling Google
 sign-in. The backend rejects missing or weak handoff configuration at startup.
 
 For Google sign-in, add
@@ -197,17 +181,17 @@ therefore initially share the source document's chat history.
 
 The task pane never renders a raw `error.message`. `describeError` (shared
 with the web app through `@northwrit/client`, `packages/client/src/userError.ts`)
-classifies a thrown value once, and `word-addin/src/taskpane/lib/notify.ts`
+classifies a thrown value once, and `apps/word-addin/src/taskpane/lib/notify.ts`
 shows the result as a toast with an honest "Retry", built on the toast core it
 shares with the web app (`createErrorNotifier` in `@northwrit/client`). Transport
 failures go through
-`word-addin/src/taskpane/lib/networkError.ts`, which calls the shared
+`apps/word-addin/src/taskpane/lib/networkError.ts`, which calls the shared
 `networkMessage(origin)` so both clients say the same sentence; the add-in
 passes the API origin, because a self-hoster whose own container is down is
 not helped by "check your connection". Failures a user cannot fix offer a
 support hand-off carrying the request id, code, status, page and time —
 enough for support to find the request in the logs without the user quoting
-anything from a document. `frontend/src/wordAddin/errorReporting.test.tsx`
+anything from a document. `apps/web/src/wordAddin/errorReporting.test.tsx`
 exercises these add-in modules through the same `@northwrit/*` aliases webpack
 resolves, so a change on either side of the contract fails that suite.
 
@@ -217,10 +201,9 @@ The Playwright suite uses a mocked Office.js host and stubbed backend, so it
 does not require Word, Supabase, or a live NorthWrit API:
 
 ```bash
-cd word-addin
-npm run typecheck
-npm run build:e2e
-npm run test:e2e
+npm --workspace apps/word-addin run typecheck
+npm --workspace apps/word-addin run build:e2e
+npm --workspace apps/word-addin run test:e2e
 ```
 
 Before release, also verify a multi-paragraph tracked replacement and its
@@ -233,8 +216,8 @@ The local Anthropic-protocol stub returns scripted streaming responses while
 the rest of the stack remains real:
 
 ```bash
-npm run live:stub &
-(cd ../backend && ANTHROPIC_BASE_URL=http://127.0.0.1:4141 npm run dev)
+npm --workspace apps/word-addin run live:stub &
+ANTHROPIC_BASE_URL=http://127.0.0.1:4141 npm run dev:api
 ```
 
 Its responses are static; use the document examples described in the constants
@@ -245,7 +228,7 @@ at the top of `e2e-live/anthropic-stub.mjs`.
 The task pane is independently bundled. When the web design system changes,
 compare:
 
-- `src/shared/styles/tokens.css` with `frontend/src/app/globals.css`; and
+- `src/shared/styles/tokens.css` with `apps/web/src/app/globals.css`; and
 - `src/shared/chat/ChatInput.tsx` and the vendored UI primitives with their web
   counterparts, retaining narrow-pane adaptations.
 
@@ -270,13 +253,12 @@ absolute `resolve.modules` fallback in `webpack.config.js`.
 ### Word reports an invalid development certificate
 
 Development certificates expire and can be regenerated under a new local CA.
-`bash scripts/dev.sh` detects and repairs this trust drift. To repair it
-manually on macOS:
+To repair certificate trust manually on macOS:
 
 ```bash
 security verify-cert -c ~/.office-addin-dev-certs/localhost.crt -p ssl -s localhost
-npx office-addin-dev-certs uninstall
-npx office-addin-dev-certs install
+npm exec --workspace apps/word-addin -- office-addin-dev-certs uninstall
+npm exec --workspace apps/word-addin -- office-addin-dev-certs install
 security verify-cert -c ~/.office-addin-dev-certs/localhost.crt -p ssl -s localhost
 ```
 
@@ -287,17 +269,17 @@ security add-trusted-cert -r trustRoot \
   -k ~/Library/Keychains/login.keychain-db ~/.office-addin-dev-certs/ca.crt
 ```
 
-Fully quit Word before relaunching with `npm start` because its webview caches
+Fully quit Word before relaunching with `npm --workspace apps/word-addin start` because its webview caches
 certificate decisions.
 
 ### Sideloading reports an existing manifest link
 
-Run `npm run stop`, then retry `npm start`. The `prestart` hook normally clears
+Run `npm --workspace apps/word-addin run stop`, then retry `npm --workspace apps/word-addin start`. The `prestart` hook normally clears
 stale links left by an interrupted session.
 
 ### `office-addin-dev-settings` cannot find `semver`
 
-Run `npm install` inside `word-addin`. `semver` is an intentional direct
+Run `npm run setup:word` from the repository root (or `npm run setup` to retain all workspaces). `semver` is an intentional direct
 development dependency for the Office sideloading tool.
 
 ### Port 3200 is already in use
@@ -311,7 +293,7 @@ lsof -nP -iTCP:3200 -sTCP:LISTEN
 ### The task pane is blank or login fails
 
 Inspect the task pane console, confirm the backend is running, and verify the
-Supabase URL and publishable key in `.env` match the frontend configuration.
+Supabase URL and server credentials in `apps/api/.env` match the intended auth environment. Check the add-in API proxy settings in `apps/word-addin/.env`.
 The URL must not end with a slash.
 
 ### Tracked-edit review is unavailable

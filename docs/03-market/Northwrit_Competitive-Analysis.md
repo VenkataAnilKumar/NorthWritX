@@ -1,4 +1,4 @@
-# Northwrit Competitive Analysis
+# NorthWrit Competitive Analysis
 
 **Status:** Proposed Assessment | **Version:** 1.0 | **Date:** November 3, 2026
 
@@ -49,7 +49,7 @@ The legal AI sector in 2026 has bifurcated between high-cost enterprise cloud pl
 ### 4. Clio (Clio Duo / Clio Work)
 - **Positioning:** Practice-management leader (founded in Canada) embedding AI directly into billing, intake, matter management, and document summaries.
 - **Core Strengths:** Massive installed base among solo and small firms; seamless access to matter metadata and calendars.
-- **Vulnerabilities:** Built around practice management and administrative productivity rather than deep legal research, multi-document evidence synthesis, or hybrid local model routing. Northwrit integrates with Clio rather than replacing it.
+- **Vulnerabilities:** Built around practice management and administrative productivity rather than deep legal research, multi-document evidence synthesis, or hybrid local model routing. NorthWrit integrates with Clio rather than replacing it.
 
 ### 5. Spellbook & Luminance
 - **Positioning:** Specialized transactional contract review and redlining (Spellbook inside Microsoft Word; Luminance as an enterprise contract intelligence platform).
@@ -68,9 +68,9 @@ The legal AI sector in 2026 has bifurcated between high-cost enterprise cloud pl
 
 ---
 
-## 3. Where Northwrit Wins & Loses
+## 3. Where NorthWrit Wins & Loses
 
-| Dimension | Enterprise Cloud (Harvey/Legora) | Canadian Incumbents (Alexi/Clio) | Northwrit (Proposed Position) |
+| Dimension | Enterprise Cloud (Harvey/Legora) | Canadian Incumbents (Alexi/Clio) | NorthWrit (Proposed Position) |
 |---|---|---|---|
 | **Privacy & Residency** | Cloud-first; US/EU focus. | Cloud-hosted; no local inference tier. | **Hybrid by Design:** Enforceable Processing Policy, Shield Log, and P1 Local Companion. |
 | **Jurisdictional Focus** | US / UK / Global Big Law. | Canadian focus, narrower workflow breadth. | **Canadian Native:** Ontario first, PIPEDA & Law 25 alignment, McGill Guide citations. |
@@ -82,5 +82,5 @@ The legal AI sector in 2026 has bifurcated between high-cost enterprise cloud pl
 
 ## 4. Strategic Moats & Mitigations
 
-1. **The Content Access Deficit:** Incumbents hold licences to proprietary citators. Northwrit mitigates this by enforcing strict citation honesty: never implying a citator check occurred without licensed data (RS05, RS10), and focusing on verifiable passage support across uploaded matter files and public law.
-2. **The Cloud Residency Shift:** As global vendors open Canadian cloud regions, Northwrit's differentiation rests on **auditable outbound boundary controls (SH03, SH04)**, **validated Local Only execution (SH05)**, and **Canadian practice Packs (CN03)**.
+1. **The Content Access Deficit:** Incumbents hold licences to proprietary citators. NorthWrit mitigates this by enforcing strict citation honesty: never implying a citator check occurred without licensed data (RS05, RS10), and focusing on verifiable passage support across uploaded matter files and public law.
+2. **The Cloud Residency Shift:** As global vendors open Canadian cloud regions, NorthWrit's differentiation rests on **auditable outbound boundary controls (SH03, SH04)**, **validated Local Only execution (SH05)**, and **Canadian practice Packs (CN03)**.

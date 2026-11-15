@@ -1,4 +1,4 @@
-# Northwrit Brand Identity
+# NorthWrit Brand Identity
 
 **Status:** Proposed | **Version:** 1.0 | **Date:** November 3, 2026
 
@@ -6,7 +6,7 @@
 
 ## 1. Brand Essence & Name Origin
 
-**Northwrit** unites two fundamental concepts:
+**NorthWrit** unites two fundamental concepts:
 1. **North:** A homage to Canada, geographic sovereignty, and a guiding "True North" representing moral clarity, fidelity to facts, and navigational precision.
 2. **Writ:** A historic legal term denoting a formal written order issued by a court or authority in the name of the sovereign, symbolizing rigour, enforceable truth, and authoritative legal force.
 
@@ -18,7 +18,7 @@
 
 ## 2. Brand Positioning & Persona
 
-Northwrit is built specifically for Canadian legal professionals: law firms (10–300 lawyers, Ontario first) and corporate in-house legal departments. 
+NorthWrit is built specifically for Canadian legal professionals: law firms (10–300 lawyers, Ontario first) and corporate in-house legal departments.
 
 ### Brand Character & Voice
 - **Authoritative yet Restrained:** We speak with legal precision. We avoid hyperbole, breathless tech marketing, and unsubstantiated claims of "superhuman competence".
@@ -29,11 +29,11 @@ Northwrit is built specifically for Canadian legal professionals: law firms (10�
 
 ## 3. Product Naming Rules
 
-To maintain high professional trust and cognitive clarity, Northwrit enforces strict naming conventions:
+To maintain high professional trust and cognitive clarity, NorthWrit enforces strict naming conventions:
 
 1. **Plain Names for Everyday Features:** Everyday actions use self-explanatory legal and procedural terms (e.g., *Draft*, *Review Grid*, *Smart Upload*, *Precedent Bank*, *Audit Trail*). Lawyers should never have to decode artificial terminology.
 2. **Navigation Metaphor for Signature Capabilities:** A curated, purposeful nautical/navigational vocabulary is reserved for core signature innovations:
-   - **Northwrit Shield:** The hybrid privacy router, local policy engine, and outbound gateway.
+   - **NorthWrit Shield:** The hybrid privacy router, local policy engine, and outbound gateway.
    - **Bearings:** Clarification dialogue establishing missing jurisdiction, relevant date, and material facts before legal research.
    - **Triangulate:** Multi-model consensus and disagreement comparison.
    - **Beacon:** Ongoing monitoring and alerts for regulatory changes, judicial decisions, and docket filings.
@@ -41,7 +41,7 @@ To maintain high professional trust and cognitive clarity, Northwrit enforces st
 3. **Canadian Spelling Standard:** Always enforce standard Canadian English conventions across interfaces, documentation, and user defaults (e.g., *Centre*, *Colour*, *Rigour*, *Honour*, *Licence* as noun, *Practise* as verb).
 4. **Avoid Competitor Jargon:** Explicitly forbid derivative feature names used by US enterprise tools:
    - Prohibited terms: *Vault*, *Spaces*, *Pages*, *Labs*, *Canvas* (e.g., AG14 is named *Flow Builder* rather than *Visual Canvas*), *Copilot*.
-5. **Trademark Compliance:** Conduct formal searches through the Canadian Intellectual Property Office (CIPO) and USPTO for *Northwrit*, *Northwrit Shield*, and signature feature marks prior to commercial launch.
+5. **Trademark Compliance:** Conduct formal searches through the Canadian Intellectual Property Office (CIPO) and USPTO for *NorthWrit*, *NorthWrit Shield*, and signature feature marks prior to commercial launch.
 
 ---
 
