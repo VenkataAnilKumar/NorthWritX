@@ -1,26 +1,87 @@
 # NorthWrit
 
-NorthWrit is a legal workspace being developed for Canadian law firms. The active application spans `apps/` and `packages/`; the [provenance record](docs/06-technical/NorthWrit-Source-Provenance.md) identifies its original application source snapshot. See the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for delivery status. Matter workflows and the later Canadian research and governance capabilities are planned work, not release guarantees.
+### Your documents. Your review process. One focused workspace.
 
-## Current status
+NorthWrit brings project files, source previews and reusable review workflows together for legal teams. Organize a client-work project, keep document versions accessible, and prepare consistent review instructions from the web or desktop client.
 
-The application baseline, expanded repository layout, root npm workspace are merged. [PR #4](https://github.com/VenkataAnilKumar/NorthWritX/pull/4) passed all seven PR checks and merged as `d7e899526a389cbbe684b18618b32df98ccea237`. Subsequent [PR #5](https://github.com/VenkataAnilKumar/NorthWritX/pull/5) aligned configuration and [PR #6](https://github.com/VenkataAnilKumar/NorthWritX/pull/6) retired the duplicate reference archive. Phase 4, the legal workspace, is next and has not started. This is a development baseline; pilot and production acceptance remain separate work.
+Built for Canadian law firms and in-house teams. **Available as a development preview.**
 
-The working stack is TypeScript, Next.js/React, an Express API, Supabase PostgreSQL/Auth, S3-compatible storage, Office.js and Electron. Existing Projects, Assistant, document processing, review and integration services provide the foundation. See the [current implementation](docs/06-technical/NorthWrit-Current-Implementation.md) for source references and the boundary between existing building blocks and planned NorthWrit capabilities.
+[Explore the product](docs/02-product/NorthWrit-Product-Catalogue.md) · [Walk through the demo](docs/guides/demo.md) · [Run locally](#install-and-run) · [See the roadmap](docs/07-implementation/NorthWrit-Implementation-Plan.md)
 
-## Start here
+![NorthWrit document workspace showing a fictional supplier agreement and its source-version history](docs/assets/demo/02-document.png)
 
-- [Product catalogue](docs/02-product/NorthWrit-Product-Catalogue.md): current capabilities, configuration and limitations.
-- [Architecture and system flows](docs/06-technical/NorthWrit-Current-Implementation.md): runtime, state and trust boundaries.
-- [User guide](docs/guides/user-guide.md) and [administrator guide](docs/guides/administrator.md): everyday tasks and operating controls.
-- [Capability matrix](docs/04-specs/NorthWrit-Capability-Matrix.md): all 105 requirements and remaining delivery work.
+*Open the source document alongside its project context, metadata and available versions. All screenshots use fictional documents and a synthetic account.*
 
-- [Developer guide](docs/guides/developer.md): setup and verification.
-- [Repository ownership](docs/06-technical/NorthWrit-Repository-Ownership.md): where code and documentation belong.
-- [Configuration verification](docs/07-implementation/NorthWrit-Configuration-Verification.md): current names, local defaults and compatibility policy.
-- [CI inventory](docs/07-implementation/NorthWrit-CI-Inventory.md): active checks and gaps.
-- [Phase 4 extension map](docs/07-implementation/NorthWrit-Phase-4-Extension-Map.md): existing matter workflow building blocks.
-- [Application provenance](docs/06-technical/NorthWrit-Source-Provenance.md): source revision, attribution and upstream updates.
+## Built around the work
+
+| What you need | How NorthWrit helps |
+|---|---|
+| Keep a review organized | Group source documents and related work in Projects. |
+| Read the actual source | Preview PDFs in the workspace and inspect document metadata and versions. |
+| Make your process repeatable | Save Assistant instructions and tabular extraction questions as reusable workflows. |
+| Prepare a structured review | Define columns for parties, commercial terms, liability, renewal and other questions. |
+| Work across clients | Access the same project from the web app and Electron desktop client. |
+| Add AI when ready | Connect a supported model to use AI chat, extraction and drafting capabilities described in the [product catalogue](docs/02-product/NorthWrit-Product-Catalogue.md). |
+
+## Follow a supplier-review demo
+
+A fictional customer, Maple Harbour Analytics, is reviewing a supplier services agreement. The demo takes the source files through a real local application journey:
+
+1. Create the **Maple Harbour — Supplier Review** project.
+2. Upload the agreement and customer instructions; wait for document processing.
+3. Open the agreement, upload a revised source and inspect both versions.
+4. Save a **Supplier agreement checklist** Assistant workflow.
+5. Define a **Contract terms extraction** tabular workflow.
+6. Open the same project in the desktop client.
+
+These screens were captured from the running application. Project creation, uploads, processing, source preview, version creation/download, workflow configuration and cross-client access were verified. **AI execution was not run:** the screenshots show saved instructions and review setup, with no generated answers or findings. A configured model is required to run those AI actions.
+
+### Keep source material together
+
+![NorthWrit project containing a supplier agreement and customer review instructions](docs/assets/demo/01-project.png)
+
+*The project holds the agreement and the customer's instructions in one document list.*
+
+### Turn a checklist into a reusable workflow
+
+![NorthWrit Assistant workflow with a manually authored supplier agreement checklist](docs/assets/demo/03-workflow.png)
+
+*Define the steps, source-citation instructions and questions for the reviewer. This workflow is saved and ready for execution once a model is configured.*
+
+### Define the questions before running a review
+
+![NorthWrit tabular workflow setup with Parties, Fees and term, Liability, and Renewal and exit columns](docs/assets/demo/04-review-setup.png)
+
+*Prepare a consistent extraction structure. This is configuration, not an AI-completed review table.*
+
+<details>
+<summary>See the workflow library and desktop client</summary>
+
+![NorthWrit workflow library containing the saved Assistant and tabular workflows](docs/assets/demo/05-workflow-library.png)
+
+*Both reusable workflows are saved in the demo account.*
+
+![NorthWrit Electron desktop client showing the same supplier-review project](docs/assets/demo/06-desktop.png)
+
+*The actual Electron client connected to the same local application. Captured on Linux; macOS packaging and signing are separate checks.*
+
+</details>
+
+The [demo guide](docs/guides/demo.md) includes sample PDFs, workflow instructions, capture details and the verified scope.
+
+## Explore NorthWrit
+
+- **Users:** [Product catalogue](docs/02-product/NorthWrit-Product-Catalogue.md) · [User guide](docs/guides/user-guide.md) · [Demo walkthrough](docs/guides/demo.md)
+- **Administrators:** [Local development](docs/engineering/local-development.md) · [Administrator guide](docs/guides/administrator.md) · [Security overview](docs/guides/security.md)
+- **Developers:** [Developer guide](docs/guides/developer.md) · [Current architecture](docs/06-technical/NorthWrit-Current-Implementation.md) · [System flows](docs/06-technical/NorthWrit-System-Flows.md)
+- **Product planning:** [105-feature capability matrix](docs/04-specs/NorthWrit-Capability-Matrix.md) · [Implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) · [Documentation index](docs/README.md)
+
+## Current scope
+
+The current application includes Projects, document processing, Assistant, Tabular Reviews, workflows, playbooks and client integrations. Availability depends on configuration and permissions. The full legal Matter workspace, Canadian research, Bearings, four-state CiteCheck, Shield policies and version-bound Folio approvals remain planned work. Pilot acceptance, residency and security guarantees require their own evidence; see the [current capability reference](docs/06-technical/NorthWrit-Current-Implementation.md).
+
+<details>
+<summary>Develop and self-host NorthWrit</summary>
 
 ## Repository layout
 
@@ -130,6 +191,9 @@ See the [workspace verification record](docs/07-implementation/NorthWrit-Workspa
 | 7 — Validation and pilot release | Planned |
 
 Phase 2 was removed. P0/P1/P2 in the product specifications are priority tiers, not these implementation phases. Read the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for scope and acceptance gates.
+
+
+</details>
 
 ## Documentation and licensing
 

@@ -9,3 +9,6 @@
 #   git checkout origin/main -- package-lock.json && npm install
 package-lock.json merge=binary
 bun.lock merge=binary
+
+# Demo PDFs contain byte offsets and must not undergo text normalization.
+docs/assets/demo/samples/*.pdf binary
