@@ -480,16 +480,16 @@ export function ProjectPageHeader({
         <PageHeader
             breadcrumbs={[
                 {
-                    label: "Projects",
+                    label: "Matters",
                     onClick: onBackToProjects,
-                    title: "Back to Projects",
+                    title: "Back to Matters",
                 },
                 {
                     ...(project
                         ? {
                               label: project.name,
                               onClick: onProjectRoot,
-                              title: "Back to project documents",
+                              title: "Back to matter documents",
                           }
                         : {
                               loading: true,

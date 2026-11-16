@@ -142,7 +142,7 @@ describe("ProjectsOverview bulk delete", () => {
 
         await waitFor(() =>
             expect(
-                screen.getByText(/only a project owner can delete a project/),
+                screen.getByText(/only a matter owner can delete a matter/),
             ).toBeInTheDocument(),
         );
         expect(

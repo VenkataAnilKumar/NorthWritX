@@ -118,7 +118,7 @@ describe("AppSidebar workspace switcher", () => {
     const review = { id: "review", title: "Running review", updated_at: "2026-10-15T00:00:00Z", is_running: true } as TabularReview;
     vi.mocked(listTabularReviews).mockResolvedValueOnce([review]);
     render(<AppSidebar isOpen onToggle={vi.fn()} />);
-    const history = within(screen.getByRole("region", { name: "History" }));
+    const history = within(screen.getByRole("region", { name: "Recent activity" }));
     const row = await history.findByRole("link", { name: "Tabular review: Running review (Running)" });
     const chat = history.getByRole("button", { name: "Keep this chat" });
     let resolve!: (rows: TabularReview[]) => void;
@@ -143,9 +143,9 @@ describe("AppSidebar workspace switcher", () => {
     ] as TabularReview[]);
     state.pathname = "/projects/matter/tabular-reviews/project-review";
     render(<AppSidebar isOpen onToggle={vi.fn()} />);
-    expect(screen.getByRole("button", { name: "History" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Recent activity" })).toHaveAttribute("aria-expanded", "true");
     expect(screen.queryByText("Assistant History")).toBeNull();
-    const history = within(screen.getByRole("region", { name: "History" }));
+    const history = within(screen.getByRole("region", { name: "Recent activity" }));
     const projectReview = await history.findByRole("link", { name: "Tabular review: Matter Alpha: Older review edited today" });
     expect(projectReview).toHaveAttribute("title", "Matter Alpha: Older review edited today");
     expect(projectReview).toHaveTextContent("Matter Alpha: Older review edited today");
@@ -276,7 +276,7 @@ describe("AppSidebar workspace switcher", () => {
     // `hidden`: the open menu takes the rest of the page out of the
     // accessibility tree.
     expect(
-      screen.getByRole("button", { name: "Recent Projects", hidden: true }),
+      screen.getByRole("button", { name: "Recent Matters", hidden: true }),
     ).toHaveClass("text-xs", "font-semibold");
     expect(label).not.toHaveClass("uppercase");
     expect(label).not.toHaveClass("tracking-wider");
@@ -434,7 +434,7 @@ describe("AppSidebar workspace switcher", () => {
     ).toBeVisible();
   });
 
-  it("loads the active workspace's recent projects, and reloads them on a switch", async () => {
+  it("loads the active workspace's recent matters, and reloads them on a switch", async () => {
     state.organizations = [ACME];
     vi.mocked(listProjectsPage).mockImplementation(async (options) =>
       options?.workspace === ACME.id
@@ -541,18 +541,18 @@ describe("AppSidebar workspace switcher", () => {
     expect(screen.queryByText("Org matter")).not.toBeInTheDocument();
   });
 
-  it("lines the empty projects placeholder up with the Recent Projects button", async () => {
+  it("lines the empty projects placeholder up with the Recent Matters button", async () => {
     render(<AppSidebar isOpen onToggle={vi.fn()} />);
 
-    const placeholder = await screen.findByText("No projects yet");
-    const button = screen.getByRole("button", { name: "Recent Projects" });
+    const placeholder = await screen.findByText("No matters yet");
+    const button = screen.getByRole("button", { name: "Recent Matters" });
     const horizontalPadding = (element: HTMLElement) =>
       [...element.classList].filter((name) => /^px-/.test(name));
     expect(horizontalPadding(placeholder)).toEqual(horizontalPadding(button));
     expect(horizontalPadding(placeholder)).toEqual(["px-3.5"]);
   });
 
-  it("does not narrow the recent projects outside a workspace provider", async () => {
+  it("does not narrow the recent matters outside a workspace provider", async () => {
     state.workspaceId = null;
     state.organizations = null;
     render(<AppSidebar isOpen onToggle={vi.fn()} />);
@@ -562,5 +562,25 @@ describe("AppSidebar workspace switcher", () => {
       vi.mocked(listProjectsPage).mock.calls[0][0]?.workspace,
     ).toBeUndefined();
     expect(heading()).toHaveTextContent("NorthWrit");
+  });
+});
+
+
+describe("NorthWrit navigation access", () => {
+  it.each(["owner", "admin", "member"] as const)("shows Administration only for a managing role: %s", (role) => {
+    state.organizations = [{ ...ACME, role }];
+    state.workspaceId = ACME.id;
+    render(<AppSidebar isOpen onToggle={vi.fn()} />);
+    const administration = screen.queryByRole("link", { name: "Administration" });
+    if (role === "member") expect(administration).toBeNull();
+    else expect(administration).toHaveAttribute("href", `/organizations/${ACME.id}/settings`);
+  });
+
+  it("keeps nested matters selected and collapsed controls named", () => {
+    state.pathname = "/projects/matter-1/assistant/chat/chat-1";
+    render(<AppSidebar isOpen={false} onToggle={vi.fn()} />);
+    expect(screen.getByRole("button", { name: "Matters" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("button", { name: "Assistant" })).not.toHaveAttribute("aria-current");
+    expect(screen.queryByRole("link", { name: "Administration" })).toBeNull();
   });
 });

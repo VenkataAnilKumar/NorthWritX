@@ -1,21 +1,24 @@
 # NorthWrit supplier-review demo
 
-Captured November 16, 2026 from the local NorthWrit application at source baseline `4de6899`. The API was built from this checkout and the preview served the existing web build; this was not a fresh release build. This walkthrough uses a synthetic account and fictional documents. No real client data, provider credentials or generated AI findings appear in the assets.
+Refreshed November 16, 2026 against the uncommitted navigation milestone on checkout `10506e4`. The web preview uses a fresh production build, verified with the API and actual Linux Electron client. This walkthrough uses a synthetic account and fictional documents. No real client data, provider credentials or generated AI findings appear in the assets.
+
+The refreshed run created **Maple Harbour — Contract Review** (`DEMO-003`), processed both sample PDFs, created and downloaded Version 2, saved two reusable workflows, and opened their real UI pages. Creation and upload operations used the authenticated application API; preview, version visibility, download and cross-client views were verified through the UI. The downloaded revision's SHA-256 matched the uploaded PDF. Existing demo data was retained.
 
 ## What this demo verifies
 
 | Step | Result | Image |
 |---|---|---|
-| Create a project | The synthetic project was created through the authenticated application API and opened in the web UI | [Project](../assets/demo/01-project.png) |
-| Upload two source PDFs | Signed transfers completed; both files were processed and appeared in the project | [Project documents](../assets/demo/01-project.png) |
+| Create a matter | The synthetic project was created through the authenticated application API and opened in the web UI | [Project](../assets/demo/01-project.png) |
+| Upload two source PDFs | Signed transfers completed; both files were processed and appeared in the project | [Matter documents](../assets/demo/01-project.png) |
 | Preview and version a source | The PDF rendered in the document viewer; a second source version was uploaded and both versions were visible | [Document and versions](../assets/demo/02-document.png) |
 | Download the revised source | Version 2 was downloaded; its SHA-256 matched the uploaded revision bytes | [Document versions](../assets/demo/02-document.png) |
 | Save reusable instructions | A manually authored Assistant workflow was persisted and opened in its editor | [Assistant workflow](../assets/demo/03-workflow.png) |
 | Define tabular extraction | A tabular workflow with four questions was persisted and opened in its editor | [Review setup](../assets/demo/04-review-setup.png) |
 | Browse saved workflows | Both workflows appeared in the account's workflow library | [Workflow library](../assets/demo/05-workflow-library.png) |
-| Open the desktop client | The actual Electron client authenticated and displayed the same project and source documents | [Desktop](../assets/demo/06-desktop.png) |
+| Open Assistant | The starting screen exposes Assistant, Matters, Library and Workflows; no prompt was sent | [Assistant](../assets/demo/07-assistant.png) |
+| Open the desktop client | The actual Electron client authenticated and displayed the same matter and source documents | [Desktop](../assets/demo/06-desktop.png) |
 
-Screens are unmodified captures of the running application, not product mockups. Web captures use a 1600 × 1000 viewport; the desktop capture uses its actual client viewport. Different captures show successive steps, so the project overview precedes the second-version upload. All six PNGs together are under 1 MB.
+Screens are unmodified captures of the running application, not product mockups. Web captures use a 1600 × 1000 viewport; the desktop capture uses its actual client viewport. The matter overview and document view show the completed upload/version journey. The capture manifest records dimensions, hashes and captions for all seven PNGs.
 
 AI chat, workflow execution, generated review cells, legal research and suggested edits were not run. A working model is required for those actions. Saving a workflow verifies configuration and persistence, not model output quality. The desktop capture is a Linux Electron preview, not signed macOS release validation.
 
@@ -33,19 +36,19 @@ These are demonstration fixtures, not recommended contract wording or legal advi
 
 1. Follow [local setup](../engineering/local-development.md) and configure the API/web origins, database, authentication, storage and processing workers. Preserve existing environment files and data.
 2. Register a disposable local account, confirm its email through Mailpit, and complete onboarding. Keep confirmation enabled. Model setup can be completed later.
-3. Create **Maple Harbour — Supplier Review**, with reference **DEMO-002**. Upload the agreement and instructions into that project.
+3. Create **Maple Harbour — Contract Review**, with reference **DEMO-003**. Upload the agreement and instructions into that project.
 4. Wait for processing to complete, then open the agreement. Confirm its text and metadata render.
 5. Use **Upload new version** for the revised agreement. Check that Version 1 and Version 2 are accessible in the version panel.
-6. Open the same project in the desktop client connected to this application. Desktop sign-in uses its own cookie session.
+6. Open the same matter in the desktop client connected to this application. Desktop sign-in uses its own cookie session.
 
 The first local preview used PostgreSQL 17 Alpine with the required auth roles/search path, Supabase Auth/PostgREST, RustFS, Mailpit and Redis because the full database image exceeded available disk space. This is a session-specific preview configuration; the application's documented Compose configuration remains the normal setup reference. Its initial auth/application migration ledgers were reconciled within the fresh preview database; no existing user database or application migration file was changed. This demo is not the archived standalone cloud baseline test.
 
 ## Prepare the Assistant workflow
 
-Create an Assistant workflow called **Supplier agreement checklist**, then save these manually authored instructions:
+Create an Assistant workflow called **Supplier review checklist**, then save these manually authored instructions:
 
 ```markdown
-# Supplier agreement checklist
+# Supplier review checklist
 
 ## Purpose
 Prepare a first-pass checklist from the supplied agreement and customer instructions.
@@ -66,7 +69,7 @@ The saved instructions describe intended model behaviour; compliance was not eva
 
 ## Prepare the tabular workflow
 
-Create a tabular workflow called **Contract terms extraction** with these columns:
+Create a tabular workflow called **Supplier terms extraction** with these columns:
 
 | Column | Prompt |
 |---|---|

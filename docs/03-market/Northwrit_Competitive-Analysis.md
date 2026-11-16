@@ -2,6 +2,8 @@
 
 **Status:** Proposed Assessment | **Version:** 1.0 | **Date:** November 3, 2026
 
+For the November 16, 2026 review of current vendor positioning, see the [Harvey, Filevine and Clio comparison](NorthWrit-Harvey-Filevine-Clio-Comparison.md). This earlier assessment retains its original scope and date.
+
 ---
 
 ## 1. Competitive Landscape Overview

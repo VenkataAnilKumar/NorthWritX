@@ -103,8 +103,8 @@ describe("ProjectDetailsModal", () => {
             />,
         );
 
-        await user.clear(screen.getByLabelText("Project name"));
-        await user.type(screen.getByLabelText("Project name"), "Renamed");
+        await user.clear(screen.getByLabelText("Matter name"));
+        await user.type(screen.getByLabelText("Matter name"), "Renamed");
         await user.click(screen.getByRole("button", { name: "Update" }));
 
         expect(
@@ -198,7 +198,7 @@ describe("ProjectDetailsModal", () => {
                 />,
             );
 
-            const name = screen.getByLabelText("Project name");
+            const name = screen.getByLabelText("Matter name");
             await user.clear(name);
             await user.type(name, "Renamed");
             await user.click(screen.getByRole("button", { name: "Update" }));

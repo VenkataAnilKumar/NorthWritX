@@ -273,7 +273,7 @@ export function ProjectWorkspaceProvider({
                 setProject(null);
                 setFolders([]);
                 notifyError(error, {
-                    action: "load this project",
+                    action: "load this matter",
                     dedupeKey: `project-load:${projectId}`,
                     onRetry: () =>
                         setProjectReloadToken((token) => token + 1),
@@ -468,7 +468,7 @@ export function ProjectWorkspaceProvider({
     }) {
         if (!canDo("access.manage")) {
             denyUnlessLoading({
-                action: "edit project details",
+                action: "edit matter details",
                 requiredRole: "owner",
             });
             return;
@@ -498,7 +498,7 @@ export function ProjectWorkspaceProvider({
 
     function requestProjectDelete() {
         if (!canDo("container.delete")) {
-            denyUnlessLoading("delete this project");
+            denyUnlessLoading("delete this matter");
             return;
         }
         setDeleteProjectStatus("idle");
@@ -517,7 +517,7 @@ export function ProjectWorkspaceProvider({
             // project still listed, which reads as "nothing happened".
             setDeleteProjectStatus("idle");
             notifyError(error, {
-                action: "delete this project",
+                action: "delete this matter",
                 dedupeKey: `project-delete:${projectId}`,
                 // Retry re-opens the confirmation rather than deleting from
                 // the notice: a destructive action is always confirmed.
@@ -665,8 +665,8 @@ export function ProjectWorkspaceProvider({
 
                     <ConfirmPopup
                         open={deleteProjectConfirmOpen}
-                        title="Delete project?"
-                        message="This will permanently delete the project and its related documents, chats, and tabular reviews."
+                        title="Delete matter?"
+                        message="This will permanently delete the matter and its related documents, chats, and tabular reviews."
                         confirmLabel="Delete"
                         confirmVariant="danger"
                         confirmStatus={
@@ -697,7 +697,7 @@ export function ProjectWorkspaceProvider({
                             // them out of their own project.
                             currentUserId={user?.id ?? null}
                             breadcrumb={[
-                                "Projects",
+                                "Matters",
                                 project.name +
                                     (project.cm_number
                                         ? ` (${project.cm_number})`
@@ -708,7 +708,7 @@ export function ProjectWorkspaceProvider({
                                 grants: grants ?? [],
                                 grantsUnavailable,
                                 orgId: project.org_id ?? null,
-                                ownerLabel: "Project owners",
+                                ownerLabel: "Matter owners",
                                 canManage: canDo("access.manage"),
                                 visibility: project.visibility ?? "private",
                                 onGrant: async (email, role) => {
@@ -749,8 +749,8 @@ export function ProjectSectionToolbar({
                     ? []
                     : [
                           { id: "documents", label: "Documents" },
-                          { id: "assistant", label: "Chats" },
-                          { id: "reviews", label: "Tabular Reviews" },
+                          { id: "assistant", label: "Conversations" },
+                          { id: "reviews", label: "Reviews" },
                       ]
             }
             active={activeSection}

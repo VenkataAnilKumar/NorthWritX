@@ -2,7 +2,7 @@
 
 ### Your documents. Your review process. One focused workspace.
 
-NorthWrit brings project files, source previews and reusable review workflows together for legal teams. Organize a client-work project, keep document versions accessible, and prepare consistent review instructions from the web or desktop client.
+NorthWrit brings matter files, source previews and reusable review workflows together for legal teams. Organize a client matter, keep document versions accessible, and prepare consistent review instructions from the web or desktop client.
 
 Built for Canadian law firms and in-house teams. **Available as a development preview.**
 
@@ -10,37 +10,45 @@ Built for Canadian law firms and in-house teams. **Available as a development pr
 
 ![NorthWrit document workspace showing a fictional supplier agreement and its source-version history](docs/assets/demo/02-document.png)
 
-*Open the source document alongside its project context, metadata and available versions. All screenshots use fictional documents and a synthetic account.*
+*Open the source document alongside its matter context, metadata and available versions. All screenshots use fictional documents and a synthetic account.*
+
+## Four places to focus
+
+**Assistant** for document conversations · **Matters** for client work · **Library** for files, templates and playbooks · **Workflows** for reusable instructions and reviews.
+
+![NorthWrit Assistant with Matters, Library and Workflows in the sidebar](docs/assets/demo/07-assistant.png)
+
+*Start a conversation with authorized documents and an available model. This capture shows the Assistant starting screen, before AI execution.*
 
 ## Built around the work
 
 | What you need | How NorthWrit helps |
 |---|---|
-| Keep a review organized | Group source documents and related work in Projects. |
+| Keep a review organized | Group source documents and related work in Matters. |
 | Read the actual source | Preview PDFs in the workspace and inspect document metadata and versions. |
 | Make your process repeatable | Save Assistant instructions and tabular extraction questions as reusable workflows. |
 | Prepare a structured review | Define columns for parties, commercial terms, liability, renewal and other questions. |
-| Work across clients | Access the same project from the web app and Electron desktop client. |
+| Work across clients | Access the same matter from the web app and Electron desktop client. |
 | Add AI when ready | Connect a supported model to use AI chat, extraction and drafting capabilities described in the [product catalogue](docs/02-product/NorthWrit-Product-Catalogue.md). |
 
 ## Follow a supplier-review demo
 
 A fictional customer, Maple Harbour Analytics, is reviewing a supplier services agreement. The demo takes the source files through a real local application journey:
 
-1. Create the **Maple Harbour — Supplier Review** project.
+1. Create the **Maple Harbour — Contract Review** matter.
 2. Upload the agreement and customer instructions; wait for document processing.
 3. Open the agreement, upload a revised source and inspect both versions.
-4. Save a **Supplier agreement checklist** Assistant workflow.
-5. Define a **Contract terms extraction** tabular workflow.
-6. Open the same project in the desktop client.
+4. Save a **Supplier review checklist** Assistant workflow.
+5. Define a **Supplier terms extraction** tabular workflow.
+6. Open the same matter in the desktop client.
 
-These screens were captured from the running application. Project creation, uploads, processing, source preview, version creation/download, workflow configuration and cross-client access were verified. **AI execution was not run:** the screenshots show saved instructions and review setup, with no generated answers or findings. A configured model is required to run those AI actions.
+These screens were captured from the running application. Matter creation, uploads, processing, source preview, version creation/download, workflow configuration and cross-client access were verified. **AI execution was not run:** the screenshots show saved instructions and review setup, with no generated answers or findings. A configured model is required to run those AI actions.
 
 ### Keep source material together
 
-![NorthWrit project containing a supplier agreement and customer review instructions](docs/assets/demo/01-project.png)
+![NorthWrit matter containing a supplier agreement and customer review instructions](docs/assets/demo/01-project.png)
 
-*The project holds the agreement and the customer's instructions in one document list.*
+*The matter holds the agreement and the customer's instructions in one document list.*
 
 ### Turn a checklist into a reusable workflow
 
@@ -61,7 +69,7 @@ These screens were captured from the running application. Project creation, uplo
 
 *Both reusable workflows are saved in the demo account.*
 
-![NorthWrit Electron desktop client showing the same supplier-review project](docs/assets/demo/06-desktop.png)
+![NorthWrit Electron desktop client showing the same supplier-review matter](docs/assets/demo/06-desktop.png)
 
 *The actual Electron client connected to the same local application. Captured on Linux; macOS packaging and signing are separate checks.*
 
@@ -78,7 +86,7 @@ The [demo guide](docs/guides/demo.md) includes sample PDFs, workflow instruction
 
 ## Current scope
 
-The current application includes Projects, document processing, Assistant, Tabular Reviews, workflows, playbooks and client integrations. Availability depends on configuration and permissions. The full legal Matter workspace, Canadian research, Bearings, four-state CiteCheck, Shield policies and version-bound Folio approvals remain planned work. Pilot acceptance, residency and security guarantees require their own evidence; see the [current capability reference](docs/06-technical/NorthWrit-Current-Implementation.md).
+The current application includes Matters, document processing, Assistant, Tabular Reviews, workflows, playbooks and client integrations. Availability depends on configuration and permissions. The full legal matter model, Canadian research, Bearings, four-state CiteCheck, Shield policies and version-bound Folio approvals remain planned work. Pilot acceptance, residency and security guarantees require their own evidence; see the [current capability reference](docs/06-technical/NorthWrit-Current-Implementation.md).
 
 <details>
 <summary>Develop and self-host NorthWrit</summary>

@@ -42,6 +42,11 @@ export type SettingsSearchResult = {
 };
 
 export const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
+    {
+        id: "advanced-ide", tabId: "advanced", tab: "Advanced", title: "IDE",
+        description: "Open file and development tools.",
+        keywords: ["ide", "development", "code", "advanced"], href: "/settings/advanced",
+    },
     // Account
     {
         id: "account-profile",

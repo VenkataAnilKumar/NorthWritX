@@ -1,6 +1,10 @@
 # NorthWrit user guide
 
-Reviewed November 14, 2026 against baseline `7c08dba`. This guide describes existing application surfaces. Available models, tools and content depend on your account, workspace and instance configuration. The [product catalogue](../02-product/NorthWrit-Product-Catalogue.md) explains capabilities and limitations; the [proposed journeys](../04-specs/Northwrit_User-Journeys.md) describe future legal workflows.
+Navigation updated November 16, 2026; capability baseline reviewed November 14, 2026 against `7c08dba`. This guide describes existing application surfaces. Available models, tools and content depend on your account, workspace and instance configuration. The [product catalogue](../02-product/NorthWrit-Product-Catalogue.md) explains capabilities and limitations; the [proposed journeys](../04-specs/Northwrit_User-Journeys.md) describe future legal workflows.
+
+## Navigation
+
+The main destinations are **Assistant**, **Matters**, **Library** and **Workflows**. Library groups Files, Templates and Playbooks; Workflows groups saved workflows and Reviews. Matters opens the existing project workspace with Documents, Conversations and Reviews. Stored project identifiers and `/projects` links remain unchanged; the fuller matter model is future work. Settings and Account are at the bottom, with Administration for owners/admins of the active organization. Open IDE through Settings → Advanced.
 
 ## Sign in and select a workspace
 
@@ -14,9 +18,9 @@ Use the onboarding model step or Settings → Bring Your Own Keys for a personal
 
 A local Ollama or OpenAI-compatible model requires instance configuration and a reachable endpoint. Selecting it does not disable every external connector or web request. Ask the administrator about actual data-handling requirements before using confidential documents.
 
-## Organize work in Projects
+## Organize work in Matters
 
-Open Projects to create or select a project, organize files/folders and use project conversations or reviews. Check the project access/sharing settings for the intended collaborators. A project can provide context for a conversation, but the complete proposed Matter workspace and its legal metadata are future work.
+Open Matters to create or select a matter, organize files/folders and use project conversations or reviews. Check the project access/sharing settings for the intended collaborators. A project can provide context for a conversation, but the complete proposed Matter workspace and its legal metadata are future work.
 
 Keep separate evaluation projects for separate synthetic matters. If a project or file is unavailable, ask an authorized owner to check sharing rather than copying the material into a broader workspace.
 
@@ -30,19 +34,19 @@ If processing fails, keep the named error and document context for support. A sc
 
 Open Assistant or a project's conversation, select an available model and attach/select authorized context. Ask a focused question and inspect linked source material in the response. Model output needs review even when it includes a citation.
 
-Supported streams can reconnect while their server-owned run exists. Use the explicit Stop control when you intend to cancel; closing a tab or losing the connection does not necessarily stop generation. History provides saved conversations; it is not the Word conversation list.
+Supported streams can reconnect while their server-owned run exists. Use the explicit Stop control when you intend to cancel; closing a tab or losing the connection does not necessarily stop generation. Recent activity provides saved conversations and other recent work; it is not the Word conversation list.
 
 Optional web search is controlled under Settings → Features and applies to Assistant/project chats. CourtListener can be connected for US case law. These tools do not establish Canadian legal coverage or the planned Verified/Unverified/Contradicted/Unavailable CiteCheck workflow. See [web search](../engineering/web-search.md) and [CourtListener](../engineering/courtlistener.md).
 
 ## Review documents in a table
 
-Open Tabular Reviews or a project's review area, select authorized documents and configure the extraction questions. Inspect generated cells and their cited evidence. Missing/failed extraction must not be interpreted as a negative legal finding.
+Open Workflows → Reviews or a project's review area, select authorized documents and configure the extraction questions. Inspect generated cells and their cited evidence. Missing/failed extraction must not be interpreted as a negative legal finding.
 
 Review chat and generation have different permissions and execution paths. The selected instance may use queued extraction. Do not assume that closing the page cancels the job or that every asynchronous job supports the same Stop behaviour. See [generation contracts](../engineering/backend-architecture.md#tabular-review-generation).
 
 ## Draft and use playbooks
 
-Open Playbooks to author rules or import a supported negotiation guide. Inspect compiled rules, preferred/fallback positions and source references before running a contract review. Manually authored rules do not have imported source references. Reviews retain saved-rule snapshots, so editing a playbook is distinct from rerunning a review.
+Open Library → Playbooks to author rules or import a supported negotiation guide. Inspect compiled rules, preferred/fallback positions and source references before running a contract review. Manually authored rules do not have imported source references. Reviews retain saved-rule snapshots, so editing a playbook is distinct from rerunning a review.
 
 Inspect proposed document edits and accept/reject them deliberately in the applicable editor/client. Existing drafting tools do not establish the proposed Folio reviewer-approval workflow. See [playbooks](../engineering/playbooks.md).
 

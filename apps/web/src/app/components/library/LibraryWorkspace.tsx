@@ -89,10 +89,7 @@ type LibraryWorkspaceContextValue = {
     ) => void;
 };
 
-const LIBRARY_TABS: { id: LibraryKind; label: string }[] = [
-    { id: "files", label: "Documents" },
-    { id: "templates", label: "Templates" },
-];
+
 
 const EMPTY_COLLECTION: LibraryViewCollection = {
     documents: [],
@@ -578,7 +575,7 @@ export function LibraryCollectionPage({
     const search = searchByKind[kind];
     const collectionRootPath = kind === "files" ? "/library" : "/library/templates";
   const debouncedSearch = useDebouncedValue(search, 250);
-    const title = kind === "files" ? "Documents" : "Templates";
+    const title = kind === "files" ? "Files" : "Templates";
     const [selectionActions, setSelectionActions] = useState<DocTableSelectionActions | null>(null);
   const [documentTypeOptions, setDocumentTypeOptions] = useState<string[]>([]);
   const [tableQuery, setTableQuery] = useState<DocTableQuery>({
@@ -1063,13 +1060,6 @@ export function LibraryCollectionPage({
 
             <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
                 <TableToolbar
-                    items={folderBackAction ? [] : LIBRARY_TABS}
-                    active={kind}
-                    onChange={(next) =>
-                        router.push(
-                            next === "files" ? "/library" : "/library/templates",
-                        )
-                    }
                     leading={
                         folderBackAction ? (
                             <TabPillButtonUI onClick={folderBackAction} className="pl-2">

@@ -385,7 +385,7 @@ function NewTRModalForWorkspace({
             // Without this the picker just sat there empty, and the rejection
             // went nowhere because the caller does not await it.
             notifyError(error, {
-                action: "load this project's files",
+                action: "load this matter's files",
                 dedupeKey: `new-review-project:${projectId}`,
                 onRetry: () => void handleSelectProject(projectId),
             });
@@ -486,7 +486,7 @@ function NewTRModalForWorkspace({
                   project.name +
                   (project.cm_number ? ` (#${project.cm_number})` : ""),
           }))
-        : [{ value: "", label: "No projects found" }];
+        : [{ value: "", label: "No matters found" }];
 
     // What to show in the directory depends on mode and toggle state
     const directoryDocuments = isProjectMode
@@ -508,7 +508,7 @@ function NewTRModalForWorkspace({
     const breadcrumbs =
         isProjectMode && projectName
             ? [
-                  "Projects",
+                  "Matters",
                   `${projectName}${projectCmNumber ? ` (#${projectCmNumber})` : ""}`,
                   "New Tabular Review",
               ]
@@ -676,7 +676,7 @@ function NewTRModalForWorkspace({
                         {/* Create under a project toggle */}
                         {!isProjectMode && (
                             <div className="space-y-3">
-                                <FieldLabel as="p">Project</FieldLabel>
+                                <FieldLabel as="p">Matter</FieldLabel>
                                 <ToggleSwitchUI
                                     checked={underProject}
                                     onCheckedChange={(next) => {
@@ -684,7 +684,7 @@ function NewTRModalForWorkspace({
                                         if (!next) clearProjectSelection();
                                     }}
                                 >
-                                    Create under a project
+                                    Create under a matter
                                 </ToggleSwitchUI>
 
                                 {underProject && (
@@ -697,7 +697,7 @@ function NewTRModalForWorkspace({
                                                 void handleSelectProject(value);
                                             }
                                         }}
-                                        placeholder="Select project..."
+                                        placeholder="Select matter..."
                                         disabled={projects.length === 0}
                                     />
                                 )}

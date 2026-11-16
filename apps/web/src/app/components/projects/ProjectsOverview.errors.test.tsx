@@ -151,7 +151,7 @@ describe("ProjectsOverview failures", () => {
 
         const alert = await screen.findByRole("alert");
         expect(alert).toHaveTextContent(
-            "1 of 2 projects couldn't be deleted (Matter B)",
+            "1 of 2 matters couldn't be deleted (Matter B)",
         );
         // The failed row is back; the deleted one is gone.
         expect(screen.getByText("Matter B")).toBeInTheDocument();
@@ -175,7 +175,7 @@ describe("ProjectsOverview failures", () => {
 
         await waitFor(() =>
             expect(
-                screen.getByText("Couldn't load the project filters"),
+                screen.getByText("Couldn't load the matter filters"),
             ).toBeInTheDocument(),
         );
     });
