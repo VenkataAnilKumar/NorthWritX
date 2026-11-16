@@ -1,6 +1,6 @@
 {
   "captured_on": "2026-11-16",
-  "source_checkout": "4de6899cf7b29415d56adda8b708bac028966dad",
+  "source_checkout": "10506e4ac42fe023161f77d74aa4320ae964cdb4",
   "data": "Fictional sample documents and synthetic account",
   "ai_execution": false,
   "images": [
@@ -8,43 +8,61 @@
       "file": "01-project.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "1b618e70ff1e0d910cd57c93770b1445ac5d1a0a903b1ca003c78822d5f3cc62",
-      "caption": "Project with the two processed synthetic source PDFs, before revision upload."
+      "sha256": "7920be54136f052431ceef3219a8b0a48c5d2ff1e94e280e208e870e2728a910",
+      "caption": "Matter with both processed synthetic PDFs and agreement Version 2."
     },
     {
       "file": "02-document.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "c462798b80995560db574803bfdc85362d7d3773aa51c2d5a1a88c44e4803b21",
+      "sha256": "d6905b5b9ec77c27ffd7e04da1f91a5a4313471acf08f11ea10321899d3d4d47",
       "caption": "Source preview with Version 2 active and both source versions visible."
     },
     {
       "file": "03-workflow.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "4fa26a91cb11f8ccc4d091d2658d6067ec12c63c9b8bb5cb6747074ecdcc11c3",
+      "sha256": "a947021d1539120a9c40dfdd2d4b5996f34676ff44ab20f3a1f781952160521f",
       "caption": "Saved, manually authored Assistant instructions; no AI execution."
     },
     {
       "file": "04-review-setup.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "5b68ec7a1283874280132639beec215d526553f06a5459180cbc8f6af717360c",
+      "sha256": "b6b64c070407cb6bdff9fe547747cd9abd9adb89e6591329af05b5680e021131",
       "caption": "Saved tabular extraction questions; no generated answers."
     },
     {
       "file": "05-workflow-library.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "e27ce0137e6a6dffe05a821aa703025928feb46bf9a85e5ab98b566068286240",
+      "sha256": "637bbecf8282747520d6b2f7f55e69191de5687c31a138296a60eac13405d7f2",
       "caption": "Both persisted workflows in the synthetic account."
     },
     {
       "file": "06-desktop.png",
       "width": 1280,
       "height": 832,
-      "sha256": "419790bd90b4659b905686a538ce49ead4b077429089a10d2062f9130ee73ebc",
-      "caption": "Actual Linux Electron client showing the same local project."
+      "sha256": "2397e68114de4cc87f7ef40c7023943401fcc4a1df9cd78ad0951ecc92512cb8",
+      "caption": "Actual Linux Electron client showing the same local matter."
+    },
+    {
+      "file": "07-assistant.png",
+      "caption": "Assistant starting screen with the four primary destinations; no model configured or invoked.",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "1e578d1cf2a44cd19aae3ef9b7f635099a6c06bd0c98a98466748b2fc013ee8e"
     }
+  ],
+  "source_state": "Uncommitted navigation milestone; fresh production web build",
+  "demo_matter": "Maple Harbour \u2014 Contract Review (DEMO-003)",
+  "verified_operations": [
+    "Authenticated API matter creation",
+    "Two PDF uploads and processing",
+    "Source revision creation and processing",
+    "UI source preview and both version entries",
+    "UI Version 2 download with SHA-256 equality",
+    "Saved Assistant and tabular workflow persistence",
+    "Web navigation and actual Linux Electron cross-client access"
   ]
 }

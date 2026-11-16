@@ -359,7 +359,7 @@ describe("NewTRModal", () => {
         );
 
         fireEvent.change(screen.getByLabelText("Review name"), {
-            target: { value: "Project review" },
+            target: { value: "Matter review" },
         });
         fireEvent.click(screen.getByRole("button", { name: "Next" }));
         fireEvent.click(screen.getByRole("button", { name: "Next" }));
@@ -414,7 +414,7 @@ describe("NewTRModal", () => {
         );
 
         fireEvent.change(screen.getByLabelText("Review name"), {
-            target: { value: "Project review" },
+            target: { value: "Matter review" },
         });
         fireEvent.click(screen.getByRole("button", { name: "Next" }));
 
@@ -448,7 +448,7 @@ describe("NewTRModal", () => {
             />,
         );
         fireEvent.change(screen.getByLabelText("Review name"), {
-            target: { value: "Project review" },
+            target: { value: "Matter review" },
         });
         fireEvent.click(screen.getByRole("button", { name: "Next" }));
         fireEvent.click(screen.getByRole("button", { name: "Next" }));
@@ -496,7 +496,7 @@ describe("NewTRModal", () => {
             />,
         );
         fireEvent.change(screen.getByLabelText("Review name"), {
-            target: { value: "Project review" },
+            target: { value: "Matter review" },
         });
         fireEvent.click(screen.getByRole("button", { name: "Next" }));
         fireEvent.click(screen.getByRole("button", { name: "Next" }));
@@ -636,13 +636,13 @@ describe("NewTRModal load failures", () => {
         );
 
         await user.click(
-            screen.getByRole("switch", { name: "Create under a project" }),
+            screen.getByRole("switch", { name: "Create under a matter" }),
         );
-        await user.click(screen.getByText("Select project..."));
+        await user.click(screen.getByText("Select matter..."));
         await user.click(await screen.findByText("Acquisition"));
 
         const alert = await screen.findByRole("alert");
-        expect(alert).toHaveTextContent("Couldn't load this project's files");
+        expect(alert).toHaveTextContent("Couldn't load this matter's files");
         expect(alert).not.toHaveTextContent("API error: 500");
     });
 
@@ -681,9 +681,9 @@ describe("NewTRModal load failures", () => {
         );
 
         await user.click(
-            screen.getByRole("switch", { name: "Create under a project" }),
+            screen.getByRole("switch", { name: "Create under a matter" }),
         );
-        await user.click(screen.getByText("Select project..."));
+        await user.click(screen.getByText("Select matter..."));
         await user.click(await screen.findByText("Acquisition"));
         await user.click(screen.getByText("Acquisition"));
         await user.click(await screen.findByText("Merger"));

@@ -144,7 +144,7 @@ describe("ProjectWorkspaceProvider failures", () => {
         );
 
         const alert = await screen.findByRole("alert");
-        expect(alert).toHaveTextContent("Couldn't delete this project");
+        expect(alert).toHaveTextContent("Couldn't delete this matter");
 
         // Retry never deletes from the notice: the confirmation is still
         // (or again) the only way to delete.
@@ -204,7 +204,7 @@ describe("ProjectWorkspaceProvider failures", () => {
         );
 
         expect(await screen.findByRole("alert")).toHaveTextContent(
-            "Couldn't load this project",
+            "Couldn't load this matter",
         );
     });
 });

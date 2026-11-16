@@ -1,6 +1,6 @@
 # NorthWrit implementation plan
 
-Updated: November 14, 2026
+Updated: November 16, 2026
 
 Status: Phase 1 audit and Phase 3 application integration are complete. Repository organization, the expanded layout and the root npm workspace are merged. [PR #4](https://github.com/VenkataAnilKumar/NorthWritX/pull/4) verified the application baseline with all seven PR checks passing; merge commit `d7e899526a389cbbe684b18618b32df98ccea237` was verified on remote `main`. See the [configuration record](NorthWrit-Configuration-Verification.md) for compatibility exceptions and release limits. Phase 4 has not started. No deployment or pilot release is established by these merges.
 
@@ -9,6 +9,10 @@ Latest baseline: subsequent GitHub changes through `7c08dba` include [PR #5](htt
 ## Current capability documentation
 
 The [product catalogue](../02-product/NorthWrit-Product-Catalogue.md), [current architecture](../06-technical/NorthWrit-Current-Implementation.md), [system flows](../06-technical/NorthWrit-System-Flows.md), [user guide](../guides/user-guide.md) and [administrator guide](../guides/administrator.md) describe the existing application. The [capability matrix](../04-specs/NorthWrit-Capability-Matrix.md) accounts for all 105 requirements without treating building blocks as acceptance. The [documentation coverage map](NorthWrit-Documentation-Coverage.md) records source/guide evidence and remaining checks. This documentation work does not implement Phase 4.
+
+## Navigation milestone before Phase 4
+
+Implement **Assistant · Matters · Library · Workflows** across the shared web and desktop UI. Group existing sections, move IDE discovery into Settings → Advanced and retain existing routes, data and authorization. See the [navigation milestone](NorthWrit-Navigation-Milestone.md) for the implementation sequence, acceptance criteria and verification. This work precedes Phase 4 and does not start its matter data model.
 
 ## Objective and scope
 

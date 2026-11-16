@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { useUserProfile } from "@/app/contexts/UserProfileContext";
+import { isOrgAdmin } from "@/app/lib/permissions";
+import { primaryDestination } from "@/app/lib/navigation";
 import { useChatHistoryContext } from "@/app/contexts/ChatHistoryContext";
 import {
     PERSONAL_WORKSPACE,
@@ -43,15 +45,13 @@ import { SidebarLogo } from "@/app/components/shared/SidebarLogo";
 import { SidebarProjectItem } from "@/app/components/shared/SidebarProjectItem";
 import {
     ChatSkeuoIcon,
-    IdeSkeuoIcon,
     FolderSkeuoIcon,
     LibrarySkeuoIcon,
-    TabularReviewSkeuoIcon,
     TabularReviewCompleteIcon,
     WorkflowSkeuoIcon,
-    PlaybookSkeuoIcon,
     OrganizationSkeuoIcon,
     SettingsSkeuoIcon,
+    TabularReviewSkeuoIcon,
     SignOutSkeuoIcon,
 } from "@/app/components/shared/AppSidebarSkeuoIcons";
 import { listProjectsPage } from "@/app/lib/northwritApi";
@@ -77,16 +77,9 @@ const WORKSPACE_HOME = "/assistant";
 
 const NAV_ITEMS = [
     { href: "/assistant", label: "Assistant", icon: ChatSkeuoIcon },
-    { href: "/ide", label: "IDE", icon: IdeSkeuoIcon },
-    { href: "/projects", label: "Projects", icon: FolderSkeuoIcon },
+    { href: "/projects", label: "Matters", icon: FolderSkeuoIcon },
     { href: "/library", label: "Library", icon: LibrarySkeuoIcon },
-    {
-        href: "/tabular-reviews",
-        label: "Tabular Review",
-        icon: TabularReviewSkeuoIcon,
-    },
     { href: "/workflows", label: "Workflows", icon: WorkflowSkeuoIcon },
-    { href: "/playbooks", label: "Playbooks", icon: PlaybookSkeuoIcon },
 ];
 
 const RECENT_PROJECT_PAGE_SIZE = 10;
@@ -335,7 +328,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                 // An empty Projects section reads as "you have no projects",
                 // which is the one thing this failure does not mean.
                 notifyError(error, {
-                    action: "load your recent projects",
+                    action: "load your recent matters",
                     dedupeKey: "sidebar-recent-projects",
                     onRetry: () =>
                         setRecentProjectsAttempt((attempt) => attempt + 1),
@@ -398,7 +391,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
             // The current page survives; the user is told the next one did
             // not arrive instead of scrolling at a list that stopped growing.
             notifyError(error, {
-                action: "load more projects",
+                action: "load more matters",
                 dedupeKey: "sidebar-recent-projects-more",
                 onRetry: () => retryLoadMoreRecentProjectsRef.current?.(),
             });
@@ -570,16 +563,13 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                     {/* Nav items */}
                     <div className="pt-1.5">
                         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-                            const isActive =
-                                href === "/assistant"
-                                    ? pathname === href
-                                    : href === "/projects"
-                                      ? pathname === href
-                                      : pathname === href ||
-                                        pathname.startsWith(href + "/");
+                            const isActive = primaryDestination(pathname) === href;
                             return (
                                 <div key={href} className="px-1.5 py-0.5">
                                     <button
+                                        type="button"
+                                        aria-label={!isOpen ? label : undefined}
+                                        aria-current={isActive ? "page" : undefined}
                                         onClick={() => router.push(href)}
                                         title={!isOpen ? label : ""}
                                         className={cn(
@@ -624,7 +614,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                         shouldAnimate ? "sidebar-fade-in" : ""
                                     }`}
                                 >
-                                    <span>Recent Projects</span>
+                                    <span>Recent Matters</span>
                                     <ChevronDown
                                         className={`h-3.5 w-3.5 transition-transform ${
                                             projectsCollapsed ? "-rotate-90" : ""
@@ -668,7 +658,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                                         : ""
                                                 }`}
                                             >
-                                                No projects yet
+                                                No matters yet
                                             </div>
                                         ) : (
                                             <div
@@ -730,7 +720,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                         shouldAnimate ? "sidebar-fade-in" : ""
                                     }`}
                                 >
-                                    <span>History</span>
+                                    <span>Recent activity</span>
                                     <ChevronDown
                                         className={`h-3.5 w-3.5 transition-transform ${
                                             historyCollapsed ? "-rotate-90" : ""
@@ -740,7 +730,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                 <div
                                     id="sidebar-history"
                                     role="region"
-                                    aria-label="History"
+                                    aria-label="Recent activity"
                                     className={cn(
                                         "min-h-0 flex-1 overflow-y-auto",
                                         historyCollapsed && "hidden",
@@ -906,6 +896,24 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                         </div>
                     )}
                 </div>
+
+                <nav aria-label="Workspace settings" className="shrink-0 px-2 py-1">
+                    <Link href="/settings" aria-label="Settings" title={!isOpen ? "Settings" : undefined}
+                        aria-current={primaryDestination(pathname) === "/settings" ? "page" : undefined}
+                        className={cn("flex h-9 items-center gap-2 rounded-md px-2 text-sm font-medium", LIQUID_GLASS_HOVER_CLASS)}>
+                        <SettingsSkeuoIcon className="h-4 w-4 shrink-0" />
+                        {isOpen && "Settings"}
+                    </Link>
+                    {activeOrganization && isOrgAdmin(activeOrganization.role) && (
+                        <Link href={`/organizations/${activeOrganization.id}/settings`} aria-label="Administration"
+                            title={!isOpen ? "Administration" : undefined}
+                            aria-current={pathname.startsWith(`/organizations/${activeOrganization.id}/settings`) ? "page" : undefined}
+                            className={cn("flex h-9 items-center gap-2 rounded-md px-2 text-sm font-medium", LIQUID_GLASS_HOVER_CLASS)}>
+                            <OrganizationSkeuoIcon className="h-4 w-4 shrink-0" />
+                            {isOpen && "Administration"}
+                        </Link>
+                    )}
+                </nav>
 
                 {/* User Profile */}
                 <div className="shrink-0 p-1">

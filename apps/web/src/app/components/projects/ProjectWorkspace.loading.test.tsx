@@ -135,7 +135,7 @@ describe("ProjectWorkspace while the project is still loading", () => {
 
         // Not the old fail-open: no confirmation for an action we cannot
         // know is allowed …
-        expect(screen.queryByText("Delete project?")).not.toBeInTheDocument();
+        expect(screen.queryByText("Delete matter?")).not.toBeInTheDocument();
         // … and not a false accusation either, because the affordance that
         // produced this click is disabled in the real header.
         expect(
@@ -164,7 +164,7 @@ describe("ProjectWorkspace while the project is still loading", () => {
         expect(screen.getByTestId("role-known")).toHaveTextContent("true");
 
         fireEvent.click(screen.getByText("delete project"));
-        expect(screen.getByText("Delete project?")).toBeInTheDocument();
+        expect(screen.getByText("Delete matter?")).toBeInTheDocument();
     });
 
     it("refuses a viewer's new chat and explains the editor requirement", async () => {
@@ -231,7 +231,7 @@ describe("ProjectWorkspace while the project is still loading", () => {
         expect(screen.getByTestId("role-known")).toHaveTextContent("false");
 
         fireEvent.click(screen.getByText("delete project"));
-        expect(screen.queryByText("Delete project?")).not.toBeInTheDocument();
+        expect(screen.queryByText("Delete matter?")).not.toBeInTheDocument();
         expect(
             screen.queryByText(/Only an admin can/),
         ).not.toBeInTheDocument();
@@ -258,7 +258,7 @@ describe("ProjectWorkspace while the project is still loading", () => {
 
         fireEvent.click(screen.getByText("delete project"));
         expect(
-            screen.getByText("Only an owner can delete this project."),
+            screen.getByText("Only an owner can delete this matter."),
         ).toBeInTheDocument();
         expect(
             screen.getByText(/Dana Reyes \(dana@firm.test\)/),

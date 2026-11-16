@@ -79,17 +79,19 @@ describe("AppSidebar account dropdown", () => {
 
     expect(screen.getByRole("menuitem", { name: "Settings" })).toBeVisible();
     expect(screen.queryByRole("menuitem", { name: "My Activity" })).toBeNull();
-    expect(screen.queryByRole("menuitem", { name: "History" })).toBeNull();
+    expect(screen.queryByRole("menuitem", { name: "Recent activity" })).toBeNull();
     expect(screen.queryByRole("menuitem", { name: "Memory" })).toBeNull();
   });
 
-  it("shows the IDE navigation directly below Assistant", () => {
+  it("keeps the four primary destinations and moves IDE discovery to Settings", () => {
     render(<AppSidebar isOpen onToggle={vi.fn()} />);
-
     const assistant = screen.getByRole("button", { name: "Assistant" });
-    const ide = screen.getByRole("button", { name: "IDE" });
-
-    expect(assistant.parentElement?.nextElementSibling).toContainElement(ide);
+    const matters = screen.getByRole("button", { name: "Matters" });
+    expect(assistant.parentElement?.nextElementSibling).toContainElement(matters);
+    expect(screen.getByRole("button", { name: "Library" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Workflows" })).toBeVisible();
+    expect(screen.queryByRole("button", { name: "IDE" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute("href", "/settings");
   });
 
   it("shows a recovery toast when sign out fails", async () => {
@@ -258,7 +260,7 @@ describe("AppSidebar account dropdown", () => {
     expect(listProjectChats).not.toHaveBeenCalledWith("other-project");
   });
 
-  it("gives the recent projects list more height while a project is expanded", async () => {
+  it("gives the recent matters list more height while a project is expanded", async () => {
     const user = userEvent.setup();
     vi.mocked(listProjectsPage).mockResolvedValue([
       { id: "open-project", name: "Open matter" },
@@ -283,7 +285,7 @@ describe("AppSidebar account dropdown", () => {
     rerender(<AppSidebar isOpen onToggle={vi.fn()} />);
 
     expect(screen.getByText("Assistant")).toHaveClass("sidebar-fade-in-2");
-    expect(screen.getByText("Recent Projects").closest("button")).toHaveClass(
+    expect(screen.getByText("Recent Matters").closest("button")).toHaveClass(
       "sidebar-fade-in",
     );
   });

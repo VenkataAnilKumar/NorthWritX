@@ -8,6 +8,7 @@ import { ChatHistoryProvider } from "@/app/contexts/ChatHistoryContext";
 import { WorkspaceProvider } from "@/app/contexts/WorkspaceContext";
 import { SidebarContext } from "@/app/contexts/SidebarContext";
 import { PageChromeContext } from "@/app/contexts/PageChromeContext";
+import { WorkspaceSectionNav } from "@/app/components/shared/WorkspaceSectionNav";
 import { AppSidebar } from "@/app/components/shared/AppSidebar";
 import { preloadSidebarIcons } from "@/app/components/shared/AppSidebarSkeuoIcons";
 import { FullScreenLoader } from "@/app/components/shared/FullScreenLoader";
@@ -166,6 +167,7 @@ export default function NorthWritLayout({
                                         />
                                     </div>
                                     <main className="flex h-full w-full flex-1 flex-col overflow-y-auto md:overflow-hidden">
+                                        <WorkspaceSectionNav />
                                         {children}
                                     </main>
                                 </div>
