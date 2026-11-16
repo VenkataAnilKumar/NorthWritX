@@ -43,8 +43,7 @@ in `packages/ui/stories/` are part of the Ladle catalog.
 
 ## Icons
 
-Use the existing skeuomorphic feature, folder, file-type, and legal-source
-icons where available; use Lucide for other controls. Web SVG assets render
+Use the NorthWrit feature, folder, file-type and legal-source icons where available; use Lucide for other controls. See [visual identity](visual-identity.md) for the mark, palette and asset generation. Web SVG assets render
 through `components/ui/svg-asset-icon.tsx` with static imports from
 `frontend/public/icons/`. Static imports produce content-hashed URLs that can
 be cached immutably; avoid literal `/icons/...` URLs and manual version queries

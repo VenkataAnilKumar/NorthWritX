@@ -341,13 +341,17 @@ download-trust gate.
 
 ## Icon
 
-The dock icon is the product's own 12-blade glass asterisk
-(`frontend/src/app/components/chat/northwrit-icon.tsx`) on a macOS Big-Sur-style
-plate. `assets/icon.html` is the source of truth; regenerate with:
+The dock icon uses NorthWrit's folded N mark. The canonical SVG lives at
+`apps/web/src/app/icon.svg`; `assets/icon.html` provides the matching desktop
+preview. From the repository root, regenerate the web, Word and desktop assets:
 
 ```bash
-npm run icon   # renders via Electron's Chromium, then iconutil → icon.icns
+node scripts/generate-brand-assets.mjs
 ```
+
+The existing `npm run icon` command can also render `assets/icon.html` using
+Electron and package it with native macOS `iconutil`. See
+[visual identity](../../docs/engineering/visual-identity.md) for palette and asset ownership.
 
 ## Tests
 
