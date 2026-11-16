@@ -25,6 +25,8 @@ AI chat, workflow execution, generated review cells, legal research and suggeste
 - [Customer Review Instructions](../assets/demo/samples/Customer-Review-Instructions.pdf): a manually authored review objective, questions and source-reference instructions.
 - [Supplier Services Agreement — Version 2](../assets/demo/samples/Supplier-Services-Agreement-v2.pdf): a manually authored revision with acceptance criteria, an explicit liability cap and changed renewal notice.
 
+The PDF fixtures are stored as binary files in Git to preserve their byte offsets and contents.
+
 These are demonstration fixtures, not recommended contract wording or legal advice. The first agreement and instructions belong to one project; upload Version 2 to the existing agreement using **Upload new version**, rather than creating a separate project document.
 
 ## Replay the document journey
