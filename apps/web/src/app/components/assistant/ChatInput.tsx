@@ -741,7 +741,7 @@ function ChatInputForChatImpl(
                 )}
                 <div
                     className={cn(
-                        "rounded-[21px]",
+                        "workspace-composer rounded-[21px]",
                         LIQUID_GLASS_TRANSLUCENT_CLASS,
                     )}
                 >

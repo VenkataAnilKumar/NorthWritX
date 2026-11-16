@@ -14,6 +14,10 @@ The [product catalogue](../02-product/NorthWrit-Product-Catalogue.md), [current 
 
 Implement **Assistant · Matters · Library · Workflows** across the shared web and desktop UI. Group existing sections, move IDE discovery into Settings → Advanced and retain existing routes, data and authorization. See the [navigation milestone](NorthWrit-Navigation-Milestone.md) for the implementation sequence, acceptance criteria and verification. This work precedes Phase 4 and does not start its matter data model.
 
+## Floating glass UI milestone
+
+Implement the approved floating workspace through shared web shell, navigation, headers, Assistant composer and document/chat reading surfaces. See the [floating glass plan](NorthWrit-Floating-Glass-Plan.md) for scope, acceptance and verification. This UI milestone precedes Phase 4.
+
 ## Objective and scope
 
 Build NorthWrit as a Harvey-style legal AI workspace for Canadian law firms using **the imported application as its sole foundation**. Integrate and configure the pinned source, then deliver matter-based workflows, Canadian research, evidence-backed review and drafting, governed AI execution, and integrations.

@@ -1,6 +1,6 @@
 # NorthWrit supplier-review demo
 
-Refreshed November 16, 2026 for the NorthWrit visual identity on checkout `92f00e4`. The seven UI captures show the current NorthWrit mark and icon family. The web preview uses a fresh production build, verified with the API and actual Linux Electron client. This walkthrough uses a synthetic account and fictional documents. No real client data, provider credentials or generated AI findings appear in the assets.
+Refreshed November 16, 2026 for the floating glass workspace on checkout `ef88709`. The seven UI captures show the current NorthWrit mark, icon family and floating workspace surfaces. The web preview uses a fresh production build, verified with the API and actual Linux Electron client. This walkthrough uses a synthetic account and fictional documents. No real client data, provider credentials or generated AI findings appear in the assets.
 
 The refreshed run created **Maple Harbour — Contract Review** (`DEMO-003`), processed both sample PDFs, created and downloaded Version 2, saved two reusable workflows, and opened their real UI pages. Creation and upload operations used the authenticated application API; preview, version visibility, download and cross-client views were verified through the UI. The downloaded revision's SHA-256 matched the uploaded PDF. Existing demo data was retained.
 

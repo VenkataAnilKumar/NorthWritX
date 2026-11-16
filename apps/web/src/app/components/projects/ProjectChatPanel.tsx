@@ -659,7 +659,7 @@ export function ProjectChatPanel({
                 data-chat-pane={isSideChat ? "side" : "primary"}
                 style={{ width }}
                 className={cn(
-                    "relative flex shrink-0 flex-col overflow-hidden",
+                    "workspace-chat-panel relative flex shrink-0 flex-col overflow-hidden",
                     roundedClassName,
                     LIQUID_GLASS_FLAT_CLASS,
                 )}

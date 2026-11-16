@@ -1,0 +1,38 @@
+{
+  "captured_on": "2026-11-16",
+  "source": "Uncommitted floating workspace surfaces on 0c402a8",
+  "synthetic_data": true,
+  "ai_execution": false,
+  "images": [
+    {
+      "file": "01-assistant-light.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "4078880436be59fe68c63a8e43440903a9a0e2c23f9a44b5485e6fd346973ec9"
+    },
+    {
+      "file": "02-assistant-dark.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "d25c863d8431456bf04a067048a9be8c8e0f8a77289e81b6fbced16a3bfb45b4"
+    },
+    {
+      "file": "03-document-workspace.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "877802a2837ae3a36c41f96b7189dde50b295d3c9eb97026aafeba9afcfa4161"
+    },
+    {
+      "file": "04-mobile-navigation.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "58411a962688c81b6254ddeb65474c098e4386184abe458218c34d33d1ced198"
+    },
+    {
+      "file": "05-electron.png",
+      "width": 1280,
+      "height": 832,
+      "sha256": "12b7c0eb62d733863fe0c57630f9f5fce9282ebb8e58eb73af0ebe4f41257586"
+    }
+  ]
+}

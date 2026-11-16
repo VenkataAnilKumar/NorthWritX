@@ -640,3 +640,16 @@ Two things about the catalog environment are worth knowing before you edit it:
 ## Related
 
 - Frontend test conventions: [frontend-testing.md](frontend-testing.md)
+
+## Floating workspace surfaces
+
+The web application uses `workspace.css` for its floating workspace. These web-owned `--workspace-*` variables do not override shared Word tokens. See the [implementation plan](../07-implementation/NorthWrit-Floating-Glass-Plan.md).
+
+- Canvas: warm ivory with static teal atmosphere; deep navy in dark mode.
+- Navigation and page controls: frosted, restrained borders and soft elevation. Blur is limited to navigation, headers and composers.
+- Content frame, document preview and chat reading surfaces: opaque, with stable backgrounds for selection, citations and dense text.
+- Composer: floating control surface with an opaque fallback; the existing attachment, model, send and stop behavior remains authoritative.
+- Desktop: detached sidebar and a content frame inset from the viewport. Mobile: smaller gutters, full available width and height, and the existing dismissible sidebar/document overlays.
+- Reduced transparency, unsupported backdrop filters and forced colors use opaque surfaces. Reduced motion disables workspace transitions. No animated background or continuous blur animation is used.
+
+Apply the same surface classes to loading states and loaded content. Preserve existing ARIA state, focus indicators, native scrolling, panel resizing and portal ordering. Do not use generated product findings as UI decoration.

@@ -1,0 +1,113 @@
+/* Web-only surface roles. Shared app/Word tokens remain owned by @northwrit/ui. */
+:root {
+    --workspace-canvas: #f5f2eb;
+    --workspace-atmosphere: rgba(34, 118, 111, 0.1);
+    --workspace-glass: rgba(255, 255, 255, 0.84);
+    --workspace-solid: #fffefa;
+    --workspace-reading: #ffffff;
+    --workspace-edge: rgba(23, 52, 73, 0.12);
+    --workspace-shadow: 0 10px 34px rgba(23, 52, 73, 0.07), 0 1px 3px rgba(23, 52, 73, 0.04);
+    --workspace-selection: #dceee8;
+    --workspace-focus: #22766f;
+}
+.dark {
+    --workspace-canvas: #101b24;
+    --workspace-atmosphere: rgba(66, 151, 138, 0.12);
+    --workspace-glass: rgba(26, 40, 51, 0.92);
+    --workspace-solid: #1a2833;
+    --workspace-reading: #18242e;
+    --workspace-edge: rgba(203, 224, 225, 0.16);
+    --workspace-shadow: 0 10px 34px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.12);
+    --workspace-selection: #254c49;
+    --workspace-focus: #85c9b9;
+}
+.northwrit-workspace {
+    background: radial-gradient(ellipse at 96% 96%, var(--workspace-atmosphere), transparent 52%), var(--workspace-canvas);
+}
+.workspace-stage { padding: 12px; }
+.workspace-content {
+    background: var(--workspace-reading);
+    border: 1px solid var(--workspace-edge);
+    border-radius: 24px;
+    box-shadow: var(--workspace-shadow);
+    /* Match sticky table layers to the opaque content surface. */
+    --table-cell-background: var(--workspace-reading);
+}
+.workspace-content .table-surface { --table-cell-background: var(--workspace-reading); }
+.workspace-sidebar,
+.workspace-page-header,
+.workspace-composer {
+    background: var(--workspace-glass);
+    border: 1px solid var(--workspace-edge);
+    box-shadow: var(--workspace-shadow);
+    -webkit-backdrop-filter: blur(18px) saturate(115%);
+    backdrop-filter: blur(18px) saturate(115%);
+}
+.workspace-sidebar { padding: 6px 2px; }
+.workspace-sidebar button[aria-current="page"],
+.workspace-section-nav a[aria-current="page"] {
+    background: var(--workspace-selection);
+}
+.workspace-page-header {
+    border-radius: 18px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    padding-inline: 16px;
+    min-height: 52px;
+}
+.workspace-section-nav { border-bottom: 1px solid var(--workspace-edge); }
+.workspace-composer:focus-within {
+    border-color: var(--workspace-focus);
+    box-shadow: var(--workspace-shadow), 0 0 0 1px var(--workspace-focus);
+}
+.workspace-document-panel,
+.workspace-chat-panel {
+    background: var(--workspace-reading);
+    border: 1px solid var(--workspace-edge);
+    box-shadow: var(--workspace-shadow);
+    backdrop-filter: none;
+}
+.workspace-document-panel { border-radius: 24px; }
+@media (max-width: 767px) {
+    .workspace-stage { padding: 0 6px 6px; }
+    .workspace-content { border-radius: 18px; }
+    .workspace-page-header { margin-top: 8px; padding-inline: 10px; }
+    .workspace-document-panel { border-radius: 18px; }
+}
+@supports not (backdrop-filter: blur(1px)) {
+    .workspace-sidebar, .workspace-page-header, .workspace-composer {
+        background: var(--workspace-solid);
+    }
+}
+@media (prefers-reduced-transparency: reduce) {
+    .workspace-sidebar, .workspace-page-header, .workspace-composer {
+        background: var(--workspace-solid);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .northwrit-workspace *, .workspace-document-panel {
+        transition-duration: 0s !important;
+    }
+}
+@media (forced-colors: active) {
+    .northwrit-workspace, .workspace-content, .workspace-sidebar,
+    .workspace-page-header, .workspace-composer, .workspace-document-panel,
+    .workspace-chat-panel {
+        background: Canvas;
+        color: CanvasText;
+        border-color: ButtonText;
+        box-shadow: none;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+@media (forced-colors: active) {
+    .workspace-sidebar button[aria-current="page"],
+    .workspace-section-nav a[aria-current="page"] {
+        background: Highlight;
+        color: HighlightText;
+    }
+}
