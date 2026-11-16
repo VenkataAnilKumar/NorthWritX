@@ -22,6 +22,21 @@ Built for Canadian law firms and in-house teams. **Available as a development pr
 
 *Start a conversation with authorized documents and an available model. This capture shows the Assistant starting screen, before AI execution.*
 
+## A calmer workspace
+
+Floating glass navigation and controls frame solid reading surfaces for documents, conversations and review tables. Light and dark themes, compact mobile navigation, and opaque accessibility fallbacks keep the focus on your work.
+
+<details>
+<summary>See dark mode and mobile navigation</summary>
+
+![NorthWrit Assistant in dark mode with floating navigation and composer](docs/assets/ui/02-assistant-dark.png)
+
+![NorthWrit mobile navigation showing Assistant, Matters, Library and Workflows](docs/assets/ui/04-mobile-navigation.png)
+
+</details>
+
+See the [UI walkthrough and verification](docs/07-implementation/NorthWrit-Floating-Glass-Plan.md) for real web and Electron captures.
+
 ## Built around the work
 
 | What you need | How NorthWrit helps |
