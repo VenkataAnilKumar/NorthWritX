@@ -58,6 +58,8 @@ The product catalogue describes existing capabilities. The specifications, desig
 
 ## Guides
 
+- [Supplier-review demo](guides/demo.md): verified document/workflow setup journey, six actual screenshots and synthetic sample PDFs.
+
 - [Developer guide](guides/developer.md): current setup and verification entry point.
 - [Engineering and operations](engineering/README.md): local infrastructure, integrations, testing and operating procedures.
 - [User guide](guides/user-guide.md): current tasks, workspace choices, model/tool setup and client limitations.

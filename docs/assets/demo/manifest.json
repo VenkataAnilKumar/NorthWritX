@@ -1,0 +1,50 @@
+{
+  "captured_on": "2026-11-16",
+  "source_checkout": "4de6899cf7b29415d56adda8b708bac028966dad",
+  "data": "Fictional sample documents and synthetic account",
+  "ai_execution": false,
+  "images": [
+    {
+      "file": "01-project.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "1b618e70ff1e0d910cd57c93770b1445ac5d1a0a903b1ca003c78822d5f3cc62",
+      "caption": "Project with the two processed synthetic source PDFs, before revision upload."
+    },
+    {
+      "file": "02-document.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "c462798b80995560db574803bfdc85362d7d3773aa51c2d5a1a88c44e4803b21",
+      "caption": "Source preview with Version 2 active and both source versions visible."
+    },
+    {
+      "file": "03-workflow.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "4fa26a91cb11f8ccc4d091d2658d6067ec12c63c9b8bb5cb6747074ecdcc11c3",
+      "caption": "Saved, manually authored Assistant instructions; no AI execution."
+    },
+    {
+      "file": "04-review-setup.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "5b68ec7a1283874280132639beec215d526553f06a5459180cbc8f6af717360c",
+      "caption": "Saved tabular extraction questions; no generated answers."
+    },
+    {
+      "file": "05-workflow-library.png",
+      "width": 1600,
+      "height": 1000,
+      "sha256": "e27ce0137e6a6dffe05a821aa703025928feb46bf9a85e5ab98b566068286240",
+      "caption": "Both persisted workflows in the synthetic account."
+    },
+    {
+      "file": "06-desktop.png",
+      "width": 1280,
+      "height": 832,
+      "sha256": "419790bd90b4659b905686a538ce49ead4b077429089a10d2062f9130ee73ebc",
+      "caption": "Actual Linux Electron client showing the same local project."
+    }
+  ]
+}
