@@ -127,13 +127,13 @@ export default function NorthWritLayout({
             <ChatHistoryProvider>
                 <PageChromeContext.Provider value={pageChromeValue}>
                     <SidebarContext.Provider value={sidebarValue}>
-                        <div className="h-dvh flex flex-col bg-app-background">
+                        <div className="northwrit-workspace h-dvh flex flex-col bg-app-background">
                             <div className="flex-1 flex min-w-0 overflow-visible">
                                 <AppSidebar
                                     isOpen={isSidebarOpen}
                                     onToggle={handleSidebarToggle}
                                 />
-                                <div className="flex-1 flex flex-col h-dvh md:overflow-hidden relative w-full">
+                                <div className="workspace-stage flex-1 min-w-0 flex flex-col h-dvh md:overflow-hidden relative w-full">
                                     {/* Mobile header */}
                                     <div
                                         data-slot="mobile-header"
@@ -166,7 +166,7 @@ export default function NorthWritLayout({
                                             className="pointer-events-auto ml-auto flex min-w-0 flex-1 items-center justify-end"
                                         />
                                     </div>
-                                    <main className="flex h-full w-full flex-1 flex-col overflow-y-auto md:overflow-hidden">
+                                    <main className="workspace-content flex h-full min-h-0 w-full flex-1 flex-col overflow-y-auto md:overflow-hidden">
                                         <WorkspaceSectionNav />
                                         {children}
                                     </main>

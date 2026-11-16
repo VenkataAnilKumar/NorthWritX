@@ -3,6 +3,7 @@
 @import "../../../../packages/ui/styles/LiquidGlassUI.css";
 @import "../../../../packages/ui/styles/ThemeTokensUI.css";
 @import "../../../../packages/ui/styles/DesignTokensUI.css";
+@import "./workspace.css";
 
 /* Tailwind v4 scans this application's sources automatically; the shared
    primitives in @northwrit/ui live outside it and are registered here. */

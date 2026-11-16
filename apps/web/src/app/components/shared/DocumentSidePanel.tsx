@@ -534,7 +534,7 @@ export function DocumentSidePanel({
                 panelEvents.current.add(event.nativeEvent)
             }
             className={cn(
-                "fixed z-[190] flex flex-col",
+                "workspace-document-panel fixed z-[190] flex flex-col",
                 LIQUID_FLOAT_PANEL_SURFACE_CLASS,
                 "inset-3 md:left-auto overflow-hidden",
             )}
