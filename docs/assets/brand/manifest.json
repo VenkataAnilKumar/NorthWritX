@@ -1,0 +1,231 @@
+{
+  "created_on": "2026-11-16",
+  "illustration": "Original AI-generated artwork; not an application screenshot",
+  "assets": [
+    {
+      "file": "apps/desktop/assets/icon-1024.png",
+      "sha256": "0e937bc7160fa06984fdc6835bdc0e7ac7b0f68b35e7b6a09266eba361a66122",
+      "bytes": 26785
+    },
+    {
+      "file": "apps/desktop/assets/icon.icns",
+      "sha256": "fb4b1b9a1345a20f1c53301ff17e585d83ea89bc373367e52d68024b5008c41d",
+      "bytes": 46139
+    },
+    {
+      "file": "apps/web/public/apple-touch-icon.png",
+      "sha256": "355005df4f1d7a6cfbdd5ea13b0d5320e5742919ddc9abe8fb435bead625aace",
+      "bytes": 3921
+    },
+    {
+      "file": "apps/web/public/icons/cloud.svg",
+      "sha256": "cced729de7bfbdd5965ee1ba945c9438e0d38f20a7aa03a99c50392e4e5ec05a",
+      "bytes": 304
+    },
+    {
+      "file": "apps/web/public/icons/desktop.svg",
+      "sha256": "bc7d6dfe056df352b4715f4f5aea8613ad40ff28bacd186e7e72bb6ac51c7f12",
+      "bytes": 313
+    },
+    {
+      "file": "apps/web/public/icons/earth.svg",
+      "sha256": "da37eeef0c009d5130a08094c27ec4561880215d6b4874cf68d44d784a6dd16d",
+      "bytes": 338
+    },
+    {
+      "file": "apps/web/public/icons/features/chat-complete.svg",
+      "sha256": "42115987335de66f6ea58a4e46d61eccd43adac28cfa20cc32212be29ef9474f",
+      "bytes": 302
+    },
+    {
+      "file": "apps/web/public/icons/features/chat-history.svg",
+      "sha256": "f2a029061455d5de9328cb00a0363affc8f922bb7f62670d5a8d1b1a69f1b8ef",
+      "bytes": 321
+    },
+    {
+      "file": "apps/web/public/icons/features/chat.svg",
+      "sha256": "9b3b3e729805a55f8affa67810bc8120a9cdb4ee1b5aec76ac9d44223b19114e",
+      "bytes": 304
+    },
+    {
+      "file": "apps/web/public/icons/features/connector.svg",
+      "sha256": "b31258518514345f565de18e108419338fac9a3c5793386f4cbb1d259601de2e",
+      "bytes": 305
+    },
+    {
+      "file": "apps/web/public/icons/features/history.svg",
+      "sha256": "47ab8e580270d399688ced22d276b0ef7278661c7e2ab8af6c744229e8b0e1ee",
+      "bytes": 293
+    },
+    {
+      "file": "apps/web/public/icons/features/ide-new.svg",
+      "sha256": "5927fa2c2b243c2fb576ad2c26f046b238656d9d9f126f19a278b1ee8cefd6e2",
+      "bytes": 336
+    },
+    {
+      "file": "apps/web/public/icons/features/ide.svg",
+      "sha256": "5927fa2c2b243c2fb576ad2c26f046b238656d9d9f126f19a278b1ee8cefd6e2",
+      "bytes": 336
+    },
+    {
+      "file": "apps/web/public/icons/features/library-new.svg",
+      "sha256": "d381008e86beb2cab85cb7e90ec795121100977b7634cbdeb56e66c7e4dae6ee",
+      "bytes": 298
+    },
+    {
+      "file": "apps/web/public/icons/features/library.svg",
+      "sha256": "d381008e86beb2cab85cb7e90ec795121100977b7634cbdeb56e66c7e4dae6ee",
+      "bytes": 298
+    },
+    {
+      "file": "apps/web/public/icons/features/organization.svg",
+      "sha256": "54b91560005900af1da2431801d12f63debbff8b405cf44db6e40b3b4f191a74",
+      "bytes": 311
+    },
+    {
+      "file": "apps/web/public/icons/features/playbook.svg",
+      "sha256": "11495530ce68280132a3c4ec7f28802324844a08a095c902e7c933251159c24b",
+      "bytes": 330
+    },
+    {
+      "file": "apps/web/public/icons/features/quick-actions.svg",
+      "sha256": "204c727d9704ee4810d247ce77bd08bc2639be426a7ef26eb4eaecd3eb62ee26",
+      "bytes": 276
+    },
+    {
+      "file": "apps/web/public/icons/features/tabular-review-complete.svg",
+      "sha256": "d552b8f043565160ff1397e708879f79d8b0344c3ab15399daa9bc302e4bc4a1",
+      "bytes": 313
+    },
+    {
+      "file": "apps/web/public/icons/features/tabular-review.svg",
+      "sha256": "362e65e4251dab83af80be5ab35bb3707406cdf14da45d28dfd5f83e4426a544",
+      "bytes": 324
+    },
+    {
+      "file": "apps/web/public/icons/features/workflow.svg",
+      "sha256": "2d6bc11762ce50b696c5665b34c926d096fc9b1e9f1b85d03d32732e13648552",
+      "bytes": 425
+    },
+    {
+      "file": "apps/web/public/icons/file-system/folder-closed.svg",
+      "sha256": "728142b0689257dc1093b4d520059cb44fbfe82d53d1443817b06ccf1ad61dd0",
+      "bytes": 269
+    },
+    {
+      "file": "apps/web/public/icons/file-system/folder-open.svg",
+      "sha256": "417ce0fa9e4403f89a3051d7dac0b566c4438f74c17f280949a1c93ef85c3477",
+      "bytes": 288
+    },
+    {
+      "file": "apps/web/public/icons/file-system/project-closed.svg",
+      "sha256": "73091ed91b2af5ae3d25b362f518aaf26f03fb45473e9bbb7ea47f6f7a95076a",
+      "bytes": 301
+    },
+    {
+      "file": "apps/web/public/icons/file-system/project-opened.svg",
+      "sha256": "806dda51e0f1519adc161f6c797282e65aa1697a1e28741e5bbf1943ca9d99f7",
+      "bytes": 320
+    },
+    {
+      "file": "apps/web/public/icons/file-types/chat.svg",
+      "sha256": "5f0f4e9594f1a8bf432fcf1e0953c45a82b2cda3d2e507a4b0263b3a1ff091b4",
+      "bytes": 302
+    },
+    {
+      "file": "apps/web/public/icons/file-types/excel.svg",
+      "sha256": "26328a0426667f889f82292b3297143941dd9d3d31f878afae65116918ff68a4",
+      "bytes": 409
+    },
+    {
+      "file": "apps/web/public/icons/file-types/pdf.svg",
+      "sha256": "7caca0c1fabecb56a360b125381a5a12c2b0e3d9c3c305d55c7ea95b36f7d626",
+      "bytes": 409
+    },
+    {
+      "file": "apps/web/public/icons/file-types/ppt.svg",
+      "sha256": "bbc2d507a11e92b7c7ea3d38023b216213e39aabcf489d06860e0fca370a4950",
+      "bytes": 409
+    },
+    {
+      "file": "apps/web/public/icons/file-types/word.svg",
+      "sha256": "c69509e28256a5b43c9ddfcc77aa15a46c61d8e6bb9680eb1484451a4544bffc",
+      "bytes": 409
+    },
+    {
+      "file": "apps/web/public/icons/legal-sources/case-law.svg",
+      "sha256": "54b91560005900af1da2431801d12f63debbff8b405cf44db6e40b3b4f191a74",
+      "bytes": 311
+    },
+    {
+      "file": "apps/web/public/icons/legal-sources/legislation.svg",
+      "sha256": "641ca7903abbbe986ed6ff420073af5e6668a31bf8a1a7c2dbe5dc676366c13d",
+      "bytes": 293
+    },
+    {
+      "file": "apps/web/public/icons/northwrit-logo.svg",
+      "sha256": "1cf8eb7489991e457efc9f9eca0f5a45205600ff20abc1e6854023b3acbf80d2",
+      "bytes": 359
+    },
+    {
+      "file": "apps/web/public/icons/northwrit-mark.svg",
+      "sha256": "3246f61081d9d15ff710f0c4b69632c8742439e562b4524026eb2c319d824dcd",
+      "bytes": 242
+    },
+    {
+      "file": "apps/web/public/icons/settings.svg",
+      "sha256": "7e3024cc688e33922d1429e6227f1ec66dce30ec3780a34551786a679a85b591",
+      "bytes": 411
+    },
+    {
+      "file": "apps/web/public/icons/sign-out.svg",
+      "sha256": "b199bf939e2120b865e5a991939fff5d4905a395fff176470c11ee2272a3fa4e",
+      "bytes": 283
+    },
+    {
+      "file": "apps/web/public/link-image.jpg",
+      "sha256": "0b33779573f1763f8fb9b01a24e32ce8486eb1ad952159ef1be09f4229945195",
+      "bytes": 38719
+    },
+    {
+      "file": "apps/web/public/northwrit-social.jpg",
+      "sha256": "0b33779573f1763f8fb9b01a24e32ce8486eb1ad952159ef1be09f4229945195",
+      "bytes": 38719
+    },
+    {
+      "file": "apps/web/src/app/favicon.ico",
+      "sha256": "1fe8595412f2a987a4722c6519da29c7d29efc924e358b979f61360179c54670",
+      "bytes": 7113
+    },
+    {
+      "file": "apps/web/src/app/icon.svg",
+      "sha256": "3246f61081d9d15ff710f0c4b69632c8742439e562b4524026eb2c319d824dcd",
+      "bytes": 242
+    },
+    {
+      "file": "apps/word-addin/assets/icon-16.png",
+      "sha256": "766238962f8c828206cf90c1c08cdd5432ec340ab8a0f384913c72fb660394a0",
+      "bytes": 456
+    },
+    {
+      "file": "apps/word-addin/assets/icon-32.png",
+      "sha256": "62514bea9a8ccfe1e552b567d18b8504e5580b596e420bfa097a3edac5a59493",
+      "bytes": 827
+    },
+    {
+      "file": "apps/word-addin/assets/icon-80.png",
+      "sha256": "2733369872c689f5d7957d49ec010d51503330e4d0dcacb1ddaf53f08601903c",
+      "bytes": 1706
+    },
+    {
+      "file": "docs/assets/brand/northwrit-icon-family.png",
+      "sha256": "b42de43a0bd637a4724a75bc429bf7b71b772046eaecbef0373f4d9fe2ca4440",
+      "bytes": 58241
+    },
+    {
+      "file": "docs/assets/brand/northwrit-paper-illustration.png",
+      "sha256": "1bd6b7bee3bda02ecdef96b8ce36925ee271cbcee4b2158f993589f0495b1a28",
+      "bytes": 2422568
+    }
+  ]
+}

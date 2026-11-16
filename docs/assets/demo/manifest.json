@@ -1,6 +1,6 @@
 {
   "captured_on": "2026-11-16",
-  "source_checkout": "10506e4ac42fe023161f77d74aa4320ae964cdb4",
+  "source_checkout": "92f00e428aff372e536c583d907291ef61e63f88",
   "data": "Fictional sample documents and synthetic account",
   "ai_execution": false,
   "images": [
@@ -8,42 +8,42 @@
       "file": "01-project.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "7920be54136f052431ceef3219a8b0a48c5d2ff1e94e280e208e870e2728a910",
+      "sha256": "d4a09017c1bc527cc307cc961902bcaa80fc210bbadbc29ca27f2cfb7621c719",
       "caption": "Matter with both processed synthetic PDFs and agreement Version 2."
     },
     {
       "file": "02-document.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "d6905b5b9ec77c27ffd7e04da1f91a5a4313471acf08f11ea10321899d3d4d47",
+      "sha256": "7d151616a4aa53eab241f67baddab690d53f264623618fa7ffb81c0ac07f87f3",
       "caption": "Source preview with Version 2 active and both source versions visible."
     },
     {
       "file": "03-workflow.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "a947021d1539120a9c40dfdd2d4b5996f34676ff44ab20f3a1f781952160521f",
+      "sha256": "778d1d3c72ed5353feeba210a1d2e668098ff0cfde97d3cd454bd18404167eca",
       "caption": "Saved, manually authored Assistant instructions; no AI execution."
     },
     {
       "file": "04-review-setup.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "b6b64c070407cb6bdff9fe547747cd9abd9adb89e6591329af05b5680e021131",
+      "sha256": "f200433164aad462699d3043025d0ebd67c97f6270ae23a36c5c8d464f64c2cd",
       "caption": "Saved tabular extraction questions; no generated answers."
     },
     {
       "file": "05-workflow-library.png",
       "width": 1600,
       "height": 1000,
-      "sha256": "637bbecf8282747520d6b2f7f55e69191de5687c31a138296a60eac13405d7f2",
+      "sha256": "c8b2d76621b09cb49596761839cadbeea569bff454b23382725f29a9c5528004",
       "caption": "Both persisted workflows in the synthetic account."
     },
     {
       "file": "06-desktop.png",
       "width": 1280,
       "height": 832,
-      "sha256": "2397e68114de4cc87f7ef40c7023943401fcc4a1df9cd78ad0951ecc92512cb8",
+      "sha256": "0d39d62d5fec35bccbb33d5353a670b60f40653203906992eee8ad1697a76c69",
       "caption": "Actual Linux Electron client showing the same local matter."
     },
     {
@@ -51,10 +51,10 @@
       "caption": "Assistant starting screen with the four primary destinations; no model configured or invoked.",
       "width": 1600,
       "height": 1000,
-      "sha256": "1e578d1cf2a44cd19aae3ef9b7f635099a6c06bd0c98a98466748b2fc013ee8e"
+      "sha256": "441c8450f4183ce834d1aa15d23972e00967f55676cc0ef9df48eaaf4d7a012b"
     }
   ],
-  "source_state": "Uncommitted navigation milestone; fresh production web build",
+  "source_state": "Uncommitted NorthWrit visual identity; fresh production web build",
   "demo_matter": "Maple Harbour \u2014 Contract Review (DEMO-003)",
   "verified_operations": [
     "Authenticated API matter creation",

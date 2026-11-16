@@ -1,5 +1,7 @@
 # NorthWrit
 
+![NorthWrit paper illustration](docs/assets/brand/northwrit-paper-illustration.png)
+
 ### Your documents. Your review process. One focused workspace.
 
 NorthWrit brings matter files, source previews and reusable review workflows together for legal teams. Organize a client matter, keep document versions accessible, and prepare consistent review instructions from the web or desktop client.

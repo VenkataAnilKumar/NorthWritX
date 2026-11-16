@@ -15,7 +15,7 @@ type IconPalette = {
 };
 
 const DEFAULT_PALETTE: IconPalette = {
-    fillStops: ["#1F3A5F", "#1F3A5F", "#1F3A5F", "#1F3A5F"],
+    fillStops: ["#173449", "#173449", "#173449", "#173449"],
     fillOpacities: [0.9, 0.8, 0.85, 0.9],
     specularStops: [0.5, 0.2, 0, 0],
     borderStops: ["#ffffff", "#666666", "#ffffff"],
@@ -170,8 +170,8 @@ function Blades({ ids, inverse }: { ids: Record<string, string>; inverse: boolea
     return (
         <g transform="translate(100 100) scale(4.6875)">
             <rect width="64" height="64" rx="15" fill={`url(#${ids.glassFill})`} />
-            <polygon points="32,9 13,52 32,42" fill={inverse ? "#1F3A5F" : "#F8F9FA"} />
-            <polygon points="32,9 32,42 51,52" fill={inverse ? "#4A6B82" : "#AEC4D1"} />
+            <path d="M15 47V17h9l16 22V17h9v30h-9L24 25v22Z" fill={inverse ? "#173449" : "#F7F4EC"} />
+            <path d="M40 17h9v13l-9-13Z" fill={inverse ? "#22766F" : "#64B5A6"} />
         </g>
     );
 }
