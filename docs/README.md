@@ -9,7 +9,7 @@ NorthWrit is a legal AI workspace being developed for Canadian law firms and in-
 | Install and run | [Root README](../README.md), [developer guide](guides/developer.md), [local development](engineering/local-development.md) |
 | Use current product features | [Product catalogue](02-product/NorthWrit-Product-Catalogue.md), [user guide](guides/user-guide.md), [administrator guide](guides/administrator.md) |
 | Understand what exists today | [Current implementation and stack](06-technical/NorthWrit-Current-Implementation.md), [system flows](06-technical/NorthWrit-System-Flows.md), [engineering index](engineering/README.md) |
-| See phases and next work | [Implementation plan](07-implementation/NorthWrit-Implementation-Plan.md), [Phase 4 extension map](07-implementation/NorthWrit-Phase-4-Extension-Map.md) |
+| See phases and next work | [Implementation plan](07-implementation/NorthWrit-Implementation-Plan.md), [Detailed phase delivery and gates](07-implementation/NorthWrit-Phased-Delivery-Plan.md), [Cross-platform feature backlog](07-implementation/NorthWrit-Cross-Platform-Feature-Backlog.md), [Phase 4 extension map](07-implementation/NorthWrit-Phase-4-Extension-Map.md) |
 | Find code/document ownership | [Ownership map](06-technical/NorthWrit-Repository-Ownership.md), [ADRs](#architecture-decisions) |
 | Assess checks and limits | [CI inventory](07-implementation/NorthWrit-CI-Inventory.md), [configuration verification](07-implementation/NorthWrit-Configuration-Verification.md) |
 | Compare existing capabilities with requirements | [105-feature capability matrix](04-specs/NorthWrit-Capability-Matrix.md), [documentation coverage](07-implementation/NorthWrit-Documentation-Coverage.md) |
@@ -17,7 +17,7 @@ NorthWrit is a legal AI workspace being developed for Canadian law firms and in-
 
 ## How to read these documents
 
-The implementation plan governs delivery order. Current source, tests and engineering guides describe the implemented baseline. Product specifications describe requirements; design approval and a document's presence do not establish implementation or legal/security guarantees. P0/P1/P2 are product priorities, separate from implementation phases 1, 3, 4, 5, 6 and 7; Phase 2 was removed.
+The implementation plan governs delivery order. Current source, tests and engineering guides describe the implemented baseline. Product specifications describe requirements; design approval and a document's presence do not establish implementation or legal/security guarantees. P0/P1/P2 are product priorities, separate from implementation phases 1–7. Phase 2 is restored as Product and Architecture Foundation; its remaining decisions and review gates are recorded in the implementation plan.
 
 Historical audits, migration evidence and upstream files retain their original observations and attribution. The earlier polyglot stack and v3 layout proposals do not override the accepted npm workspace or working stack. The [ownership map](06-technical/NorthWrit-Repository-Ownership.md#which-documentation-governs-a-change) defines documentation authority.
 

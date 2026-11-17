@@ -209,13 +209,14 @@ See the [workspace verification record](docs/07-implementation/NorthWrit-Workspa
 | Phase | Status |
 |---|---|
 | 1 — Source audit | Complete |
+| 2 — Product and Architecture Foundation | Restored; foundation evidence available, remaining decisions/review pending |
 | 3 — Application integration | Complete; repository layout and npm workspace also merged |
-| 4 — Legal workspace | Next; not started |
+| 4 — Legal workspace | Next implementation; not started; required Phase 2 decisions pending |
 | 5 — Canadian legal capabilities and governance | Planned |
 | 6 — Governed integrations | Planned |
 | 7 — Validation and pilot release | Planned |
 
-Phase 2 was removed. P0/P1/P2 in the product specifications are priority tiers, not these implementation phases. Read the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for scope and acceptance gates.
+Phase 2 is restored to consolidate product and architecture decisions; completed integration work is preserved. P0/P1/P2 in the product specifications are priority tiers, not these implementation phases. Read the [implementation plan](docs/07-implementation/NorthWrit-Implementation-Plan.md) for scope and acceptance gates.
 
 
 </details>
