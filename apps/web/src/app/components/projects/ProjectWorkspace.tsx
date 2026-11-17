@@ -28,7 +28,6 @@ import {
 import type {
     Chat,
     ColumnConfig,
-    ContentVisibility,
     Folder as ProjectFolder,
     Project,
 } from "@/app/components/shared/types";
@@ -52,7 +51,7 @@ import {
     can,
     roleFromLoaded,
 } from "@/app/lib/permissions";
-import { ProjectDetailsModal } from "./ProjectDetailsModal";
+import { ProjectDetailsModal, type ProjectDetailsValues } from "./ProjectDetailsModal";
 import { ProjectMemoryModal } from "./ProjectMemoryModal";
 import {
     ProjectPageHeader,
@@ -137,6 +136,7 @@ type ProjectWorkspaceValue = {
      * closed until the server has told us it may open.
      */
     canDo: (capability: Capability) => boolean;
+    openProjectDetails: () => void;
 };
 
 const ProjectWorkspaceContext =
@@ -155,6 +155,7 @@ export function useProjectWorkspace() {
 function activeSectionFromSegments(
     segments: string[],
 ): ProjectWorkspaceSection {
+    if (segments[0] === "overview") return "overview";
     if (segments[0] === "assistant") return "assistant";
     if (segments[0] === "tabular-reviews") return "reviews";
     return "documents";
@@ -164,7 +165,7 @@ function shouldShowWorkspaceShell(segments: string[]) {
     if (segments.length === 0) return true;
     if (segments.length === 2 && segments[0] === "folders") return true;
     if (segments.length !== 1) return false;
-    return segments[0] === "assistant" || segments[0] === "tabular-reviews";
+    return segments[0] === "overview" || segments[0] === "assistant" || segments[0] === "tabular-reviews";
 }
 
 export function ProjectWorkspaceProvider({
@@ -179,7 +180,7 @@ export function ProjectWorkspaceProvider({
     const [projectLoading, setProjectLoading] = useState(true);
     const [searchBySection, setSearchBySection] = useState<
         Record<ProjectWorkspaceSection, string>
-    >({ documents: "", assistant: "", reviews: "" });
+    >({ overview: "", documents: "", assistant: "", reviews: "" });
     const [projectChats, setProjectChats] = useState<Chat[] | null>(null);
     const [projectChatsLoading, setProjectChatsLoading] = useState(false);
     const [accessModalOpen, setAccessModalOpen] = useState(false);
@@ -460,12 +461,7 @@ export function ProjectWorkspaceProvider({
         }
     }
 
-    async function handleProjectDetailsSave(values: {
-        name: string;
-        cmNumber: string;
-        practice: string;
-        visibility?: ContentVisibility;
-    }) {
+    async function handleProjectDetailsSave(values: ProjectDetailsValues) {
         if (!canDo("access.manage")) {
             denyUnlessLoading({
                 action: "edit matter details",
@@ -481,18 +477,24 @@ export function ProjectWorkspaceProvider({
             name,
             cm_number: cmNumber,
             practice: practice || null,
+            ...(values.client_name !== undefined ? { client_name: values.client_name } : {}),
+            ...(values.jurisdiction !== undefined ? { jurisdiction: values.jurisdiction } : {}),
+            ...(values.matter_status !== undefined ? { matter_status: values.matter_status } : {}),
             ...(values.visibility ? { visibility: values.visibility } : {}),
         });
         setProject((prev) =>
-            prev
+            prev?.id === projectId
                 ? {
                       ...prev,
                       name: updated.name,
                       cm_number: updated.cm_number,
                       practice: updated.practice,
+                      client_name: updated.client_name,
+                      jurisdiction: updated.jurisdiction,
+                      matter_status: updated.matter_status,
                       visibility: updated.visibility ?? prev.visibility,
                   }
-                : updated,
+                : prev,
         );
     }
 
@@ -550,6 +552,7 @@ export function ProjectWorkspaceProvider({
             setOwnerOnlyAction,
             accessRole,
             canDo,
+            openProjectDetails: () => setProjectDetailsOpen(true),
         }),
         [
             projectId,
@@ -744,10 +747,12 @@ export function ProjectSectionToolbar({
 
     return (
         <TableToolbar
+            className="[&>div:first-child]:overflow-x-auto [&>button]:shrink-0"
             items={
                 backAction
                     ? []
                     : [
+                          { id: "overview", label: "Overview" },
                           { id: "documents", label: "Documents" },
                           { id: "assistant", label: "Conversations" },
                           { id: "reviews", label: "Reviews" },
@@ -756,7 +761,9 @@ export function ProjectSectionToolbar({
             active={activeSection}
             onChange={(next) => {
                 const href =
-                    next === "assistant"
+                    next === "overview"
+                        ? `/projects/${projectId}/overview`
+                        : next === "assistant"
                         ? `/projects/${projectId}/assistant`
                         : next === "reviews"
                           ? `/projects/${projectId}/tabular-reviews`

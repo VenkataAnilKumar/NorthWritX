@@ -23,6 +23,7 @@ import { DocumentUploadMenu } from "@/app/components/shared/DocumentUploadMenu";
 import { tableTreeCellStyle } from "@/app/components/shared/TablePrimitive";
 
 export type ProjectWorkspaceSection =
+    | "overview"
     | "documents"
     | "assistant"
     | "reviews";

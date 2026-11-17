@@ -211,7 +211,7 @@ See the [workspace verification record](docs/07-implementation/NorthWrit-Workspa
 | 1 — Source audit | Complete |
 | 2 — Product and Architecture Foundation | Restored; foundation evidence available, remaining decisions/review pending |
 | 3 — Application integration | Complete; repository layout and npm workspace also merged |
-| 4 — Legal workspace | In progress locally: Matter metadata subset; full journey and reviewer acceptance pending |
+| 4 — Legal workspace | In progress locally: Matter metadata and Overview/settings subsets; full journey and reviewer acceptance pending |
 | 5 — Canadian legal capabilities and governance | Planned |
 | 6 — Governed integrations | Planned |
 | 7 — Validation and pilot release | Planned |

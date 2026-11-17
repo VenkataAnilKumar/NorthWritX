@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { useState } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NorthWritApiError, listOrgs } from "@/app/lib/northwritApi";
@@ -238,4 +239,43 @@ describe("ProjectDetailsModal", () => {
             ).not.toBeInTheDocument();
         });
     });
+    it("saves only changed metadata and permits explicit clearing", async () => {
+        const user = userEvent.setup();
+        const onSave = vi.fn().mockResolvedValue(undefined);
+        render(<ProjectDetailsModal open project={{ ...project, client_name: "Client", jurisdiction: "Ontario", matter_status: "open" }} canEdit onClose={vi.fn()} onSave={onSave} />);
+        await user.clear(screen.getByLabelText("Client name"));
+        await user.click(screen.getByLabelText("Matter status"));
+        await user.click(screen.getByRole("menuitem", { name: /^Closed$/ }));
+        await user.click(screen.getByRole("button", { name: "Update" }));
+        expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ client_name: null, matter_status: "closed" }));
+        expect(onSave.mock.calls[0][0]).not.toHaveProperty("jurisdiction");
+    });
+    it("blocks over-limit metadata and preserves entered values", () => {
+        const onSave = vi.fn();
+        render(<ProjectDetailsModal open project={project} canEdit onClose={vi.fn()} onSave={onSave} />);
+        fireEvent.change(screen.getByLabelText("Client name"), { target: { value: "x".repeat(201) } });
+        expect(screen.getByRole("alert")).toHaveTextContent("at most 200");
+        expect(screen.getByLabelText("Client name")).toHaveAttribute("aria-invalid", "true");
+        expect(screen.getByRole("button", { name: "Update" })).toBeDisabled();
+        expect(onSave).not.toHaveBeenCalled();
+    });
+    it("disables all new metadata controls for read-only users", () => {
+        render(<ProjectDetailsModal open project={project} canEdit={false} onClose={vi.fn()} onSave={vi.fn()} />);
+        for (const name of ["Client name", "Jurisdiction", "Matter status"]) expect(screen.getByLabelText(name)).toBeDisabled();
+        expect(screen.queryByRole("button", { name: "Update" })).toBeNull();
+    });
+
+    it("keeps success feedback visible when the saved detail response refreshes the parent", async () => {
+        function Harness() {
+            const [current, setCurrent] = useState<Project>(project);
+            return <ProjectDetailsModal open project={current} canEdit onClose={vi.fn()}
+                onSave={async (values) => { setCurrent(prev => ({ ...prev, client_name: values.client_name })); }} />;
+        }
+        const user = userEvent.setup();
+        render(<Harness />);
+        await user.type(screen.getByLabelText("Client name"), "Client");
+        await user.click(screen.getByRole("button", { name: "Update" }));
+        expect(await screen.findByRole("status")).toHaveTextContent("Updated");
+    });
+
 });
