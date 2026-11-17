@@ -30,9 +30,9 @@ The product catalogue describes existing capabilities. The specifications, desig
 | Brand | [Identity and naming](01-brand/Northwrit_Brand-Identity.md) |
 | Current product | [Capability catalogue](02-product/NorthWrit-Product-Catalogue.md), [105-feature coverage matrix](04-specs/NorthWrit-Capability-Matrix.md) |
 | Product targets | [Overview](02-product/Northwrit_Product-Overview.md), [definition](02-product/Northwrit_Product-Definition.md) |
-| Market research | [Harvey, Filevine and Clio comparison](03-market/NorthWrit-Harvey-Filevine-Clio-Comparison.md), [Competitive analysis](03-market/Northwrit_Competitive-Analysis.md), [Harvey inventory](03-market/Harvey_Product-Feature-Inventory.md), [feature comparison](03-market/Northwrit_vs_Harvey_Feature-Comparison.md), [source references](03-market/Northwrit_Open-Source-References.md) |
+| Market research | [Harvey current implementation map](03-market/NorthWrit-Harvey-Implementation-Map.md), [Harvey, Filevine and Clio comparison](03-market/NorthWrit-Harvey-Filevine-Clio-Comparison.md), [Competitive analysis](03-market/Northwrit_Competitive-Analysis.md), [Harvey inventory](03-market/Harvey_Product-Feature-Inventory.md), [feature comparison](03-market/Northwrit_vs_Harvey_Feature-Comparison.md), [source references](03-market/Northwrit_Open-Source-References.md) |
 | Requirements | [105-feature specification](04-specs/Northwrit_Feature-Spec.md), [user journeys](04-specs/Northwrit_User-Journeys.md), [user stories](04-specs/Northwrit_User-Stories.md), [workflow contracts](04-specs/Northwrit_Workflow-Contracts.md) |
-| Product design | [UI specification](05-design/Northwrit_UI-Spec.md), [wireframes](05-design/Northwrit_Wireframes.md); use the [engineering design system](engineering/design-system.md) for existing UI primitives |
+| Product design | [Approved feature navigation](05-design/NorthWrit-Feature-Navigation.md), [UI specification](05-design/Northwrit_UI-Spec.md), [wireframes](05-design/Northwrit_Wireframes.md); use the [engineering design system](engineering/design-system.md) for existing UI primitives |
 | Pilot and commercial proposals | [GTM strategy](03-market/Northwrit_Marketing-and-GTM-Strategy.md), [pilot charter](08-gtm/Northwrit_Pilot-Charter.md), [CPD/MSP proposal](08-gtm/Northwrit_LSO-CPD-Accreditation.md) |
 
 ## Technical references

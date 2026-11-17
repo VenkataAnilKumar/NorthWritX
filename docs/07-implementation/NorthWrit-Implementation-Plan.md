@@ -4,7 +4,9 @@ Updated: November 16, 2026
 
 Status: Phase 1 audit and Phase 3 application integration are complete. Repository organization, the expanded layout and the root npm workspace are merged. [PR #4](https://github.com/VenkataAnilKumar/NorthWritX/pull/4) verified the application baseline with all seven PR checks passing; merge commit `d7e899526a389cbbe684b18618b32df98ccea237` was verified on remote `main`. See the [configuration record](NorthWrit-Configuration-Verification.md) for compatibility exceptions and release limits. Phase 4 has not started. No deployment or pilot release is established by these merges.
 
-Latest baseline: subsequent GitHub changes through `7c08dba` include [PR #5](https://github.com/VenkataAnilKumar/NorthWritX/pull/5) (configuration/documentation alignment) and [PR #6](https://github.com/VenkataAnilKumar/NorthWritX/pull/6) (reference archive retirement). [ADR 0004](../decisions/0004-retire-source-reference-archive.md) and the [source provenance record](../06-technical/NorthWrit-Source-Provenance.md) govern the retained source history. Earlier verification statements refer to their own revisions.
+Application baseline: subsequent GitHub changes through `7c08dba` include [PR #5](https://github.com/VenkataAnilKumar/NorthWritX/pull/5) (configuration/documentation alignment) and [PR #6](https://github.com/VenkataAnilKumar/NorthWritX/pull/6) (reference archive retirement). [ADR 0004](../decisions/0004-retire-source-reference-archive.md) and the [source provenance record](../06-technical/NorthWrit-Source-Provenance.md) govern the retained source history. Earlier verification statements refer to their own revisions.
+
+Latest merged UI/documentation baseline: [PR #11](https://github.com/VenkataAnilKumar/NorthWritX/pull/11), merge `38da785246ab4d7357461ff2fc6558cff22396dd`, includes the four-destination navigation, NorthWrit visual identity, floating workspace and refreshed demo. All seven PR checks passed. This establishes the recorded UI/build baseline, not live AI acceptance or Phase 4 completion. The proposed fifth Agents tab and Contract Intelligence section remain unimplemented.
 
 ## Current capability documentation
 
@@ -12,11 +14,15 @@ The [product catalogue](../02-product/NorthWrit-Product-Catalogue.md), [current 
 
 ## Navigation milestone before Phase 4
 
-Implement **Assistant · Matters · Library · Workflows** across the shared web and desktop UI. Group existing sections, move IDE discovery into Settings → Advanced and retain existing routes, data and authorization. See the [navigation milestone](NorthWrit-Navigation-Milestone.md) for the implementation sequence, acceptance criteria and verification. This work precedes Phase 4 and does not start its matter data model.
+Delivered **Assistant · Matters · Library · Workflows** across the shared web and desktop UI, grouped existing sections, and moved IDE discovery into Settings → Advanced while retaining existing routes, data and authorization. See the [navigation milestone](NorthWrit-Navigation-Milestone.md) for the implementation sequence, acceptance criteria and verification. This work precedes Phase 4 and does not start its matter data model.
 
 ## Floating glass UI milestone
 
-Implement the approved floating workspace through shared web shell, navigation, headers, Assistant composer and document/chat reading surfaces. See the [floating glass plan](NorthWrit-Floating-Glass-Plan.md) for scope, acceptance and verification. This UI milestone precedes Phase 4.
+Delivered the approved floating workspace surfaces through the shared web shell, navigation, headers, Assistant composer and document/chat reading surfaces. See the [floating glass plan](NorthWrit-Floating-Glass-Plan.md) for scope, acceptance and verification. This UI milestone precedes Phase 4.
+
+## Approved feature navigation
+
+The [feature navigation design](../05-design/NorthWrit-Feature-Navigation.md) defines **Assistant · Matters · Library · Workflows · Agents** as the target navigation. Agents is a separate proposed main tab; the running baseline still has four. **Contract Intelligence** is the approved name for the proposed contract-focused section under Workflows. Naming approval does not establish delivery or expand phase acceptance.
 
 ## Objective and scope
 
@@ -144,6 +150,7 @@ Work:
 
 - Integrate permitted Canadian research sources with jurisdiction, court, date, source provenance, and access limitations recorded. Validate source access before promising coverage.
 - Implement Bearings for research scope and four-state CiteCheck: Verified, Unverified, Contradicted, and Unavailable. Define the evidence needed for each state; a working URL alone does not establish validity.
+- Group contract-focused review/playbook workflows under **Workflows → Contract Intelligence**, using the [approved navigation design](../05-design/NorthWrit-Feature-Navigation.md). Broader negotiation, obligation-tracking and portfolio capabilities require separate extension scope.
 - Build cited Review Grids, reusable legal workflows, playbooks, and Firm Packs. Link findings to exact source passages and versions; mark findings stale when source documents change.
 - Implement Folio review and approval bound to a specific output version and outbound payload. Editing content invalidates the prior approval.
 - Enforce Shield policies at model and tool boundaries: allowed providers/routes, data handling, redaction where required, audit records, and blocked actions. Never silently switch to an unauthorized route.
@@ -160,6 +167,7 @@ Deliverables: Canadian research pipeline; citation evaluation set; Review Grid a
 Work:
 
 - Use the Phase 1 inventory to distinguish existing NorthWrit functionality from new implementation.
+- Use **Agents** as a separate primary destination when its governed experience is ready. The approved section names are My Agents, Runs, Schedules and Approvals; define the delivered subset and acceptance criteria for each increment rather than assuming all four ship together. Keep matter-scoped runs matter-linked, define explicit scope for any supported non-matter run, and apply access, revocation and action-approval requirements.
 - Define agents as governed task runners, connectors as external data access/synchronization, plugins as packaged capabilities, and MCP as a tool/resource protocol. Define configuration, permissions, and lifecycle for each.
 - Add only the integrations needed for the pilot; select initial systems based on firm requirements and verified API access.
 - Implement credential storage, scopes, synchronization status, retries, revocation, and deletion propagation for connectors.
