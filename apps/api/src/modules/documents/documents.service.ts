@@ -66,3 +66,4 @@ export { handleDocumentExtractText, markDocumentTextFailed, backfillDocumentText
 export { findDocumentText, readStoredDocumentText, storedDocumentTextCurrent } from "./documents.textSearch";
 
 export { getDocumentStatuses } from "./documents.status";
+export { resolveWorkProductSources } from "./documents.workProductSources";

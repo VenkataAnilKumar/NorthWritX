@@ -38,6 +38,8 @@ Default loopback ports: API 3013; gateway/Auth/PostgREST 55431–55433. Set `--a
 
 Credentials remain in memory or private temporary files and are redacted from errors. Cancellation enters the same cleanup path. Cleanup verifies container ownership labels and removes only this run's containers, network and temporary files; cleanup failures are recorded rather than reported as success. The completed run left no test containers/network, and existing preview services, images and volumes were preserved.
 
+The optional `--work-products` and `--schema-baseline <ref>` modes add saved-draft and supported-upgrade checks; see the [4D backend record](NorthWrit-Phase-4D-Backend-Verification.md) for those separate results. The eight-check evidence above retains its original scope.
+
 ## Storage prerequisite and review
 
 The initial attempt could not start Docker with a full disk. After the user's explicit cache-cleanup instruction, verified Next.js/npm/Electron caches and a specific unused, unshared Docker build-cache dependency chain were removed. About 9.8 GiB became available; Docker image/container/volume inventories were checked unchanged. This cleanup was a session operation, not functionality added to the verification runner. The runner never prunes caches, images or volumes, and it fails its space preflight before attempting a new stack on a full disk.

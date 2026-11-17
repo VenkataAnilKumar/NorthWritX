@@ -44,7 +44,7 @@ Run the smallest checks that can catch the change, as required by [application i
 
 Browser/database acceptance tests must state their environment, synthetic fixtures and authorization outcomes. Root CI does not replace the Phase 4 two-user/two-matter checks. Record known inherited failures separately from failures introduced by a change.
 
-The [isolated source-journey runner](NorthWrit-Phase-4-Source-Journey-Verification.md) now supplies a manual, fresh-stack model-free integration check. It is not an adopted required GitHub job or a substitute for the remaining browser, full upgrade and security acceptance gates.
+The [isolated source-journey runner](NorthWrit-Phase-4-Source-Journey-Verification.md) now supplies a manual, fresh-stack model-free integration check. Its optional `--work-products` and `--schema-baseline <ref>` modes now cover the [4D saved-draft backend](NorthWrit-Phase-4D-Backend-Verification.md) on fresh and pinned-upgrade schemas. It is not an adopted required GitHub job or a substitute for the remaining browser, full upgrade and security acceptance gates.
 
 ## Root workspace installation
 

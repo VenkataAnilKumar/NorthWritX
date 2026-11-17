@@ -748,3 +748,51 @@ export type MatterMetadata = {
   matter_status: MatterStatus | null;
 };
 export type MatterMetadataInput = Partial<MatterMetadata>;
+
+/** Manual draft contracts; no legal verification or approval is implied. */
+export type WorkProductSourceRef = {
+  document_id: string;
+  version_id: string;
+  content_sha256: string;
+  locator?: string;
+};
+export type WorkProductSource = WorkProductSourceRef & {
+  filename: string;
+  version_number: number | null;
+};
+export type WorkProductDraftInput = {
+  request_id: string;
+  expected_version_id: string | null;
+  title: string;
+  body: string;
+  scope: string;
+  assumptions: string;
+  sources: WorkProductSourceRef[];
+};
+export type WorkProductVersion = {
+  id: string;
+  work_product_id: string;
+  revision: number;
+  based_on_version_id: string | null;
+  title: string;
+  body: string;
+  scope: string;
+  assumptions: string;
+  sources: WorkProductSource[];
+  created_by: string | null;
+  author_label: string;
+  created_at: string;
+};
+export type WorkProduct = {
+  id: string;
+  project_id: string;
+  title: string;
+  current_version_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WorkProductSaveResponse = { work_product: WorkProduct; version: WorkProductVersion; idempotent: boolean };
+export type WorkProductReadResponse = { work_product: WorkProduct; version: WorkProductVersion; evidence_status: "current" | "changed_or_unavailable" };
+export type WorkProductVersionSummary = Pick<WorkProductVersion, "id" | "work_product_id" | "revision" | "title" | "created_by" | "author_label" | "created_at">;
+export type WorkProductVersionPage = { current_version_id: string | null; versions: WorkProductVersionSummary[] };

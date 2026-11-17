@@ -2,6 +2,8 @@
 // Uses existing local Docker images; never runs stack sweeps, migrations on an
 // existing database, image pulls/pushes or configured-model inference.
 // Usage: node apps/api/scripts/verify-source-journey.cjs --work-root /dev/shm
+// Add --work-products for saved draft/export checks; --schema-baseline <ref>
+// exercises the supported incremental migration path on a disposable database.
 // Docker, Node 22+, existing API workspace dependencies and LibreOffice required.
 // The JSON evidence contains outcomes only; credentials remain in private temp files.
 const fs = require('node:fs');
@@ -35,7 +37,7 @@ const command = (cmd, argv, input) => {
 const docker = (argv, input) => command('docker', argv, input);
 const containers = [];
 let work, gateway, api, networkCreated = false;
-const evidence = { baseline: command('git', ['-C', repo, 'rev-parse', 'HEAD']).trim(), status: 'running', checks: [], runtime: { database: 'postgres:17-alpine', auth: 'supabase/gotrue:v2.189.0', rest: 'postgrest/postgrest:v14.12', storage: 'isolated filesystem', interface: 'real HTTP API and PostgREST RPC', ai: 'unconfigured; no inference' } };
+const evidence = { baseline: command('git', ['-C', repo, 'rev-parse', 'HEAD']).trim(), working_tree_dirty: Boolean(command('git',['-C',repo,'status','--porcelain']).trim()), verified_at: new Date().toISOString(), status: 'running', checks: [], runtime: { database: 'postgres:17-alpine', auth: 'supabase/gotrue:v2.189.0', rest: 'postgrest/postgrest:v14.12', storage: 'isolated filesystem', interface: 'real HTTP API and PostgREST RPC', ai: 'unconfigured; no inference' } };
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(label, fn, timeout = 90000) {
     const deadline = Date.now() + timeout;
@@ -117,7 +119,18 @@ alter role supabase_auth_admin set search_path=auth;`);
         GOTRUE_EXTERNAL_GOOGLE_ENABLED:'false',GOTRUE_MAILER_AUTOCONFIRM:'true',GOTRUE_PASSWORD_MIN_LENGTH:'10',
     },['-p',`127.0.0.1:${authPort}:9999`]);
     await until('disposable Auth migrations',async()=>{try{return (await fetch(`http://127.0.0.1:${authPort}/health`)).ok;}catch{return false;}});
-    sql(fs.readFileSync(path.join(repo,'apps/api/schema.sql'),'utf8'));
+    const baseline=option('--schema-baseline',null);
+    if(baseline) {
+        sql(command('git',['-C',repo,'show',`${baseline}:apps/api/schema.sql`]));
+        const legacyId=crypto.randomUUID();
+        sql(`insert into public.projects(id,name,cm_number,practice) values('${legacyId}','Synthetic upgrade fixture','UPGRADE-REF','Legacy vocabulary');`);
+        for(const filename of fs.readdirSync(path.join(repo,'apps/api/migrations')).filter(name=>/^\d{8}_.*\.sql$/.test(name)).sort()) {
+            const found=docker(['exec',db,'psql','-X','-qAt','-U','postgres','-c',`select exists(select 1 from public.schema_migrations where filename='${filename}')`]).trim();
+            if(found==='f') sql('begin;\n'+fs.readFileSync(path.join(repo,'apps/api/migrations',filename),'utf8')+`\ninsert into public.schema_migrations(filename) values('${filename}'); commit;`);
+        }
+        sql(`do $$ begin if not exists(select 1 from public.projects where id='${legacyId}' and cm_number='UPGRADE-REF' and practice='Legacy vocabulary') then raise exception 'Upgrade changed legacy matter'; end if; end; $$;`);
+        evidence.runtime.schema_baseline=baseline;
+    } else sql(fs.readFileSync(path.join(repo,'apps/api/schema.sql'),'utf8'));
     container('rest','postgrest/postgrest:v14.12',{
         PGRST_DB_URI:`postgres://authenticator:${dbPassword}@${db}:5432/postgres`,PGRST_DB_SCHEMAS:'public',PGRST_DB_ANON_ROLE:'anon',PGRST_JWT_SECRET:jwtSecret,
     },['-p',`127.0.0.1:${restPort}:3000`]);
@@ -234,6 +247,71 @@ alter role supabase_auth_admin set search_path=auth;`);
     await check('model catalogue has no configured inference model',async()=>{
         const models=await call(a,'/models/configured');assert.equal(Array.isArray(models)?models.length:models.models.length,0);
     });
+    if(args.includes('--work-products')) {
+        let draft, firstVersion, secondDraftVersion, currentDraftVersion, initial;
+        const base=`/projects/${matterA.id}/work-products`;
+        const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+        await check('saved draft provenance, idempotency, conflicts and restoration',async()=>{
+            initial={request_id:crypto.randomUUID(),expected_version_id:null,title:'Synthetic work product',body:'Original draft <text> & analysis',scope:'Synthetic contract scope',assumptions:'No legal advice; synthetic data',sources:[{document_id:source.id,version_id:version1,content_sha256:hash(bytes1),locator:'Opening paragraph'}]};
+            draft=await call(a,base,initial);firstVersion=draft.version.id;
+            assert.equal(draft.version.revision,1);assert.equal(draft.version.created_by,a.id);assert.equal(draft.version.sources[0].filename,'Synthetic-Agreement.docx');
+            const duplicate=await call(a,base,initial);assert.equal(duplicate.work_product.id,draft.work_product.id);assert.equal(duplicate.idempotent,true);
+            const response=await fetch((await call(a,`/single-documents/${source.id}/url?version_id=${version2}`)).url);const currentBytes=Buffer.from(await response.arrayBuffer());
+            const update={...initial,request_id:crypto.randomUUID(),expected_version_id:firstVersion,body:'Updated draft',sources:[{document_id:source.id,version_id:version2,content_sha256:hash(currentBytes),locator:'Current opening'}]};
+            const revised=await call(a,`${base}/${draft.work_product.id}/versions`,update);secondDraftVersion=revised.version.id;assert.equal(revised.version.revision,2);assert.equal(revised.version.based_on_version_id,firstVersion);
+            await call(a,`${base}/${draft.work_product.id}/versions`,{...update,request_id:crypto.randomUUID()},'POST',[409]);
+            const retry=await call(a,base,initial);assert.equal(retry.version.id,firstVersion);assert.equal(retry.work_product.current_version_id,secondDraftVersion);
+            const history=await call(a,`${base}/${draft.work_product.id}/versions`);assert.equal(history.versions.length,2);assert.deepEqual(history.versions.map(v=>v.revision),[2,1]);
+            const old=await call(a,`${base}/${draft.work_product.id}/versions/${firstVersion}`);assert.equal(old.version.body,initial.body);assert.equal(old.version.sources[0].version_id,version1);
+            const restored=await call(a,`${base}/${draft.work_product.id}/versions`,{...initial,request_id:crypto.randomUUID(),expected_version_id:secondDraftVersion});currentDraftVersion=restored.version.id;assert.equal(restored.version.revision,3);assert.equal(restored.version.body,initial.body);assert.equal(restored.version.based_on_version_id,secondDraftVersion);
+            const unchanged=await call(a,`${base}/${draft.work_product.id}/versions/${secondDraftVersion}`);assert.equal(unchanged.version.body,'Updated draft');
+            await call(b,base,undefined,'GET',[404]);
+            await call(b,base,initial,'POST',[404]);
+            await call(a,`/projects/not-a-uuid/work-products`,undefined,'GET',[400]);
+            const pdf=await call(a,`/single-documents/${pdfSource.id}`);
+            await call(a,base,{...initial,request_id:crypto.randomUUID(),sources:[{document_id:pdf.id,version_id:pdf.current_version_id,content_sha256:pdf.content_sha256}]},'POST',[409]);
+        });
+        const exported = async (who,project,id,version,expected=200) => {
+            const response=await fetch(apiUrl+`/projects/${project}/work-products/${id}/versions/${version}/export`,{method:'POST',headers:{Authorization:`Bearer ${who.token}`}});
+            assert.equal(response.status,expected,'Draft export status');return response;
+        };
+        await check('selected draft DOCX export includes scope, assumptions and exact source version',async()=>{
+            const response=await exported(a,matterA.id,draft.work_product.id,firstVersion);assert(response.headers.get('content-disposition').includes('draft'));assert.equal(response.headers.get('cache-control'),'private, no-store');
+            const JSZip=require(path.join(repo,'apps/api/node_modules/jszip'));const zip=await JSZip.loadAsync(Buffer.from(await response.arrayBuffer()));const xml=await zip.file('word/document.xml').async('string');
+            for(const marker of ['DRAFT — NOT APPROVED','Synthetic contract scope','No legal advice',version1,firstVersion,'Original draft &lt;text&gt; &amp; analysis'])assert(xml.includes(marker),`DOCX missing ${marker}`);
+            assert.equal((await exported(b,matterA.id,draft.work_product.id,firstVersion,404)).status,404);
+        });
+        await check('changed evidence blocks historical export without rewriting saved history',async()=>{
+            await upload(a,'Synthetic-Agreement.docx',await docx('Replacement bytes for old source version'),{document_id:source.id,version_id:version1,expected_content_sha256:hash(bytes1),generate_pdf:false},'document_version_replace');
+            const old=await call(a,`${base}/${draft.work_product.id}/versions/${firstVersion}`);assert.equal(old.evidence_status,'changed_or_unavailable');assert.equal(old.version.body,initial.body);
+            await exported(a,matterA.id,draft.work_product.id,firstVersion,409);
+            await exported(a,matterA.id,draft.work_product.id,secondDraftVersion);
+            await call(a,`${base}/${draft.work_product.id}/versions`,{...initial,request_id:crypto.randomUUID(),expected_version_id:currentDraftVersion},'POST',[409]);
+        });
+        await check('viewer can read/export drafts but cannot save, and revocation stops access',async()=>{
+            const personal=await call(a,'/projects',{name:'Synthetic shared draft matter',memory_enabled:false});
+            await call(a,`/projects/${personal.id}/access`,{email:b.email,role:'viewer'});
+            const item=await call(a,`/projects/${personal.id}/work-products`,{...initial,request_id:crypto.randomUUID(),sources:[]});
+            await call(b,`/projects/${personal.id}/work-products/${item.work_product.id}`);
+            await exported(b,personal.id,item.work_product.id,item.version.id);
+            await call(b,`/projects/${personal.id}/work-products`,{...initial,request_id:crypto.randomUUID(),sources:[]},'POST',[403]);
+            await call(b,`/projects/${personal.id}/work-products/${item.work_product.id}/versions`,{...initial,request_id:crypto.randomUUID(),expected_version_id:item.version.id,sources:[]},'POST',[403]);
+            await call(a,`/projects/${personal.id}/access/${encodeURIComponent(b.email)}`,undefined,'DELETE');
+            await call(b,`/projects/${personal.id}/work-products/${item.work_product.id}`,undefined,'GET',[404]);
+            await exported(b,personal.id,item.work_product.id,item.version.id,404);
+            await call(a,`/projects/${personal.id}`,undefined,'DELETE');
+            const removed=await rest(`/work_product_versions?work_product_id=eq.${item.work_product.id}`);assert.equal(removed.length,0);
+        });
+        await check('draft tables are backend-only and revisions cannot be directly rewritten',async()=>{
+            sql(`do $$ begin
+              if has_table_privilege('service_role','public.work_product_versions','UPDATE') or has_table_privilege('authenticated','public.work_product_versions','SELECT') or has_function_privilege('authenticated','public.save_work_product_version(uuid,uuid,uuid,text,jsonb)','EXECUTE') then raise exception 'Unsafe work product privileges'; end if;
+              if not (select relrowsecurity from pg_class where oid='public.work_product_versions'::regclass) then raise exception 'Work product RLS disabled'; end if;
+              end; $$;`);
+            await rest(`/work_product_versions?id=eq.${firstVersion}`,{body:'Forbidden rewrite'},service,'PATCH').then(()=>assert.fail('Direct version mutation succeeded'),error=>assert(String(error.message).includes('403')));
+            sql(fs.readFileSync(path.join(repo,'apps/api/migrations/20261117_01_work_products.sql'),'utf8'));
+            const preserved=await call(a,`${base}/${draft.work_product.id}/versions/${firstVersion}`);assert.equal(preserved.version.body,initial.body);
+        });
+    }
     evidence.status='passed';
 }
 main().catch(error=>{evidence.status='failed';evidence.error=clean(String(error.message));console.error(evidence.error);process.exitCode=1;}).finally(async()=>{

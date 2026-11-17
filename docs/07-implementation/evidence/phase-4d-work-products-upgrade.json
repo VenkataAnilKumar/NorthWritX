@@ -1,0 +1,74 @@
+{
+  "baseline": "cd2178ac433368eff2b06dadad8fe32e3a43c300",
+  "working_tree_dirty": true,
+  "verified_at": "2026-11-17T15:12:26.774Z",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "real sign-in, separate organizations and matter metadata",
+      "status": "passed"
+    },
+    {
+      "name": "DOCX staged upload and actual worker processing",
+      "status": "passed"
+    },
+    {
+      "name": "download admission, DOCX bytes and cross-organization denial",
+      "status": "passed"
+    },
+    {
+      "name": "new document version preserves original version bytes",
+      "status": "passed"
+    },
+    {
+      "name": "valid PDF processing and same-organization matter binding",
+      "status": "passed"
+    },
+    {
+      "name": "real indexed source-text search and denied actor visibility",
+      "status": "passed"
+    },
+    {
+      "name": "invalid PDF remains an explicit failed upload",
+      "status": "passed"
+    },
+    {
+      "name": "model catalogue has no configured inference model",
+      "status": "passed"
+    },
+    {
+      "name": "saved draft provenance, idempotency, conflicts and restoration",
+      "status": "passed"
+    },
+    {
+      "name": "selected draft DOCX export includes scope, assumptions and exact source version",
+      "status": "passed"
+    },
+    {
+      "name": "changed evidence blocks historical export without rewriting saved history",
+      "status": "passed"
+    },
+    {
+      "name": "viewer can read/export drafts but cannot save, and revocation stops access",
+      "status": "passed"
+    },
+    {
+      "name": "draft tables are backend-only and revisions cannot be directly rewritten",
+      "status": "passed"
+    }
+  ],
+  "runtime": {
+    "database": "postgres:17-alpine",
+    "auth": "supabase/gotrue:v2.189.0",
+    "rest": "postgrest/postgrest:v14.12",
+    "storage": "isolated filesystem",
+    "interface": "real HTTP API and PostgREST RPC",
+    "ai": "unconfigured; no inference",
+    "schema_baseline": "cd2178a"
+  },
+  "processing": {
+    "docx": "completed",
+    "pdf": "completed"
+  },
+  "cleanup": "only run-owned containers, network and temporary files removed"
+}

@@ -17,6 +17,8 @@ NorthWrit is a legal AI workspace being developed for Canadian law firms and in-
 
 The [isolated model-free source journey](07-implementation/NorthWrit-Phase-4-Source-Journey-Verification.md) records real Auth/API/worker/storage/database verification and its remaining acceptance limits.
 
+The [4D draft contract](07-implementation/NorthWrit-Phase-4D-Draft-Contract.md) and [backend verification](07-implementation/NorthWrit-Phase-4D-Backend-Verification.md) cover saved revisions, source integrity and draft DOCX export; editor/compare UI remains pending.
+
 ## How to read these documents
 
 The implementation plan governs delivery order. Current source, tests and engineering guides describe the implemented baseline. Product specifications describe requirements; design approval and a document's presence do not establish implementation or legal/security guarantees. P0/P1/P2 are product priorities, separate from implementation phases 1–7. Phase 2 is restored as Product and Architecture Foundation; its remaining decisions and review gates are recorded in the implementation plan.
@@ -74,6 +76,7 @@ The product catalogue describes existing capabilities. The specifications, desig
 - [ADR 0002](decisions/0002-expanded-repository-structure.md): accepted expanded layout.
 - [ADR 0004](decisions/0004-retire-source-reference-archive.md): retired reference archive, current provenance and root policies.
 - [ADR 0003](decisions/0003-npm-root-workspace.md): nine private npm workspaces and the authoritative root lockfile.
+- [ADR 0005](decisions/0005-matter-work-products.md): matter-bound draft storage, immutable revisions and checked export ownership.
 
 Preserve the [license](../LICENSE), [notice](../NOTICE.md), [credits](../Credit.md) and [source provenance](06-technical/NorthWrit-Source-Provenance.md). Historical and compatibility identifiers are explained in the configuration record.
 
