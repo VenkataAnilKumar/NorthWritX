@@ -26,3 +26,5 @@ Test role denial, cross-matter source substitution, stale source hashes, compare
 The user authorized phased implementation/review/tests/commits. This contract records technical choices for this backend increment; named product/legal/security reviewer closure and full Phase 4 acceptance remain pending. Deployment, publication, pushes/merges and live AI are outside this increment.
 
 Implementation evidence and endpoint details: [4D backend verification](NorthWrit-Phase-4D-Backend-Verification.md). The storage/ownership decision is recorded in [ADR 0005](../decisions/0005-matter-work-products.md).
+
+The subsequent [matter Drafts UI increment](NorthWrit-Phase-4D-UI-Verification.md) consumes this contract. It adds manual editing, history/restore and selected saved-revision export; it does not add approval states or visual comparison.

@@ -137,6 +137,8 @@ type ProjectWorkspaceValue = {
      */
     canDo: (capability: Capability) => boolean;
     openProjectDetails: () => void;
+    registerNavigationGuard: (guard: (href: string) => void) => () => void;
+    navigateTo: (href: string) => void;
 };
 
 const ProjectWorkspaceContext =
@@ -155,6 +157,7 @@ export function useProjectWorkspace() {
 function activeSectionFromSegments(
     segments: string[],
 ): ProjectWorkspaceSection {
+    if (segments[0] === "drafts") return "drafts";
     if (segments[0] === "overview") return "overview";
     if (segments[0] === "assistant") return "assistant";
     if (segments[0] === "tabular-reviews") return "reviews";
@@ -165,7 +168,7 @@ function shouldShowWorkspaceShell(segments: string[]) {
     if (segments.length === 0) return true;
     if (segments.length === 2 && segments[0] === "folders") return true;
     if (segments.length !== 1) return false;
-    return segments[0] === "overview" || segments[0] === "assistant" || segments[0] === "tabular-reviews";
+    return segments[0] === "drafts" || segments[0] === "overview" || segments[0] === "assistant" || segments[0] === "tabular-reviews";
 }
 
 export function ProjectWorkspaceProvider({
@@ -175,12 +178,17 @@ export function ProjectWorkspaceProvider({
     projectId: string;
     children: ReactNode;
 }) {
+    const navigationGuard = useRef<((href: string) => void) | null>(null);
+    const registerNavigationGuard = useCallback((guard: (href: string) => void) => {
+        navigationGuard.current = guard;
+        return () => { if (navigationGuard.current === guard) navigationGuard.current = null; };
+    }, []);
     const [project, setProject] = useState<Project | null>(null);
     const [folders, setFolders] = useState<ProjectFolder[]>([]);
     const [projectLoading, setProjectLoading] = useState(true);
     const [searchBySection, setSearchBySection] = useState<
         Record<ProjectWorkspaceSection, string>
-    >({ overview: "", documents: "", assistant: "", reviews: "" });
+    >({ overview: "", documents: "", assistant: "", reviews: "", drafts: "" });
     const [projectChats, setProjectChats] = useState<Chat[] | null>(null);
     const [projectChatsLoading, setProjectChatsLoading] = useState(false);
     const [accessModalOpen, setAccessModalOpen] = useState(false);
@@ -216,6 +224,10 @@ export function ProjectWorkspaceProvider({
     const activeSection = activeSectionFromSegments(segments);
     const showShell = shouldShowWorkspaceShell(segments);
     const router = useRouter();
+    const navigateTo = useCallback((href: string) => {
+        if (navigationGuard.current) navigationGuard.current(href);
+        else router.push(href);
+    }, [router]);
     const { user } = useAuth();
     const projectChatsPromiseRef = useRef<Promise<Chat[]> | null>(null);
 
@@ -251,8 +263,8 @@ export function ProjectWorkspaceProvider({
     );
 
     const openProjectRoot = useCallback(() => {
-        router.push(`/projects/${projectId}`);
-    }, [projectId, router]);
+        navigateTo(`/projects/${projectId}`);
+    }, [projectId, navigateTo]);
 
     useEffect(() => {
         if (!showShell) {
@@ -553,6 +565,8 @@ export function ProjectWorkspaceProvider({
             accessRole,
             canDo,
             openProjectDetails: () => setProjectDetailsOpen(true),
+            registerNavigationGuard,
+            navigateTo,
         }),
         [
             projectId,
@@ -572,6 +586,8 @@ export function ProjectWorkspaceProvider({
             setDocumentUploadHeaderAction,
             accessRole,
             canDo,
+            registerNavigationGuard,
+            navigateTo,
         ],
     );
 
@@ -602,7 +618,7 @@ export function ProjectWorkspaceProvider({
                         creatingReview={creatingReview}
                         canManageProject={canDo("access.manage")}
                         roleKnown={roleKnown}
-                        onBackToProjects={() => router.push("/projects")}
+                        onBackToProjects={() => navigateTo("/projects")}
                         onProjectRoot={openProjectRoot}
                         onOpenDetails={() => setProjectDetailsOpen(true)}
                         onOpenMemory={() => setProjectMemoryOpen(true)}
@@ -742,8 +758,7 @@ export function ProjectSectionToolbar({
     actions?: ReactNode;
     backAction?: (() => void) | null;
 }) {
-    const { activeSection, projectId } = useProjectWorkspace();
-    const router = useRouter();
+    const { activeSection, projectId, navigateTo } = useProjectWorkspace();
 
     return (
         <TableToolbar
@@ -756,19 +771,22 @@ export function ProjectSectionToolbar({
                           { id: "documents", label: "Documents" },
                           { id: "assistant", label: "Conversations" },
                           { id: "reviews", label: "Reviews" },
+                          { id: "drafts", label: "Drafts" },
                       ]
             }
             active={activeSection}
             onChange={(next) => {
                 const href =
-                    next === "overview"
+                    next === "drafts"
+                        ? `/projects/${projectId}/drafts`
+                        : next === "overview"
                         ? `/projects/${projectId}/overview`
                         : next === "assistant"
                         ? `/projects/${projectId}/assistant`
                         : next === "reviews"
                           ? `/projects/${projectId}/tabular-reviews`
                           : `/projects/${projectId}`;
-                router.push(href);
+                navigateTo(href);
             }}
             leading={
                 backAction ? (

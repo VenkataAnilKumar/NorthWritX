@@ -58,3 +58,5 @@ No image pull, stack sweep, environment rewrite, publication or unrelated resour
 ## Remaining scope
 
 Next is a functional draft editor/history/export UI consuming these endpoints, with browser/accessibility evidence. Visual comparison, rich text/tables, broader permitted Library sources, reviewer workflow, approval invalidation and external delivery remain separate work. Retention/redaction and legal-source/provider requirements still need their named reviews. No AI execution, production build, native-client acceptance or complete legal-workflow acceptance is claimed here.
+
+Subsequent UI work is tracked separately in the [4D UI record](NorthWrit-Phase-4D-UI-Verification.md); the results above describe the backend candidate at its own verification baseline.
