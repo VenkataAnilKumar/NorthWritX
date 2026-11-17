@@ -49,3 +49,5 @@ The [isolated source-journey runner](NorthWrit-Phase-4-Source-Journey-Verificati
 ## Root workspace installation
 
 Application jobs cache `package-lock.json` and run targeted frozen installs from the root. Container contexts include root manifests, `.npmrc` and every workspace manifest before selecting an application with `npm ci --workspace <path> --include-workspace-root=false`. Root override policy applies consistently. Check names remain unchanged. Audit tooling selects the requested workspace dependency closure from the root lock; root dependency paths cannot inherit a child-path exception.
+
+The opt-in `--acceptance` mode adds the [4E connected-browser and queued-revocation package](NorthWrit-Phase-4E-Acceptance-Verification.md), with an isolated real backend and a private `isolated-matter` Playwright fixture. This is manual evidence; no required GitHub job or branch-protection setting was changed.

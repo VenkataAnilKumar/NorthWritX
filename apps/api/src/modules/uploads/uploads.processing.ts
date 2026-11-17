@@ -109,6 +109,7 @@ const TERMINAL_UPLOAD_ERROR_CODES = new Set([
   "size_mismatch",
   "content_type_mismatch",
   "invalid_pdf_file",
+  "upload_access_revoked",
   // The destination document no longer exists. Retrying cannot make it exist
   // again — it can only put it back, which is the bug this code prevents.
   "document_deleted",
@@ -139,6 +140,11 @@ class ChangedDocumentError extends AppError {
   constructor(readonly orphanedKeys: string[] = []) {
     super("upload.document_changed", "document_changed");
   }
+}
+
+function isUploadAccessRevoked(error: unknown): boolean {
+  return Boolean(error && typeof error === "object" && "code" in error && "message" in error &&
+    error.code === "42501" && error.message === "upload_access_revoked");
 }
 
 class InvalidPdfFileError extends Error {
@@ -958,6 +964,23 @@ export async function processUploadJob(
       try {
         markStage("process-file");
         result = await processUploadFile(db, typedSession, file);
+        // Long conversions may outlive a lease heartbeat. Re-prove ownership
+        // before publishing the result or deleting the sealed source object.
+        await heartbeatJob(db, jobId, workerId);
+        const { error } = await db
+          .from("upload_session_files")
+          .update({
+            status: "completed",
+            result,
+            error_code: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", file.id)
+          .eq("session_id", typedSession.id);
+        if (error) throw error;
+        markStage("sealed-source-after-process");
+        await deleteFileBestEffort(file.sealed_storage_path, "sealed-source-after-process");
+        await heartbeatJob(db, jobId, workerId);
       } catch (error) {
         // A failed timer heartbeat makes ownership uncertain. Re-prove the
         // lease before recording even a failure result.
@@ -967,10 +990,12 @@ export async function processUploadJob(
         terminalProcessingFailure =
           error instanceof DeletedDocumentError ||
           error instanceof ChangedDocumentError ||
-          error instanceof InvalidPdfFileError;
+          error instanceof InvalidPdfFileError ||
+          isUploadAccessRevoked(error);
         if (
           !(error instanceof ChangedDocumentError) &&
-          !(error instanceof InvalidPdfFileError)
+          !(error instanceof InvalidPdfFileError) &&
+          !isUploadAccessRevoked(error)
         ) {
           reportError(error, {
             tags: {
@@ -996,7 +1021,8 @@ export async function processUploadJob(
           .from("upload_session_files")
           .update({
             status: "error",
-            error_code: error instanceof ChangedDocumentError
+            error_code: isUploadAccessRevoked(error) ? "upload_access_revoked"
+              : error instanceof ChangedDocumentError
               ? "document_changed"
               : error instanceof DeletedDocumentError ? "document_deleted"
               : error instanceof InvalidPdfFileError ? "invalid_pdf_file"
@@ -1012,26 +1038,6 @@ export async function processUploadJob(
           await enqueueStorageCleanup(db, error.orphanedKeys);
         }
         await markCreatedDocumentFailed(db, typedSession, file);
-        await heartbeatJob(db, jobId, workerId);
-      }
-
-      if (!failed) {
-        // Long conversions may outlive a lease heartbeat. Re-prove ownership
-        // before publishing the result or deleting the sealed source object.
-        await heartbeatJob(db, jobId, workerId);
-        const { error } = await db
-          .from("upload_session_files")
-          .update({
-            status: "completed",
-            result,
-            error_code: null,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", file.id)
-          .eq("session_id", typedSession.id);
-        if (error) throw error;
-        markStage("sealed-source-after-process");
-        await deleteFileBestEffort(file.sealed_storage_path, "sealed-source-after-process");
         await heartbeatJob(db, jobId, workerId);
       }
     }

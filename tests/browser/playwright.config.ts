@@ -56,6 +56,12 @@ export default defineConfig({
     },
 
     projects: [
+        // Opt-in: only the isolated runner provisions this project's private fixture.
+        ...(process.env.NORTHWRIT_ACCEPTANCE_MANIFEST ? [{
+            name: "isolated-matter",
+            use: { ...devices["Desktop Chrome"] },
+            testMatch: /matter-acceptance\.spec\.ts/,
+        }] : []),
         /* Run the auth setup before all other tests */
         {
             name: "setup",
@@ -65,7 +71,7 @@ export default defineConfig({
         {
             name: "chromium",
             use: { ...devices["Desktop Chrome"] },
-            testIgnore: SYNTHETIC_SPECS,
+            testIgnore: [...SYNTHETIC_SPECS, /matter-acceptance\.spec\.ts/],
             dependencies: ["setup"],
         },
 

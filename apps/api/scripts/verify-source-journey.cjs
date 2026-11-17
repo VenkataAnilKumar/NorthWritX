@@ -4,6 +4,7 @@
 // Usage: node apps/api/scripts/verify-source-journey.cjs --work-root /dev/shm
 // Add --work-products for saved draft/export checks; --schema-baseline <ref>
 // exercises the supported incremental migration path on a disposable database.
+// --acceptance adds connected Chromium and deterministic queued-revocation checks.
 // Docker, Node 22+, existing API workspace dependencies and LibreOffice required.
 // The JSON evidence contains outcomes only; credentials remain in private temp files.
 const fs = require('node:fs');
@@ -17,6 +18,7 @@ const assert = require('node:assert/strict');
 const { execFileSync, spawn } = require('node:child_process');
 
 const args = process.argv.slice(2);
+const acceptance = args.includes('--acceptance');
 const option = (name, fallback) => { const at = args.indexOf(name); return at < 0 ? fallback : args[at + 1]; };
 const repo = path.resolve(option('--repo', process.cwd()));
 const cancellation = new AbortController();
@@ -24,19 +26,25 @@ for (const signal of ['SIGINT','SIGTERM']) process.once(signal, () => cancellati
 const run = 'northwrit-source-' + crypto.randomBytes(5).toString('hex');
 const apiPort = Number(option('--api-port', '3013'));
 const gatewayPort = Number(option('--gateway-port', '55431'));
+const webPort = Number(option('--web-port', '3014'));
 const authPort = gatewayPort + 1, restPort = gatewayPort + 2;
 const workRoot = option('--work-root', os.tmpdir());
 const evidenceFile = path.resolve(option('--evidence', '/tmp/northwrit-source-journey-evidence.json'));
 const secrets = [];
 const secret = () => { const value = crypto.randomBytes(32).toString('hex'); secrets.push(value); return value; };
-const clean = text => { for (const value of secrets) text = text.split(value).join('[redacted]'); return text.replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[redacted-jwt]'); };
+const clean = text => {
+    for (const value of secrets) text = text.split(value).join('[redacted]');
+    return text.replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[redacted-jwt]')
+        .replace(/(\/download\/(?:signed\/)?)[^\s"'<>]+/g, '$1[redacted-capability]')
+        .replace(/((?:cookie|set-cookie|authorization|apikey)["']?\s*:\s*)[^\r\n]+/gi, '$1[redacted]');
+};
 const command = (cmd, argv, input) => {
     try { return execFileSync(cmd, argv, { input, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }); }
     catch (error) { throw new Error(`${cmd} ${argv[0]} failed: ${clean(String(error.stderr || '')).slice(-1800)}`); }
 };
 const docker = (argv, input) => command('docker', argv, input);
 const containers = [];
-let work, gateway, api, networkCreated = false;
+let work, gateway, api, worker, networkCreated = false;
 const evidence = { baseline: command('git', ['-C', repo, 'rev-parse', 'HEAD']).trim(), working_tree_dirty: Boolean(command('git',['-C',repo,'status','--porcelain']).trim()), verified_at: new Date().toISOString(), status: 'running', checks: [], runtime: { database: 'postgres:17-alpine', auth: 'supabase/gotrue:v2.189.0', rest: 'postgrest/postgrest:v14.12', storage: 'isolated filesystem', interface: 'real HTTP API and PostgREST RPC', ai: 'unconfigured; no inference' } };
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(label, fn, timeout = 90000) {
@@ -68,7 +76,14 @@ async function request(base, resource, token, body, method = body === undefined 
     return text ? JSON.parse(text) : null;
 }
 async function check(name, fn) { await fn(); evidence.checks.push({ name, status: 'passed' }); console.log('PASS ' + name); }
+async function stopWorker() {
+    if (!worker || worker.exitCode !== null) return;
+    worker.kill('SIGTERM');
+    await Promise.race([new Promise(resolve => worker.once('exit', resolve)), pause(20000)]);
+    if(worker.exitCode === null) { worker.kill('SIGKILL'); await new Promise(resolve => worker.once('exit',resolve)); }
+}
 async function cleanup() {
+    await stopWorker();
     if (api && api.exitCode === null) { api.kill('SIGTERM'); await Promise.race([new Promise(resolve => api.once('exit', resolve)), pause(5000)]); if(api.exitCode === null) api.kill('SIGKILL'); }
     if (gateway) { gateway.closeAllConnections(); await new Promise(resolve => gateway.close(resolve)); }
     const errors=[];
@@ -89,20 +104,20 @@ async function cleanup() {
     if(errors.length) {evidence.status='failed';process.exitCode=1;}
 }
 async function main() {
-    for(const port of [apiPort,gatewayPort,authPort,restPort]) assert(Number.isInteger(port)&&port>=1024&&port<=65535,'Use valid unprivileged port numbers');
+    for(const port of [apiPort,gatewayPort,authPort,restPort,...(acceptance?[webPort]:[])]) assert(Number.isInteger(port)&&port>=1024&&port<=65535,'Use valid unprivileged port numbers');
     const disk=fs.statfsSync(repo);
     assert(disk.bavail*disk.bsize>=2*1024**3,'At least 2 GiB of free disk is required before creating the isolated Docker stack');
     for(const image of ['postgres:17-alpine','supabase/gotrue:v2.189.0','postgrest/postgrest:v14.12']) docker(['image','inspect','--format','{{.Id}}',image]);
     const endpoint=process.env.DOCKER_HOST || JSON.parse(docker(['context','inspect','--format','{{json .Endpoints.docker.Host}}']));
     assert(endpoint.startsWith('unix://'),'Verification requires a local Docker Unix socket');
-    for (const port of [apiPort,gatewayPort,authPort,restPort]) await free(port);
+    for (const port of [apiPort,gatewayPort,authPort,restPort,...(acceptance?[webPort]:[])]) await free(port);
     work = fs.mkdtempSync(path.join(workRoot, run+'-')); fs.chmodSync(work,0o700);
     const dbPassword = secret(), jwtSecret = secret();
     const anon = jwt('anon',jwtSecret), service = jwt('service_role',jwtSecret);
     const gatewayUrl = `http://127.0.0.1:${gatewayPort}`, apiUrl = `http://127.0.0.1:${apiPort}`;
     docker(['network','create','--label',`northwrit.test_run=${run}`,run]); networkCreated=true;
     const db = container('db','postgres:17-alpine',{ POSTGRES_PASSWORD:dbPassword },['--tmpfs','/var/lib/postgresql/data:rw,size=512m']);
-    await until('disposable database', () => { try { docker(['exec',db,'pg_isready','-U','postgres']); return true; } catch { return false; } });
+    await until('disposable database', () => { try { docker(['exec',db,'pg_isready','-h','127.0.0.1','-U','postgres']); return true; } catch { return false; } });
     const sql = value => docker(['exec','-i',db,'psql','-X','-q','-v','ON_ERROR_STOP=1','-U','postgres'],value);
     sql(`create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
 create role authenticator login password '${dbPassword}' noinherit; grant anon,authenticated,service_role to authenticator;
@@ -143,16 +158,25 @@ alter role supabase_auth_admin set search_path=auth;`);
     });
     await new Promise(resolve=>gateway.listen(gatewayPort,'127.0.0.1',resolve));
     const apiEnv={PATH:process.env.PATH,NODE_ENV:'development',DOTENV_CONFIG_PATH:'/dev/null',PORT:String(apiPort),HOST:'127.0.0.1',
-        SUPABASE_URL:gatewayUrl,SUPABASE_PUBLISHABLE_KEY:anon,SUPABASE_SECRET_KEY:service,FRONTEND_URL:apiUrl,
+        SUPABASE_URL:gatewayUrl,SUPABASE_PUBLISHABLE_KEY:anon,SUPABASE_SECRET_KEY:service,FRONTEND_URL:acceptance?`http://127.0.0.1:${webPort}`:apiUrl,
         STORAGE_DRIVER:'fs',STORAGE_FS_ROOT:path.join(work,'storage'),BACKEND_PUBLIC_URL:apiUrl,API_PUBLIC_URL:apiUrl,
         DOWNLOAD_SIGNING_SECRET:secret(),USER_API_KEYS_ENCRYPTION_SECRET:secret(),AUTH_HANDOFF_ENCRYPTION_SECRET:secret(),
-        WORKERS_MODE:'inline',SENTRY_DISABLED:'true',TMPDIR:work,UPLOAD_PROCESSING_TEMP_DIR:path.join(work,'processing'),
+        WORKERS_MODE:acceptance?'none':'inline',SENTRY_DISABLED:'true',TMPDIR:work,UPLOAD_PROCESSING_TEMP_DIR:path.join(work,'processing'),
         TSX_TSCONFIG_PATH:path.join(repo,'apps/api/tsconfig.json')};
     fs.mkdirSync(apiEnv.UPLOAD_PROCESSING_TEMP_DIR,{recursive:true});
     const log=fs.openSync(path.join(work,'api.log'),'a',0o600);
     api=spawn(process.execPath,['--import',path.join(repo,'apps/api/node_modules/tsx/dist/loader.mjs'),path.join(repo,'apps/api/src/index.ts')],{cwd:work,env:apiEnv,stdio:['ignore',log,log]});
     fs.closeSync(log);
     await until('isolated API boot',async()=>{if(api.exitCode!==null)throw new Error('API boot failed: '+clean(fs.readFileSync(path.join(work,'api.log'),'utf8')).slice(-2200));try{return(await fetch(apiUrl+'/health')).ok;}catch{return false;}});
+    const startWorker = async () => {
+        const workerLog=path.join(work,'worker.log'); const output=fs.openSync(workerLog,'w',0o600);
+        worker=spawn(process.execPath,['--import',path.join(repo,'apps/api/node_modules/tsx/dist/loader.mjs'),path.join(repo,'apps/api/src/worker.ts')],{cwd:work,env:apiEnv,stdio:['ignore',output,output]}); fs.closeSync(output);
+        await until('standalone worker boot',async()=>{
+            if(worker.exitCode!==null) throw new Error('Disposable worker boot failed');
+            return fs.readFileSync(workerLog,'utf8').includes('NorthWrit worker process running');
+        });
+    };
+    if(acceptance) await startWorker();
     console.log('Isolated Auth, PostgREST, API, workers and file storage ready');
     const rest = (resource,body,token=service,method) => request(gatewayUrl+'/rest/v1',resource,token,body,method);
     const account = async name => {
@@ -160,7 +184,7 @@ alter role supabase_auth_admin set search_path=auth;`);
         const user=await request(gatewayUrl+'/auth/v1','/admin/users',service,{email,password,email_confirm:true,user_metadata:{display_name:name}});
         const session=await request(gatewayUrl+'/auth/v1','/token?grant_type=password',anon,{email,password});
         secrets.push(session.access_token,session.refresh_token);
-        return {id:user.id,email,token:session.access_token};
+        return {id:user.id,email,password,token:session.access_token};
     };
     const a=await account('synthetic-owner'), b=await account('synthetic-other');
     const call=(who,resource,body,method,expected)=>request(apiUrl,resource,who.token,body,method,expected);
@@ -247,7 +271,7 @@ alter role supabase_auth_admin set search_path=auth;`);
     await check('model catalogue has no configured inference model',async()=>{
         const models=await call(a,'/models/configured');assert.equal(Array.isArray(models)?models.length:models.models.length,0);
     });
-    if(args.includes('--work-products')) {
+    if(args.includes('--work-products') || acceptance) {
         let draft, firstVersion, secondDraftVersion, currentDraftVersion, initial;
         const base=`/projects/${matterA.id}/work-products`;
         const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -311,6 +335,84 @@ alter role supabase_auth_admin set search_path=auth;`);
             sql(fs.readFileSync(path.join(repo,'apps/api/migrations/20261117_01_work_products.sql'),'utf8'));
             const preserved=await call(a,`${base}/${draft.work_product.id}/versions/${firstVersion}`);assert.equal(preserved.version.body,initial.body);
         });
+    }
+    if(acceptance) {
+        await check('queued upload rechecks a revoked editor before publishing any result',async()=>{
+            const project=await call(a,'/projects',{name:'Synthetic queued access check',memory_enabled:false});
+            await call(a,`/projects/${project.id}/access`,{email:b.email,role:'editor'});
+            await stopWorker();
+            const bytes=await docx('Never publish this revoked queued source');
+            const session=await call(b,'/upload-sessions',{purpose:'document_create',destination:{scope:'project',project_id:project.id},files:[{client_id:crypto.randomUUID(),filename:'Revoked-Queued.docx',size_bytes:bytes.length}]});
+            const file=session.files[0]; const put=await fetch(file.upload.url,{method:'PUT',headers:file.upload.headers,body:bytes}); assert(put.ok);
+            await call(b,`/upload-sessions/${session.session.id}/files/${file.id}/complete`,{});
+            const jobs=await rest(`/upload_processing_jobs?file_id=eq.${file.id}`);
+            assert.equal(jobs.length,1); assert.equal(jobs[0].status,'queued');
+            await call(a,`/projects/${project.id}/access/${encodeURIComponent(b.email)}`,undefined,'DELETE');
+            await startWorker();
+            const ended=await until('revoked queued upload terminal result',async()=>{
+                const state=await call(b,`/upload-sessions/${session.session.id}`); const next=state.files[0];
+                return ['completed','error'].includes(next.status)?next:false;
+            },120000);
+            assert.equal(ended.status,'error'); assert.equal(ended.error_code,'upload_access_revoked'); assert.equal(ended.result,null);
+            const visible=await call(a,`/projects/${project.id}`); assert.equal(visible.documents.length,0);
+            const persisted=await rest(`/documents?project_id=eq.${project.id}`); assert.equal(persisted.length,0);
+            evidence.queued_revocation={terminal_status:ended.status,error_code:ended.error_code,result_published:false};
+        });
+        await check('database publication guards deny revoked and downgraded actors during version and result writes',async()=>{
+            await stopWorker();
+            assert.equal(await rest('/rpc/document_lifecycle_version',{}),3);
+            for(const role of ['viewer','revoked']) {
+                const project=await call(a,'/projects',{name:'Synthetic publication boundary '+role,memory_enabled:false});
+                await call(a,`/projects/${project.id}/access`,{email:b.email,role:'editor'});
+                const manifest={purpose:'document_create',destination:{scope:'project',project_id:project.id},files:[{client_id:crypto.randomUUID(),filename:'Boundary.pdf',size_bytes:100}]};
+                const initial=await call(b,'/upload-sessions',manifest); const file=initial.files[0];
+                await rest(`/upload_session_files?id=eq.${file.id}`,{status:'processing'},service,'PATCH');
+                await rest('/documents',{id:file.resource_id,user_id:b.id,project_id:project.id,status:'processing'});
+                const metadata={id:file.id,filename:'Boundary.pdf',storage_path:'synthetic/previous-source.pdf',file_type:'pdf',content_sha256:'a'.repeat(64),source:'upload',version_number:1};
+                await rest('/rpc/create_document_version',{p_document_id:file.resource_id,p_version:metadata,p_activate:true});
+                const pending=[];
+                for(const purpose of ['document_version_create','document_version_replace']) {
+                    const request=await call(b,'/upload-sessions',{...manifest,purpose,destination:{document_id:file.resource_id,...(purpose==='document_version_replace'?{version_id:file.id,expected_content_sha256:'a'.repeat(64)}:{})}});
+                    pending.push(request.files[0]);
+                    await rest(`/upload_session_files?id=eq.${request.files[0].id}`,{status:'processing'},service,'PATCH');
+                }
+                if(role==='viewer') await call(a,`/projects/${project.id}/access`,{email:b.email,role:'viewer'});
+                else await call(a,`/projects/${project.id}/access/${encodeURIComponent(b.email)}`,undefined,'DELETE');
+                const [addition,replacement]=pending;
+                await request(gatewayUrl+'/rest/v1','/rpc/create_document_version',service,{p_document_id:file.resource_id,p_version:{...metadata,id:addition.resource_id,version_number:2},p_activate:true},'POST',[403]);
+                await request(gatewayUrl+'/rest/v1',`/document_versions?id=eq.${file.id}`,service,{storage_path:`documents/${b.id}/${file.resource_id}/versions/${replacement.resource_id.replace(/-/g,'')}.pdf`,content_sha256:'b'.repeat(64)},'PATCH',[403]);
+                await request(gatewayUrl+'/rest/v1',`/documents?id=eq.${file.resource_id}`,service,{status:'ready'},'PATCH',[403]);
+                await request(gatewayUrl+'/rest/v1',`/upload_session_files?id=eq.${file.id}`,service,{status:'completed',result:{id:file.resource_id}},'PATCH',[403]);
+                const persisted=await rest(`/document_versions?document_id=eq.${file.resource_id}`);
+                assert.equal(persisted.length,1); assert.equal(persisted[0].content_sha256,'a'.repeat(64));
+                assert.equal(persisted[0].storage_path,'synthetic/previous-source.pdf');
+                await call(a,`/projects/${project.id}`,undefined,'DELETE');
+            }
+            await startWorker();
+        });
+        sql('begin;\n'+fs.readFileSync(path.join(repo,'apps/api/migrations/20261117_02_upload_publication_access.sql'),'utf8')+'\ncommit;');
+        const connected=await call(a,'/projects',{name:'Connected acceptance matter',memory_enabled:false});
+        await call(a,`/projects/${connected.id}/access`,{email:b.email,role:'viewer'});
+        await call(a,'/user/onboarding',{}); await call(b,'/user/onboarding',{});
+        const sourceFile=path.join(work,'Connected-Source.docx'); fs.writeFileSync(sourceFile,await docx('connectedjourneyneedle synthetic contract source. Governing law is Ontario.'));
+        await check('connected Chromium owner/viewer source draft history DOCX and revocation journey',async()=>{
+            const { runConnectedMatter }=require(path.join(repo,'tests/browser/run-isolated-matter.cjs'));
+            await runConnectedMatter({repo,work,webPort,apiUrl,until,signal:cancellation.signal,fixture:{
+                matterId:connected.id,foreignMatterId:matterB.id,foreignSourceId:pdfSource.id,sourceFile,
+                owner:{email:a.email,password:a.password},viewer:{email:b.email,password:b.password},
+            }});
+        });
+        await check('revoked actor is excluded from indexed source search',async()=>{
+            const params={p_user_id:a.id,p_user_email:a.email,p_workspace:'personal',p_scope:'project',p_query:'connectedjourneyneedle',p_project_id:connected.id,p_document_id:null,p_version_id:null,p_limit:10,p_offset:0};
+            await until('connected source text positive control',async()=>{
+                const found=await rest('/rpc/find_document_text',params); return found.matches.length>0;
+            });
+            const result=await rest('/rpc/find_document_text',{...params,p_user_id:b.id,p_user_email:b.email});
+            assert.equal(result.matches.length,0);
+        });
+        evidence.runtime.browser='Chromium connected through candidate Next.js gateway; no mocked API responses';
+        evidence.runtime.workers='separate disposable worker, paused only for deterministic queued revocation';
+        evidence.download_limit='Previously issued source URLs remain bearer capabilities for up to 3600 seconds; revocation blocks new issuance and authenticated draft exports.';
     }
     evidence.status='passed';
 }

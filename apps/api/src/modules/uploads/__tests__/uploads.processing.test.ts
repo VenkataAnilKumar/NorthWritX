@@ -1019,6 +1019,43 @@ describe("upload processing", () => {
     expect(mocks.createFileReadStream).not.toHaveBeenCalled();
   });
 
+  it.each([false, true])("keeps revoked upload access terminal when already failed=%s", async alreadyFailed => {
+    const db = scriptedDb([
+      { data: { id: "job-1", session_id: baseSession.id, file_id: baseFile.id, attempts: 1, locked_by: "worker-1" } },
+      { data: baseSession },
+      { data: { ...baseFile, ...(alreadyFailed ? { status: "error", error_code: "upload_access_revoked" } : {}) } },
+      ...(!alreadyFailed ? [
+        { data: { id: "job-1" } }, { error: null }, // Lease and processing.
+        { error: { code: "42501", message: "upload_access_revoked" } }, // Publication guard.
+        { data: { id: "job-1" } }, { error: null }, { error: null },
+        { data: { id: "job-1" } }, { error: null },
+      ] : []),
+      { data: [] }, { data: { id: "job-1" } },
+    ]);
+    await processUploadJob(db as never, "job-1", "worker-1");
+    if (!alreadyFailed) expect(db.calls).toContainEqual(expect.objectContaining({ table: "upload_session_files", operation: "update", payload: expect.objectContaining({ status: "error", error_code: "upload_access_revoked" }) }));
+    expect(db.calls.some(call => (call.payload as { status?: string })?.status === "queued")).toBe(false);
+    expect(mocks.copyFile).not.toHaveBeenCalled(); expect(mocks.reportError).not.toHaveBeenCalled();
+    expect(db.remaining).toHaveLength(0);
+  });
+
+  it("handles a result-publication revocation as a terminal refusal", async () => {
+    const hash = createHash("sha256").update(pdfBytes).digest("hex");
+    const db = scriptedDb([
+      { data: { id: "job-1", session_id: baseSession.id, file_id: baseFile.id, attempts: 1, locked_by: "worker-1" } },
+      { data: { ...baseSession, purpose: "document_version_replace", destination: { document_id: "doc", version_id: "v", expected_content_sha256: hash } } },
+      { data: baseFile }, { data: { id: "job-1" } }, { error: null },
+      { data: { id: "v", content_sha256: hash } }, // Already committed, idempotent replacement.
+      { data: { id: "job-1" } }, { error: { code: "42501", message: "upload_access_revoked" } },
+      { data: { id: "job-1" } }, { error: null }, { data: { id: "job-1" } },
+      { data: [] }, { data: { id: "job-1" } },
+    ]);
+    await processUploadJob(db as never, "job-1", "worker-1");
+    expect(db.calls).toContainEqual(expect.objectContaining({ table: "upload_session_files", payload: expect.objectContaining({ error_code: "upload_access_revoked", status: "error" }) }));
+    expect(db.calls.some(call => (call.payload as { status?: string })?.status === "queued")).toBe(false);
+    expect(mocks.reportError).not.toHaveBeenCalled(); expect(db.remaining).toHaveLength(0);
+  });
+
   it("reports an editor conflict as terminal instead of retrying an overwrite", async () => {
     const db = scriptedDb([
       { data: { id: "job-1", session_id: baseSession.id, file_id: baseFile.id, attempts: 1, locked_by: "worker-1" } },
