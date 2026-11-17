@@ -70,7 +70,7 @@ Preserve the existing module facades, authoritative root lockfile and backend-ow
 
 ## Phase 4 — Matter foundation and complete source journey (in progress locally)
 
-The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) provides the first concrete design package. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records local schema/API work and tests; named review and full 4B acceptance remain pending. The [4C Overview/settings record](NorthWrit-Phase-4C-Overview-Verification.md) tracks the local UI and synthetic-browser subset, not the complete source journey.
+The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) provides the first concrete design package. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records local schema/API work and tests; named review and full 4B acceptance remain pending. The [4C Overview/settings record](NorthWrit-Phase-4C-Overview-Verification.md) tracks the local UI and synthetic-browser subset, not the complete source journey. The [source-context verification record](NorthWrit-Phase-4C-Source-Context-Verification.md) adds asynchronous state/version safeguards and scoped regression evidence.
 
 **Entry:** reviewed work package, selected Phase 4 IDs, isolated database/browser fixtures and the [extension map](NorthWrit-Phase-4-Extension-Map.md). Live AI acceptance additionally requires the model entry package.
 

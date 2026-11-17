@@ -43,4 +43,51 @@ describe("conversion polling", () => {
         expect(set).not.toHaveBeenCalled();
         expect(vi.mocked(getDocumentStatuses).mock.calls[1][1]?.aborted).toBe(true);
     });
+    it("does not let an older conversion response replace a newly selected version", async () => {
+        vi.useFakeTimers();
+        let finish!: (rows: Document[]) => void;
+        vi.mocked(getDocumentStatuses).mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }))
+            .mockResolvedValueOnce([{ ...doc("a", "ready"), current_version_id: "v2" }]);
+        const { result } = renderHook(() => {
+            const [documents, setDocuments] = useState<Document[]>([{ ...doc("a"), current_version_id: "v1" }]);
+            useDocumentConversionPolling(documents, setDocuments);
+            return { documents, setDocuments };
+        });
+        await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+        act(() => result.current.setDocuments([{ ...doc("a"), current_version_id: "v2" }]));
+        await act(async () => finish([{ ...doc("a", "ready"), current_version_id: "v1" }]));
+        expect(result.current.documents[0]).toMatchObject({ current_version_id: "v2", status: "processing" });
+        expect(vi.mocked(getDocumentStatuses).mock.calls[0][1]?.aborted).toBe(true);
+        await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+        expect(result.current.documents[0]).toMatchObject({ current_version_id: "v2", status: "ready" });
+    });
+    it("rechecks the requested version when a queued state updater is applied", async () => {
+        vi.useFakeTimers();
+        vi.mocked(getDocumentStatuses).mockResolvedValue([{ ...doc("a", "ready"), current_version_id: "v1" }]);
+        const set = vi.fn();
+        renderHook(() => useDocumentConversionPolling([{ ...doc("a"), current_version_id: "v1" }], set));
+        await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+        const replacement = [{ ...doc("a"), current_version_id: "v2" }];
+        expect(set.mock.calls[0][0](replacement)).toBe(replacement);
+    });
+
+    it("drops an old conversion result after in-place bytes change on the same version", async () => {
+        vi.useFakeTimers();
+        let finish!: (rows: Document[]) => void;
+        vi.mocked(getDocumentStatuses).mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }))
+            .mockResolvedValueOnce([{ ...doc("a", "ready"), current_version_id: "v1", content_sha256: "new-bytes" }]);
+        const { result } = renderHook(() => {
+            const [documents, setDocuments] = useState<Document[]>([{ ...doc("a"), current_version_id: "v1", content_sha256: "old-bytes" }]);
+            useDocumentConversionPolling(documents, setDocuments);
+            return { documents, setDocuments };
+        });
+        await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+        act(() => result.current.setDocuments([{ ...doc("a"), current_version_id: "v1", content_sha256: "new-bytes" }]));
+        await act(async () => finish([{ ...doc("a", "ready"), current_version_id: "v1", content_sha256: "old-bytes" }]));
+        expect(result.current.documents[0]).toMatchObject({ content_sha256: "new-bytes", status: "processing" });
+        expect(vi.mocked(getDocumentStatuses).mock.calls[0][1]?.aborted).toBe(true);
+        await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+        expect(result.current.documents[0]).toMatchObject({ content_sha256: "new-bytes", status: "ready" });
+    });
+
 });

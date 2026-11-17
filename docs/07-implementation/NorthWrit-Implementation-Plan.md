@@ -160,7 +160,7 @@ Latest verification: PR #4 merged on November 14, 2026 with repository, backend,
 
 **Goal:** Make daily legal work coherent around matters and their evidence.
 
-The [4A Matter contracts and acceptance fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) inventories existing fields/access, proposes compatible metadata and defines downstream fixture assertions. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records the additive schema/API subset and isolated database evidence. The [4C Overview/settings verification record](NorthWrit-Phase-4C-Overview-Verification.md) records the local UI subset. Broader journey acceptance remains pending; unresolved Phase 2 and M-register reviews are not marked closed.
+The [4A Matter contracts and acceptance fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) inventories existing fields/access, proposes compatible metadata and defines downstream fixture assertions. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records the additive schema/API subset and isolated database evidence. The [4C Overview/settings verification record](NorthWrit-Phase-4C-Overview-Verification.md) records the local UI subset. The [4C source-context record](NorthWrit-Phase-4C-Source-Context-Verification.md) records guarded document/folder refreshes and conversion-version continuity. Broader journey acceptance remains pending; unresolved Phase 2 and M-register reviews are not marked closed.
 
 ### Features in this phase
 
