@@ -9,15 +9,19 @@ NorthWrit is a legal AI workspace being developed for Canadian law firms and in-
 | Install and run | [Root README](../README.md), [developer guide](guides/developer.md), [local development](engineering/local-development.md) |
 | Use current product features | [Product catalogue](02-product/NorthWrit-Product-Catalogue.md), [user guide](guides/user-guide.md), [administrator guide](guides/administrator.md) |
 | Understand what exists today | [Current implementation and stack](06-technical/NorthWrit-Current-Implementation.md), [system flows](06-technical/NorthWrit-System-Flows.md), [engineering index](engineering/README.md) |
-| See phases and next work | [Implementation plan](07-implementation/NorthWrit-Implementation-Plan.md), [Phase 4 extension map](07-implementation/NorthWrit-Phase-4-Extension-Map.md) |
+| See phases and next work | [Implementation plan](07-implementation/NorthWrit-Implementation-Plan.md), [Detailed phase delivery and gates](07-implementation/NorthWrit-Phased-Delivery-Plan.md), [Phase 2B architecture principles](07-implementation/NorthWrit-Phase-2B-Architecture-Principles.md), [Phase 2C experience, AI and evidence contracts](07-implementation/NorthWrit-Phase-2C-Experience-AI-Evidence-Contracts.md), [Phase 2D delivery and verification plan](07-implementation/NorthWrit-Phase-2D-Delivery-Verification-Plan.md), [Cross-platform feature backlog](07-implementation/NorthWrit-Cross-Platform-Feature-Backlog.md), [Phase 4 extension map](07-implementation/NorthWrit-Phase-4-Extension-Map.md), [4A Matter contracts and fixtures](07-implementation/NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md), [4B metadata verification](07-implementation/NorthWrit-Phase-4B-Metadata-Verification.md), [4C Overview/settings verification](07-implementation/NorthWrit-Phase-4C-Overview-Verification.md), [4C source-context verification](07-implementation/NorthWrit-Phase-4C-Source-Context-Verification.md) |
 | Find code/document ownership | [Ownership map](06-technical/NorthWrit-Repository-Ownership.md), [ADRs](#architecture-decisions) |
 | Assess checks and limits | [CI inventory](07-implementation/NorthWrit-CI-Inventory.md), [configuration verification](07-implementation/NorthWrit-Configuration-Verification.md) |
 | Compare existing capabilities with requirements | [105-feature capability matrix](04-specs/NorthWrit-Capability-Matrix.md), [documentation coverage](07-implementation/NorthWrit-Documentation-Coverage.md) |
 | Review intended legal workflows | [Product overview](02-product/Northwrit_Product-Overview.md), [workflow contracts](04-specs/Northwrit_Workflow-Contracts.md) |
 
+The [isolated model-free source journey](07-implementation/NorthWrit-Phase-4-Source-Journey-Verification.md) records real Auth/API/worker/storage/database verification and its remaining acceptance limits.
+
+The [4D draft contract](07-implementation/NorthWrit-Phase-4D-Draft-Contract.md) and [backend verification](07-implementation/NorthWrit-Phase-4D-Backend-Verification.md) cover saved revisions, source integrity and draft DOCX export; editor/compare UI remains pending.
+
 ## How to read these documents
 
-The implementation plan governs delivery order. Current source, tests and engineering guides describe the implemented baseline. Product specifications describe requirements; design approval and a document's presence do not establish implementation or legal/security guarantees. P0/P1/P2 are product priorities, separate from implementation phases 1, 3, 4, 5, 6 and 7; Phase 2 was removed.
+The implementation plan governs delivery order. Current source, tests and engineering guides describe the implemented baseline. Product specifications describe requirements; design approval and a document's presence do not establish implementation or legal/security guarantees. P0/P1/P2 are product priorities, separate from implementation phases 1–7. Phase 2 is restored as Product and Architecture Foundation; its remaining decisions and review gates are recorded in the implementation plan.
 
 Historical audits, migration evidence and upstream files retain their original observations and attribution. The earlier polyglot stack and v3 layout proposals do not override the accepted npm workspace or working stack. The [ownership map](06-technical/NorthWrit-Repository-Ownership.md#which-documentation-governs-a-change) defines documentation authority.
 
@@ -72,6 +76,7 @@ The product catalogue describes existing capabilities. The specifications, desig
 - [ADR 0002](decisions/0002-expanded-repository-structure.md): accepted expanded layout.
 - [ADR 0004](decisions/0004-retire-source-reference-archive.md): retired reference archive, current provenance and root policies.
 - [ADR 0003](decisions/0003-npm-root-workspace.md): nine private npm workspaces and the authoritative root lockfile.
+- [ADR 0005](decisions/0005-matter-work-products.md): matter-bound draft storage, immutable revisions and checked export ownership.
 
 Preserve the [license](../LICENSE), [notice](../NOTICE.md), [credits](../Credit.md) and [source provenance](06-technical/NorthWrit-Source-Provenance.md). Historical and compatibility identifiers are explained in the configuration record.
 

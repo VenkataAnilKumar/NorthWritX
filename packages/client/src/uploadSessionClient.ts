@@ -93,14 +93,15 @@ export const UPLOAD_LIMIT_MESSAGES: Record<string, string> = {
 };
 
 /**
- * Codes the server gives a file whose bytes are wrong, not the batch or the
- * connection. Trying again sends the same bytes, so the message names the
- * file and the reason instead of asking for a retry.
+ * Terminal file refusals need corrected bytes or reviewed permissions.
+ * Replaying the same request cannot fix them, so explain the reason
+ * instead of offering a blind retry.
  */
-const UPLOAD_FILE_CONTENT_MESSAGES: Record<
+const UPLOAD_FILE_REFUSAL_MESSAGES: Record<
     string,
     (filenames: string[]) => string
 > = {
+    upload_access_revoked: () => "Upload stopped because access to the matter changed. Ask the matter owner to review your access before uploading again.",
     invalid_pdf_file: (filenames) =>
         filenames.length === 1
             ? `${filenames[0]} is not a valid PDF file.`
@@ -110,7 +111,7 @@ const UPLOAD_FILE_CONTENT_MESSAGES: Record<
 /**
  * Whether a Retry should send this outcome's file again: it did not land, and
  * nothing about its bytes says it would fail the same way. A file the server
- * refused for its content is left out, so a batch of only such files offers
+ * refused for its content or current access is left out, so a batch of only such files offers
  * no Retry at all.
  */
 export function uploadOutcomeNeedsRetry(
@@ -118,7 +119,7 @@ export function uploadOutcomeNeedsRetry(
 ): boolean {
     return (
         outcome.status !== "completed" &&
-        !(outcome.errorCode !== null && outcome.errorCode in UPLOAD_FILE_CONTENT_MESSAGES)
+        !(outcome.errorCode !== null && outcome.errorCode in UPLOAD_FILE_REFUSAL_MESSAGES)
     );
 }
 
@@ -143,7 +144,7 @@ export function failedUploadMessage<T>(
         const code = [...codes][0] ?? "";
         const limitMessage = UPLOAD_LIMIT_MESSAGES[code];
         if (limitMessage) return limitMessage;
-        const contentMessage = UPLOAD_FILE_CONTENT_MESSAGES[code];
+        const contentMessage = UPLOAD_FILE_REFUSAL_MESSAGES[code];
         if (contentMessage) return contentMessage(filenames);
     }
     if (filenames.length === 1) {

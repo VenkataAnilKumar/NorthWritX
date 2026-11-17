@@ -48,6 +48,7 @@ interface VersionPathRow extends DocRow {
 }
 
 export interface ActiveVersion {
+    content_sha256?: string | null;
     text_revision?: string;
     id: string;
     storage_path: string;
@@ -88,7 +89,7 @@ export async function loadActiveVersion(
     const { data: v } = await db
         .from("document_versions")
         .select(
-            "id, document_id, storage_path, pdf_storage_path, version_number, filename, source, file_type, size_bytes, page_count, textless_page_count, text_revision",
+            "id, document_id, storage_path, pdf_storage_path, version_number, filename, source, file_type, size_bytes, page_count, textless_page_count, text_revision, content_sha256",
         )
         .eq("id", targetVersionId)
         .is("deleted_at", null)
@@ -96,6 +97,7 @@ export async function loadActiveVersion(
     if (!v || v.document_id !== documentId || !v.storage_path) return null;
     return {
         id: v.id as string,
+        ...(v.content_sha256 !== undefined ? { content_sha256: v.content_sha256 as string | null } : {}),
         ...(typeof v.text_revision === "string" ? { text_revision: v.text_revision } : {}),
         storage_path: v.storage_path as string,
         pdf_storage_path: (v.pdf_storage_path as string | null) ?? null,

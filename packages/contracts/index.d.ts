@@ -739,3 +739,70 @@ export interface AuditActorPage {
   users: AuditActor[];
   nextOffset: number | null;
 }
+
+/** Additive Matter metadata. Null is unspecified; status is not archive/legal hold. */
+export type MatterStatus = "open" | "on_hold" | "closed";
+export type MatterMetadata = {
+  client_name: string | null;
+  jurisdiction: string | null;
+  matter_status: MatterStatus | null;
+};
+export type MatterMetadataInput = Partial<MatterMetadata>;
+
+/** Manual draft contracts; no legal verification or approval is implied. */
+export type WorkProductSourceRef = {
+  document_id: string;
+  version_id: string;
+  content_sha256: string;
+  locator?: string;
+};
+export type WorkProductSource = WorkProductSourceRef & {
+  filename: string;
+  version_number: number | null;
+};
+export type WorkProductDraftInput = {
+  request_id: string;
+  expected_version_id: string | null;
+  title: string;
+  body: string;
+  scope: string;
+  assumptions: string;
+  sources: WorkProductSourceRef[];
+};
+export type WorkProductVersion = {
+  id: string;
+  work_product_id: string;
+  revision: number;
+  based_on_version_id: string | null;
+  title: string;
+  body: string;
+  scope: string;
+  assumptions: string;
+  sources: WorkProductSource[];
+  created_by: string | null;
+  author_label: string;
+  created_at: string;
+};
+export type WorkProduct = {
+  id: string;
+  project_id: string;
+  title: string;
+  current_version_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WorkProductSaveResponse = { work_product: WorkProduct; version: WorkProductVersion; idempotent: boolean };
+export type WorkProductReadResponse = { work_product: WorkProduct; version: WorkProductVersion; evidence_status: "current" | "changed_or_unavailable" };
+export type WorkProductVersionSummary = Pick<WorkProductVersion, "id" | "work_product_id" | "revision" | "title" | "created_by" | "author_label" | "created_at">;
+export type WorkProductVersionPage = { current_version_id: string | null; versions: WorkProductVersionSummary[] };
+
+export type WorkProductRecoveryFields = Pick<WorkProductDraftInput, "title" | "body" | "scope" | "assumptions" | "sources">;
+export type WorkProductRecoveryInput = {
+ expected_user_id: string; sequence: number; work_product_id: string | null;
+ base_version_id: string | null; fields: WorkProductRecoveryFields;
+};
+export type WorkProductRecovery = Omit<WorkProductRecoveryInput,"expected_user_id"> & {
+ id: string; project_id: string; updated_at: string; expires_at: string;
+};
+export type WorkProductRecoverySummary = Omit<WorkProductRecovery,"fields"> & { title: string };

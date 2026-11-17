@@ -6,6 +6,8 @@ import { defineConfig, devices } from "@playwright/test";
  */
 /** Specs that mock the API in the browser; see the "synthetic" project. */
 const SYNTHETIC_SPECS = [
+    /matter-overview\.spec\.ts/,
+    /matter-drafts\.spec\.ts/,
     /assistant-streaming\.spec\.ts/,
     /tabular-chat-lifecycle\.spec\.ts/,
     /settings-search-latency\.spec\.ts/,
@@ -54,6 +56,12 @@ export default defineConfig({
     },
 
     projects: [
+        // Opt-in: only the isolated runner provisions this project's private fixture.
+        ...(process.env.NORTHWRIT_ACCEPTANCE_MANIFEST ? [{
+            name: "isolated-matter",
+            use: { ...devices["Desktop Chrome"] },
+            testMatch: /matter-acceptance\.spec\.ts/,
+        }] : []),
         /* Run the auth setup before all other tests */
         {
             name: "setup",
@@ -63,7 +71,7 @@ export default defineConfig({
         {
             name: "chromium",
             use: { ...devices["Desktop Chrome"] },
-            testIgnore: SYNTHETIC_SPECS,
+            testIgnore: [...SYNTHETIC_SPECS, /matter-acceptance\.spec\.ts/],
             dependencies: ["setup"],
         },
 

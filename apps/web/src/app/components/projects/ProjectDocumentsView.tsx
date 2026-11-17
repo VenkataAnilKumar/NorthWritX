@@ -14,7 +14,6 @@ import { Plus } from "lucide-react";
 import {
     createProjectFolder,
     deleteProjectFolder,
-    getProject,
     moveDocumentToFolder,
     moveSubfolderToFolder,
     renameProjectDocument,
@@ -23,7 +22,6 @@ import {
     uploadProjectDocument,
     uploadProjectDocuments,
 } from "@/app/lib/northwritApi";
-import type { Document } from "@/app/components/shared/types";
 import { AddDocumentsModal } from "@/app/components/modals/AddDocumentsModal";
 import {
     DocTable,
@@ -33,6 +31,7 @@ import {
 } from "@/app/components/documents/DocTable";
 import { TabPillButtonUI } from "@northwrit/ui";
 import { ProjectSectionToolbar, useProjectWorkspace } from "./ProjectWorkspace";
+import { useProjectDocumentState } from "./useProjectDocumentState";
 
 interface Props {
     projectId: string;
@@ -48,7 +47,7 @@ export function ProjectDocumentsView({ projectId, folderId = null }: Props) {
         project,
         setProject,
         folders,
-        setFolders,
+        setFolders: setWorkspaceFolders,
         projectLoading,
         prefetchProjectSections,
         search,
@@ -157,25 +156,9 @@ export function ProjectDocumentsView({ projectId, folderId = null }: Props) {
         },
         [projectId],
     );
-    const setDocuments = useCallback(
-        (update: SetStateAction<Document[]>) => {
-            setProject((prev) => {
-                if (!prev) return prev;
-                const nextDocuments =
-                    typeof update === "function"
-                        ? update(prev.documents ?? [])
-                        : update;
-                return { ...prev, documents: nextDocuments };
-            });
-        },
-        [setProject],
+    const { setDocuments, setFolders, refreshCollection } = useProjectDocumentState(
+        projectId, setProject, setWorkspaceFolders,
     );
-
-    const refreshCollection = useCallback(async () => {
-        const updated = await getProject(projectId);
-        setProject(updated);
-        setFolders(updated.folders ?? []);
-    }, [projectId, setFolders, setProject]);
     const operations = useMemo(
         () => ({
             uploadDocument: (file: File, targetFolderId?: string | null) =>

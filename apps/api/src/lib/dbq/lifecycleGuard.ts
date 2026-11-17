@@ -45,14 +45,16 @@ const ACTIONABLE = [
  * and treats a failed stamp as a failed upload. A database one version behind
  * would pass a "functions exist" probe and then fail every new-document
  * upload, so the probe has to be asked for the version the code was written
- * against, not merely whether the subsystem exists.
+ * against, not merely whether the subsystem exists. Version 3 adds current
+ * matter-upload publication barriers (20261117_02); an older schema could
+ * otherwise publish a queued upload after its actor loses access.
  */
-export const REQUIRED_LIFECYCLE_VERSION = 2;
+export const REQUIRED_LIFECYCLE_VERSION = 3;
 
 const BEHIND = [
   "[startup] The database is behind the document-lifecycle contract this build",
   `needs (found version %d, need ${REQUIRED_LIFECYCLE_VERSION}).`,
-  "Every new-document upload would fail. Apply the newer migrations in",
+  "Upload publication is not safe for this build. Apply the newer migrations in",
   "apps/api/migrations (see docs/engineering/deployment.md) and restart. To start anyway,",
   "set DOCUMENT_LIFECYCLE_GUARD=off.",
 ].join(" ");

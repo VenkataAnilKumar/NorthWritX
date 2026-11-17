@@ -2,6 +2,8 @@
 
 Reviewed November 14, 2026 at baseline `7c08dba`. This matrix accounts for all 105 requirements in the [feature specification](Northwrit_Feature-Spec.md). It connects them to existing capability areas and the [delivery disposition](../07-implementation/NorthWrit-Feature-Disposition.md); it does not mark those requirements as implemented or accepted.
 
+The [phased delivery review](../07-implementation/NorthWrit-Phased-Delivery-Plan.md#allocation-reconciliation-all-105-requirements) reconciles these allocations without changing IDs or acceptance status. Use its incremental gates alongside the current implementation plan.
+
 ## Interpretation
 
 - **Candidate capability:** the disposition identifies a reuse candidate; the complete requirement still needs verification.

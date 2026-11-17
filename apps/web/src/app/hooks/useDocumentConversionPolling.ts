@@ -6,9 +6,11 @@ import { settleWithConcurrency } from "@northwrit/client";
 export function useDocumentConversionPolling(documents: Document[], setDocuments: Dispatch<SetStateAction<Document[]>>) {
     const pendingKey = JSON.stringify(documents
         .filter(document => document.status === "pending" || document.status === "processing")
-        .map(document => document.id));
+        .map(document => [document.id, document.current_version_id ?? null, document.content_sha256 ?? null]));
     useEffect(() => {
-        const ids: string[] = JSON.parse(pendingKey);
+        const pendingVersions: [string, string | null, string | null][] = JSON.parse(pendingKey);
+        const requestedVersions = new Map(pendingVersions.map(([id, version, hash]) => [id, { version, hash }]));
+        const ids = [...requestedVersions.keys()];
         if (!ids.length) return;
         const controller = new AbortController();
         let timer: ReturnType<typeof setTimeout>;
@@ -23,7 +25,13 @@ export function useDocumentConversionPolling(documents: Document[], setDocuments
                 let changed = false;
                 const next = previous.map(document => {
                     const update = latest.get(document.id);
-                    if (!update || update.status === document.status) return document;
+                    // Replacement keeps the document ID; in-place edits may even
+                    // keep its version ID. Recheck the requested bytes at commit time.
+                    const requested = requestedVersions.get(document.id);
+                    if (!update || !requested ||
+                        (document.current_version_id ?? null) !== requested.version ||
+                        (document.content_sha256 ?? null) !== requested.hash ||
+                        update.status === document.status) return document;
                     changed = true;
                     return { ...document, ...update };
                 });

@@ -837,6 +837,16 @@ commented `worker` service demonstrating this.
 
 ### Document lifecycle migration
 
+Current builds require lifecycle contract **version 3**. Apply all pending
+migrations before API/worker rollout, including the retry marker migration and
+`20261117_02_upload_publication_access.sql`. The latter adds current-role checks
+at matter upload publication boundaries. Updated processes refuse an older
+contract; keep the startup guard enabled. Fresh installations include these
+changes in `apps/api/schema.sql`; existing installations use
+`apps/api/scripts/migrate.sh up`. See the [Phase 4E acceptance record](../07-implementation/NorthWrit-Phase-4E-Acceptance-Verification.md)
+for the tested upgrade baseline and remaining limits. No existing preview or
+production database was migrated by that verification.
+
 Apply `20260914_01_document_lifecycle.sql` before deploying the backend that uses
 its version RPCs. Fresh installs include it in `backend/schema.sql`;
 `backend/scripts/migrate.sh up` and Compose's `db-init` service apply it

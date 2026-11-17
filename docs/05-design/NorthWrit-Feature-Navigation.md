@@ -1,6 +1,6 @@
 # NorthWrit feature navigation
 
-Updated: November 16, 2026
+Updated: November 17, 2026
 
 Status: approved naming and navigation direction. This document defines the proposed information architecture; it does not establish implementation or approve every feature extension. The running application currently has four primary destinations. Agents becomes the fifth when its usable, governed experience is implemented.
 
@@ -23,7 +23,7 @@ Settings, role-restricted Administration and Account remain at the bottom. In th
 | Parent | Section names | Boundary |
 | --- | --- | --- |
 | Assistant | Chat; Research | Research may expose CiteCheck and Beacon when implemented |
-| Matters | Overview; Documents; Conversations; Reviews; Drafts & Approvals; Tasks; Facts & Timeline; Requests | Existing Documents/Conversations/Reviews stay available; additional sections require implementation and acceptance |
+| Matters | Overview; Documents; Conversations; Reviews; Drafts & Approvals; Tasks; Facts & Timeline; Requests | Overview/settings is implemented locally in the [4C subset](../07-implementation/NorthWrit-Phase-4C-Overview-Verification.md); existing Documents/Conversations/Reviews stay available. Other sections and full journey acceptance remain pending |
 | Library | Files; Templates; Playbooks; Firm Knowledge | Firm Knowledge means curated, permission-aware content, not unrestricted access to private matters |
 | Workflows | Saved Workflows; Review Grid; **Contract Intelligence** | Review Grid builds on existing tabular review; Contract Intelligence groups contract-focused workflows |
 | Agents | My Agents; Runs; Schedules; Approvals | Each section is shown only when functional; no empty navigation placeholders |

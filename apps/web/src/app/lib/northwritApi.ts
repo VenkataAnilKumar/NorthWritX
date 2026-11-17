@@ -1,3 +1,11 @@
+import type {
+    MatterMetadataInput,
+    WorkProduct,
+    WorkProductDraftInput,
+    WorkProductReadResponse,
+    WorkProductSaveResponse,
+    WorkProductVersionPage,
+} from "@northwrit/contracts";
 import type { Operation } from "@northwrit/client";
 import { settleWithConcurrency } from "@northwrit/client";
 import type {
@@ -264,11 +272,12 @@ export async function uploadFilesWithSession<T>(args: {
     });
 }
 
-async function apiBlobRequest(operation: Operation, path: string): Promise<{
+async function apiBlobRequest(operation: Operation, path: string, method: "GET" | "POST" = "GET"): Promise<{
     blob: Blob;
     filename: string | null;
 }> {
     const response = await apiFetch(`${API_BASE}${path}`, {
+        method,
         cache: "no-store",
         headers: {
             Accept: "application/json",
@@ -276,7 +285,7 @@ async function apiBlobRequest(operation: Operation, path: string): Promise<{
     }, operation);
 
     if (!response.ok) {
-        throw await toApiError(response, path, "GET", operation);
+        throw await toApiError(response, path, method, operation);
     }
 
     const disposition = response.headers.get("content-disposition") ?? "";
@@ -577,6 +586,7 @@ export async function createProject(
     org_id?: string,
     memory_enabled?: boolean,
     visibility?: ContentVisibility,
+    metadata?: MatterMetadataInput,
 ): Promise<Project> {
     return apiRequest<Project>("projects.manage", "/projects", {
         method: "POST",
@@ -588,6 +598,7 @@ export async function createProject(
             org_id,
             memory_enabled,
             visibility,
+            ...metadata,
         }),
     });
 }
@@ -1619,7 +1630,7 @@ export async function getProject(projectId: string): Promise<Project> {
 
 export async function updateProject(
     projectId: string,
-    payload: {
+    payload: MatterMetadataInput & {
         name?: string;
         cm_number?: string;
         practice?: string | null;
@@ -4661,4 +4672,40 @@ export async function deletePlaybook(playbookId: string): Promise<void> {
     return apiRequest("playbooks.save", `/playbooks/${encodeURIComponent(playbookId)}`, {
         method: "DELETE",
     });
+}
+
+// Matter drafts use cookie authentication and immutable, explicitly selected revisions.
+function workProductPath(projectId: string, workProductId?: string) {
+    return `/projects/${encodeURIComponent(projectId)}/work-products${workProductId ? `/${encodeURIComponent(workProductId)}` : ""}`;
+}
+export function listWorkProducts(projectId: string, offset = 0): Promise<{ items: WorkProduct[] }> {
+    return apiRequest("work_products.read", `${workProductPath(projectId)}?limit=50&offset=${offset}`);
+}
+export function readWorkProduct(projectId: string, id: string, versionId?: string): Promise<WorkProductReadResponse> {
+    return apiRequest("work_products.read", `${workProductPath(projectId, id)}${versionId ? `/versions/${encodeURIComponent(versionId)}` : ""}`);
+}
+export function listWorkProductVersions(projectId: string, id: string, offset = 0): Promise<WorkProductVersionPage> {
+    return apiRequest("work_products.read", `${workProductPath(projectId, id)}/versions?limit=50&offset=${offset}`);
+}
+export function saveWorkProduct(projectId: string, id: string | null, input: WorkProductDraftInput): Promise<WorkProductSaveResponse> {
+    return apiRequest("work_products.save", `${workProductPath(projectId, id ?? undefined)}${id ? "/versions" : ""}`, {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
+    });
+}
+export function exportWorkProduct(projectId: string, id: string, versionId: string): Promise<{ blob: Blob; filename: string | null }> {
+    return apiBlobRequest("work_products.export", `${workProductPath(projectId, id)}/versions/${encodeURIComponent(versionId)}/export`, "POST");
+}
+
+
+export function listDraftRecoveries(projectId: string): Promise<{ items: import("@northwrit/contracts").WorkProductRecoverySummary[] }> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries`, {signal:AbortSignal.timeout(15000)});
+}
+export function readDraftRecovery(projectId: string,id: string): Promise<import("@northwrit/contracts").WorkProductRecovery> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries/${encodeURIComponent(id)}`, {signal:AbortSignal.timeout(15000)});
+}
+export function saveDraftRecovery(projectId: string,id: string,input: import("@northwrit/contracts").WorkProductRecoveryInput,keepalive=false): Promise<import("@northwrit/contracts").WorkProductRecovery> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries/${encodeURIComponent(id)}`, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(input),keepalive,signal:AbortSignal.timeout(15000)});
+}
+export function discardDraftRecovery(projectId: string,id: string,userId: string): Promise<void> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries/${encodeURIComponent(id)}`, {method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({expected_user_id:userId}),signal:AbortSignal.timeout(15000)});
 }

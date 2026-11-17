@@ -1326,6 +1326,12 @@ describe("failedUploadMessage for a file the worker refused", () => {
         );
     });
 
+    it("explains a revoked upload without offering a blind retry", () => {
+        expect(failedUploadMessage([refused("contract.docx", "upload_access_revoked")])).toBe(
+            "Upload stopped because access to the matter changed. Ask the matter owner to review your access before uploading again.",
+        );
+    });
+
     it("lists every refused file when all share the reason", () => {
         expect(
             failedUploadMessage([
@@ -1359,6 +1365,7 @@ describe("uploadOutcomeNeedsRetry", () => {
 
     it("leaves out a file the server refused as not a PDF, and files that landed", () => {
         expect(uploadOutcomeNeedsRetry(outcome("error", "invalid_pdf_file"))).toBe(false);
+        expect(uploadOutcomeNeedsRetry(outcome("error", "upload_access_revoked"))).toBe(false);
         expect(uploadOutcomeNeedsRetry(outcome("completed", null))).toBe(false);
     });
 });

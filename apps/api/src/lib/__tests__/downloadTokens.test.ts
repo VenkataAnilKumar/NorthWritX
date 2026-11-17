@@ -113,3 +113,34 @@ describe("buildDownloadUrl", () => {
         expect(result!.filename).toBe(filename);
     });
 });
+
+// A source capability must never be interchangeable with old download/upload tokens.
+import { signSourceDownload, verifySourceDownload, signBlobToken, buildSourceDownloadUrl } from "../downloadTokens";
+describe("source download tokens", () => {
+    const input = { a: "issuer", d: "document", v: "version", p: "source/path", h: "a".repeat(64), f: "Advice.docx" };
+    it("binds issuer/version/path/hash and bounds expiry", () => {
+        const value = verifySourceDownload(signSourceDownload(input, 99999));
+        expect(value).toMatchObject(input);
+        expect(value!.e - Math.floor(Date.now() / 1000)).toBeLessThanOrEqual(3600);
+        expect(value!.e - Math.floor(Date.now() / 1000)).toBeGreaterThanOrEqual(3599);
+        expect(verifySourceDownload(signSourceDownload(input, -1))).toBeNull();
+    });
+    it("rejects tampering and tokens signed for another purpose", () => {
+        const token = signSourceDownload(input);
+        expect(verifySourceDownload(token + "changed")).toBeNull();
+        expect(verifySourceDownload(signDownload(input.p, input.f))).toBeNull();
+        expect(verifySourceDownload(signBlobToken(input.p, input.f, 3600))).toBeNull();
+        expect(verifyDownload(token)).toBeNull();
+        expect(verifySourceDownload(token.split(".")[0] + "." + "é".repeat(43))).toBeNull();
+    });
+    it("rejects missing claims and does not expose credentials in public URL configuration", () => {
+        expect(verifySourceDownload(signSourceDownload({ ...input, a: "" }))).toBeNull();
+        process.env.API_PUBLIC_URL = "https://api.northwrit.local";
+        expect(buildSourceDownloadUrl(input)).toMatch(/^https:\/\/api.northwrit.local\/download\/source\//);
+        process.env.API_PUBLIC_URL = "https://user:password@api.northwrit.local";
+        expect(() => buildSourceDownloadUrl(input)).toThrow("Invalid public API URL");
+        process.env.API_PUBLIC_URL = "not a valid URL private-marker";
+        expect(() => buildSourceDownloadUrl(input)).toThrow("Invalid public API URL");
+        delete process.env.API_PUBLIC_URL;
+    });
+});

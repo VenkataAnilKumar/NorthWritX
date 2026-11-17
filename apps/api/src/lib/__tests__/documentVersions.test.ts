@@ -90,6 +90,7 @@ describe("loadActiveVersion", () => {
         });
         await expect(loadActiveVersion("doc-1", db)).resolves.toEqual({
             id: "ver-1",
+            content_sha256: "a".repeat(64),
             storage_path: "documents/u/doc-1/source.pdf",
             pdf_storage_path: "documents/u/doc-1/converted.pdf",
             version_number: 3,

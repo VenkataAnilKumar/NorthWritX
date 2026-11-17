@@ -1,3 +1,4 @@
+import { parseMatterMetadata } from "./projects.metadata";
 // Project CRUD service functions: overview, create, detail, people, update,
 // delete, and the tamper-evident export manifest.
 
@@ -401,6 +402,9 @@ export async function createProject(
     org_id?: string | null;
     visibility?: unknown;
     memory_enabled?: boolean;
+    client_name?: unknown;
+    jurisdiction?: unknown;
+    matter_status?: unknown;
   },
 ): Promise<CreateProjectResult> {
   const { userId, name, cm_number, practice, org_id, memory_enabled } = args;
@@ -413,6 +417,9 @@ export async function createProject(
       detail: "memory_enabled must be a boolean",
     };
   }
+
+  const metadata = parseMatterMetadata(args);
+  if (!metadata.ok) return { ok: false, kind: "validation", detail: metadata.detail };
 
   // Tenant assignment: an explicit org_id must be one the caller belongs to.
   // No org_id means a personal project — org_id stays NULL, which is still
@@ -454,6 +461,9 @@ export async function createProject(
     p_practice: normalizeOptionalString(practice),
     p_org_id: resolvedOrgId,
     p_memory_enabled: resolvedMemoryEnabled,
+    p_client_name: metadata.values.client_name ?? null,
+    p_jurisdiction: metadata.values.jurisdiction ?? null,
+    p_matter_status: metadata.values.matter_status ?? null,
   });
   const data = Array.isArray(created) ? created[0] : created;
   if (error || !data) return { ok: false, kind: "db_error", error };
@@ -691,6 +701,10 @@ export async function updateProject(
       kind: "forbidden",
       detail: "Only a project owner can change project settings.",
     };
+  const metadata = parseMatterMetadata(body);
+  if (!metadata.ok) return { ok: false, kind: "validation", detail: metadata.detail };
+  Object.assign(updates, metadata.values);
+
   // Opening a project to the whole organization, or closing it again, is an
   // access decision like any other: the same Owner gate, checked above.
   const requestedVisibility = parseContentVisibility(

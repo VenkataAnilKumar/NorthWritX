@@ -1,0 +1,51 @@
+{
+  "baseline": "a1b9b4059939350f1413a46a2d231e0403bee950",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "real sign-in, separate organizations and matter metadata",
+      "status": "passed"
+    },
+    {
+      "name": "DOCX staged upload and actual worker processing",
+      "status": "passed"
+    },
+    {
+      "name": "download admission, DOCX bytes and cross-organization denial",
+      "status": "passed"
+    },
+    {
+      "name": "new document version preserves original version bytes",
+      "status": "passed"
+    },
+    {
+      "name": "valid PDF processing and same-organization matter binding",
+      "status": "passed"
+    },
+    {
+      "name": "real indexed source-text search and denied actor visibility",
+      "status": "passed"
+    },
+    {
+      "name": "invalid PDF remains an explicit failed upload",
+      "status": "passed"
+    },
+    {
+      "name": "model catalogue has no configured inference model",
+      "status": "passed"
+    }
+  ],
+  "runtime": {
+    "database": "postgres:17-alpine",
+    "auth": "supabase/gotrue:v2.189.0",
+    "rest": "postgrest/postgrest:v14.12",
+    "storage": "isolated filesystem",
+    "interface": "real HTTP API and PostgREST RPC",
+    "ai": "unconfigured; no inference"
+  },
+  "processing": {
+    "docx": "completed",
+    "pdf": "completed"
+  },
+  "cleanup": "only run-owned containers, network and temporary files removed"
+}

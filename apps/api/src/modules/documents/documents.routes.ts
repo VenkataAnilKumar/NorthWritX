@@ -230,6 +230,7 @@ documentsRouter.post("/download-zip", requireAuth, asyncRoute(async (req, res) =
 // Optional ?version_id= selects a specific tracked-changes version.
 // Otherwise falls back to documents.current_version_id, else the original upload.
 documentsRouter.get("/:documentId/url", requireAuth, asyncRoute(async (req, res) => {
+    res.setHeader("Cache-Control", "private, no-store");
     const userId = res.locals.userId as string;
     const userEmail = res.locals.userEmail as string | undefined;
     const { documentId } = req.params;

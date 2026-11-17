@@ -19,16 +19,16 @@ const probeDb = (result: LifecycleProbe) =>
 
 describe("document lifecycle boot guard", () => {
   it("passes when the database reports the lifecycle contract", () => {
-    expect(evaluateLifecycleProbe({ data: 2, error: null })).toEqual({
+    expect(evaluateLifecycleProbe({ data: 3, error: null })).toEqual({
       status: "ok",
     });
     // PostgREST hands back a scalar RPC result as a bare value or a one-row
     // array depending on the client; both mean the same thing.
-    expect(evaluateLifecycleProbe({ data: [2], error: null }).status).toBe(
+    expect(evaluateLifecycleProbe({ data: [3], error: null }).status).toBe(
       "ok",
     );
     // A newer database than the build is fine: the contract only grows.
-    expect(evaluateLifecycleProbe({ data: 3, error: null }).status).toBe("ok");
+    expect(evaluateLifecycleProbe({ data: 4, error: null }).status).toBe("ok");
   });
 
   // 20260914_01 applied but not 20260916_01: the RPCs exist, the upload
@@ -38,11 +38,15 @@ describe("document lifecycle boot guard", () => {
     const verdict = evaluateLifecycleProbe({ data: 1, error: null });
     expect(verdict.status).toBe("missing");
     expect(verdict.status === "missing" && verdict.message).toMatch(
-      /found version 1, need 2/,
+      /found version 1, need 3/,
     );
     expect(verdict.status === "missing" && verdict.message).toMatch(
-      /new-document upload/,
+      /Upload publication/,
     );
+  });
+
+  it("refuses the previous lifecycle contract without upload publication barriers", () => {
+    expect(evaluateLifecycleProbe({ data: 2, error: null })).toMatchObject({ status: "missing" });
   });
 
   it("fails when the probe reports the lifecycle RPCs are absent", () => {
@@ -99,7 +103,7 @@ describe("document lifecycle boot guard", () => {
           data: null,
           error: { code: "57P03", message: "starting up" },
         })
-        .mockResolvedValueOnce({ data: 2, error: null }),
+        .mockResolvedValueOnce({ data: 3, error: null }),
     } as never;
     await enforceDocumentLifecycleMigration(db, exit as never, {
       attempts: 2,
@@ -128,7 +132,7 @@ describe("document lifecycle boot guard", () => {
     expect(exit).toHaveBeenCalledWith(1);
     expect(sleep).toHaveBeenCalledTimes(2);
     expect(error).toHaveBeenCalledWith(
-      expect.stringMatching(/Refusing to start.*version 2/),
+      expect.stringMatching(/Refusing to start.*version 3/),
     );
   });
 
