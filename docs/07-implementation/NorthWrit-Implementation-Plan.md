@@ -115,6 +115,8 @@ Results: [Source audit and gap backlog](NorthWrit-Source-Audit.md), [105-feature
 
 ## Phase 2 — Product and Architecture Foundation
 
+Start with the [Phase 2A pilot scope proposal](NorthWrit-Phase-2A-Pilot-Scope.md): 38 P0 baseline requirements, seven recommended P1 additions and explicit pending decisions.
+
 **Goal:** Connect the source audit to a reviewed product blueprint and implementation backlog. This restored phase consolidates evidence already produced across the project; it is not a new application implementation program or a claim that the historical Phase 3 work occurred after this restoration.
 
 | Foundation area | Evidence already available | Remaining decision / boundary |

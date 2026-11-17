@@ -45,6 +45,8 @@ Existing evidence: source audit, product catalogue, 105-feature matrix and verif
 
 ## Phase 2 — Product and Architecture Foundation (restored)
 
+The [Phase 2A pilot scope proposal](NorthWrit-Phase-2A-Pilot-Scope.md) is the initial reviewable scope/decision register. It does not mark Phase 2 complete.
+
 **Entry:** Phase 1 audit evidence and the existing architecture, requirements, design and verification records. This phase is restored to consolidate decisions; it does not invalidate completed Phase 3 integration or move any of the 105 feature IDs into Phase 2.
 
 | Work package | Output | Closure evidence |
