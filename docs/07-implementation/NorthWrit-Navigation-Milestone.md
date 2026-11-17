@@ -2,6 +2,10 @@
 
 Date: November 16, 2026
 
+## Subsequent navigation direction
+
+The four-destination milestone below records the implemented baseline. The [approved feature navigation](../05-design/NorthWrit-Feature-Navigation.md) adds **Agents** as a proposed separate fifth destination and names the contract-focused Workflows section **Contract Intelligence**. Those sections require implementation before appearing in the app.
+
 ## Scope
 
 Before Phase 4, organize the existing web and Electron experience around four primary destinations. This is a navigation and terminology milestone, not a new matter data model or a change to authorization.

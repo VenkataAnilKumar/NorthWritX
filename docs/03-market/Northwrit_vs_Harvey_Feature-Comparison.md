@@ -2,6 +2,9 @@
 
 Comparison date: November 9, 2026. The NorthWrit side uses the **proposed** v2.0 [Feature Specification](../04-specs/Northwrit_Feature-Spec.md) and [Product Definition](../02-product/Northwrit_Product-Definition.md). The Harvey side uses public product documentation, release notes, and the [Harvey feature inventory](Harvey_Product-Feature-Inventory.md). This is a comparison of documented scope. NorthWrit priorities do not establish shipped capabilities, and Harvey access can vary by workspace, region, licensing, or rollout.
 
+
+For a comparison against today’s implemented NorthWrit baseline, use the [November 16 implementation map](NorthWrit-Harvey-Implementation-Map.md). The matrix below remains a comparison of proposed requirements.
+
 ## Product positioning
 
 | Dimension | NorthWrit | Harvey |
