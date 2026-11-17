@@ -42,3 +42,5 @@ Targeted API suites exercise source resolution, document access/status/version/t
 No new browser build, database migration, provider configuration, model execution or deployment is performed for this client-state increment. The earlier Overview record retains its own browser evidence. Existing model-free full-stack source/upload/search and authorization scenarios still need an explicitly isolated runtime and review outcomes before declaring all of 4C–4E accepted.
 
 This protects the document workspace's current state; it does not implement immutable legal-evidence snapshots, CiteCheck or Folio approval invalidation. Those remain their selected later-phase contracts. Named reviewer closure and unresolved Phase 2/4A decisions remain pending.
+
+Subsequent verification: the [isolated model-free source journey](NorthWrit-Phase-4-Source-Journey-Verification.md) passed eight real Auth/API/worker/storage/database checks. Its limits and remaining browser, revocation, upgrade and review gates remain explicit.

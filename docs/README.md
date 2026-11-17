@@ -15,6 +15,8 @@ NorthWrit is a legal AI workspace being developed for Canadian law firms and in-
 | Compare existing capabilities with requirements | [105-feature capability matrix](04-specs/NorthWrit-Capability-Matrix.md), [documentation coverage](07-implementation/NorthWrit-Documentation-Coverage.md) |
 | Review intended legal workflows | [Product overview](02-product/Northwrit_Product-Overview.md), [workflow contracts](04-specs/Northwrit_Workflow-Contracts.md) |
 
+The [isolated model-free source journey](07-implementation/NorthWrit-Phase-4-Source-Journey-Verification.md) records real Auth/API/worker/storage/database verification and its remaining acceptance limits.
+
 ## How to read these documents
 
 The implementation plan governs delivery order. Current source, tests and engineering guides describe the implemented baseline. Product specifications describe requirements; design approval and a document's presence do not establish implementation or legal/security guarantees. P0/P1/P2 are product priorities, separate from implementation phases 1–7. Phase 2 is restored as Product and Architecture Foundation; its remaining decisions and review gates are recorded in the implementation plan.

@@ -44,6 +44,8 @@ Run the smallest checks that can catch the change, as required by [application i
 
 Browser/database acceptance tests must state their environment, synthetic fixtures and authorization outcomes. Root CI does not replace the Phase 4 two-user/two-matter checks. Record known inherited failures separately from failures introduced by a change.
 
+The [isolated source-journey runner](NorthWrit-Phase-4-Source-Journey-Verification.md) now supplies a manual, fresh-stack model-free integration check. It is not an adopted required GitHub job or a substitute for the remaining browser, full upgrade and security acceptance gates.
+
 ## Root workspace installation
 
 Application jobs cache `package-lock.json` and run targeted frozen installs from the root. Container contexts include root manifests, `.npmrc` and every workspace manifest before selecting an application with `npm ci --workspace <path> --include-workspace-root=false`. Root override policy applies consistently. Check names remain unchanged. Audit tooling selects the requested workspace dependency closure from the root lock; root dependency paths cannot inherit a child-path exception.
