@@ -4695,3 +4695,17 @@ export function saveWorkProduct(projectId: string, id: string | null, input: Wor
 export function exportWorkProduct(projectId: string, id: string, versionId: string): Promise<{ blob: Blob; filename: string | null }> {
     return apiBlobRequest("work_products.export", `${workProductPath(projectId, id)}/versions/${encodeURIComponent(versionId)}/export`, "POST");
 }
+
+
+export function listDraftRecoveries(projectId: string): Promise<{ items: import("@northwrit/contracts").WorkProductRecoverySummary[] }> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries`, {signal:AbortSignal.timeout(15000)});
+}
+export function readDraftRecovery(projectId: string,id: string): Promise<import("@northwrit/contracts").WorkProductRecovery> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries/${encodeURIComponent(id)}`, {signal:AbortSignal.timeout(15000)});
+}
+export function saveDraftRecovery(projectId: string,id: string,input: import("@northwrit/contracts").WorkProductRecoveryInput,keepalive=false): Promise<import("@northwrit/contracts").WorkProductRecovery> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries/${encodeURIComponent(id)}`, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(input),keepalive,signal:AbortSignal.timeout(15000)});
+}
+export function discardDraftRecovery(projectId: string,id: string,userId: string): Promise<void> {
+    return apiRequest("work_products.recovery", `${workProductPath(projectId)}/recoveries/${encodeURIComponent(id)}`, {method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({expected_user_id:userId}),signal:AbortSignal.timeout(15000)});
+}

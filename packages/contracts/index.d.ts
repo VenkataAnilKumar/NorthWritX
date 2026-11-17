@@ -796,3 +796,13 @@ export type WorkProductSaveResponse = { work_product: WorkProduct; version: Work
 export type WorkProductReadResponse = { work_product: WorkProduct; version: WorkProductVersion; evidence_status: "current" | "changed_or_unavailable" };
 export type WorkProductVersionSummary = Pick<WorkProductVersion, "id" | "work_product_id" | "revision" | "title" | "created_by" | "author_label" | "created_at">;
 export type WorkProductVersionPage = { current_version_id: string | null; versions: WorkProductVersionSummary[] };
+
+export type WorkProductRecoveryFields = Pick<WorkProductDraftInput, "title" | "body" | "scope" | "assumptions" | "sources">;
+export type WorkProductRecoveryInput = {
+ expected_user_id: string; sequence: number; work_product_id: string | null;
+ base_version_id: string | null; fields: WorkProductRecoveryFields;
+};
+export type WorkProductRecovery = Omit<WorkProductRecoveryInput,"expected_user_id"> & {
+ id: string; project_id: string; updated_at: string; expires_at: string;
+};
+export type WorkProductRecoverySummary = Omit<WorkProductRecovery,"fields"> & { title: string };

@@ -5,7 +5,7 @@ import { asyncRoute, routerErrorHandler } from "../../middleware/asyncRoute";
 import { sendServiceFailure } from "../../lib/serviceResult";
 import { UUID_PATTERN } from "../../lib/uuid";
 import { buildContentDisposition } from "../../lib/storage";
-import { listWorkProducts, saveWorkProduct, readWorkProductVersion, listWorkProductVersions, exportWorkProductVersion } from "./workProducts.service";
+import { listRecoveries, readRecovery, writeRecovery, listWorkProducts, saveWorkProduct, readWorkProductVersion, listWorkProductVersions, exportWorkProductVersion } from "./workProducts.service";
 
 export const workProductsRouter = Router({ mergeParams: true });
 const actor = (req: Request, res: Response) => ({ projectId: String(req.params.projectId), userId: String(res.locals.userId), userEmail: res.locals.userEmail as string | undefined });
@@ -15,10 +15,26 @@ workProductsRouter.use((req,res,next) => {
     if (!UUID_PATTERN.test(String(req.params.projectId))) return void res.status(400).json({ detail: "Invalid matter identifier." });
     next();
 });
-for (const key of ["workProductId","versionId"]) workProductsRouter.param(key, (_req,res,next,value: string) => {
+for (const key of ["workProductId","versionId","recoveryId"]) workProductsRouter.param(key, (_req,res,next,value: string) => {
     if (!UUID_PATTERN.test(value)) return void res.status(400).json({ detail: "Invalid work-product identifier." });
     next();
 });
+workProductsRouter.get("/recoveries", asyncRoute(async(req,res)=>{
+ const result=await listRecoveries(createServerSupabase(),actor(req,res));
+ if(!result.ok)return void sendServiceFailure(res,result); res.json(result.data);
+}));
+workProductsRouter.get("/recoveries/:recoveryId", asyncRoute(async(req,res)=>{
+ const result=await readRecovery(createServerSupabase(),actor(req,res),req.params.recoveryId);
+ if(!result.ok)return void sendServiceFailure(res,result); res.json(result.data);
+}));
+workProductsRouter.post("/recoveries/:recoveryId", asyncRoute(async(req,res)=>{
+ const result=await writeRecovery(createServerSupabase(),actor(req,res),req.params.recoveryId,req.body);
+ if(!result.ok)return void sendServiceFailure(res,result); res.json(result.data);
+}));
+workProductsRouter.delete("/recoveries/:recoveryId", asyncRoute(async(req,res)=>{
+ const result=await writeRecovery(createServerSupabase(),actor(req,res),req.params.recoveryId,req.body,true);
+ if(!result.ok)return void sendServiceFailure(res,result); res.status(204).send();
+}));
 workProductsRouter.get("/", asyncRoute(async (req, res) => {
     const result = await listWorkProducts(createServerSupabase(), actor(req,res), Number(req.query.limit ?? 50), Number(req.query.offset ?? 0));
     if (!result.ok) return void sendServiceFailure(res,result);

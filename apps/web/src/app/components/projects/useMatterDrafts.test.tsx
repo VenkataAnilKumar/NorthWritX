@@ -128,6 +128,14 @@ describe("matter drafts", () => {
         await act(async () => { await result.current.save(); await result.current.exportSelected(); });
         expect(api.saveWorkProduct).toHaveBeenCalledOnce(); expect(api.exportWorkProduct).toHaveBeenCalledWith("a", "draft", "v2");
     });
+    it("preserves the recovery base when a newer revision exists", async () => {
+        const { result } = await mount();
+        vi.mocked(api.readWorkProduct).mockResolvedValueOnce(read(1, 3));
+        await act(async () => { await result.current.restoreRecovery({ id:"copy",project_id:"a",work_product_id:"draft",base_version_id:"v1",sequence:1,updated_at:"now",expires_at:"later",fields:{title:"Recovered",body:"Private edits",scope:"",assumptions:"",sources:[]} }); });
+        expect(result.current.historical).toBe(false);expect(result.current.recovered).toBe(true);
+        await act(async () => { await result.current.save(); });
+        expect(api.saveWorkProduct).toHaveBeenCalledWith("a","draft",expect.objectContaining({expected_version_id:"v1",body:"Private edits"}));
+    });
     it("drops a late read after the matter editor unmounts", async () => {
         const hook = await mount(); const pending = deferred<WorkProductReadResponse>();
         vi.mocked(api.readWorkProduct).mockReturnValueOnce(pending.promise);

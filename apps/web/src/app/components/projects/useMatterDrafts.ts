@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type SetStateAction } from "react";
-import type { WorkProduct, WorkProductReadResponse, WorkProductSourceRef, WorkProductVersionSummary } from "@northwrit/contracts";
+import type { WorkProduct, WorkProductReadResponse, WorkProductSourceRef, WorkProductVersionSummary, WorkProductRecovery } from "@northwrit/contracts";
 import { exportWorkProduct, listWorkProducts, listWorkProductVersions, NorthWritApiError, readWorkProduct, saveWorkProduct } from "@/app/lib/northwritApi";
 import { notifyError, notifySuccess } from "@/app/lib/userFacingError";
 import { downloadBlob } from "@/app/lib/downloadDocument";
@@ -26,6 +26,8 @@ export function useMatterDrafts(projectId: string, canEdit: boolean) {
     const versionOffset = useRef(0);
     const [fields, setFields] = useState<DraftFields>(emptyDraft);
     const [baseline, setBaseline] = useState<DraftFields>(emptyDraft);
+    const [editorSession, setEditorSession] = useState(0);
+    const [recoveryBase, setRecoveryBase] = useState<string | null | undefined>(undefined);
     const [creating, setCreating] = useState(false);
     const [busy, setBusy] = useState(false);
     const [conflict, setConflict] = useState(false);
@@ -41,7 +43,7 @@ export function useMatterDrafts(projectId: string, canEdit: boolean) {
     }, []);
     const current = (token: number) => active.current && epoch.current === token;
     const dirty = JSON.stringify(fields) !== JSON.stringify(baseline);
-    const historical = Boolean(selected && selected.version.id !== selected.work_product.current_version_id);
+    const historical = Boolean(selected && selected.version.id !== selected.work_product.current_version_id && recoveryBase === undefined);
 
     const loadList = useCallback(async (append = false) => {
         if (!active.current || lock.current) return;
@@ -74,6 +76,7 @@ export function useMatterDrafts(projectId: string, canEdit: boolean) {
             if (!current(token)) return;
             // The read endpoint's current pointer is authoritative for the selected snapshot.
             // If another save lands during these reads, the next save still fails closed by CAS.
+            setRecoveryBase(undefined); setEditorSession(value => value + 1);
             setSelected(read); setVersions(history.versions); versionOffset.current = history.versions.length;
             setMoreVersions(history.versions.length === 50);
             const next = draftFields(read); setFields(next); setBaseline(next);
@@ -86,6 +89,7 @@ export function useMatterDrafts(projectId: string, canEdit: boolean) {
     }
     function create() {
         if (!active.current || lock.current || !canEdit) return;
+        setRecoveryBase(undefined); setEditorSession(value => value + 1);
         setSelected(null); setVersions([]); setFields(emptyDraft()); setBaseline(emptyDraft());
         setCreating(true); setConflict(false); setReadFailed(false); attempt.current = null;
     }
@@ -107,13 +111,14 @@ export function useMatterDrafts(projectId: string, canEdit: boolean) {
     async function save(restore = false) {
         if (!active.current || lock.current || !canEdit || conflict || readFailed || (!creating && !selected) || (historical && !restore)) return;
         const token = epoch.current;
-        const payload = { ...fields, expected_version_id: selected?.work_product.current_version_id ?? null };
+        const payload = { ...fields, expected_version_id: recoveryBase !== undefined ? recoveryBase : selected?.work_product.current_version_id ?? null };
         const fingerprint = JSON.stringify({ id: selected?.work_product.id ?? null, ...payload });
         if (attempt.current?.fingerprint !== fingerprint) attempt.current = { fingerprint, id: crypto.randomUUID() };
         lock.current = true; setBusy(true);
         try {
             const saved = await saveWorkProduct(projectId, selected?.work_product.id ?? null, { ...payload, request_id: attempt.current.id });
             if (!current(token)) return;
+            setRecoveryBase(undefined);
             const read: WorkProductReadResponse = { ...saved, evidence_status: "current" };
             setSelected(read); setFields(draftFields(read)); setBaseline(draftFields(read));
             setItems(old => mergeById([saved.work_product, ...old.filter(item => item.id !== saved.work_product.id)]));
@@ -142,10 +147,28 @@ export function useMatterDrafts(projectId: string, canEdit: boolean) {
             notifyError(error, { action: "export draft revision", operation: "work_products.export" });
         } finally { if (current(token)) { lock.current = false; setBusy(false); } }
     }
+    async function restoreRecovery(copy: WorkProductRecovery): Promise<boolean> {
+        if (!active.current || lock.current || !canEdit) return false;
+        const token = epoch.current; lock.current = true; setBusy(true);
+        try {
+            const read = copy.work_product_id ? await readWorkProduct(projectId, copy.work_product_id, copy.base_version_id ?? undefined) : null;
+            const history = copy.work_product_id ? await listWorkProductVersions(projectId, copy.work_product_id) : null;
+            if (!current(token)) return false;
+            setRecoveryBase(copy.base_version_id);
+            setSelected(read); setVersions(history?.versions ?? []); setMoreVersions(Boolean(history?.versions.length === 50));
+            versionOffset.current = history?.versions.length ?? 0;
+            setFields(copy.fields); setBaseline(read ? draftFields(read) : emptyDraft());
+            setCreating(!read); setConflict(false); setReadFailed(false); attempt.current = null;
+            setEditorSession(value => value + 1); return true;
+        } catch (error) {
+            if (current(token)) notifyError(error, { action: "recover draft edits", operation: "work_products.recovery" });
+            return false;
+        } finally { if (current(token)) { lock.current = false; setBusy(false); } }
+    }
     function editFields(update: SetStateAction<DraftFields>) {
         if (!active.current || lock.current || !canEdit || historical || readFailed) return;
         setFields(update);
         if (creating) setConflict(false);
     }
-    return { items, listState, moreItems, selected, versions, moreVersions, fields, setFields: editFields, creating, busy, conflict, readFailed, dirty, historical, loadList, open, create, loadMoreVersions, save, exportSelected };
+    return { editorSession, restoreRecovery, recovered: recoveryBase !== undefined, recoveryBaseVersionId: recoveryBase !== undefined ? recoveryBase : selected?.work_product.current_version_id ?? null, items, listState, moreItems, selected, versions, moreVersions, fields, setFields: editFields, creating, busy, conflict, readFailed, dirty, historical, loadList, open, create, loadMoreVersions, save, exportSelected };
 }

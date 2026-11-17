@@ -24,6 +24,11 @@ for (const role of ["owner", "viewer"] as const) {
             if (path === "/api/user/profile") return route.fulfill({ json: { onboardingComplete: true, displayName: "Synthetic", apiKeyStatus: {}, creditsRemaining: 100 } });
             if (path === `/api/projects/${matter}`) return route.fulfill({ json: { id: matter, user_id: "synthetic-user", name: "Synthetic matter", access_role: role, org_id: null, visibility: "private", memory_enabled: false, documents: [doc, { ...doc, id: "legacy-doc", filename: "Unhashed.docx", content_sha256: null }], folders: [], created_at: now, updated_at: now } });
             const base = `/api/projects/${matter}/work-products`;
+            if (path.startsWith(`${base}/recoveries`)) {
+                if (method === "DELETE") return route.fulfill({ status: 204 });
+                if (method === "POST") return route.fulfill({ json: { ...route.request().postDataJSON(), id: path.split("/").at(-1), project_id: matter, updated_at: now, expires_at: "2026-11-18T12:00:00Z" } });
+                return route.fulfill({ json: { items: [] } });
+            }
             if (path.startsWith(base)) {
                 if (method === "POST" && path.endsWith("/export")) {
                     exports.push(path);

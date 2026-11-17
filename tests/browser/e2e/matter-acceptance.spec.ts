@@ -132,6 +132,29 @@ test("connected matter source draft export and two-user revocation", async ({ br
         await viewer.reload();
         await expect(viewer.getByText("Matter unavailable. Return to Matters to choose an accessible matter.", { exact: true })).toBeVisible();
         await expect(viewer.getByLabel("Draft text", { exact: true })).toHaveCount(0);
+        await owner.getByLabel("Draft text", { exact: true }).fill("Private unsaved edits recovered after reload.");
+        await expect(owner.getByRole("status").filter({ hasText: /^Recovery saved$/ })).toBeVisible();
+        owner.once("dialog", dialog => dialog.accept());
+        await owner.reload();
+        await owner.getByRole("region", { name: "Private recovery copies" }).getByRole("button", { name: "Recover edits", exact: true }).first().click();
+        await expect(owner.getByLabel("Draft text", { exact: true })).toHaveValue("Private unsaved edits recovered after reload.");
+        const current = await (await owner.request.get(base)).json();
+        // A concurrent edit must not be overwritten by recovering an older base.
+        const advanced = await owner.request.post(`${base}/versions`, { data: {
+            request_id: crypto.randomUUID(), expected_version_id: current.work_product.current_version_id,
+            title: current.version.title, body: "Concurrent saved revision.", scope: current.version.scope,
+            assumptions: current.version.assumptions, sources: current.version.sources.map((ref: { document_id: string; version_id: string; content_sha256: string; locator?: string }) => ({ document_id: ref.document_id, version_id: ref.version_id, content_sha256: ref.content_sha256, locator: ref.locator })),
+        } });
+        expect(advanced.status()).toBe(201);
+        await owner.getByRole("button", { name: "Save revision", exact: true }).click();
+        await expect(owner.getByText(/Save conflict:/)).toBeVisible();
+        await expect(owner.getByLabel("Draft text", { exact: true })).toHaveValue("Private unsaved edits recovered after reload.");
+        await owner.getByRole("button", { name: "Documents", exact: true }).click();
+        await owner.getByRole("button", { name: "Discard changes", exact: true }).click();
+        await expect(owner).toHaveURL(new RegExp(`/projects/${fixture.matterId}$`));
+        await owner.getByRole("button", { name: "Drafts", exact: true }).click();
+        await expect(owner.getByRole("region", { name: "Private recovery copies" }).getByRole("button", { name: "Recover edits", exact: true })).toHaveCount(0);
+        console.log("STEP private recovery reload conflict and discard passed");
         expect(pageErrors).toEqual([]);
     } finally { await ownerContext.close(); await viewerContext.close(); }
 });

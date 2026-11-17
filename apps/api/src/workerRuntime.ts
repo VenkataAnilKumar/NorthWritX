@@ -25,6 +25,7 @@ import { runStaleWorkSweep } from "./jobs/maintenance";
 import { startUploadProcessingWorkers } from "./modules/uploads/uploads.service";
 import { uploadProcessingConfiguration } from "./lib/runtimeConfig";
 import { createServerSupabase } from "./lib/supabase";
+import { pruneRecoveries } from "./modules/work-products/workProducts.service";
 import { reportError } from "./lib/observability/sentry";
 
 const SWEEP_INTERVAL_MS = (() => {
@@ -46,6 +47,7 @@ const MCP_REFRESH_MAX_EXPIRED_AGE_MS = 24 * 60 * 60 * 1000;
 
 let sweepTimer: ReturnType<typeof setInterval> | null = null;
 let initialSweep: ReturnType<typeof setTimeout> | null = null;
+let recoveryCleanupTimer: ReturnType<typeof setInterval> | null = null;
 let mcpRefreshTimer: ReturnType<typeof setInterval> | null = null;
 let stopUploadWorker: (() => void) | null = null;
 
@@ -109,6 +111,13 @@ export function startAllWorkers(
     }
     if (!roles.includes("jobs")) return;
 
+    recoveryCleanupTimer = setInterval(() => {
+        void pruneRecoveries(createServerSupabase()).catch(error => {
+            reportError(error, { tags: { component: "draft-recovery-cleanup" } });
+        });
+    }, 15 * 60 * 1000);
+    recoveryCleanupTimer.unref();
+
     // BullMQ workers: conversion/extraction when their flags are on, plus
     // the app-jobs delivery worker — all only when the Redis driver is
     // active (the registry's `enabled` predicates gate this).
@@ -166,4 +175,5 @@ export async function stopAllWorkers(): Promise<void> {
     await stopWorkers();
     await stopDbJobRunner();
     started = false;
+    if (recoveryCleanupTimer) { clearInterval(recoveryCleanupTimer); recoveryCleanupTimer = null; }
 }
