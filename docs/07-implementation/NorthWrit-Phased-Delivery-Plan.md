@@ -70,6 +70,8 @@ Preserve the existing module facades, authoritative root lockfile and backend-ow
 
 ## Phase 4 — Matter foundation and complete source journey (not started)
 
+The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) provides the first concrete design package. It does not mark 4A accepted or the application implementation started.
+
 **Entry:** reviewed work package, selected Phase 4 IDs, isolated database/browser fixtures and the [extension map](NorthWrit-Phase-4-Extension-Map.md). Live AI acceptance additionally requires the model entry package.
 
 | Increment | Deliverable | Dependency and exit evidence |

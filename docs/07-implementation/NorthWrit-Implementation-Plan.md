@@ -160,6 +160,8 @@ Latest verification: PR #4 merged on November 14, 2026 with repository, backend,
 
 **Goal:** Make daily legal work coherent around matters and their evidence.
 
+The [4A Matter contracts and acceptance fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) inventories existing fields/access, proposes compatible metadata and defines downstream fixture assertions. It is a reviewable design package; schema/API/UI changes and database acceptance have not started. Resolve its affected Phase 2 and M-register decisions before 4B implementation.
+
 ### Features in this phase
 
 | NorthWrit feature | Benchmark pattern | Scope |

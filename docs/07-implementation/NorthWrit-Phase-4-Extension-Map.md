@@ -19,6 +19,8 @@ Status: implementation map, not a completed feature. Paths below refer to the ex
 
 ## Test ownership
 
+The [4A Matter contract and fixture proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) supplies the current metadata/access design and fixture cases for review. Proposed fields and test cases are not implemented or accepted behaviour.
+
 - Backend domain suites cover permission decisions, route admission, jobs, evidence/version binding, downloads and export finalization. Reuse the existing fake-DB and route-integration patterns where appropriate.
 - Real database tests verify migration compatibility, grants/RLS and the distinction between authorized and unauthorized accounts. Mocks cannot establish those guarantees.
 - Web component/hook tests cover navigation, visible context, role-based controls and processing/empty/error states.
