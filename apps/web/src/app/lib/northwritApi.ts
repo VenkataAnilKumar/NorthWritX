@@ -1,3 +1,4 @@
+import type { MatterMetadataInput } from "@northwrit/contracts";
 import type { Operation } from "@northwrit/client";
 import { settleWithConcurrency } from "@northwrit/client";
 import type {
@@ -577,6 +578,7 @@ export async function createProject(
     org_id?: string,
     memory_enabled?: boolean,
     visibility?: ContentVisibility,
+    metadata?: MatterMetadataInput,
 ): Promise<Project> {
     return apiRequest<Project>("projects.manage", "/projects", {
         method: "POST",
@@ -588,6 +590,7 @@ export async function createProject(
             org_id,
             memory_enabled,
             visibility,
+            ...metadata,
         }),
     });
 }
@@ -1619,7 +1622,7 @@ export async function getProject(projectId: string): Promise<Project> {
 
 export async function updateProject(
     projectId: string,
-    payload: {
+    payload: MatterMetadataInput & {
         name?: string;
         cm_number?: string;
         practice?: string | null;

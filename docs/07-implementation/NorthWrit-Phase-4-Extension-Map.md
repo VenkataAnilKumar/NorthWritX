@@ -1,6 +1,6 @@
 # Phase 4 extension map
 
-Status: implementation map, not a completed feature. Paths below refer to the expanded repository layout. Unqualified backend `modules/` and `lib/` paths are relative to `apps/api/src/`; other paths are repository-relative. Migration evidence is recorded separately; Phase 4 features have not been implemented. The [Phase 4 plan](NorthWrit-Implementation-Plan.md#phase-4--build-the-legal-workspace) defines the ordered scope and acceptance criteria. The [phased delivery plan](NorthWrit-Phased-Delivery-Plan.md) defines increments 4A–4E and entry/exit gates. Canadian source adapters, CiteCheck, Shield and approval workflows remain later-phase work.
+Status: implementation map, not a completed feature. Paths below refer to the expanded repository layout. Unqualified backend `modules/` and `lib/` paths are relative to `apps/api/src/`; other paths are repository-relative. Migration evidence is recorded separately; The [4B verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records the local Matter metadata implementation; broader Phase 4 features and acceptance remain pending. The [Phase 4 plan](NorthWrit-Implementation-Plan.md#phase-4--build-the-legal-workspace) defines the ordered scope and acceptance criteria. The [phased delivery plan](NorthWrit-Phased-Delivery-Plan.md) defines increments 4A–4E and entry/exit gates. Canadian source adapters, CiteCheck, Shield and approval workflows remain later-phase work.
 
 | Phase 4 concern | Existing owner and extension point | Verification required |
 |---|---|---|
@@ -19,7 +19,7 @@ Status: implementation map, not a completed feature. Paths below refer to the ex
 
 ## Test ownership
 
-The [4A Matter contract and fixture proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) supplies the current metadata/access design and fixture cases for review. Proposed fields and test cases are not implemented or accepted behaviour.
+The [4A Matter contract and fixture proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) supplies the current metadata/access design and fixture cases for review. The 4B record distinguishes implemented metadata from the remaining proposed fixtures and unaccepted broader behaviour.
 
 - Backend domain suites cover permission decisions, route admission, jobs, evidence/version binding, downloads and export finalization. Reuse the existing fake-DB and route-integration patterns where appropriate.
 - Real database tests verify migration compatibility, grants/RLS and the distinction between authorized and unauthorized accounts. Mocks cannot establish those guarantees.

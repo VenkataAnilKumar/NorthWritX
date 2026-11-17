@@ -2,7 +2,7 @@
 
 Updated: November 16, 2026
 
-Status: Phase 1 audit and Phase 3 application integration are complete. Phase 2 is restored as Product and Architecture Foundation; existing evidence is available, but scope/ownership decisions and review closure remain pending. Repository organization, the expanded layout and the root npm workspace are merged. [PR #4](https://github.com/VenkataAnilKumar/NorthWritX/pull/4) verified the application baseline with all seven PR checks passing; merge commit `d7e899526a389cbbe684b18618b32df98ccea237` was verified on remote `main`. See the [configuration record](NorthWrit-Configuration-Verification.md) for compatibility exceptions and release limits. Phase 4 has not started. No deployment or pilot release is established by these merges.
+Status: Phase 1 audit and Phase 3 application integration are complete. Phase 2 is restored as Product and Architecture Foundation; existing evidence is available, but scope/ownership decisions and review closure remain pending. Repository organization, the expanded layout and the root npm workspace are merged. [PR #4](https://github.com/VenkataAnilKumar/NorthWritX/pull/4) verified the application baseline with all seven PR checks passing; merge commit `d7e899526a389cbbe684b18618b32df98ccea237` was verified on remote `main`. See the [configuration record](NorthWrit-Configuration-Verification.md) for compatibility exceptions and release limits. Phase 4 has a locally implemented metadata subset; full journey and reviewer acceptance remain pending. No deployment or pilot release is established by these merges.
 
 Application baseline: subsequent GitHub changes through `7c08dba` include [PR #5](https://github.com/VenkataAnilKumar/NorthWritX/pull/5) (configuration/documentation alignment) and [PR #6](https://github.com/VenkataAnilKumar/NorthWritX/pull/6) (reference archive retirement). [ADR 0004](../decisions/0004-retire-source-reference-archive.md) and the [source provenance record](../06-technical/NorthWrit-Source-Provenance.md) govern the retained source history. Earlier verification statements refer to their own revisions.
 
@@ -160,7 +160,7 @@ Latest verification: PR #4 merged on November 14, 2026 with repository, backend,
 
 **Goal:** Make daily legal work coherent around matters and their evidence.
 
-The [4A Matter contracts and acceptance fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) inventories existing fields/access, proposes compatible metadata and defines downstream fixture assertions. It is a reviewable design package; schema/API/UI changes and database acceptance have not started. Resolve its affected Phase 2 and M-register decisions before 4B implementation.
+The [4A Matter contracts and acceptance fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) inventories existing fields/access, proposes compatible metadata and defines downstream fixture assertions. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records the additive schema/API subset and isolated database evidence. UI and broader journey acceptance remain pending; unresolved Phase 2 and M-register reviews are not marked closed.
 
 ### Features in this phase
 

@@ -1,3 +1,4 @@
+import type { MatterMetadataInput } from "@northwrit/contracts";
 import type { AssistantEvent as WireAssistantEvent } from "@northwrit/contracts";
 // Shared TypeScript types for NorthWrit AI legal assistant
 
@@ -45,7 +46,7 @@ export type ResourceAccessScope = "private" | "shared" | "organization";
  */
 export type ContentVisibility = "private" | "organization";
 
-export interface Project {
+export interface Project extends MatterMetadataInput {
   id: string;
   /** The creator. Null once an org project outlives the account that made it. */
   user_id: string;

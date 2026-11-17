@@ -1123,6 +1123,9 @@ describe("projects.routes", () => {
                 p_practice: "litigation",
                 p_org_id: null,
                 p_memory_enabled: true,
+                p_client_name: null,
+                p_jurisdiction: null,
+                p_matter_status: null,
             });
         });
 
@@ -1679,6 +1682,33 @@ describe("projects.routes", () => {
             expect(res.status).toBe(200);
             expect(res.body).toEqual([{ id: "d1" }, { id: "d2" }]);
             expect(checkProjectAccess).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("Matter metadata wire contract", () => {
+        it("passes normalized metadata to atomic creation", async () => {
+            supabaseState.rpc = { data: { id: "p9", client_name: "Client", jurisdiction: "Ontario", matter_status: "open" }, error: null };
+            const captured = captureRpcArgs();
+            const res = await request(app).post("/projects").set(...AUTH)
+                .send({ name: "Matter", client_name: " Client ", jurisdiction: " Ontario ", matter_status: "open" });
+            expect(res.status).toBe(201);
+            expect(captured.args).toMatchObject({ p_client_name: "Client", p_jurisdiction: "Ontario", p_matter_status: "open" });
+            expect(res.body).toMatchObject({ client_name: "Client", jurisdiction: "Ontario", matter_status: "open" });
+        });
+        it("round trips metadata through owner PATCH and detail", async () => {
+            supabaseState.tables.projects = { data: { id: "p1", user_id: "u1", client_name: "Client", jurisdiction: null, matter_status: "closed" }, error: null };
+            const patch = await request(app).patch("/projects/p1").set(...AUTH)
+                .send({ client_name: " Client ", jurisdiction: null, matter_status: "closed" });
+            expect(patch.status).toBe(200);
+            expect(patch.body).toMatchObject({ client_name: "Client", jurisdiction: null, matter_status: "closed" });
+            const detail = await request(app).get("/projects/p1").set(...AUTH);
+            expect(detail.status).toBe(200);
+            expect(detail.body.client_name).toBe("Client");
+        });
+        it.each(["post", "patch"] as const)("rejects invalid metadata on %s", async (method) => {
+            const res = await request(app)[method](method === "post" ? "/projects" : "/projects/p1")
+                .set(...AUTH).send({ name: "Matter", client_name: 123 });
+            expect(res.status).toBe(400);
         });
     });
 

@@ -16,12 +16,12 @@ Reviewed November 16, 2026 against the merged application/UI baseline `38da785` 
 ## Baseline and delivery controls
 
 - Phase 1 audit, Phase 3 integration, repository/workspace preparation, the four-tab navigation, visual identity and floating workspace are complete within their recorded scope.
-- Phase 2 is restored as Product and Architecture Foundation. Existing foundation evidence is available; unresolved scope/ownership decisions and reviewer sign-off remain pending. Phase 4 has not started; Phases 5–7 remain planned.
+- Phase 2 is restored as Product and Architecture Foundation. Existing foundation evidence is available; unresolved scope/ownership decisions and reviewer sign-off remain pending. Phase 4 has a local metadata implementation subset; complete journey acceptance is pending. Phases 5–7 remain planned.
 - The current application has Assistant, Matters, Library and Workflows. Agents is the approved future fifth tab. Contract Intelligence is the approved proposed contract-focused section under Workflows.
 - Source-supported AI, Word and connector paths are not automatically accepted. The synthetic demo verified document/project handling, versions/downloads, workflow configuration and web/Electron views; no live model output was evaluated.
 - The [capability matrix](../04-specs/NorthWrit-Capability-Matrix.md) and [feature disposition](NorthWrit-Feature-Disposition.md) retain all 105 IDs and priorities. P0/P1/P2 are not implementation phase numbers.
 - All 38 P0 requirements form the baseline pilot target. Each P1/P2 requirement needs a documented pilot inclusion or deferred decision; phase allocation alone does not select it. A control needed for the actual chosen workflow cannot be omitted just because its priority is P1/P2.
-- Do not implement Phase 4, configure credentials, run a new AI test, deploy, publish or migrate an existing user database as part of this planning task.
+- The initial planning task did not authorize implementation. Subsequent user instructions authorized local phased implementation, review, tests and commits; the 4B record states its scope. Credential configuration, live AI tests, deployment, publication and existing user-database migration remain outside this increment.
 
 ## Cross-platform feature candidates
 
@@ -68,9 +68,9 @@ Preserve the existing module facades, authoritative root lockfile and backend-ow
 
 **Owner:** repository/application engineering. **Gate:** affected builds/types/tests and existing CI pass. Packaging, legal quality and deployment guarantees remain distinct from build success.
 
-## Phase 4 — Matter foundation and complete source journey (not started)
+## Phase 4 — Matter foundation and complete source journey (in progress locally)
 
-The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) provides the first concrete design package. It does not mark 4A accepted or the application implementation started.
+The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) provides the first concrete design package. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records local schema/API work and tests; named review and full 4B acceptance remain pending.
 
 **Entry:** reviewed work package, selected Phase 4 IDs, isolated database/browser fixtures and the [extension map](NorthWrit-Phase-4-Extension-Map.md). Live AI acceptance additionally requires the model entry package.
 

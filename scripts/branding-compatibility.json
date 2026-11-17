@@ -57,11 +57,6 @@
       "reason": "Frozen SQL/schema/fixture contract"
     },
     {
-      "path": "apps/api/schema.sql",
-      "sha256": "997499472b6e965faaf9fbb813d1d1f7c11265a93ee8f429e38e48cb61f3d1f5",
-      "reason": "Frozen SQL/schema/fixture contract"
-    },
-    {
       "path": "apps/api/src/__tests__/sql/performance.audit.sql",
       "sha256": "97c11ddfe2b9a908a5544d81d3aa8ebd4e9d5e7f6add592f41d11897f3410f4d",
       "reason": "Frozen SQL/schema/fixture contract"

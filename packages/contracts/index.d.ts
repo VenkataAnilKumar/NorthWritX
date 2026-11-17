@@ -739,3 +739,12 @@ export interface AuditActorPage {
   users: AuditActor[];
   nextOffset: number | null;
 }
+
+/** Additive Matter metadata. Null is unspecified; status is not archive/legal hold. */
+export type MatterStatus = "open" | "on_hold" | "closed";
+export type MatterMetadata = {
+  client_name: string | null;
+  jurisdiction: string | null;
+  matter_status: MatterStatus | null;
+};
+export type MatterMetadataInput = Partial<MatterMetadata>;

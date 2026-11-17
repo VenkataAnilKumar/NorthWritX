@@ -2461,6 +2461,20 @@ describe("thin endpoint wrappers", () => {
     const cases: WrapperCase[] = [
         // Account & profile
         {
+            name: "createProject (Matter metadata)",
+            call: () => createProject("Matter", undefined, undefined, undefined, false, "private", {
+                client_name: "Client", jurisdiction: "Ontario", matter_status: "open",
+            }),
+            url: "/projects", method: "POST",
+            body: { name: "Matter", memory_enabled: false, visibility: "private", client_name: "Client", jurisdiction: "Ontario", matter_status: "open" },
+        },
+        {
+            name: "updateProject (clear Matter metadata)",
+            call: () => updateProject("p1", { client_name: null, jurisdiction: "Ontario", matter_status: "closed" }),
+            url: "/projects/p1", method: "PATCH",
+            body: { client_name: null, jurisdiction: "Ontario", matter_status: "closed" },
+        },
+        {
             name: "createProject",
             call: () =>
                 createProject("Acme v. Zenith", "CM-42", "litigation"),

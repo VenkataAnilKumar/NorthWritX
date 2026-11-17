@@ -2,6 +2,8 @@
 
 Prepared November 16, 2026 against `ef36828`. Status: proposed design package, source-reviewed and subject to the unresolved decisions below. No schema/API/UI implementation or database acceptance is claimed. Phase 2 reviewer closure remains pending; this package makes the next design concrete without marking those decisions resolved.
 
+Subsequent implementation: see the [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) for selected technical choices, delivered schema/API behaviour and remaining review gates. The original proposal below remains a design record, not proof that every fixture or feature is accepted.
+
 ## Plan and scope
 
 Deliver a compatible Matter metadata contract and reproducible acceptance-fixture specification before 4B changes storage or application behaviour. Use the [implementation plan](NorthWrit-Implementation-Plan.md), [delivery increments](NorthWrit-Phased-Delivery-Plan.md), [2A scope](NorthWrit-Phase-2A-Pilot-Scope.md), [2B principles](NorthWrit-Phase-2B-Architecture-Principles.md), [2C experience contracts](NorthWrit-Phase-2C-Experience-AI-Evidence-Contracts.md) and [2D verification rules](NorthWrit-Phase-2D-Delivery-Verification-Plan.md). No requirement allocation changes.
