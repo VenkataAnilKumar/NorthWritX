@@ -115,7 +115,7 @@ Results: [Source audit and gap backlog](NorthWrit-Source-Audit.md), [105-feature
 
 ## Phase 2 — Product and Architecture Foundation
 
-Start with the [Phase 2A pilot scope proposal](NorthWrit-Phase-2A-Pilot-Scope.md): 38 P0 baseline requirements, seven recommended P1 additions and explicit pending decisions. The [Phase 2B architecture assessment](NorthWrit-Phase-2B-Architecture-Principles.md) maps current domain/access code to recommended principles and unresolved design gates.
+Start with the [Phase 2A pilot scope proposal](NorthWrit-Phase-2A-Pilot-Scope.md): 38 P0 baseline requirements, seven recommended P1 additions and explicit pending decisions. The [Phase 2B architecture assessment](NorthWrit-Phase-2B-Architecture-Principles.md) maps current domain/access code to recommended principles and unresolved design gates. The [Phase 2C experience, AI and evidence contracts](NorthWrit-Phase-2C-Experience-AI-Evidence-Contracts.md) consolidate navigation, client limits, model routing, citation support and distinct output/action approval requirements; implementation and live AI acceptance remain pending. The [Phase 2D delivery and verification plan](NorthWrit-Phase-2D-Delivery-Verification-Plan.md) defines work-package records, evidence categories, test boundaries and unresolved ownership/gates; Phase 2 sign-off remains pending.
 
 **Goal:** Connect the source audit to a reviewed product blueprint and implementation backlog. This restored phase consolidates evidence already produced across the project; it is not a new application implementation program or a claim that the historical Phase 3 work occurred after this restoration.
 
