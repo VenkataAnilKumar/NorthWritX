@@ -4,18 +4,34 @@
 // their typed results onto status codes, headers, and JSON.
 
 import { Router } from "express";
+import { pipeline } from "node:stream/promises";
 import { requireAuth } from "../../middleware/auth";
 import { asyncRoute, routerErrorHandler } from "../../middleware/asyncRoute";
 import { createServerSupabase } from "../../lib/supabase";
-import { buildContentDisposition } from "../../lib/storage";
+import { buildContentDisposition, createFileReadStream } from "../../lib/storage";
 import { sendServiceFailure } from "../../lib/serviceResult";
 import {
+    resolveSourceDownload,
     resolveBlobDownload,
     resolveTokenDownload,
     storeBlobUpload,
 } from "./downloads.service";
 
 export const downloadsRouter = Router();
+
+// Source capabilities are anonymous to the recipient browser, but their issuer's
+// current account, access and exact source identity are checked on every request.
+downloadsRouter.get("/source/:token", asyncRoute(async (req, res) => {
+    res.setHeader("Cache-Control", "private, no-store");
+    const result = await resolveSourceDownload(createServerSupabase(), req.params.token);
+    if (!result.ok) return void sendServiceFailure(res, result);
+    res.setHeader("Content-Type", result.data.contentType);
+    res.setHeader("Content-Length", result.data.size);
+    res.setHeader("Content-Disposition", buildContentDisposition("attachment", result.data.filename));
+    const source = createFileReadStream(result.data.storagePath);
+    try { await pipeline(source, res); }
+    catch (error) { source.destroy(); throw error; }
+}));
 
 // GET /download/signed/:token — the filesystem storage driver's presigned
 // URL. Deliberately unauthenticated, exactly like the S3 presigned URLs it

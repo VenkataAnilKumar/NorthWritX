@@ -412,7 +412,7 @@ alter role supabase_auth_admin set search_path=auth;`);
         });
         evidence.runtime.browser='Chromium connected through candidate Next.js gateway; no mocked API responses';
         evidence.runtime.workers='separate disposable worker, paused only for deterministic queued revocation';
-        evidence.download_limit='Previously issued source URLs remain bearer capabilities for up to 3600 seconds; revocation blocks new issuance and authenticated draft exports.';
+        evidence.download_limit='New source URLs recheck the issuing account and exact source identity at redemption; original links are denied after revocation. Legacy object-store URLs retain their original expiry.';
     }
     evidence.status='passed';
 }

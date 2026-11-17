@@ -66,3 +66,5 @@ Existing source-file URLs are bearer capabilities valid for up to 3,600 seconds.
 Apply the new migration before updated API/worker rollout. No migration was applied to the existing preview or a production database. Run-owned infrastructure is labelled and removed by the runner, with cleanup recorded in evidence; unrelated containers/volumes are preserved.
 
 Live AI remains unconfigured and untested. Legal/citation quality, visual comparison, durable unsaved recovery/universal navigation blocking, Word/Electron acceptance, full cross-service/job coverage, active required-CI integration and named product/legal/security sign-off remain open. Complete Phase 4 acceptance must not be inferred from this selected local journey.
+
+Subsequent [source-link revocation work](NorthWrit-Source-Download-Revocation-Verification.md) replaces newly issued storage links with revocation-checked links. The one-hour direct-storage behaviour above records the earlier candidate; legacy already-issued links retain their original expiry.

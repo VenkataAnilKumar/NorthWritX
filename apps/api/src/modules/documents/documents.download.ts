@@ -1,7 +1,7 @@
 // Read/serve paths for documents: inline display bytes, zip bundling, signed
 // download URLs, and the raw source bytes of a version.
 
-import { getSignedUrl, headFile } from "../../lib/storage";
+import { headFile } from "../../lib/storage";
 import {
     attachActiveVersionPaths,
     loadActiveVersion,
@@ -15,6 +15,7 @@ import {
     loadDocumentDisplay,
     type DocumentDisplayPayload,
 } from "../../lib/documentDisplay";
+import { buildSourceDownloadUrl } from "../../lib/downloadTokens";
 import { downloadFilenameForVersion, type Db } from "./documents.shared";
 import { ensureDocumentAccess } from "./documents.access";
 
@@ -340,9 +341,10 @@ export async function getDownloadUrl(
         active.version_number,
         active.source === "assistant_edit",
     );
-    const url = await getSignedUrl(active.storage_path, 3600, downloadFilename);
-    if (!url)
-        return { ok: false, kind: "storage", detail: "Storage not configured" };
+    const url = buildSourceDownloadUrl({
+        a: userId, d: documentId, v: active.id, p: active.storage_path,
+        h: active.content_sha256 ?? null, f: downloadFilename,
+    });
 
     return {
         ok: true,

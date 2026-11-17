@@ -29,8 +29,9 @@ function b64urlDecode(s: string): Buffer {
 }
 
 function timingSafeEqStr(a: string, b: string): boolean {
-    if (a.length !== b.length) return false;
-    return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+    const left = Buffer.from(a), right = Buffer.from(b);
+    if (left.length !== right.length) return false;
+    return crypto.timingSafeEqual(left, right);
 }
 
 export function signDownload(path: string, filename: string): string {
@@ -188,4 +189,37 @@ export function verifyBlobUploadToken(
     } catch {
         return null;
     }
+}
+
+/** Expiring source capability. Every redemption must recheck its issuer's access. */
+export type SourceDownloadClaims = {
+    a: string; d: string; v: string; p: string; h: string | null; f: string; e: number;
+};
+export function signSourceDownload(input: Omit<SourceDownloadClaims, "e">, lifetime = 3600): string {
+    const enc = b64urlEncode(Buffer.from(JSON.stringify({ ...input, e: Math.floor(Date.now() / 1000) + Math.min(3600, lifetime) }), "utf8"));
+    const sig = crypto.createHmac("sha256", getSecret()).update("source-download:" + enc).digest();
+    return `${enc}.${b64urlEncode(sig)}`;
+}
+export function verifySourceDownload(token: string): SourceDownloadClaims | null {
+    if (token.length > 16000) return null;
+    const parts = token.split(".");
+    if (parts.length !== 2) return null;
+    const [enc, sig] = parts;
+    const expected = crypto.createHmac("sha256", getSecret()).update("source-download:" + enc).digest();
+    if (!timingSafeEqStr(sig, b64urlEncode(expected))) return null;
+    try {
+        const value = JSON.parse(b64urlDecode(enc).toString("utf8")) as SourceDownloadClaims;
+        if (![value.a, value.d, value.v, value.p, value.f].every(item => typeof item === "string" && item.length > 0)) return null;
+        if (value.h !== null && (typeof value.h !== "string" || !/^[a-f0-9]{64}$/.test(value.h))) return null;
+        if (!Number.isInteger(value.e) || value.e <= Math.floor(Date.now() / 1000)) return null;
+        return value;
+    } catch { return null; }
+}
+export function buildSourceDownloadUrl(input: Omit<SourceDownloadClaims, "e">): string {
+    const base = process.env.API_PUBLIC_URL?.trim() || process.env.BACKEND_PUBLIC_URL?.trim() ||
+        (process.env.NODE_ENV === "production" ? "" : `http://localhost:${process.env.PORT || 3001}`);
+    let url: URL;
+    try { url = new URL(base); } catch { throw new Error("Invalid public API URL"); }
+    if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error("Invalid public API URL");
+    return `${url.origin}${url.pathname.replace(/\/+$/, "")}/download/source/${signSourceDownload(input)}`;
 }

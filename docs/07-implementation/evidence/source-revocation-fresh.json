@@ -1,0 +1,97 @@
+{
+  "baseline": "0729ae77cbbf0f99f0754c67629b12c14374514a",
+  "working_tree_dirty": true,
+  "verified_at": "2026-11-17T21:07:18.558Z",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "real sign-in, separate organizations and matter metadata",
+      "status": "passed"
+    },
+    {
+      "name": "DOCX staged upload and actual worker processing",
+      "status": "passed"
+    },
+    {
+      "name": "download admission, DOCX bytes and cross-organization denial",
+      "status": "passed"
+    },
+    {
+      "name": "new document version preserves original version bytes",
+      "status": "passed"
+    },
+    {
+      "name": "valid PDF processing and same-organization matter binding",
+      "status": "passed"
+    },
+    {
+      "name": "real indexed source-text search and denied actor visibility",
+      "status": "passed"
+    },
+    {
+      "name": "invalid PDF remains an explicit failed upload",
+      "status": "passed"
+    },
+    {
+      "name": "model catalogue has no configured inference model",
+      "status": "passed"
+    },
+    {
+      "name": "saved draft provenance, idempotency, conflicts and restoration",
+      "status": "passed"
+    },
+    {
+      "name": "selected draft DOCX export includes scope, assumptions and exact source version",
+      "status": "passed"
+    },
+    {
+      "name": "changed evidence blocks historical export without rewriting saved history",
+      "status": "passed"
+    },
+    {
+      "name": "viewer can read/export drafts but cannot save, and revocation stops access",
+      "status": "passed"
+    },
+    {
+      "name": "draft tables are backend-only and revisions cannot be directly rewritten",
+      "status": "passed"
+    },
+    {
+      "name": "queued upload rechecks a revoked editor before publishing any result",
+      "status": "passed"
+    },
+    {
+      "name": "database publication guards deny revoked and downgraded actors during version and result writes",
+      "status": "passed"
+    },
+    {
+      "name": "connected Chromium owner/viewer source draft history DOCX and revocation journey",
+      "status": "passed"
+    },
+    {
+      "name": "revoked actor is excluded from indexed source search",
+      "status": "passed"
+    }
+  ],
+  "runtime": {
+    "database": "postgres:17-alpine",
+    "auth": "supabase/gotrue:v2.189.0",
+    "rest": "postgrest/postgrest:v14.12",
+    "storage": "isolated filesystem",
+    "interface": "real HTTP API and PostgREST RPC",
+    "ai": "unconfigured; no inference",
+    "browser": "Chromium connected through candidate Next.js gateway; no mocked API responses",
+    "workers": "separate disposable worker, paused only for deterministic queued revocation"
+  },
+  "processing": {
+    "docx": "completed",
+    "pdf": "completed"
+  },
+  "queued_revocation": {
+    "terminal_status": "error",
+    "error_code": "upload_access_revoked",
+    "result_published": false
+  },
+  "download_limit": "New source URLs recheck the issuing account and exact source identity at redemption; original links are denied after revocation. Legacy object-store URLs retain their original expiry.",
+  "cleanup": "only run-owned containers, network and temporary files removed"
+}

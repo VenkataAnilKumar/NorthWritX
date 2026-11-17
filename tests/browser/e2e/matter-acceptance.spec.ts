@@ -109,6 +109,10 @@ test("connected matter source draft export and two-user revocation", async ({ br
         expect(foreignDenied.status()).toBe(403);
         expect(await foreignDenied.json()).toEqual({ detail: "You do not have access to this document." });
         const issued = await (await viewer.request.get(`/api/single-documents/${source!.id}/url`)).json();
+        const beforeRevocation = await fetch(issued.url); // No recipient cookies or Authorization.
+        expect(beforeRevocation.status).toBe(200);
+        expect(beforeRevocation.headers.get("cache-control")).toBe("private, no-store");
+        await beforeRevocation.arrayBuffer();
         const token = new URL(issued.url).pathname.split("/").at(-1)!;
         const capability = JSON.parse(Buffer.from(token.split(".")[0], "base64url").toString());
         expect(capability.e - Math.floor(Date.now() / 1000)).toBeLessThanOrEqual(3600);
@@ -117,10 +121,14 @@ test("connected matter source draft export and two-user revocation", async ({ br
         for (const resource of [`/api/projects/${fixture.matterId}`, base, `${base}/versions`, `${base}/versions/${saved.version.id}`, `/api/single-documents/${source!.id}/url`]) expect((await viewer.request.get(resource)).status()).toBe(404);
         expect((await viewer.request.get(`/api/single-documents/${source!.id}`)).status()).toBe(403);
         expect((await viewer.request.post(`${base}/versions/${history.current_version_id}/export`)).status()).toBe(404);
-        // Existing blob capabilities are intentionally independent of the session.
-        // Do not mistake successful redemption for current matter authorization.
-        expect((await viewer.request.get(issued.url)).status()).toBe(200);
-        console.log("STEP revoked requests and issued-capability contract verified");
+        // The original URL must be re-authorized, without minting another link.
+        const revokedLink = await fetch(issued.url);
+        expect(revokedLink.status).toBe(404);
+        expect(revokedLink.headers.get("cache-control")).toBe("private, no-store");
+        expect((await owner.request.get(issued.url)).status()).toBe(404);
+        const ownerLink = await (await owner.request.get(`/api/single-documents/${source!.id}/url`)).json();
+        expect((await owner.request.get(ownerLink.url)).status()).toBe(200);
+        console.log("STEP revoked requests and issued-link revocation verified");
         await viewer.reload();
         await expect(viewer.getByText("Matter unavailable. Return to Matters to choose an accessible matter.", { exact: true })).toBeVisible();
         await expect(viewer.getByLabel("Draft text", { exact: true })).toHaveCount(0);
