@@ -15,7 +15,7 @@ for (const dev of [false, true]) {
       requests.push(req.url);
       req.resume();
       res.setHeader('content-type', 'application/json');
-      res.end(req.url.includes('document_lifecycle_version') ? '2' : '[]');
+      res.end(req.url.includes('document_lifecycle_version') ? '3' : '[]');
     });
     server.listen(0, '127.0.0.1');
     await once(server, 'listening');

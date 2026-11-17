@@ -10,6 +10,7 @@ Each view has its own identifier and increasing sequence. Discard clears content
 | --- | --- |
 | Draft editor and recovery controller | 22 tests passed |
 | API architecture, dependency cycles, migration ledger and worker roles | 49 tests passed |
+| Compiled/source standalone worker launch and graceful shutdown | Two tests passed after API build |
 | API production/tests, shared contracts, web and Word type checks | Passed |
 | Web lint | Zero errors; 29 existing warnings |
 | Isolated fresh database, real Auth/API/worker/storage and connected Chromium | 18 acceptance groups passed |
@@ -23,3 +24,5 @@ Apply `20261117_03_draft_recovery.sql` through the existing migration runner bef
 Safe evidence: [fresh](evidence/draft-recovery-fresh.json), [upgrade](evidence/draft-recovery-upgrade.json). The record describes a pre-commit candidate. Reproduce with `node apps/api/scripts/verify-source-journey.cjs --acceptance`; supported upgrade verification uses `--schema-baseline fd26fb9`. Disposable fixtures use no AI provider and remove only their own infrastructure and private temporary files.
 
 Only acknowledged checkpoints are guaranteed recoverable. Sudden closure, offline operation, failed requests or edits within the idle window can lose the latest uncheckpointed text; the native unsaved-change warning remains. Navigation flushing is best effort. A canonical save and recovery cleanup are separate requests: interrupted cleanup can leave an older private copy, so review revision history before recovering after an uncertain save. Recovery is not an approval, export, offline editing or live AI acceptance feature. Phase 4 still has AI, Office-host and named review gates.
+
+PR CI exposed an outdated standalone worker fixture reporting lifecycle contract 2 after the upload-publication migration introduced contract 3. The fixture now reports 3; production schema validation and startup guards remain enabled. Both compiled and source worker launch/shutdown checks passed locally.
