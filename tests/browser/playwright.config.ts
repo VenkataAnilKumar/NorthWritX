@@ -71,7 +71,7 @@ export default defineConfig({
         {
             name: "chromium",
             use: { ...devices["Desktop Chrome"] },
-            testIgnore: [...SYNTHETIC_SPECS, /matter-acceptance\.spec\.ts/],
+            testIgnore: [...SYNTHETIC_SPECS, /matter-acceptance\.spec\.ts/, /matter-ai-acceptance\.spec\.ts/],
             dependencies: ["setup"],
         },
 

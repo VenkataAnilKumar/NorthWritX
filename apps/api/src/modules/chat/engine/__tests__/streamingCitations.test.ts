@@ -16,7 +16,7 @@ vi.mock("../../../../lib/integrations/googleWorkspace", () => ({ buildGoogleWork
 import { runLLMStream } from "../streaming";
 
 describe("runLLMStream citation streaming", () => {
-  it("parses each streamed citation once and replays only the newest snapshot", async () => {
+  it.each(["xml", "heading"])("parses streamed citations and replays only the newest snapshot (%s)", async (format) => {
     const count = 60;
     const block =
       "<CITATIONS>[" +
@@ -25,7 +25,7 @@ describe("runLLMStream citation streaming", () => {
         (_, i) => JSON.stringify({ ref: i + 1, doc_id: "doc-0", page: 1, quote: `quote ${i}` }),
       ).join(",") +
       "]</CITATIONS>";
-    const text = `Answer.\n${block}`;
+    const text = `Answer.\n${format === "xml" ? block : block.replace("<CITATIONS>", "[Citations]\n").replace("</CITATIONS>", "")}`;
     streamChatWithTools.mockImplementation(async (params: {
       callbacks?: { onContentDelta?: (delta: string) => void };
     }) => {

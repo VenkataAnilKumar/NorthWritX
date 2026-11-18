@@ -74,6 +74,7 @@ import {
   createPartialCitationParser,
   createCitation,
   CITATIONS_OPEN_TAG,
+  CITATIONS_ARRAY_HEADER,
 } from "./citations";
 import { runToolCalls } from "./tools/toolDispatcher";
 import { addApprovalItems } from "./tools/connectorApprovals";
@@ -578,7 +579,11 @@ export async function runLLMStream(params: {
     }
 
     const combined = visibleTailBuffer + delta;
-    const markerIdx = combined.indexOf(CITATIONS_OPEN_TAG);
+    const openTag = combined.includes(CITATIONS_OPEN_TAG)
+      ? CITATIONS_OPEN_TAG
+      : `${CITATIONS_ARRAY_HEADER}\n`;
+    // The alternate header opens metadata only when followed by an array.
+    const markerIdx = combined.indexOf(openTag === CITATIONS_OPEN_TAG ? openTag : `${openTag}[`);
     if (markerIdx >= 0) {
       const visible = combined.slice(0, markerIdx);
       if (visible) {
@@ -592,12 +597,12 @@ export async function runLLMStream(params: {
       resetCitationStream();
       emitCitationStreamSnapshot("started", []);
       streamHiddenCitationContent(
-        combined.slice(markerIdx + CITATIONS_OPEN_TAG.length),
+        combined.slice(markerIdx + openTag.length),
       );
       return;
     }
 
-    const keep = Math.min(CITATIONS_OPEN_TAG.length - 1, combined.length);
+    const keep = Math.min(Math.max(CITATIONS_OPEN_TAG.length, CITATIONS_ARRAY_HEADER.length + 2) - 1, combined.length);
     const visible = combined.slice(0, combined.length - keep);
     visibleTailBuffer = combined.slice(combined.length - keep);
     if (visible) {

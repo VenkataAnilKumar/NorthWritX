@@ -1,0 +1,67 @@
+{
+  "baseline": "f2e4a2cf72249e0df8f7803411f9ac196ffc73ba",
+  "working_tree_dirty": true,
+  "verified_at": "2026-11-18T01:40:31.825Z",
+  "status": "failed",
+  "checks": [
+    {
+      "name": "real sign-in, separate organizations and matter metadata",
+      "status": "passed"
+    },
+    {
+      "name": "authenticated NorthWrit discovers local Ollama model",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic agreement and amendment are processed inside the matter",
+      "status": "passed"
+    },
+    {
+      "name": "foreign actor and revoked editor cannot submit a turn to this matter",
+      "status": "passed"
+    },
+    {
+      "name": "local inference produces the controlling notice period",
+      "status": "passed"
+    }
+  ],
+  "runtime": {
+    "database": "postgres:17-alpine",
+    "auth": "supabase/gotrue:v2.189.0",
+    "rest": "postgrest/postgrest:v14.12",
+    "storage": "isolated filesystem",
+    "interface": "real HTTP API and PostgREST RPC",
+    "ai": "local Ollama qwen2.5:3b"
+  },
+  "toolTrace": [
+    {
+      "calls": [],
+      "results": []
+    },
+    {
+      "calls": [
+        "fetch_documents"
+      ],
+      "results": [
+        {
+          "containsOriginal": true,
+          "containsAmendment": true,
+          "missing": false
+        }
+      ]
+    }
+  ],
+  "inference": {
+    "seconds": 274,
+    "eventTypes": [
+      "doc_read",
+      "content",
+      "response_details"
+    ],
+    "correctNotice": true,
+    "citations": 0,
+    "verifiedVersionCitation": false
+  },
+  "error": "No verified citation tied to the exact amendment version",
+  "cleanup": "only run-owned containers, network and temporary files removed"
+}

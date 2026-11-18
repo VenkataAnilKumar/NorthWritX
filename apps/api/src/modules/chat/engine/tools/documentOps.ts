@@ -49,15 +49,19 @@ export function citationReminder(
   const isSpreadsheet = isSpreadsheetDocumentType(
     filename.split(".").pop() ?? "",
   );
-  const shapeLine = isSpreadsheet
-    ? `Use this citation object shape for this spreadsheet: {"ref": 1, "doc_id": "${docLabel}", "quotes": [{"sheet": "Sheet name", "cell": "B7", "quote": "plain cell value"}]}. Cite by "sheet" + "cell" (A1 address or range), not by page.`
-    : `Use this citation object shape: {"ref": 1, "doc_id": "${docLabel}", "quotes": [{"page": 1, "quote": "exact verbatim text from the document"}]}. Include top-level "page" and "quote" too only if they match the first quote.`;
+  const quote = isSpreadsheet
+    ? { sheet: "Sheet name", cell: "B7", quote: "plain cell value" }
+    : { page: 1, quote: "exact verbatim text from the document" };
+  const example = JSON.stringify([{ ref: 1, doc_id: docLabel, quotes: [quote] }]);
   return [
     `[Citation requirement for ${docLabel}]:`,
     `Document filename: ${promptFilename}`,
-    `If your final answer makes any factual claim from this document, include inline [N] markers and append a final <CITATIONS> JSON block.`,
+    `If your final answer makes any factual claim from this document, include inline [N] markers and append the citation block shown below.`,
     `Every citation entry for this document MUST use "doc_id": "${docLabel}".`,
-    shapeLine,
+    "At the end of the answer, use this complete block with a JSON array:",
+    `<CITATIONS>\n${example}\n</CITATIONS>`,
+    "Replace example quotes with exact words read from the source and use the matching inline [N] ref. Combine all citations into one final block with sequential refs.",
+    ...(isSpreadsheet ? ['Use "sheet" and "cell" for spreadsheet locations.'] : []),
     `Do not use "marker" or "text" keys in the citation block; use "ref" and "quotes".`,
   ].join("\n");
 }
