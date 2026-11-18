@@ -6,7 +6,7 @@ Reviewed November 16, 2026 against the merged application/UI baseline `38da785` 
 
 | Finding | Resolution |
 | --- | --- |
-| Model access was listed as a Phase 7 dependency even though earlier journeys require AI | Move initial model validation before AI-dependent acceptance in Phases 4–6. Model-free matter work can proceed; the user's deferred AI verification remains deferred and must not be marked passed |
+| Model access was listed as a Phase 7 dependency even though earlier journeys require AI | Move initial model validation before AI-dependent acceptance in Phases 4–6. The initial Ollama scenario has since passed. Broader model acceptance remains open. |
 | Unit/build CI could be mistaken for data/access acceptance | Require scoped real-database, migration and browser evidence in Phase 4; the [CI inventory](NorthWrit-CI-Inventory.md) identifies gates still needing adaptation |
 | Broad phase descriptions lacked reviewable work packages | Introduce the ordered increments below, each with explicit entry/exit evidence |
 | Naming decisions could imply all proposed tabs/features were committed | Keep Agents separate and Contract Intelligence under Workflows, but show only functional sections and record the accepted subset per increment |
@@ -16,7 +16,7 @@ Reviewed November 16, 2026 against the merged application/UI baseline `38da785` 
 ## Baseline and delivery controls
 
 - Phase 1 audit, Phase 3 integration, repository/workspace preparation, the four-tab navigation, visual identity and floating workspace are complete within their recorded scope.
-- Phase 2 is restored as Product and Architecture Foundation. Existing foundation evidence is available; unresolved scope/ownership decisions and reviewer sign-off remain pending. Phase 4 has local metadata, Overview/settings and saved-draft backend/UI implementation subsets; complete journey acceptance is pending. Phases 5–7 remain planned.
+- Phase 2 is restored as Product and Architecture Foundation. Existing foundation evidence is available; unresolved scope/ownership decisions and reviewer sign-off remain pending. Phase 4 has merged matter metadata, Overview and settings, and saved drafts. Initial live validation passed on one synthetic scenario. Full acceptance remains open. Phases 5–7 remain planned.
 - The current application has Assistant, Matters, Library and Workflows. Agents is the approved future fifth tab. Contract Intelligence is the approved proposed contract-focused section under Workflows.
 - Source-supported AI, Word and connector paths are not automatically accepted. The synthetic demo verified document/project handling, versions/downloads, workflow configuration and web/Electron views; no live model output was evaluated.
 - The [capability matrix](../04-specs/NorthWrit-Capability-Matrix.md) and [feature disposition](NorthWrit-Feature-Disposition.md) retain all 105 IDs and priorities. P0/P1/P2 are not implementation phase numbers.
@@ -58,7 +58,7 @@ The [Phase 2A pilot scope proposal](NorthWrit-Phase-2A-Pilot-Scope.md), [Phase 2
 
 **Owners:** product/domain engineering with legal, design and access/security review. Named assignees remain to be assigned. **Status:** foundation documents exist; final scope decisions and review closure are not established.
 
-**Exit:** selected journeys trace to requirements, domain owners and acceptance evidence. Decisions required by a work package are closed before it starts; unrelated deferred extensions stay out of its gate. Existing repository organization, branding and UI work is reused rather than repeated. Deferred live AI validation is recorded explicitly and is required before dependent AI acceptance, not silently treated as Phase 2 completion evidence.
+**Exit:** selected journeys trace to requirements, domain owners and acceptance evidence. Decisions required by a work package are closed before it starts; unrelated deferred extensions stay out of its gate. Existing repository organization, branding and UI work is reused rather than repeated. Live model validation is tracked in Phase 4. Phase 2 still requires its own scope, ownership, and review decisions.
 
 ## Phase 3 — Application integration and maintenance (completed baseline)
 
@@ -68,9 +68,9 @@ Preserve the existing module facades, authoritative root lockfile and backend-ow
 
 **Owner:** repository/application engineering. **Gate:** affected builds/types/tests and existing CI pass. Packaging, legal quality and deployment guarantees remain distinct from build success.
 
-## Phase 4 — Matter foundation and complete source journey (in progress locally)
+## Phase 4 — Matter foundation and complete source journey (acceptance in progress)
 
-The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) provides the first concrete design package. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records local schema/API work and tests; named review and full 4B acceptance remain pending. The [4C Overview/settings record](NorthWrit-Phase-4C-Overview-Verification.md) tracks the local UI and synthetic-browser subset, not the complete source journey. The [source-context verification record](NorthWrit-Phase-4C-Source-Context-Verification.md) adds asynchronous state/version safeguards and scoped regression evidence. The [isolated source journey](NorthWrit-Phase-4-Source-Journey-Verification.md) records fresh-stack model-free integration evidence without closing the full 4E gate. The [4D backend record](NorthWrit-Phase-4D-Backend-Verification.md) adds draft/version/export endpoints and fresh/upgrade evidence; the [4D UI record](NorthWrit-Phase-4D-UI-Verification.md) adds the manual editor, immutable history/restore and selected-revision export UI. The [4E acceptance record](NorthWrit-Phase-4E-Acceptance-Verification.md) tracks the connected model-free journey and the queued-upload authorization fix. The [source-link increment](NorthWrit-Source-Download-Revocation-Verification.md) adds current-access redemption for newly issued source links. The [private draft recovery increment](NorthWrit-Draft-Recovery-Verification.md) adds user-owned expiring checkpoints and explicit recovery without changing saved revision history. Visual comparison, remaining policy/security/legal decisions and full Phase 4 acceptance remain pending.
+The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contracts-Fixtures.md) provides the first concrete design package. The [4B metadata verification record](NorthWrit-Phase-4B-Metadata-Verification.md) records local schema/API work and tests; named review and full 4B acceptance remain pending. The [4C Overview/settings record](NorthWrit-Phase-4C-Overview-Verification.md) tracks the local UI and synthetic-browser subset, not the complete source journey. The [source-context verification record](NorthWrit-Phase-4C-Source-Context-Verification.md) adds asynchronous state/version safeguards and scoped regression evidence. The [isolated source journey](NorthWrit-Phase-4-Source-Journey-Verification.md) records fresh-stack model-free integration evidence without closing the full 4E gate. The [4D backend record](NorthWrit-Phase-4D-Backend-Verification.md) adds draft/version/export endpoints and fresh/upgrade evidence; the [4D UI record](NorthWrit-Phase-4D-UI-Verification.md) adds the manual editor, immutable history/restore and selected-revision export UI. The [4E acceptance record](NorthWrit-Phase-4E-Acceptance-Verification.md) tracks the connected model-free journey and the queued-upload authorization fix. The [source-link increment](NorthWrit-Source-Download-Revocation-Verification.md) adds current-access redemption for newly issued source links. The [private draft recovery increment](NorthWrit-Draft-Recovery-Verification.md) adds user-owned expiring checkpoints and explicit recovery without changing saved revision history. The [Phase 4 Ollama verification](NorthWrit-Phase-4-Ollama-Verification.md) records successful live inference, a verified amendment citation, draft persistence, and DOCX export on one synthetic scenario. The [Phase 4 gallery](../assets/demo/phase-4/README.md) shows a separate browser run with recorded AI output. Broader model reliability, Office-host behavior, and policy, security, legal, and reviewer acceptance remain open.
 
 **Entry:** reviewed work package, selected Phase 4 IDs, isolated database/browser fixtures and the [extension map](NorthWrit-Phase-4-Extension-Map.md). Live AI acceptance additionally requires the model entry package.
 
@@ -84,7 +84,7 @@ The [4A Matter contracts and fixtures proposal](NorthWrit-Phase-4A-Matter-Contra
 
 Basic fact sheet, matter templates/dashboard, client rooms and ethical walls have Phase 4 P1 allocations. Select them explicitly. Basic factual context is not an automatically maintained litigation fact graph; authorized shared rooms are not a complete guest self-service product. External ethical-wall-provider synchronization is a separate integration extension. If client sharing is selected, its access and wall acceptance is required before exposure.
 
-**Owners:** API/domain and web engineering; database/access reviewer; product workflow reviewer. **Exit:** the selected matter-to-source-to-draft/export journey works without context loss; unauthorized retrieval and writes are denied, including background and download paths. AI-dependent acceptance stays open until live execution is evidenced.
+**Owners:** API/domain and web engineering; database/access reviewer; product workflow reviewer. **Exit:** the selected matter-to-source-to-draft/export journey works without context loss; unauthorized retrieval and writes are denied, including background and download paths. One synthetic live AI scenario passed. Full AI-dependent acceptance requires reliable performance across the selected cases and review of the results.
 
 ## Phase 5 — Evidence-backed Canadian legal work (planned)
 
@@ -151,7 +151,7 @@ Each increment records requirement IDs, selected scope, owner/reviewer, evidence
 
 ## Next implementation package to prepare
 
-The model-free 4A–4E increments now have implementation and isolated verification records above, including source-link revocation and private draft recovery. Next close the remaining Phase 2 scope/ownership decisions and Phase 4 review gates, configure an approved model when authorized, and verify the AI-dependent matter journey and Office-host behavior. Keep Phase 5 implementation separate from this closeout; passing model-free checks alone does not complete Phase 4.
+The model-free 4A–4E increments now have implementation and isolated verification records above, including source-link revocation and private draft recovery. Next close the remaining Phase 2 scope/ownership decisions and Phase 4 review gates, evaluate model reliability across the selected matter workflows, and verify behavior in an Office host. Keep Phase 5 implementation separate from this closeout; passing model-free checks alone does not complete Phase 4.
 
 ## Allocation reconciliation: all 105 requirements
 

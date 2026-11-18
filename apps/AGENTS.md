@@ -258,7 +258,7 @@ npm run build --prefix apps/word-addin
 npm run test:e2e --prefix apps/word-addin
 
 npm run test:e2e
-npm run test:e2e:local
+npm --workspace tests/browser run test:e2e:local
 npm run test:stack --prefix apps/api
 ```
 
@@ -267,8 +267,8 @@ crosses an application boundary must be verified by building the affected
 image from the repository root, for example
 `docker build -f apps/web/Dockerfile .`. The host-side build cannot catch a
 missing build-context file because every sibling directory exists on the
-host; `.github/workflows/container-builds.yml` builds all three images on every
-pull request for the same reason.
+host. The `.github/workflows/container-builds.yml` workflow builds all three
+images on pull requests that touch its configured paths.
 
 Use targeted Vitest files while iterating, for example:
 
@@ -283,8 +283,9 @@ before running them. New behavior should normally have a regression test at
 the lowest useful layer: unit first, route integration second, and Playwright
 only when a real browser flow is necessary.
 
-When changing dependencies, update the `package-lock.json` belonging to the
-affected package. Before handing off work, run `git diff --check`, inspect the
+When changing dependencies, update the affected workspace manifest and regenerate
+the root `package-lock.json` from the repository root. Keep one lockfile for all
+workspaces. Before handing off work, run `git diff --check`, inspect the
 diff for unrelated changes, and report which verification commands were run.
 
 ## Branch Names
