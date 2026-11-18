@@ -1,0 +1,47 @@
+{
+  "captured_at": "2026-11-18T02:26:08.641159+00:00",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "data": "synthetic only",
+  "ai": "recorded previously verified Ollama qwen2.5:3b output replayed into disposable persisted fixtures",
+  "manual_change": "revision 2 adds reviewer note",
+  "images": [
+    {
+      "file": "01-matter-overview.png",
+      "title": "Matter Overview",
+      "sha256": "50d728b0ee6fdb0156da4278f407786c20d8a89e91e30aa0cae3572f3eb384ab"
+    },
+    {
+      "file": "02-matter-documents.png",
+      "title": "Matter Documents",
+      "sha256": "64e51a0f09fbbd3c3a3a157393e8e894ac99f02cb1d1f00fe1af1e7659c1a01b"
+    },
+    {
+      "file": "03-ai-answer-and-citations.png",
+      "title": "AI answer and citations",
+      "sha256": "be4a102a9bfe70e157e32569be513b34fc12a38b677425404e6ce195a1a14b58"
+    },
+    {
+      "file": "04-cited-amendment.png",
+      "title": "Inspect the cited amendment",
+      "sha256": "f5a8aa6bc0204f1c889bb38f8abebbbab146a061e80e91b359a4ea63013ce0ad"
+    },
+    {
+      "file": "05-saved-ai-draft.png",
+      "title": "Saved AI draft",
+      "sha256": "bc9f079ff62304d172afd647cc7ff036694813f48672afb35af3f5bab67fbd8c"
+    },
+    {
+      "file": "06-docx-export.png",
+      "title": "DOCX export",
+      "sha256": "69d940bbd2aa93d640f2684a14e26a0c6f16356bf4498bf7addc7b421a5ea766"
+    },
+    {
+      "file": "07-draft-revision-history.png",
+      "title": "Revision history",
+      "sha256": "945ca786446452f11493bd70a236048c99bf8af7d5d83a6f3a77ab6f09ba0cad"
+    }
+  ]
+}

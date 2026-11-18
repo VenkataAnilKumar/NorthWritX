@@ -1,0 +1,44 @@
+{
+  "baseline": "e430286d1f6c5e4eb677d261e8479258e8c1f4f1",
+  "working_tree_dirty": true,
+  "verified_at": "2026-11-18T02:21:57.101Z",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "real sign-in, separate organizations and matter metadata",
+      "status": "passed"
+    },
+    {
+      "name": "authenticated NorthWrit discovers local Ollama model",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic agreement and amendment are processed inside the matter",
+      "status": "passed"
+    },
+    {
+      "name": "foreign actor and revoked editor cannot submit a turn to this matter",
+      "status": "passed"
+    },
+    {
+      "name": "recorded citation fixture binds to the synthetic amendment version",
+      "status": "passed"
+    },
+    {
+      "name": "model answer becomes a matter draft and DOCX with exact source versions",
+      "status": "passed"
+    }
+  ],
+  "runtime": {
+    "database": "postgres:17-alpine",
+    "auth": "supabase/gotrue:v2.189.0",
+    "rest": "postgrest/postgrest:v14.12",
+    "storage": "isolated filesystem",
+    "interface": "real HTTP API and PostgREST RPC",
+    "ai": "Previously verified live Ollama answer replayed into disposable browser fixtures; document identifiers rebound to equal synthetic source content",
+    "browser": "Connected Chromium persisted live AI answer, source opening and draft DOCX download"
+  },
+  "toolTrace": [],
+  "fixtureVerifiedCitation": true,
+  "cleanup": "only run-owned containers, network and temporary files removed"
+}

@@ -11,6 +11,20 @@ Application surfaces live under `apps/`, shared code under `packages/`, and infr
 - Each cloud task is already isolated. Use the existing checkout; create a Git worktree only when explicitly requested.
 - Preserve existing user changes. Do not move files or remove resources belonging to another task.
 
+## Product quality and phase delivery
+
+**Never build AI Slop.** Build a functional NorthWrit product with useful workflows, purposeful UI, reliable persistence, enforceable permissions and verifiable results. Complete the real user journey through its normal entry points. Every exposed action must perform its intended operation and provide usable loading, empty, failure and recovery behavior. Keep product claims tied to observed capabilities.
+
+Define the target user, concrete problem and measurable outcome for each phase. Choose the smallest complete workflow, document competitor-adoption rationale, and evaluate legal/AI quality, performance, cost and operational recovery where relevant. Record reversible assumptions and unresolved product decisions.
+
+Every implementation phase follows Research, Web search, Requirement gathering, Design, Architecture, Implementation, Review and Test. Record the findings, decisions and executable acceptance evidence in proportion to the phase. See the [developer guide](docs/guides/developer.md#required-delivery-process-for-every-phase) for the required outputs.
+
+Use the user's supplied competitors, especially Harvey, Clio and Filevine, as starting points for requirements research. Map candidate capabilities to NorthWrit user needs, existing requirement IDs, priorities and phases. Use CompanyOS, kdrive and Cognee as relevant technical references. Explain what NorthWrit should adopt and why, then implement an original NorthWrit experience within existing product and package boundaries.
+
+Research current primary sources and inspect the repository before implementation. Define testable requirements and failure cases, design the complete experience, review the affected architecture, implement working behavior, review the diff and run relevant tests. Preserve traceability from requirement to implementation and acceptance evidence. Record blocked research or tests and unresolved assumptions honestly.
+
+Use synthetic data and mocks for their documented test purposes. Label mockups, replayed responses and seeded demos accurately. Product acceptance must exercise real persistence, authorization and execution where the feature depends on them. AI-dependent acceptance requires live inference and evidence checks. A screenshot, rendered component or passing mocked test alone cannot establish feature completion.
+
 ## Documentation
 
 Root `docs/` owns NorthWrit requirements, architecture decisions, the roadmap and verification records. `docs/engineering/` owns application engineering and operating procedures. Describe proposals and unverified capabilities explicitly. Historical blueprints do not override the current plan or working source.
