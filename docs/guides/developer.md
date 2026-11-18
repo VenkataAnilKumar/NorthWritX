@@ -47,14 +47,55 @@ Read the [product catalogue](../02-product/NorthWrit-Product-Catalogue.md), [run
 
 Read the root [AGENTS.md](../../AGENTS.md), [application instructions](../../apps/AGENTS.md), and applicable child instructions before editing code. For Next.js work, read the relevant installed Next.js documentation identified by the web instructions. Check the current implementation plan and the requirement IDs affected by the change.
 
-1. Inspect Git status and preserve existing edits. Define the behavior, affected applications and verification needed for the increment.
-2. Plan the smallest change that fits the existing domain ownership. Record structural decisions in docs/decisions and keep serialized contracts and consumers in sync.
-3. Implement through the normal UI/API/worker entry points. Reuse access helpers, service facades and UI primitives.
-4. Review the diff for behavior, error handling, permissions, concurrent changes and compatibility with existing data.
-5. Run affected regressions and type checks, then required repository checks. Record live, fixture-based and unverified outcomes accurately.
-6. Commit a focused change with a description of the resulting behavior and validation. Push and merge when authorized, after required GitHub checks pass.
+Inspect Git status and preserve existing edits before starting. **Never build AI Slop.** Deliver a real, usable NorthWrit workflow with purposeful design, reliable state, clear errors and verified results. Each visible control must support its intended action. Trace product claims to working behavior and evidence.
+
+### Required delivery process for every phase
+
+| Stage | Required work and output |
+| --- | --- |
+| Research | Inspect the existing product, source, architecture, requirements, prior evidence and current user problem. Record reusable capabilities and actual gaps before choosing changes. |
+| Web search | Research current official competitor, platform and integration documentation. Record source URLs, access dates, relevant findings and limitations. Distinguish vendor claims from verified NorthWrit behavior. Record any research access blocker explicitly. |
+| Requirement gathering | Use the previously supplied competitors to identify candidate capabilities. Map each to a NorthWrit user/job, existing requirement ID, current gap, priority, proposed phase and measurable acceptance criteria. Record assumptions and scope decisions. Include permission, persistence, failure, concurrency and recovery requirements where relevant. |
+| Design | Define navigation, user flow, information hierarchy, interactions, data entry, loading/empty/error states and accessible behavior. Reuse the design system and test realistic content and narrow layouts. Produce reviewable designs for the actual workflow. |
+| Architecture | Review domain ownership, UI/API contracts, data/version model, migrations, access rules, background execution and affected clients. Reuse established boundaries and document structural decisions through the existing ADR process. |
+| Implementation | Build working behavior through the normal entry points. Connect UI, API, storage and jobs as needed. Preserve existing data and shared consumers. Handle retries, conflicting edits and partial failures. |
+| Review | Review behavior against requirements and designs, inspect the diff, check permissions, privacy, compatibility, accessibility and maintainability, then resolve findings. Record who performed the review and distinguish self-review, automated checks and specialist review. |
+| Test | Run meaningful regressions at the appropriate layers. Exercise the complete user journey with real services where required, including denied access and failure paths. Verify fresh/upgrade databases for schema changes and live model output/evidence for AI-dependent behavior. Record commands, outcomes, defects, limitations and remaining acceptance work. |
+
+Complete the required stages for every phase and keep their records proportional to its scope. A phase record should identify the user problem, competitor/source findings, selected requirement IDs and exclusions, acceptance criteria, design/architecture decisions, implementation changes, review findings, test results and open items. Carry this traceability into the PR and verification record.
+
+After relevant checks pass, commit a focused increment with its behavior and validation. Push and merge when authorized, after required GitHub checks pass. Keep deployment and external publication within their separately authorized scope.
+
+### Competitor-informed requirements
+
+Use Harvey, Clio and Filevine as the starting product comparison set supplied by the user. Research their current workflows and identify which capabilities address NorthWrit's selected legal use cases. The existing [cross-platform feature backlog](../07-implementation/NorthWrit-Cross-Platform-Feature-Backlog.md), [feature specification](../04-specs/Northwrit_Feature-Spec.md), [capability matrix](../04-specs/NorthWrit-Capability-Matrix.md) and phased delivery plan retain requirement ownership and scope.
+
+For each candidate, record the competitor capability and source, NorthWrit use case, existing implementation, gap, proposed behavior, acceptance tests, dependency/cost/access constraints, priority and phase. State the adoption decision and rationale. Keep unselected capabilities in the backlog. Design a distinctive NorthWrit experience and preserve the approved product terminology.
+
+CompanyOS, kdrive and Cognee are also user-supplied research references. Consult them for relevant architecture, document/storage or knowledge-context decisions and document the specific fit. Evaluate any proposed dependency against its current license, API, maintenance, access requirements and NorthWrit's deployment needs before adoption.
+
+### Completion evidence
+
+A useful phase delivers functioning behavior with persisted data, enforced permissions and clear failure recovery where applicable. Verify it through the same entry points users use. Keep mocked tests, seeded fixtures, recorded-output browser tests, screenshots and fresh end-to-end runs accurately labeled. AI-dependent completion requires live inference and checked evidence. Record unsupported or unevaluated behavior as open work.
+
+Use current primary guidance to shape relevant criteria. OWASP ASVS supplies security-verification requirements, WCAG 2.2 supplies testable accessibility criteria, and Playwright recommends isolated tests, user-facing locators and actionability checks. Select the criteria relevant to the feature and record the checks performed. These sources were consulted on November 17, 2026 in the Toronto client timezone. [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) · [WCAG 2.2](https://www.w3.org/TR/WCAG22/) · [Playwright best practices](https://playwright.dev/docs/best-practices)
 
 Keep feature status aligned with the [phased delivery plan](../07-implementation/NorthWrit-Phased-Delivery-Plan.md). Existing Phase 4 evidence includes a live local-model example and persisted-output browser checks. Broader model evaluation, Word-host behavior and remaining review gates stay explicit. Use the [Ollama verification record](../07-implementation/NorthWrit-Phase-4-Ollama-Verification.md) for those exact boundaries.
+
+## Building the right product
+
+| Decision | Instruction |
+| --- | --- |
+| User and outcome | Identify the target user, their current workflow, the problem and a measurable success criterion before selecting features. Use available user feedback and task evidence. Record assumptions that still need validation. |
+| Adoption | Explain why a capability is useful to NorthWrit users, how they discover and complete it, and what they gain over their current process. Use competitor capabilities as research inputs and document the adoption rationale. |
+| Scope | Deliver the smallest complete workflow that produces a useful result. Use a clear definition of done, explicit exclusions and dependencies. Keep navigation, terminology and interaction behavior consistent across the product. |
+| Legal and AI quality | Define evaluation cases and expected outcomes before changing prompts, retrieval or model behavior. Check exact sources/versions, claim support, missing evidence, conflicting documents, prompt injection and honest failure states. Record model/prompt settings and regression outcomes. Obtain qualified legal evaluation when making legal-quality claims. |
+| User control and data | Make the selected workspace, matter, model and consequential action clear. Enforce account/matter isolation across retrieval, jobs, connectors and exports. Honor user provider/settings choices and required action approvals. Define relevant retention and deletion behavior. |
+| Performance and cost | Measure latency, resource use and model/tool costs for representative workloads. Establish realistic budgets for the selected workflow and expose useful progress, cancellation and recovery behavior. Record actual hardware and limits alongside measurements. |
+| Operational readiness | For runtime changes, identify migration order, configuration, observable failures, recovery and rollback. Verify installation/upgrade paths affected by the change and document how to diagnose failures without exposing sensitive data. |
+| Learning and prioritization | Evaluate the delivered workflow against its success criterion, record remaining friction and prioritize follow-up work from evidence. Keep future work and unverified capabilities explicit. |
+
+Use reasonable, reversible assumptions to keep work moving and identify them in the phase record. Ask the user when a missing requirement changes scope, legal meaning, data exposure, irreversible behavior or a consequential product decision. Keep verification proportional to the change and reuse existing evidence when it still applies. These instructions do not create an additional approval requirement for routine authorized implementation.
 
 ## Local development commands
 
