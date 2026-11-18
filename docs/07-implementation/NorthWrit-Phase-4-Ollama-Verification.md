@@ -26,3 +26,16 @@ Fresh live repetitions exposed variability. One produced the correct period but 
 Two harness issues were corrected during browser preparation. Chromium now gets a short private temporary directory, avoiding Linux Unix-socket path limits under deeply nested work directories. The browser-enabled disposable API must set FRONTEND_URL to its web origin, http://127.0.0.1:3018 for this session, so normal origin protection admits browser sign-in. The AI conversation route is warmed before navigation. The browser spec is excluded from normal account-backed runs and selected only through the isolated harness with ai enabled.
 
 Browser TypeScript, harness syntax, repository, branding and whitespace checks passed. Existing preview services were preserved, and each isolated stack recorded cleanup of only its own resources. The session reproduction runner for the replay is /workspace/.northwrit-ollama-trial.g0hLfJ/run-ollama-browser-replay.cjs. Office-host and broader legal-quality acceptance remain open.
+
+
+## Citation formatting correction
+
+The document tool reminder now shows the complete CITATIONS-tagged JSON array expected by the parser, including spreadsheet locations. Previously it demonstrated a standalone object, which the local model sometimes copied without the enclosing block.
+
+A live repeat reproduced another exact variant: an explicit [Citations] heading followed by a complete JSON array of document references and quotes. Final citation parsing now accepts that specific variant, and streaming hides its metadata while emitting citation snapshots. Standalone JSON, incomplete arrays and arrays followed by prose are excluded. Both accepted formats use the existing source resolution and quote verification pipeline. Unsupported quotes still fail verification.
+
+All 73 focused parser, stream, reminder, filename-fencing and verification tests passed, along with 25 architecture/dependency checks and API production/test type checks. A fresh real Ollama run with the ordinary user prompt passed all seven scenario checks, including the controlling period, exact amendment version, source-verified citation, saved answer and DOCX export. See [live formatting-fix evidence](evidence/phase-4-citation-format-fix.json). This live run used no recorded model response or browser replay.
+
+CPU-only test deadlines were aligned by setting STREAM_FIRST_CHUNK_TIMEOUT_MS=420000 and STREAM_IDLE_TIMEOUT_MS=600000 on the disposable API, with a 900000 ms test-client request deadline. An earlier attempt with the default five-minute idle timeout expired while its longer first-response deadline was still active. These are scoped test settings. Model/provider deadlines remain enabled.
+
+This closes the demonstrated citation-header parsing defect. The earlier inconsistent outputs remain recorded above. Broader model quality and repeated-run citation omission, legal accuracy, Office-host and named-review gates still require evaluation. The completed session runner is /workspace/.northwrit-ollama-trial.g0hLfJ/run-ollama-format-fix.cjs. Only run-owned fixtures were removed.

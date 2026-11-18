@@ -185,6 +185,7 @@ function normalizeCaseCitationQuotes(c: Record<string, unknown>) {
 export const CITATIONS_BLOCK_RE = /<CITATIONS>\s*([\s\S]*?)\s*<\/CITATIONS>/;
 export const CITATIONS_OPEN_TAG = "<CITATIONS>";
 export const CITATIONS_CLOSE_TAG = "</CITATIONS>";
+export const CITATIONS_ARRAY_HEADER = "[Citations]";
 
 type CitationParseDiagnostics = {
   hasBlock: boolean;
@@ -196,7 +197,11 @@ export function parseCitationsWithDiagnostics(text: string): {
   citations: ParsedCitation[];
   diagnostics: CitationParseDiagnostics;
 } {
-  const match = text.match(CITATIONS_BLOCK_RE);
+  // Some local models emit an explicit citation heading and a complete JSON
+  // array instead of XML-style tags. Only that delimited format is accepted.
+  // JSON elsewhere in an answer is ordinary prose/code, not citation metadata.
+  const match = text.match(CITATIONS_BLOCK_RE)
+    ?? text.match(/(?:^|\n)\[Citations\][ \t]*\r?\n(\s*\[[\s\S]*\])\s*$/);
   if (!match) {
     return { citations: [], diagnostics: { hasBlock: false, rawLength: 0, error: null } };
   }
